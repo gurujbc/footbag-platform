@@ -1,0 +1,58 @@
+# =============================================================================
+# /etc/systemd/system/footbag.service
+#
+# Manages the Footbag Platform Docker Compose stack on the Lightsail host.
+# Install: sudo cp ops/systemd/footbag.service /etc/systemd/system/
+#          sudo systemctl daemon-reload
+#          sudo systemctl enable footbag
+#          sudo systemctl start footbag
+#
+# See docs/DEVOPS_GUIDE_V0_1.md §7.3 for the full deployment runbook.
+# =============================================================================
+
+[Unit]
+Description=Footbag Platform (Docker Compose)
+Documentation=https://github.com/your-org/footbag-platform
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+# Working directory is the project root; compose files are in docker/
+WorkingDirectory=/srv/footbag/app
+
+# Environment file provides FOOTBAG_DB_PATH, PUBLIC_BASE_URL, etc.
+# Copy from ops/env.example and fill in values on the host.
+# EnvironmentFile=/srv/footbag/env
+
+# Pull latest images (no-op if images haven't changed)
+ExecStartPre=/usr/bin/docker compose pull --quiet
+
+# Start the stack; --remove-orphans cleans up containers from old service defs
+ExecStart=/usr/bin/docker compose \
+    -f docker/docker-compose.yml \
+    -f docker/docker-compose.prod.yml \
+    up --detach --remove-orphans
+
+# Graceful stop — waits up to 30s for in-flight requests to complete
+ExecStop=/usr/bin/docker compose \
+    -f docker/docker-compose.yml \
+    -f docker/docker-compose.prod.yml \
+    down --timeout 30
+
+# Reload without downtime (nginx reload + rolling restart for web)
+ExecReload=/usr/bin/docker compose \
+    -f docker/docker-compose.yml \
+    -f docker/docker-compose.prod.yml \
+    up --detach --remove-orphans
+
+Restart=on-failure
+RestartSec=10s
+TimeoutStartSec=120s
+TimeoutStopSec=60s
+
+[Install]
+WantedBy=multi-user.target

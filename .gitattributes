@@ -1,0 +1,6 @@
+# Normalize line endings on commit; let git decide per file type
+* text=auto
+
+# Always check out shell scripts with Unix line endings
+# Prevents bash "bad interpreter" errors on Windows/WSL clones
+*.sh text eol=lf

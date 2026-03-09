@@ -96,8 +96,8 @@ coverage/
 crash.log
 *.tfvars
 *.tfvars.json
-!.tfvars.example
-!.tfvars.sample
+!*.tfvars.example
+!*.tfvars.sample
 
 # =========================
 # Local personal overrides (machine-specific, never commit)
@@ -108,6 +108,7 @@ CLAUDE.local.md
 .claude/settings.local.json
 .claude/settings.local.*.json
 .claude/projects/
+.claude/plans/
 .claude/settings.private.json
 .claude.json
 

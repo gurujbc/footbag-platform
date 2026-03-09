@@ -1,0 +1,21 @@
+# =============================================================================
+# terraform.tfvars.example — production
+# Copy to terraform.tfvars and fill in all TODO values.
+# NEVER commit terraform.tfvars — it contains secrets and account details.
+# =============================================================================
+
+environment    = "production"
+aws_region     = "us-east-2"                  # TODO: Confirm production region
+aws_account_id = "TODO-12-digit-account-id"
+
+domain_name     = "footbag.org"               # TODO: Confirm apex domain
+route53_zone_id = "TODO-ZONE-ID"              # e.g. Z1PA6795UKMFR9
+
+lightsail_bundle_id    = "small_3_0"          # $10/mo 1 vCPU / 2 GB RAM
+lightsail_blueprint_id = "amazon_linux_2023"
+
+ssh_public_key = "ssh-ed25519 AAAAC3Nza... TODO-your-production-deploy-key"
+
+alarm_email = "TODO-ops-alert@footbag.org"
+
+state_bucket_suffix = "TODO-match-shared-suffix"

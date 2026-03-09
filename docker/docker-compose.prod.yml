@@ -1,0 +1,45 @@
+# =============================================================================
+# Footbag Platform — Production overrides
+#
+# Applied on top of docker-compose.yml on the Lightsail host:
+#   docker compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml up -d
+#
+# Key differences from local dev:
+#   - restart: always on all services
+#   - Explicit memory limits to prevent OOM runaway
+#   - DB volume path from env (not a hardcoded local path)
+#   - No host port binding for web — traffic flows through nginx only
+#   - Secrets and config injected from host environment / SSM at deploy time
+# =============================================================================
+
+services:
+
+  nginx:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  web:
+    restart: always
+    volumes:
+      # Production DB is managed on the host; path comes from env at deploy time.
+      # The host operator sets FOOTBAG_DB_PATH in the systemd environment file
+      # or passes it via `docker compose --env-file`.
+      - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+    environment:
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  worker:
+    restart: always
+    volumes:
+      - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+    deploy:
+      resources:
+        limits:
+          memory: 128M

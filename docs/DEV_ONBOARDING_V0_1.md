@@ -48,6 +48,33 @@ Where the repository is blank, this guide says which files to create and why.
 
 ---
 
+## Quick start — codebase already exists
+
+If you are cloning a repository that already has a working implementation, skip Parts C–E and use this five-step path instead:
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Create your local env file
+cp .env.example .env
+# Edit .env — at minimum confirm FOOTBAG_DB_PATH=./database/footbag.db
+
+# 3. Bootstrap the local database (requires sqlite3 CLI — see §13.3)
+./scripts/reset-local-db.sh
+
+# 4. Start the dev server
+npm run dev
+# → http://localhost:3000/events
+
+# 5. Run the integration test suite
+npm test
+```
+
+All five routes should respond correctly. Continue to Part F for AWS/Terraform bootstrap.
+
+---
+
 # Part A — Orientation and project understanding
 
 ## 1. What this project is
@@ -464,6 +491,12 @@ node -v
 npm -v
 ```
 
+> **Note:** This project uses `better-sqlite3` which compiles a native Node.js addon. Node 22 LTS is the recommended version. If you use Node 24 or later, ensure `better-sqlite3` is at least `^12.6.2` in `package.json` or the native build will fail during `npm install`.
+
+> **WSL2 PATH contamination.** WSL2 appends the Windows `PATH` by default. If Node.js is also installed on Windows, `which node` inside WSL may resolve to the Windows binary — wrong architecture, wrong version, subtle failures. After installing Node inside WSL, verify `which node` returns a path under `/home/...` or `/usr/...`, not `/mnt/c/...`.
+
+> **CRLF line endings.** If git on Windows is configured with `core.autocrlf=true`, shell scripts cloned in WSL can gain `\r` characters and fail with `bash: bad interpreter: /usr/bin/env bash^M`. The repo should include a `.gitattributes` file with `*.sh text eol=lf` to enforce Unix line endings on shell scripts regardless of the cloning platform.
+
 ---
 
 ## 13.3 Base Linux packages
@@ -506,6 +539,8 @@ docker compose version
 ```
 
 If you choose to install Docker Engine directly inside Ubuntu instead of using Docker Desktop, do that intentionally and document it for yourself. For most contributors on Windows + WSL, Docker Desktop with WSL integration is the simplest path.
+
+> **Do not run `sudo apt install docker-compose`.** That package installs the old v1 standalone binary (`docker-compose` with a hyphen), which is deprecated and behaves differently from the v2 plugin (`docker compose` with a space) used throughout this project. Docker Desktop provides the v2 plugin automatically. If installing Docker Engine directly, use the official Docker APT repository and install `docker-compose-plugin`.
 
 ---
 
@@ -675,7 +710,7 @@ Create this repository structure first:
 │  ├─ routes/
 │  │  └─ publicRoutes.ts
 │  ├─ services/
-│  │  └─ eventService.ts
+│  │  └─ EventService.ts
 │  ├─ views/
 │  │  ├─ layouts/
 │  │  │  └─ main.hbs
@@ -687,8 +722,8 @@ Create this repository structure first:
 │  │     ├─ not-found.hbs
 │  │     └─ unavailable.hbs
 │  ├─ public/
-│  │  └─ styles/
-│  │     └─ site.css
+│  │  └─ css/
+│  │     └─ style.css
 │  ├─ app.ts
 │  └─ server.ts
 ├─ database/
@@ -709,8 +744,10 @@ Create this repository structure first:
 │  │  └─ Dockerfile
 │  ├─ worker/
 │  │  └─ Dockerfile
-│  └─ nginx/
-│     └─ nginx.conf
+│  ├─ nginx/
+│  │  └─ nginx.conf
+│  ├─ docker-compose.yml
+│  └─ docker-compose.prod.yml
 ├─ ops/
 │  └─ systemd/
 │     └─ footbag.service
@@ -723,8 +760,7 @@ Create this repository structure first:
 ├─ .env.example
 ├─ .gitignore
 ├─ package.json
-├─ tsconfig.json
-└─ docker-compose.yml
+└─ tsconfig.json
 ```
 
 ### Why this shape works
@@ -790,7 +826,7 @@ At minimum ignore:
 - `node_modules/`
 - `dist/`
 - `.env`
-- `footbag.db`
+- `database/footbag.db`
 - `*.log`
 - `.terraform/`
 - `terraform.tfstate*`
@@ -799,16 +835,12 @@ At minimum ignore:
 Start with a minimal local environment file:
 
 ```dotenv
+COMPOSE_FILE=docker/docker-compose.yml
 PORT=3000
 NODE_ENV=development
 LOG_LEVEL=info
-FOOTBAG_DB_PATH=./footbag.db
+FOOTBAG_DB_PATH=./database/footbag.db
 PUBLIC_BASE_URL=http://localhost:3000
-AWS_REGION=us-east-1
-AWS_PROFILE=footbag-dev
-SSM_PARAMETER_PREFIX=/footbag/dev
-STORAGE_BACKEND=filesystem
-ENABLE_WORKER_JOBS=false
 ```
 
 For MVFP v0.1 local development, keep `.env` intentionally small. Do not drag production-only complexity into the first local boot.
@@ -839,7 +871,7 @@ Copy the authoritative schema into `database/schema_v0_1.sql`.
 Then create the local database:
 
 ```bash
-sqlite3 footbag.db < database/schema_v0_1.sql
+sqlite3 database/footbag.db < database/schema_v0_1.sql
 ```
 
 ### Required SQLite runtime behavior
@@ -925,9 +957,9 @@ Create `scripts/reset-local-db.sh`:
 #!/usr/bin/env bash
 set -euo pipefail
 
-rm -f footbag.db
-sqlite3 footbag.db < database/schema_v0_1.sql
-sqlite3 footbag.db < database/seeds/seed_mvfp_v0_1.sql
+rm -f database/footbag.db
+sqlite3 database/footbag.db < database/schema_v0_1.sql
+sqlite3 database/footbag.db < database/seeds/seed_mvfp_v0_1.sql
 echo "Local database reset complete."
 ```
 
@@ -1004,9 +1036,10 @@ Verify the server is listening.
 Create:
 
 - `src/routes/publicRoutes.ts`
+- `src/routes/healthRoutes.ts`
 - `src/controllers/eventsController.ts`
 - `src/controllers/healthController.ts`
-- `src/services/eventService.ts`
+- `src/services/EventService.ts`
 
 ### Controller responsibilities
 Controllers should:
@@ -1176,7 +1209,7 @@ Create:
 ## Batch 4 — EventService public read models
 Create:
 
-- `src/services/eventService.ts`
+- `src/services/EventService.ts`
 
 **Responsibilities**
 - page-oriented read methods for:
@@ -1254,8 +1287,8 @@ Create:
 - `docker/web/Dockerfile`
 - `docker/worker/Dockerfile`
 - `docker/nginx/nginx.conf`
-- `docker-compose.yml`
-- `docker-compose.prod.yml`
+- `docker/docker-compose.yml`
+- `docker/docker-compose.prod.yml`
 
 ### Why the worker exists now
 The worker may be minimal for the first public slice, but the project’s runtime shape includes it. For MVFP v0.1, it can start with:
@@ -1307,7 +1340,7 @@ Keep these small and explicit. Do not create a giant infrastructure tree before 
 | `src/config/logger.ts` | structured logging |
 | `src/db/db.ts` | one SQLite connection module, PRAGMAs, transaction helper |
 | `src/db/statements.ts` | prepared statement catalog |
-| `src/services/eventService.ts` | public events browse/detail business rules and page shaping |
+| `src/services/EventService.ts` | public events browse/detail business rules and page shaping |
 | `src/controllers/eventsController.ts` | route-to-service rendering bridge |
 | `src/controllers/healthController.ts` | liveness/readiness JSON handlers |
 | `src/routes/publicRoutes.ts` | public route wiring |
@@ -1318,8 +1351,8 @@ Keep these small and explicit. Do not create a giant infrastructure tree before 
 | `docker/web/Dockerfile` | web runtime image |
 | `docker/worker/Dockerfile` | worker runtime image |
 | `docker/nginx/nginx.conf` | reverse proxy config |
-| `docker-compose.yml` | local parity stack |
-| `docker-compose.prod.yml` | deployment overrides |
+| `docker/docker-compose.yml` | local parity stack |
+| `docker/docker-compose.prod.yml` | deployment overrides |
 | `ops/systemd/footbag.service` | production compose wrapper |
 | `terraform/*` | environment infrastructure definitions |
 
@@ -1512,8 +1545,12 @@ terraform {
 }
 ```
 
-### Important current Terraform note
-Use the S3 backend with S3 locking support. Do not start a new project on the older DynamoDB lock-table pattern.
+### Important current Terraform notes
+
+- Use the S3 backend with S3 locking (`use_lockfile = true`). Do not start a new project on the older DynamoDB lock-table pattern.
+- `use_lockfile` is stable in Terraform ≥ 1.11 (experimental in 1.10). Add `required_version = ">= 1.11"` to your root module.
+- **Pin the AWS provider version.** AWS provider v6.0 was released June 2025 with breaking changes. Without a pin, `terraform init` pulls the latest major version. Add `version = "~> 5.0"` in `required_providers` unless you have explicitly reviewed the v6 migration guide.
+- The S3 backend writes a `.tflock` object alongside the state file when `use_lockfile = true`. Your Terraform operator IAM policy must include `s3:PutObject` and `s3:DeleteObject` on `<bucket>/<key-prefix>*.tflock` or `terraform apply` will fail with `AccessDenied` at lock acquisition.
 
 ---
 
@@ -1707,6 +1744,8 @@ This removes the managed-node tutorial path and replaces it with the actual host
 
 CloudFront’s job in this project is to front the single origin cleanly.
 
+> **ACM certificate region requirement.** The ACM certificate attached to a CloudFront distribution must be provisioned in `us-east-1` regardless of where your origin or other resources live. Provisioning it in any other region will produce a confusing "Certificate not found" error when associating it with the distribution. In Terraform, use a provider alias (`aws.us_east_1`) for the `aws_acm_certificate` resource.
+
 At minimum, the distribution should:
 
 - point at the Lightsail origin
@@ -1770,7 +1809,7 @@ curl -fsS "$BASE_URL/health/ready" >/dev/null
 curl -fsS "$BASE_URL/events" >/dev/null
 curl -fsS "$BASE_URL/events/year/2025" >/dev/null
 curl -fsS "$BASE_URL/events/event_2025_beaver_open" >/dev/null
-curl -fsS "$BASE_URL/events/event_2024_legacy_jam" >/dev/null
+curl -fsS "$BASE_URL/events/event_2026_spring_classic" >/dev/null
 
 echo "Local smoke checks passed."
 ```
@@ -1850,6 +1889,12 @@ For the first deployment, do not skip the human pass.
 - storing the repo under `/mnt/c/...`
 - assuming Docker parity is optional
 - debugging only in host-run mode and never validating the container shape
+
+### Node.js / dependency mistakes
+- using `better-sqlite3` v9 on Node 24 — it does not compile; the native binding changed; pin to `^12.6.2` or later
+- placing any `import` before `import 'dotenv/config'` in `server.ts` — any module imported first that reads `process.env` will see an empty environment because dotenv has not run yet
+- using lazy `require()` inside `app.ts` to import route modules — breaks Vitest's ESM transform; use static `import` at the top of the file
+- forgetting that `db.ts` opens the SQLite connection at module-load time — `FOOTBAG_DB_PATH` must be in `process.env` before the first transitive import of `db.ts` occurs
 
 ### AI-workflow mistakes
 - asking Claude Code to build the entire project in one shot

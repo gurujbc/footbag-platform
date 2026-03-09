@@ -1,0 +1,21 @@
+# Copy to terraform.tfvars and fill in all TODO values.
+# Do NOT commit terraform.tfvars — it contains account-specific values.
+
+environment    = "staging"
+aws_region     = "us-east-1"
+aws_account_id = "TODO-123456789012"
+
+# Domain
+domain_name     = "TODO-staging.footbag.org"
+route53_zone_id = "TODO-Z1234567890ABCDEFGHIJ"
+
+# Lightsail
+lightsail_bundle_id    = "nano_3_0"
+lightsail_blueprint_id = "amazon_linux_2023"
+ssh_public_key         = "TODO-ssh-ed25519 AAAA..."
+
+# Notifications
+alarm_email = "TODO-ops@example.com"
+
+# State bucket (must match backend.tf)
+state_bucket_suffix = "TODO-set-unique-suffix"
