@@ -1,0 +1,5 @@
+event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,region,country,host_club,status,notes,source
+event_1980_world_championships_1980_nhsa,2001980001,1980,World Championships 1980 (NHSA),world_championships_1980_nhsa,2026-04-07,2026-04-09,Oregon City,Oregon,United States,NHSA,published,MVFP seed override: synthetic upcoming public event,mirror
+event_1981_world_championships_1981_nhsa,2001981001,1981,World Championships 1981 (NHSA),world_championships_1981_nhsa,1981-07-01,1981-07-05,Oregon City,Oregon,United States,NHSA,draft,MVFP seed override: synthetic non-public event,mirror
+event_1997_heart_of_footbag_freestyle_tournament,859787898,1997,HEART OF FOOTBAG Freestyle Tournament,heart_of_footbag_freestyle_tournament,2025-12-08,2025-12-10,Portland,Oregon,United States,,completed,MVFP seed override: synthetic completed public event with no results,mirror
+event_2011_32nd_ifpa_world_footbag_championships,1293877677,2011,32nd IFPA WORLD FOOTBAG CHAMPIONSHIPS,32nd_ifpa_world_footbag_championships,2011-07-31,2011-08-06,Helsinki,,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),completed,,mirror
