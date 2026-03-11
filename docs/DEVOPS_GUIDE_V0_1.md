@@ -168,7 +168,7 @@ The AWS side of this project must be operated as a zero-trust environment:
 
 The workload AWS principal must be a narrow and explicit runtime assumed role. Do not describe it as an EC2-style role attached to the Lightsail host. Operator SSH access to the host is a separate mechanism and must not be confused with the runtime principal.
 
-> **v0.1 credential mechanism — IAM user with direct env vars.** The full source-profile + AssumeRole chain described above is the long-term target but is deferred for v0.1. Instead, a dedicated IAM user (`footbag-staging-runtime`) with scoped SSM read access has its access keys set directly as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in the root-owned host env file (`/srv/footbag/env`). systemd `EnvironmentFile` injects them into the service; Docker Compose propagates them into containers. The AssumeRole model should be adopted when the platform matures beyond MVFP.
+> **v0.1 credential mechanism — IAM user with direct env vars.** The full source-profile + AssumeRole chain described above is the long-term target but is deferred for v0.1. Instead, a dedicated IAM user (`footbag-staging-runtime`) with scoped SSM read access has its access keys set directly as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in the root-owned host env file (`/srv/footbag/env`). systemd `EnvironmentFile` injects them into the service; Docker Compose propagates them into containers. The AssumeRole model should be adopted when the platform matures beyond MVFP. Note: the current public Events + Results MVFP slice makes no runtime AWS calls; the `footbag-staging-runtime` user is not needed until runtime AWS calls are activated.
 
 | AWS service | Runtime access | Notes |
 |---|---|---|

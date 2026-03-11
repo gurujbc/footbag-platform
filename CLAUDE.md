@@ -19,4 +19,5 @@
 - Surface contradictions between docs, schema, and code to human; do not silently reconcile them.
 - Ask before destructive, high-risk, scope-expanding, or architecture-changing changes.
 - When docs and implementation drift, suggest a doc-sync pass (use doc-sync skill).
+- Always invoke the doc-sync skill before making any doc edits, without exception. Do not edit any file in docs/ directly.
 - Always ask the human before making any guesses, assumptions, or non-trivial changes, with good context and concise questions.

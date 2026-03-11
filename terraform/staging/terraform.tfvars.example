@@ -6,8 +6,12 @@ aws_region     = "us-east-1"
 aws_account_id = "TODO-123456789012"
 
 # Domain
-domain_name     = "TODO-staging.footbag.org"
-route53_zone_id = "TODO-Z1234567890ABCDEFGHIJ"
+# DEFERRED: leave empty for the initial CloudFront-only test deployment.
+# The *.cloudfront.net URL works without a custom domain (see §29.5).
+# Set to real values and follow the activation checklist in acm.tf when
+# attaching a custom domain (NS-3).
+domain_name     = ""
+route53_zone_id = ""
 
 # Lightsail
 lightsail_bundle_id    = "nano_3_0"

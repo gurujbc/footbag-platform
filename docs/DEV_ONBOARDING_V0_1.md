@@ -53,7 +53,7 @@ Where the repository is blank, this guide says which files to create and why.
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [Part A — Orientation and project understanding](#part-a--orientation-and-project-understanding)
+- [Part A: Orientation and project understanding](#part-a-orientation-and-project-understanding)
   - [1. What this project is](#1-what-this-project-is)
   - [2. Project philosophy in practical terms](#2-project-philosophy-in-practical-terms)
   - [3. High-level architecture](#3-high-level-architecture)
@@ -63,14 +63,14 @@ Where the repository is blank, this guide says which files to create and why.
   - [7. Where Lightsail and CloudFront fit](#7-where-lightsail-and-cloudfront-fit)
   - [8. Where Parameter Store and SSH fit](#8-where-parameter-store-and-ssh-fit)
   - [9. Where AI-assisted development fits](#9-where-ai-assisted-development-fits)
-- [Part B — MVFP v0.1 slice explanation](#part-b--mvfp-v01-slice-explanation)
+- [Part B: MVFP v0.1 slice explanation](#part-b-mvfp-v01-slice-explanation)
   - [10. What MVFP v0.1 is](#10-what-mvfp-v01-is)
   - [11. The exact public contract you must preserve](#11-the-exact-public-contract-you-must-preserve)
-- [Part C — Developer environment and tools](#part-c--developer-environment-and-tools)
+- [Part C: Developer environment and tools](#part-c-developer-environment-and-tools)
   - [12. Recommended development environment model](#12-recommended-development-environment-model)
   - [13. Install the required tools](#13-install-the-required-tools)
   - [14. AI-assisted development workflow rules](#14-ai-assisted-development-workflow-rules)
-- [Part D — Local project bootstrap](#part-d--local-project-bootstrap)
+- [Part D: Local project bootstrap](#part-d-local-project-bootstrap)
   - [15. Start with a professional but small repository shape](#15-start-with-a-professional-but-small-repository-shape)
   - [16. Initialize package and TypeScript tooling](#16-initialize-package-and-typescript-tooling)
   - [17. Create baseline config files](#17-create-baseline-config-files)
@@ -80,50 +80,50 @@ Where the repository is blank, this guide says which files to create and why.
   - [21. Implement the public route read path](#21-implement-the-public-route-read-path)
   - [22. Build the Handlebars templates](#22-build-the-handlebars-templates)
   - [23. Add health endpoints early](#23-add-health-endpoints-early)
-- [Part E — Implementation order and artifact plan](#part-e--implementation-order-and-artifact-plan)
+- [Part E: Implementation order and artifact plan](#part-e-implementation-order-and-artifact-plan)
   - [24. Build in this order](#24-build-in-this-order)
-    - [Batch 1 — repository skeleton and toolchain](#batch-1--repository-skeleton-and-toolchain)
-    - [Batch 2 — app bootstrap](#batch-2--app-bootstrap)
-    - [Batch 3 — database bootstrap and seed path](#batch-3--database-bootstrap-and-seed-path)
-    - [Batch 4 — EventService public read models](#batch-4--eventservice-public-read-models)
-    - [Batch 5 — controllers, routes, and templates](#batch-5--controllers-routes-and-templates)
-    - [Batch 6 — integration tests and smoke scripts](#batch-6--integration-tests-and-smoke-scripts)
-    - [Batch 7 — Docker parity artifacts](#batch-7--docker-parity-artifacts)
-    - [Batch 8 — Terraform and ops artifacts](#batch-8--terraform-and-ops-artifacts)
+    - [Batch 1: repository skeleton and toolchain](#batch-1-repository-skeleton-and-toolchain)
+    - [Batch 2: app bootstrap](#batch-2-app-bootstrap)
+    - [Batch 3: database bootstrap and seed path](#batch-3-database-bootstrap-and-seed-path)
+    - [Batch 4: EventService public read models](#batch-4-eventservice-public-read-models)
+    - [Batch 5: controllers, routes, and templates](#batch-5-controllers-routes-and-templates)
+    - [Batch 6: integration tests and smoke scripts](#batch-6-integration-tests-and-smoke-scripts)
+    - [Batch 7: Docker parity artifacts](#batch-7-docker-parity-artifacts)
+    - [Batch 8: Terraform and ops artifacts](#batch-8-terraform-and-ops-artifacts)
   - [25. File responsibility map](#25-file-responsibility-map)
-- [Part F — AWS bootstrap and Terraform handoff](#part-f--aws-bootstrap-and-terraform-handoff)
+- [Part F: AWS bootstrap and Terraform handoff](#part-f-aws-bootstrap-and-terraform-handoff)
   - [26. The bootstrap principle](#26-the-bootstrap-principle)
   - [27. Secure the AWS account first](#27-secure-the-aws-account-first)
   - [28. Create the first named human operator identity](#28-create-the-first-named-human-operator-identity)
   - [29. Configure AWS CLI profiles deliberately](#29-configure-aws-cli-profiles-deliberately)
-  - [29.5 Domain and DNS — deferred for initial test deployment](#295-domain-and-dns--deferred-for-initial-test-deployment)
+  - [29.5 Domain and DNS: deferred for initial test deployment](#295-domain-and-dns-deferred-for-initial-test-deployment)
   - [30. Create the Terraform remote-state foundation](#30-create-the-terraform-remote-state-foundation)
   - [31. Use explicit environment directories for Terraform](#31-use-explicit-environment-directories-for-terraform)
   - [32. What becomes Terraform-managed after handoff](#32-what-becomes-terraform-managed-after-handoff)
   - [33. The Lightsail runtime identity model](#33-the-lightsail-runtime-identity-model)
-- [Part G — Parameter Store, Lightsail, CloudFront](#part-g--parameter-store-lightsail-cloudfront)
+- [Part G: Parameter Store, Lightsail, CloudFront](#part-g-parameter-store-lightsail-cloudfront)
   - [34. Parameter Store path structure](#34-parameter-store-path-structure)
   - [35. Lightsail provisioning assumptions for this project](#35-lightsail-provisioning-assumptions-for-this-project)
   - [36. SSH setup and normal usage](#36-ssh-setup-and-normal-usage)
   - [37. CloudFront in front of the Lightsail origin](#37-cloudfront-in-front-of-the-lightsail-origin)
   - [38. Origin validation and public validation](#38-origin-validation-and-public-validation)
-- [Part H — AWS deployment runbook](#part-h--aws-deployment-runbook-v01-test-deployment)
-  - [Phase 1 — AWS root account hardening](#phase-1--aws-root-account-hardening)
-  - [Phase 2 — Create IAM operator user](#phase-2--create-iam-operator-user)
-  - [Phase 3 — Bootstrap the Terraform state bucket](#phase-3--bootstrap-the-terraform-state-bucket)
-  - [Phase 4 — Configure staging backend and variables](#phase-4--configure-staging-backend-and-variables)
-  - [Phase 5 — Terraform init, validate, plan](#phase-5--terraform-init-validate-plan)
-  - [Phase 6 — Terraform apply](#phase-6--terraform-apply)
-  - [Phase 7 — Record the CloudFront URL](#phase-7--record-the-cloudfront-url)
-  - [Phase 8 — SSH into the Lightsail instance and create your named operator account](#phase-8--ssh-into-the-lightsail-instance-and-create-your-named-operator-account)
-  - [Phase 9 — Install Docker on the host](#phase-9--install-docker-on-the-host)
-  - [Phase 10 — Create the host env file](#phase-10--create-the-host-env-file)
-  - [Phase 11 — Deploy app files to host](#phase-11--deploy-app-files-to-host)
-  - [Phase 12 — Bootstrap the database](#phase-12--bootstrap-the-database)
-  - [Phase 13 — Build and start the app](#phase-13--build-and-start-the-app)
-  - [Phase 14 — Smoke test the origin directly](#phase-14--smoke-test-the-origin-directly)
-  - [Phase 15 — Verify through CloudFront](#phase-15--verify-through-cloudfront)
-- [Part I — Verification, troubleshooting, deferred work](#part-i--verification-troubleshooting-deferred-work)
+- [Part H: AWS deployment runbook](#part-h-aws-deployment-runbook-v01-test-deployment)
+  - [Phase 1: AWS root account hardening](#phase-1-aws-root-account-hardening)
+  - [Phase 2: Create IAM operator user](#phase-2-create-iam-operator-user)
+  - [Phase 3: Bootstrap the Terraform state bucket](#phase-3-bootstrap-the-terraform-state-bucket)
+  - [Phase 4: Configure staging backend and variables](#phase-4-configure-staging-backend-and-variables)
+  - [Phase 5: Terraform init, validate, plan](#phase-5-terraform-init-validate-plan)
+  - [Phase 6: Terraform apply](#phase-6-terraform-apply)
+  - [Phase 7: Record the CloudFront URL](#phase-7-record-the-cloudfront-url)
+  - [Phase 8: SSH into the Lightsail instance and create your named operator account](#phase-8-ssh-into-the-lightsail-instance-and-create-your-named-operator-account)
+  - [Phase 9: Install Docker on the host](#phase-9-install-docker-on-the-host)
+  - [Phase 10: Create the host env file](#phase-10-create-the-host-env-file)
+  - [Phase 11: Deploy app files to host](#phase-11-deploy-app-files-to-host)
+  - [Phase 12: Bootstrap the database](#phase-12-bootstrap-the-database)
+  - [Phase 13: Build and start the app](#phase-13-build-and-start-the-app)
+  - [Phase 14: Smoke test the origin directly](#phase-14-smoke-test-the-origin-directly)
+  - [Phase 15: Verify through CloudFront](#phase-15-verify-through-cloudfront)
+- [Part I: Verification, troubleshooting, deferred work](#part-i-verification-troubleshooting-deferred-work)
   - [39. Local smoke checks](#39-local-smoke-checks)
   - [40. Container smoke checks](#40-container-smoke-checks)
   - [41. Public deployment smoke checks](#41-public-deployment-smoke-checks)
@@ -131,21 +131,21 @@ Where the repository is blank, this guide says which files to create and why.
   - [43. Common AWS/bootstrap mistakes](#43-common-awsbootstrap-mistakes)
   - [44. First-success criteria](#44-first-success-criteria)
   - [45. Deferred work](#45-deferred-work)
-  - [46. Human / engineer / AI handoff boundaries](#46-human--engineer--ai-handoff-boundaries)
+  - [46. Human, engineer, and AI handoff boundaries](#46-human-engineer-and-ai-handoff-boundaries)
   - [47. A practical first-week plan for a new contributor](#47-a-practical-first-week-plan-for-a-new-contributor)
-- [Appendix A — Current official references](#appendix-a--current-official-references-used-to-verify-this-guide)
-- [Next Steps — Closing the Bootstrap Shortcuts](#next-steps--closing-the-bootstrap-shortcuts)
-  - [NS-1 — Scope down footbag-operator IAM permissions](#ns-1--scope-down-footbag-operator-iam-permissions)
-  - [NS-2 — Remove footbag-operator long-lived access keys](#ns-2--remove-footbag-operator-long-lived-access-keys-after-first-deployment)
-  - [NS-3 — Attach a custom domain and ACM certificate](#ns-3--attach-a-custom-domain-and-acm-certificate)
-  - [NS-4 — Fix the CloudFront maintenance page](#ns-4--fix-the-cloudfront-maintenance-page)
-  - [NS-5 — Establish a SQLite backup plan](#ns-5--establish-a-sqlite-backup-plan)
-  - [NS-6 — Harden the Lightsail host further](#ns-6--harden-the-lightsail-host-further)
-  - [NS-7 — Move to a container registry for image distribution](#ns-7--move-to-a-container-registry-for-image-distribution)
-  - [NS-8 — Wire up runtime AWS credentials when the app needs them](#ns-8--wire-up-runtime-aws-credentials-when-the-app-needs-them)
-  - [NS-9 — Activate Parameter Store for runtime config management](#ns-9--activate-parameter-store-for-runtime-config-management)
-  - [NS-10 — Review and activate CloudWatch monitoring](#ns-10--review-and-activate-cloudwatch-monitoring)
-- [Appendix B — Authoritative project facts](#appendix-b--authoritative-project-facts-this-guide-preserves)
+- [Appendix A: Current official references](#appendix-a-current-official-references-used-to-verify-this-guide)
+- [Next Steps: Closing the Bootstrap Shortcuts](#next-steps-closing-the-bootstrap-shortcuts)
+  - [NS-1: Scope down footbag-operator IAM permissions](#ns-1-scope-down-footbag-operator-iam-permissions)
+  - [NS-2: Remove footbag-operator long-lived access keys](#ns-2-remove-footbag-operator-long-lived-access-keys-after-first-deployment)
+  - [NS-3: Attach a custom domain and ACM certificate](#ns-3-attach-a-custom-domain-and-acm-certificate)
+  - [NS-4: Fix the CloudFront maintenance page](#ns-4-fix-the-cloudfront-maintenance-page)
+  - [NS-5: Establish a SQLite backup plan](#ns-5-establish-a-sqlite-backup-plan)
+  - [NS-6: Harden the Lightsail host further](#ns-6-harden-the-lightsail-host-further)
+  - [NS-7: Move to a container registry for image distribution](#ns-7-move-to-a-container-registry-for-image-distribution)
+  - [NS-8: Wire up runtime AWS credentials when the app needs them](#ns-8-wire-up-runtime-aws-credentials-when-the-app-needs-them)
+  - [NS-9: Activate Parameter Store for runtime config management](#ns-9-activate-parameter-store-for-runtime-config-management)
+  - [NS-10: Review and activate CloudWatch monitoring](#ns-10-review-and-activate-cloudwatch-monitoring)
+- [Appendix B: Authoritative project facts](#appendix-b-authoritative-project-facts-this-guide-preserves)
 
 ---
 
@@ -154,7 +154,7 @@ Where the repository is blank, this guide says which files to create and why.
 
 ## Minimum AWS stand-up this guide targets
 
-For MVFP v0.1, this guide targets the smallest deployment that works:
+For MVFP v0.1, this guide targets the smallest project-acceptable deployment that works:
 
 - one Lightsail instance as the origin
 - one CloudFront distribution using the default `*.cloudfront.net` URL
@@ -275,7 +275,7 @@ Server logs appear in the terminal. Press `Ctrl+C` to stop the server.
 
 ---
 
-# Part A — Orientation and project understanding
+# Part A: Orientation and project understanding
 
 ## 1. What this project is
 
@@ -383,7 +383,7 @@ Docker is part of the required workflow for this project, not an optional extra.
 
 You will use two local development modes:
 
-### Mode 1 — fast host-run development
+### Mode 1: fast host-run development
 
 Use this when you want the fastest edit-run-debug loop in WSL Ubuntu.
 
@@ -394,7 +394,7 @@ Typical shape:
 - render the public slice quickly
 - debug controllers, services, templates, and SQL without rebuilding containers every minute
 
-### Mode 2 — Docker parity mode
+### Mode 2: Docker parity mode
 
 Use this before you advance to AWS work.
 
@@ -497,7 +497,7 @@ A good rule for this project: **AI can draft; the human decides.**
 
 ---
 
-# Part B — MVFP v0.1 slice explanation
+# Part B: MVFP v0.1 slice explanation
 
 ## 10. What MVFP v0.1 is
 
@@ -617,7 +617,7 @@ Do **not** invent:
 - `/health/live` is a cheap process liveness check
 - `/health/ready` is a minimal SQLite-readiness check for this stage only
 
-# Part C — Developer environment and tools
+# Part C: Developer environment and tools
 
 ## 12. Recommended development environment model
 
@@ -845,7 +845,7 @@ The exact file mechanism can vary. The important thing is that the rules live in
 
 Use this workflow every time:
 
-### Step 1 — read authority docs first
+### Step 1: read authority docs first
 
 Before generating code, read:
 
@@ -857,7 +857,7 @@ Before generating code, read:
 
 Optionally also read `DATA_MODEL_V0_1.md` when working on SQLite runtime behavior.
 
-### Step 2 — ask for one small batch at a time
+### Step 2: ask for one small batch at a time
 
 Good batch prompts:
 
@@ -870,7 +870,7 @@ Bad batch prompt:
 
 - “Build the entire app, Docker, Terraform, and AWS deployment in one go.”
 
-### Step 3 — review the diff yourself
+### Step 3: review the diff yourself
 
 Check for forbidden inventions:
 
@@ -882,7 +882,7 @@ Check for forbidden inventions:
 - controller-owned visibility rules
 - async work inside SQLite transactions
 
-### Step 4 — run tests and smoke checks
+### Step 4: run tests and smoke checks
 
 After each batch:
 
@@ -890,7 +890,7 @@ After each batch:
 - run or repeat the local smoke checks
 - verify the rendered behavior manually
 
-### Step 5 — keep ownership boundaries clear
+### Step 5: keep ownership boundaries clear
 
 Claude Code may generate files. The human still must:
 
@@ -905,7 +905,7 @@ Claude Code may generate files. The human still must:
 
 ---
 
-# Part D — Local project bootstrap
+# Part D: Local project bootstrap
 
 ## 15. Start with a professional but small repository shape
 
@@ -1370,13 +1370,13 @@ Do **not** expand readiness into backup freshness, S3 reachability, SES, Stripe,
 
 ---
 
-# Part E — Implementation order and artifact plan
+# Part E: Implementation order and artifact plan
 
 ## 24. Build in this order
 
 This order is deliberate. Follow it.
 
-## Batch 1 — repository skeleton and toolchain
+## Batch 1: repository skeleton and toolchain
 
 Create:
 
@@ -1398,7 +1398,7 @@ Create:
 
 ---
 
-## Batch 2 — app bootstrap
+## Batch 2: app bootstrap
 
 Create:
 
@@ -1419,7 +1419,7 @@ Create:
 
 ---
 
-## Batch 3 — database bootstrap and seed path
+## Batch 3: database bootstrap and seed path
 
 Create:
 
@@ -1450,7 +1450,7 @@ Create:
 
 ---
 
-## Batch 4 — EventService public read models
+## Batch 4: EventService public read models
 
 Create:
 
@@ -1481,7 +1481,7 @@ Create:
 
 ---
 
-## Batch 5 — controllers, routes, and templates
+## Batch 5: controllers, routes, and templates
 
 Create:
 
@@ -1510,7 +1510,7 @@ Create:
 
 ---
 
-## Batch 6 — integration tests and smoke scripts
+## Batch 6: integration tests and smoke scripts
 
 Create:
 
@@ -1536,7 +1536,7 @@ Create:
 
 ---
 
-## Batch 7 — Docker parity artifacts
+## Batch 7: Docker parity artifacts
 
 Create:
 
@@ -1570,7 +1570,7 @@ That keeps runtime shape aligned with the design without forcing the entire back
 
 ---
 
-## Batch 8 — Terraform and ops artifacts
+## Batch 8: Terraform and ops artifacts
 
 Create:
 
@@ -1621,13 +1621,13 @@ Keep these small and explicit. Do not create a giant infrastructure tree before 
 
 ---
 
-# Part F — AWS bootstrap and Terraform handoff
+# Part F: AWS bootstrap and Terraform handoff
 
 ## 26. The bootstrap principle
 
 A blank AWS account cannot be fully “Terraformed from nothing” without a little initial setup. This guide therefore uses a two-phase model:
 
-### Phase 1 — one-time human bootstrap
+### Phase 1: one-time human bootstrap
 
 Do the minimum manual work needed to:
 
@@ -1637,7 +1637,7 @@ Do the minimum manual work needed to:
 - create the Terraform remote-state foundation
 - prepare Terraform authority handoff
 
-### Phase 2 — Terraform-owned steady state
+### Phase 2: Terraform-owned steady state
 
 Once the secure baseline exists, Terraform becomes the normal authority for:
 
@@ -1701,7 +1701,7 @@ Do **not** mount your human profile inside application containers.
 
 ---
 
-## 29.5 Domain and DNS — deferred for initial test deployment
+## 29.5 Domain and DNS: deferred for initial test deployment
 
 For the initial test deployment, no custom domain, no Route 53 hosted zone, and no ACM certificate are required. CloudFront automatically assigns a working HTTPS URL on its own domain:
 
@@ -1855,7 +1855,7 @@ If a later version of the app begins calling AWS APIs at runtime, the first simp
 
 ---
 
-# Part G — Parameter Store, Lightsail, CloudFront
+# Part G: Parameter Store, Lightsail, CloudFront
 
 ## 34. Parameter Store path structure
 
@@ -2027,7 +2027,7 @@ See Part H Phases 14 and 15 for the concrete validation steps and expected outco
 
 ---
 
-# Part H — AWS deployment runbook (v0.1 test deployment)
+# Part H: AWS deployment runbook (v0.1 test deployment)
 
 This runbook covers a complete first-time deployment to AWS from scratch. It assumes:
 - AWS account exists and root MFA is enabled
@@ -2038,7 +2038,7 @@ This runbook covers a complete first-time deployment to AWS from scratch. It ass
 
 ---
 
-### Phase 1 — AWS root account hardening
+### Phase 1: AWS root account hardening
 
 1. Sign in as root. Enable MFA on the root account.
 2. Do not create access keys for root.
@@ -2046,7 +2046,7 @@ This runbook covers a complete first-time deployment to AWS from scratch. It ass
 
 ---
 
-### Phase 2 — Create IAM operator user
+### Phase 2: Create IAM operator user
 
 Use the **AWS Console** to create this user — you have no CLI credentials yet.
 
@@ -2066,11 +2066,19 @@ export AWS_PROFILE=footbag-operator
 aws sts get-caller-identity
 ```
 
+> **Bootstrap shortcut — NS-1 (broad IAM permissions):** `AdministratorAccess` is used here because Terraform touches many AWS services during bootstrap and scoping permissions in advance is impractical. After the first successful `terraform apply`, replace `AdministratorAccess` with a policy scoped to the services Terraform actually manages (Lightsail, CloudFront, S3, IAM, KMS, SSM, CloudWatch, SNS). See NS-1.
+
+> **Bootstrap shortcut — NS-2 (long-lived access keys):** IAM access keys are long-lived static credentials. Once the stack is stable, rotate to short-lived credentials: either `aws sts get-session-token` with MFA enforcement, or AWS IAM Identity Center (SSO), which issues temporary tokens automatically. See NS-2.
+
+> **Session note:** `export AWS_PROFILE=footbag-operator` applies only to the current shell session. If you open a new terminal for any later phase, re-run this export before running Terraform or AWS CLI commands.
+
 ---
 
-### Phase 3 — Bootstrap the Terraform state bucket
+### Phase 3: Bootstrap the Terraform state bucket
 
 The state bucket is created once and shared by all environments. It uses local state.
+
+> **Session check:** Confirm `AWS_PROFILE=footbag-operator` is set before running any Terraform command. If you are in a new terminal session since Phase 2, re-run `export AWS_PROFILE=footbag-operator` first.
 
 ```bash
 cd terraform/shared
@@ -2087,7 +2095,7 @@ terraform apply
 
 ---
 
-### Phase 4 — Configure staging backend and variables
+### Phase 4: Configure staging backend and variables
 
 ```bash
 cd terraform/staging
@@ -2109,18 +2117,18 @@ alarm_email        = "you@example.com"
 
 ---
 
-### Phase 5 — Terraform init, validate, plan
+### Phase 5: Terraform init, validate, plan
 
 ```bash
 terraform init
 terraform validate
 terraform plan -out=tfplan
-# Review the plan — expected: ~25 resources to create
+# Review the plan — expected: ~40 resources to create
 ```
 
 ---
 
-### Phase 6 — Terraform apply
+### Phase 6: Terraform apply
 
 ```bash
 terraform apply tfplan
@@ -2135,7 +2143,7 @@ terraform output cloudfront_domain       # e.g. d1abc123.cloudfront.net
 
 ---
 
-### Phase 7 — Record the CloudFront URL
+### Phase 7: Record the CloudFront URL
 
 Capture the CloudFront URL now. You will place it into `/srv/footbag/env` later as `PUBLIC_BASE_URL`.
 
@@ -2155,14 +2163,25 @@ aws ssm put-parameter \
   --profile footbag-operator
 ```
 
+> **CloudFront propagation delay:** After `terraform apply`, CloudFront takes **15–30 minutes** to deploy globally. The `*.cloudfront.net` URL is assigned immediately but returns errors during propagation. Do **not** attempt Phase 15 until the distribution status shows **Deployed**. Check in the AWS Console → CloudFront → Distributions → Status column, or poll with:
+> ```bash
+> aws cloudfront get-distribution --id $(terraform output -raw cloudfront_distribution_id) \
+>   --query 'Distribution.Status' --output text --profile footbag-operator
+> ```
+> Wait for `Deployed` before proceeding to Phase 15.
+
 ---
 
-### Phase 8 — SSH into the Lightsail instance and create your named operator account
+### Phase 8: SSH into the Lightsail instance and create your named operator account
 
 ```bash
 LIGHTSAIL_IP=$(terraform output -raw lightsail_static_ip)
-ssh ec2-user@$LIGHTSAIL_IP
+ssh -i ~/.ssh/id_ed25519 ec2-user@$LIGHTSAIL_IP
 ```
+
+> Replace `~/.ssh/id_ed25519` with the path to the private key whose public half you placed in `ssh_public_key` in `terraform.tfvars`. SSH will only attempt the correct key automatically if it is at a default location. If login fails with `Permission denied (publickey)`, specify the key path explicitly with `-i`.
+
+> **Bootstrap shortcut — NS-6 (ec2-user initial access):** `ec2-user` is the Lightsail default account. It is used here only for first-time bootstrap. Create your named operator account immediately (next step) and stop using `ec2-user` after that. The long-term plan is to disable `ec2-user` login entirely once your named account is confirmed working. See NS-6.
 
 **Immediately after first login**, create your named operator account before doing anything else. Replace `yourname` with your actual operator username:
 
@@ -2181,7 +2200,7 @@ Verify your named account works before closing the `ec2-user` session:
 
 ```bash
 # In a new terminal
-ssh yourname@$LIGHTSAIL_IP
+ssh -i ~/.ssh/id_ed25519 yourname@$LIGHTSAIL_IP
 sudo whoami   # should return: root
 ```
 
@@ -2189,7 +2208,7 @@ From this point, use your named account for all remaining phases.
 
 ---
 
-### Phase 9 — Install Docker on the host
+### Phase 9: Install Docker on the host
 
 ```bash
 sudo dnf install -y dnf-plugins-core
@@ -2200,9 +2219,11 @@ sudo usermod -aG docker yourname
 # Log out and back in for group membership to take effect
 ```
 
+> **Bootstrap shortcut — manual Docker install:** Docker is installed here manually via SSH because `lightsail.tf` has a placeholder `user_data` script (`echo "bootstrap placeholder"`). The long-term plan is to replace that placeholder with a real bootstrap script that installs Docker, creates the `/srv/footbag` directory layout, and sets up the systemd service at instance launch time — eliminating the need for manual SSH in Phases 9–12. See `terraform/staging/lightsail.tf` TODO comment.
+
 ---
 
-### Phase 10 — Create the host env file
+### Phase 10: Create the host env file
 
 Create the live runtime config file the app will actually run with:
 
@@ -2227,17 +2248,23 @@ These are the required values for this guide's minimum deployment:
 
 Do not add runtime AWS credentials here. They are not needed for the current public slice.
 
+> **Bootstrap shortcut — NS-9 (manual env file):** `/srv/footbag/env` is created and edited by hand on the host. This is the simplest working approach for v0.1. The long-term plan is a startup script (wired into the `footbag.service` `ExecStartPre` directive) that pulls values from AWS Systems Manager Parameter Store and writes `/srv/footbag/env` automatically before the Compose stack starts. That removes the need to SSH in just to update a config value. See NS-9.
+
 ---
 
-### Phase 11 — Deploy app files to host
+### Phase 11: Deploy app files to host
 
-From your local machine, copy the repo to a staging path owned by `ec2-user`:
+From your local machine, copy the repo to a staging path in your named operator's home directory:
 
 ```bash
 LIGHTSAIL_IP=<ip from terraform output>
-rsync -av --delete --exclude=node_modules --exclude=.git \
+rsync -av --delete \
+  --exclude=node_modules --exclude=.git \
+  --exclude='*.db' --exclude='*.db-shm' --exclude='*.db-wal' \
   ./ yourname@$LIGHTSAIL_IP:~/footbag-release/
 ```
+
+> **Bootstrap shortcut — NS-7 (build on host, deploy via rsync):** Files are transferred directly from your local machine and images are built on the host. This requires no container registry or CI pipeline. The long-term plan is to build images in CI (e.g. GitHub Actions), push to a registry (AWS ECR), and have the host do `docker compose pull` instead of `docker compose build`. That separates build from deploy, enables versioned rollbacks, and removes the need for build tools on the host. See NS-7.
 
 Then on the host, promote the staged copy into the root-owned runtime path:
 
@@ -2249,7 +2276,7 @@ sudo chown -R root:root /srv/footbag
 
 ---
 
-### Phase 12 — Bootstrap the database
+### Phase 12: Bootstrap the database
 
 Do this **only on the first deploy**.
 
@@ -2262,11 +2289,15 @@ sudo chown root:root /srv/footbag/footbag.db
 sudo chmod 600 /srv/footbag/footbag.db
 ```
 
+> **Runtime user note:** The web container runs as root (no `USER` directive in the Dockerfile) and the systemd unit runs as root (no `User=` directive). This means the bind-mounted root-owned SQLite file and any WAL/SHM sidecar files it creates are writable as deployed. If you later add a non-root `USER` to the Dockerfile, update the host ownership and mode on `/srv/footbag/footbag.db` and `/srv/footbag/` to match that UID.
+
 On later deploys, reuse the existing database file.
+
+> **Bootstrap shortcut — NS-5 (no automated DB backup):** The database file at `/srv/footbag/footbag.db` has no automated backup at this point. A host failure or accidental deletion is unrecoverable. After confirming the stack is stable, add a cron job or systemd timer to copy the file to the S3 snapshots bucket on a scheduled interval (use `sqlite3 .backup` for a safe online copy). See NS-5.
 
 ---
 
-### Phase 13 — Build and start the app
+### Phase 13: Build and start the app
 
 On the host:
 
@@ -2278,6 +2309,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now footbag
 sudo systemctl status footbag
 ```
+
+> **Expected warning during build:** Docker Compose reads `docker-compose.prod.yml` while building and will print `WARN: The "PUBLIC_BASE_URL" variable is not set. Defaulting to a blank string.` This is normal — `PUBLIC_BASE_URL` is only needed at container start time, which systemd handles via `EnvironmentFile=/srv/footbag/env`. The build succeeds regardless.
+
+> **Bootstrap shortcut — NS-7 (images built on host):** Images are built directly on the Lightsail host from source. This is the simplest first-deployment approach but requires build tools on the host and is slow. The long-term plan is to build in CI and distribute via a container registry (AWS ECR), so the host only needs to pull pre-built images. See NS-7.
 
 At this point, the `footbag` systemd unit turns the code in `/srv/footbag` plus the values in `/srv/footbag/env` into the running Compose stack.
 
@@ -2291,7 +2326,7 @@ sudo systemctl restart footbag
 
 ---
 
-### Phase 14 — Smoke test the origin directly
+### Phase 14: Smoke test the origin directly
 
 Test through nginx on port 80 (the web container exposes port 3000 only within the Docker network; nginx is the host-facing entry point):
 
@@ -2309,7 +2344,11 @@ Expected: health and event routes return 200; the spring classic returns 200 wit
 
 ---
 
-### Phase 15 — Verify through CloudFront
+### Phase 15: Verify through CloudFront
+
+> **Wait for CloudFront deployment before testing.** CloudFront takes 15–30 minutes to propagate after `terraform apply`. Confirm the distribution status is **Deployed** (AWS Console → CloudFront → Distributions, or the `aws cloudfront get-distribution` poll command from Phase 7) before proceeding. Requests to the `*.cloudfront.net` URL return errors until propagation is complete.
+
+> **Bootstrap shortcut — NS-4 (maintenance page not functional):** The CloudFront custom error responses for 502/503 reference `/maintenance.html` from an S3 origin, but that S3 origin has no Origin Access Control (OAC) configured. If the Lightsail origin is down, the error response itself will also fail. This is a known v0.1 gap. Do not rely on the maintenance page. The full fix requires an OAC, an S3 cache behavior routing `/maintenance.html` to the S3 origin, and an `X-Origin-Verify` secret to prevent direct-to-origin bypass. See NS-4.
 
 In a browser or with curl:
 
@@ -2335,7 +2374,7 @@ Confirm:
 
 ---
 
-# Part I — Verification, troubleshooting, deferred work
+# Part I: Verification, troubleshooting, deferred work
 
 ## 39. Local smoke checks
 
@@ -2538,7 +2577,7 @@ Deferring these is not cutting corners. It is keeping the first slice proportion
 
 ---
 
-## 46. Human / engineer / AI handoff boundaries
+## 46. Human, engineer, and AI handoff boundaries
 
 ## Human engineer
 
@@ -2623,7 +2662,7 @@ This plan is intentionally realistic for a volunteer project. It is not a hackat
 
 ---
 
-# Appendix A — Current official references used to verify this guide
+# Appendix A: Current official references used to verify this guide
 
 ## AWS
 
@@ -2681,7 +2720,7 @@ This plan is intentionally realistic for a volunteer project. It is not a hackat
 
 ---
 
-# Next Steps — Closing the Bootstrap Shortcuts
+# Next Steps: Closing the Bootstrap Shortcuts
 
 The initial deployment described in this guide uses several deliberate shortcuts to keep the first stand-up simple and achievable. Each one is safe enough for a first working deployment but should be addressed before the environment is treated as durable production.
 
@@ -2689,7 +2728,7 @@ This section names every shortcut and the action needed to close it.
 
 ---
 
-## NS-1 — Scope down `footbag-operator` IAM permissions
+## NS-1: Scope down `footbag-operator` IAM permissions
 
 **Shortcut:** `footbag-operator` holds `AdministratorAccess`, which is intentionally broad for the bootstrap phase.
 
@@ -2699,7 +2738,7 @@ This section names every shortcut and the action needed to close it.
 
 ---
 
-## NS-2 — Remove `footbag-operator` long-lived access keys after first deployment
+## NS-2: Remove `footbag-operator` long-lived access keys after first deployment
 
 **Shortcut:** `footbag-operator` uses long-lived IAM access keys (created in Phase 2).
 
@@ -2709,7 +2748,7 @@ This section names every shortcut and the action needed to close it.
 
 ---
 
-## NS-3 — Attach a custom domain and ACM certificate
+## NS-3: Attach a custom domain and ACM certificate
 
 **Shortcut:** The initial deployment uses the default `*.cloudfront.net` URL with no custom domain.
 
@@ -2724,7 +2763,7 @@ This section names every shortcut and the action needed to close it.
 
 ---
 
-## NS-4 — Fix the CloudFront maintenance page
+## NS-4: Fix the CloudFront maintenance page
 
 **Shortcut:** The CloudFront custom error response block exists in `cloudfront.tf` but the maintenance page itself will fail to load when the Lightsail origin is down, because the S3 origin behavior is not configured.
 
@@ -2738,7 +2777,7 @@ Until this is complete, do not rely on the maintenance page for graceful downtim
 
 ---
 
-## NS-5 — Establish a SQLite backup plan
+## NS-5: Establish a SQLite backup plan
 
 **Shortcut:** The initial deployment has no automated backup of `/srv/footbag/footbag.db`.
 
@@ -2757,7 +2796,7 @@ The worker container is the natural place to own this job once it is no longer a
 
 ---
 
-## NS-6 — Harden the Lightsail host further
+## NS-6: Harden the Lightsail host further
 
 **Shortcut:** The initial bootstrap uses `ec2-user` for first login and the Lightsail-managed SSH key pair. Named operator accounts are created immediately, but several host-hardening steps are deferred.
 
@@ -2769,7 +2808,7 @@ The worker container is the natural place to own this job once it is no longer a
 
 ---
 
-## NS-7 — Move to a container registry for image distribution
+## NS-7: Move to a container registry for image distribution
 
 **Shortcut:** Docker images are built directly on the Lightsail host from source during each deployment. This works for v0.1 but requires build tools on the production host and is slow.
 
@@ -2783,7 +2822,7 @@ This also enables image verification, versioned rollbacks, and separation of bui
 
 ---
 
-## NS-8 — Wire up runtime AWS credentials when the app needs them
+## NS-8: Wire up runtime AWS credentials when the app needs them
 
 **Shortcut:** The current public slice serves pages entirely from local process environment and SQLite. No runtime AWS API calls are made, so no runtime credentials are needed.
 
@@ -2797,7 +2836,7 @@ This also enables image verification, versioned rollbacks, and separation of bui
 
 ---
 
-## NS-9 — Activate Parameter Store for runtime config management
+## NS-9: Activate Parameter Store for runtime config management
 
 **Shortcut:** Parameter Store is optional reference storage in this guide. The app reads `/srv/footbag/env` only.
 
@@ -2805,7 +2844,7 @@ This also enables image verification, versioned rollbacks, and separation of bui
 
 ---
 
-## NS-10 — Review and activate CloudWatch monitoring
+## NS-10: Review and activate CloudWatch monitoring
 
 **Shortcut:** The Terraform configuration includes CloudWatch alarm scaffolding but monitoring is minimal for the first deployment.
 
@@ -2837,7 +2876,7 @@ None of these are required to reach first-deployment success as defined in §44.
 
 ---
 
-## Appendix B — Authoritative project facts this guide preserves
+## Appendix B: Authoritative project facts this guide preserves
 
 This guide preserves the project constraints defined in the authority docs, including:
 

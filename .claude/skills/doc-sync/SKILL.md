@@ -26,7 +26,8 @@ description: Check proposed MVFP Events + Results work for code and documentatio
    - architecture or scope
    - any drift from current docs and current code or decisions.
 4. Suggest the smallest documentation edits needed to match current code or agreed design, make sure that all edits are in the correct place in the docs, so do a context-aware full-doc scan for every edit to ensure correct placement, and the change doesn't break anything else. Show all required edits as a group for any given issue, and propose the suite of changes to human with context, and surgical precise before and after text for every edit proposed.
-5. Only edit the document if approved by human, and then surgically change only the precise text as agreed and nothing else. often the human will want to edit the doc personally, so do not edit project docs, not ever, without explicit human approval.
+5. Only edit the document if approved by human, and then surgically change only the precise text as agreed and nothing else. Often the human will want to edit the doc personally, so do not edit project docs without explicit human approval.
+   - Approval can be any short affirmative: "yes", "y", "go", "ok", "do it", "approved", or just pressing Enter. Do not require the human to type a specific word.
 
 ## Output shape
 - **Match:** docs already align, or no doc update needed.

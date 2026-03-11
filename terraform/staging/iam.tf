@@ -1,7 +1,16 @@
 # =============================================================================
 # IAM — Runtime role for the application
-# The web container assumes this role to read SSM parameters at startup.
-# Lightsail instances use EC2-compatible instance profiles for role assumption.
+#
+# DEFERRED — bootstrap shortcut (NS-8):
+# Lightsail instances do NOT support EC2 instance profiles natively. These
+# resources are created as groundwork for future use but are not attached to
+# or used by the Lightsail instance in the current MVFP v0.1 deployment.
+#
+# The current app reads process.env only and makes no runtime AWS API calls.
+# When the app begins calling AWS APIs (S3 for media, SES, SSM reads at
+# startup, etc.), the first step is to add credentials to /srv/footbag/env.
+# The longer-term plan is to wire up this role via a source-profile +
+# AssumeRole chain per service (web vs worker). See docs §33 and NS-8.
 # =============================================================================
 
 resource "aws_iam_role" "app_runtime" {
