@@ -1024,6 +1024,9 @@ Before first apply, also verify these notes still hold in your staging setup:
 
 #### Create the first named operator identity
 
+> [!NOTE]
+> If IAM Identity Center is already configured for this AWS account, prefer `aws configure sso --profile footbag-operator` over creating long-lived access keys. See the AWS references in section 6.3. Use the steps below only if IAM Identity Center is not yet available.
+
 Use the **AWS Console** to create `footbag-operator` — you have no working CLI credentials yet.
 
 1. Sign in to the AWS Console as root.
@@ -1117,12 +1120,17 @@ Parameter Store is optional in this minimum deployment, but if you use it as AWS
 /footbag/production/app/...
 /footbag/production/secrets/...
 
-Examples:
+Examples currently provisioned by `terraform/staging/ssm.tf`:
 
-/footbag/staging/app/NODE_ENV
-/footbag/staging/app/PUBLIC_BASE_URL
-/footbag/staging/app/LOG_LEVEL
-/footbag/staging/secrets/ORIGIN_VERIFY_SECRET
+/footbag/staging/app/port
+/footbag/staging/app/log_level
+/footbag/staging/app/public_base_url
+/footbag/staging/app/db_path
+
+Not yet provisioned (deferred hardening — see Path E, section 5.3):
+
+/footbag/staging/app/node_env
+/footbag/staging/secrets/origin_verify_secret
 
 Remember: the running app reads /srv/footbag/env, not SSM.
 
@@ -1171,7 +1179,13 @@ In `terraform/staging/backend.tf`, replace the placeholder bucket and region val
 
 In `terraform/staging/terraform.tfvars`, fill at least:
 
-cat ~/.ssh/id_ed25519.pub and then save the result for ssh_public_key below
+First, print your SSH public key locally:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+Copy that full single-line public key into `ssh_public_key` below.
 
 ```hcl
 aws_account_id         = "123456789012"
@@ -1268,6 +1282,9 @@ aws cloudfront get-distribution \
   --profile footbag-operator
 ```
 
+> [!NOTE]
+> After this apply the Lightsail origin still accepts direct HTTP on port 80 from the public internet. CloudFront is the intended entry point, but direct-origin bypass protection is not implemented in v0.1. Do not treat this deployment as CloudFront-locked until Path E section 5.3 is complete.
+
 ### 4.7 Host bootstrap
 
 Once infra exists, bootstrap the host in this order.
@@ -1324,11 +1341,16 @@ sudo usermod -aG docker yourname
 ```
 
 Log out and back in so group membership takes effect.
+
 Verify:
-  docker --version
-  docker compose version
-  sqlite3 --version
-  All three must return version strings.
+
+```bash
+docker --version
+docker compose version
+sqlite3 --version
+```
+
+All three must return version strings.
 
 > [!IMPORTANT]
 > Do not assume Amazon Linux 2023 default repos provide the right Docker packages. Add the Docker CE repo first.
@@ -1559,14 +1581,15 @@ This section turns those shortcuts into a grouped hardening roadmap.
 
 ### 5.2 Security hardening
 
-- scope down footbag-operator from AdministratorAccess to the actual Terraform-managed service set
+- scope down footbag-operator from AdministratorAccess to the actual Terraform-managed service set; the services touched by the current Terraform are: Lightsail, CloudFront, S3 (state bucket + project buckets), SSM, KMS, SNS, CloudWatch, and IAM (to create the app-runtime role); review the resource types in each `.tf` file to derive the exact actions needed for a least-privilege policy or IAM Identity Center permission set
 - remove long-lived access keys after first deployment; prefer MFA-backed short-lived credentials or IAM Identity Center
 - disable or retire ec2-user once named operator accounts are confirmed
 - consider disabling Lightsail browser SSH after your own keys are in place
 - keep SSH restricted to approved operator CIDRs
 - do not share shell accounts or private keys
-- when maintenance/origin protection is implemented, store ORIGIN_VERIFY_SECRET in SSM as a SecureString
+- when maintenance/origin protection is implemented, store origin_verify_secret in SSM as a SecureString
 - if the application later needs runtime AWS access, add scoped runtime credentials deliberately rather than leaking the human operator profile into containers
+- note: `terraform apply` creates the `app-runtime` IAM role and instance profile (see `iam.tf`) as deferred groundwork — they will appear in `terraform state list` but are not active; Lightsail does not support EC2 instance profiles in v0.1 and the app makes no runtime AWS API calls
 
 ### 5.3 Edge and public-delivery hardening
 
@@ -1583,7 +1606,7 @@ This section turns those shortcuts into a grouped hardening roadmap.
 A concrete maintenance-mode implementation includes:
 
 - generate a shared secret with openssl rand -hex 32
-- store it in SSM at /footbag/staging/secrets/ORIGIN_VERIFY_SECRET
+- store it in SSM at /footbag/staging/secrets/origin_verify_secret
 - reference it in cloudfront.tf via var.origin_verify_secret
 - create a CloudFront OAC for the S3 maintenance bucket
 - add an S3 bucket policy allowing CloudFront to read
@@ -1687,7 +1710,6 @@ document the minimal operator dashboard:
 A minimal real monitoring loop includes:
 
 - emit `BackupAgeMinutes = 0` after each successful backup
-- set `NODE_ENV=staging` in `/srv/footbag/env` (the app reads `NODE_ENV`, not `ENVIRONMENT`)
 - enable `enable_backup_alarm = true`
 - verify the metric appears in CloudWatch
 - force a temporary alarm state to confirm SNS email delivery

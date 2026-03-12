@@ -19,7 +19,7 @@ resource "aws_lightsail_instance" "web" {
   # user_data is intentionally omitted.
   # All host bootstrap (Docker CE install, /srv/footbag directory setup,
   # systemd service install) is performed manually via SSH after first apply.
-  # See section 4.7 of docs/DEV_ONBOARDING_V0_1_REWRITE.md.
+  # See section 4.7 of docs/DEV_ONBOARDING_V0_1.md.
 }
 
 resource "aws_lightsail_static_ip" "web" {

@@ -1,8 +1,7 @@
 # =============================================================================
 # CloudFront Distribution
-# Origin: Lightsail static IP (nginx on port 80)
+# Origin: Lightsail public DNS hostname (nginx on port 80)
 # TLS termination at edge using ACM certificate (us-east-1)
-# Maintenance page fallback on 5xx from origin
 # =============================================================================
 
 resource "aws_cloudfront_distribution" "main" {
@@ -35,23 +34,14 @@ resource "aws_cloudfront_distribution" "main" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
 
-    custom_header {
-      name  = "X-Origin-Verify"
-      # TODO: Set to a random secret and verify it in nginx to block direct-to-origin requests
-      value = "TODO-set-shared-secret"
-    }
+    # X-Origin-Verify header intentionally omitted.
+    # Origin-bypass protection is deferred to Path E, section 5.3.
+    # When implemented: provision a real secret in SSM, reference it here, and enforce it in nginx.
   }
 
-  # ── Origin: S3 maintenance page ───────────────────────────────────────────
-  origin {
-    origin_id   = "s3-maintenance"
-    domain_name = aws_s3_bucket.maintenance.bucket_regional_domain_name
-
-    s3_origin_config {
-      # TODO: Create an OAC and reference it here
-      origin_access_identity = ""
-    }
-  }
+  # Maintenance-page S3 origin intentionally omitted from v0.1.
+  # Re-add when OAC, ordered_cache_behavior for /maintenance.html, bucket policy,
+  # and the maintenance.html object all exist and are tested. See Path E, section 5.3.
 
   # ── Default cache behaviour ───────────────────────────────────────────────
   default_cache_behavior {
@@ -109,20 +99,8 @@ resource "aws_cloudfront_distribution" "main" {
     max_ttl     = 0
   }
 
-  # ── Custom error: serve maintenance page on 5xx ──────────────────────────
-  custom_error_response {
-    error_code            = 502
-    response_code         = 503
-    response_page_path    = "/maintenance.html"
-    error_caching_min_ttl = 10
-  }
-
-  custom_error_response {
-    error_code            = 503
-    response_code         = 503
-    response_page_path    = "/maintenance.html"
-    error_caching_min_ttl = 10
-  }
+  # custom_error_response blocks for maintenance page intentionally omitted from v0.1.
+  # Re-add together with the s3-maintenance origin and ordered_cache_behavior for /maintenance.html.
 
   # ── TLS ──────────────────────────────────────────────────────────────────
   # DEFERRED: switch to ACM certificate when real domain is attached.

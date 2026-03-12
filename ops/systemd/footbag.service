@@ -25,7 +25,7 @@ RemainAfterExit=yes
 WorkingDirectory=/srv/footbag
 
 # Environment file provides PUBLIC_BASE_URL, FOOTBAG_DB_PATH, etc.
-# Created manually on the host — see section 4.7 step 3 in docs/DEV_ONBOARDING_V0_1_REWRITE.md.
+# Created manually on the host — see section 4.7 step 3 in docs/DEV_ONBOARDING_V0_1.md.
 EnvironmentFile=/srv/footbag/env
 
 # v0.1: no registry — build images at deploy time with `docker compose build`.
