@@ -433,13 +433,14 @@ Do this before anyone touches AWS.
 
 > **Note on TypeScript compilation:** The `docker/web/Dockerfile` is a multi-stage build that runs `npm run build` inside the builder stage. You do not need to run `npm run build` before `docker compose build` — the Dockerfile handles compilation internally.
 
-Run the base parity stack locally (no prod override):
-
+Run the base parity stack locally in a separate terminal (or detached):
 ```bash
 docker compose \
   -f docker/docker-compose.yml \
-  up --build
+  up --build --detach
 ```
+
+Then run the smoke checks:
 
 Then run the smoke checks against the containerized local app:
 
@@ -852,6 +853,8 @@ It is deliberately operational, ordered, and explicit.
 
 ### 4.2 Preconditions
 
+First, make sure you followed ALL of the steps described in section 1.4: First-time machine install steps.
+
 Do not begin AWS work until every item below is green in the same WSL environment you plan to use for deployment work.
 
 #### Local application gate
@@ -910,7 +913,7 @@ export AWS_PROFILE=footbag-operator
 aws sts get-caller-identity
 ```
 
-If profile setup is not working yet, complete section 4.5 first.
+If profile setup is not working yet (footbag-operator not found), complete section 4.5 first.
 
 ### 4.3 Read this before first apply
 
@@ -927,6 +930,11 @@ The fragile parts are:
 - monitoring must be gated to signals that actually exist
 - manual host bootstrap is still real in v0.1
 - CloudFront maintenance-page behavior is not truly functional yet
+- Lightsail static IPs and instances share a single namespace — they cannot
+  have the same name simultaneously; `lightsail.tf` uses
+  `footbag-staging-web-ip` for the static IP and `footbag-staging-web` for
+  the instance; do not make these the same or instance creation will fail
+  with "Some names are already in use"
 
 ### 4.4 Lightsail SSH security, set your operator CIDRs
 
@@ -958,6 +966,12 @@ Notes on `operator_cidrs`:
 - To add or remove an operator: update the list and run `terraform apply` — Terraform replaces only the firewall rule.
 - For temporary access from a different location (travel, etc.): add a second entry for that session, apply, then remove it and re-apply when done.
 
+> [!NOTE]
+> Some ISPs block outbound port 22 to AWS EC2 IP ranges. If SSH on port 22 times out
+> despite the firewall rule being correct, use the Lightsail browser SSH console to
+> configure sshd to also listen on port 2222, then use `-p 2222` for all SSH commands.
+> `lightsail.tf` opens port 2222 to `operator_cidrs` for this reason.
+
 > [!IMPORTANT]
 > The Lightsail firewall is Terraform-managed. Do not change firewall rules in the Lightsail console — console changes are silently overwritten on the next `terraform apply`. To modify SSH access at any point, update `operator_cidrs` in `terraform.tfvars` and run `terraform apply`.
 
@@ -976,7 +990,9 @@ CloudFront custom origins require a publicly resolvable DNS hostname, not a raw 
 The two-pass apply pattern:
 
 - pass 1: set `enable_cloudfront = false` in `terraform.tfvars`, apply — creates Lightsail resources only
-- retrieve the instance public DNS name (see section 4.6 step 4)
+- construct the CloudFront origin hostname from the static IP Terraform output
+  using nip.io for staging (see section 4.6 step 4) — Lightsail does not
+  provide public DNS hostnames; `publicDnsName` always returns `None`
 - set `lightsail_origin_dns` to that value and `enable_cloudfront = true` in `terraform.tfvars`
 - pass 2: apply the full stack including CloudFront
 
@@ -1159,11 +1175,15 @@ Use this sequence.
 
 #### 1. Prepare shared state first
 
+> **If `terraform/shared` has already been applied**, skip this step.
+> Confirm the state bucket exists and `terraform/staging/backend.tf`
+> contains the real bucket name, then proceed to step 2.
+
 ```bash
 cd terraform/shared
 cat > terraform.tfvars <<EOF
-aws_account_id      = "123456789012"
-state_bucket_suffix = "a1b2c3d4"
+aws_account_id      = "YOUR_AWS_ACCOUNT_ID"
+state_bucket_suffix = "YOUR_UNIQUE_SUFFIX"
 EOF
 
 terraform init
@@ -1214,20 +1234,46 @@ terraform init
 terraform validate
 ```
 
-#### 4. First apply pass for Lightsail, if needed
+#### 3b. Recover orphaned resources (if static IP or key pair already exist in AWS)
 
-With `enable_cloudfront = false` set in `terraform.tfvars`, the first apply creates Lightsail resources only. After it completes, retrieve the instance public DNS name:
+If a previous partial apply created resources in AWS that are not in Terraform state, import them before running plan/apply. Skipping this step causes instance creation to fail with "Some names are already in use".
+
+Check for orphaned resources:
 
 ```bash
-INSTANCE_NAME=$(terraform output -raw lightsail_instance_name)
-aws lightsail get-instance \
-  --instance-name "$INSTANCE_NAME" \
-  --query 'instance.publicDnsName' \
-  --output text \
-  --profile footbag-operator
+aws lightsail get-static-ips --profile footbag-operator
+aws lightsail get-key-pairs --profile footbag-operator
+terraform state list | grep lightsail
 ```
 
-Set that DNS name as `lightsail_origin_dns` and set `enable_cloudfront = true` in `terraform.tfvars`, then proceed to step 5.
+If any Lightsail resources appear in the AWS output but not in `terraform state list`, import them:
+
+```bash
+terraform import aws_lightsail_static_ip.web footbag-staging-web-ip
+terraform import aws_lightsail_key_pair.operator footbag-staging-operator
+```
+
+Then proceed to step 4.
+
+#### 4. First apply pass for Lightsail, if needed
+
+With `enable_cloudfront = false` set in `terraform.tfvars`, the first apply creates Lightsail resources only. After it completes, construct the CloudFront origin hostname from the static IP. Lightsail does not provide public DNS hostnames — unlike EC2, the `publicDnsName` API field always returns `None`. Instead, construct a resolvable hostname using nip.io:
+
+```bash
+STATIC_IP=$(terraform output -raw lightsail_static_ip)
+echo "${STATIC_IP}.nip.io"
+```
+
+Set the output value as `lightsail_origin_dns` in `terraform.tfvars`:
+
+```hcl
+lightsail_origin_dns = "34.x.x.x.nip.io"   # use your actual static IP
+enable_cloudfront    = true
+```
+
+For production, replace nip.io with a real DNS A record pointing to the static IP (e.g. `origin.staging.footbag.org`). Do not use nip.io in production.
+
+Then proceed to step 5.
 
 #### 5. Full plan and review
 
@@ -1266,7 +1312,7 @@ terraform output kms_key_arn
 terraform output alarm_topic_arn
 ```
 
-`lightsail_instance_name` is needed for the `aws lightsail get-instance` command used to retrieve the public DNS hostname for the two-pass CloudFront setup.
+`lightsail_static_ip` is used to construct the nip.io origin hostname for the two-pass CloudFront setup (see step 4).
 
 #### 8. Confirm the alarm subscription and CloudFront status
 
@@ -1293,9 +1339,16 @@ Once infra exists, bootstrap the host in this order.
 
 First login:
 
+> [!NOTE]
+> If port 2222 times out on first attempt, sshd has not yet been configured to listen
+> on it. Use the Lightsail browser SSH console (AWS Console → Lightsail →
+> footbag-staging-web → Connect) to log in as `ec2-user`, then run:
+> `sudo sed -i 's/^#Port 22/Port 22\nPort 2222/' /etc/ssh/sshd_config && sudo systemctl reload sshd`
+> Then retry the SSH command below.
+
 ```bash
 LIGHTSAIL_IP=$(terraform output -raw lightsail_static_ip)
-ssh -i ~/.ssh/id_ed25519 ec2-user@$LIGHTSAIL_IP
+ssh -i ~/.ssh/id_ed25519 -p 2222 ec2-user@$LIGHTSAIL_IP
 ```
 
 Immediately create your named operator account:
@@ -1312,7 +1365,7 @@ sudo chmod 600 /home/yourname/.ssh/authorized_keys
 Then verify in a new terminal:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 yourname@$LIGHTSAIL_IP
+ssh -i ~/.ssh/id_ed25519 -p 2222 yourname@$LIGHTSAIL_IP
 sudo whoami
 ```
 
@@ -1733,6 +1786,7 @@ A minimal real monitoring loop includes:
 - the old standalone `docker-compose` v1 tool confused with the `docker compose` v2 plugin
 - AWS CLI, Terraform, SSH, or `rsync` never installed in WSL — run the tooling gate from §4.2 to confirm
 - shell scripts fail with `^M` because repo was cloned or edited outside WSL (CRLF issue)
+- `ModuleNotFoundError: No module named 'apt_pkg'` on any command or after `apt-get update` — broken `command-not-found` handler; fix with `sudo apt-get install --reinstall python3-apt`; the `apt-get update` error is a harmless post-hook and can be ignored
 
 #### Route and runtime mistakes
 
@@ -1767,9 +1821,20 @@ A minimal real monitoring loop includes:
 - relying on old Terraform DynamoDB locking patterns — this project uses `use_lockfile = true` (S3 native locking, requires `>= 1.11`)
 - assuming `user_data` bootstraps the instance — it is intentionally omitted in v0.1; all Docker install is manual via SSH (see §4.7)
 - using raw IP as the CloudFront origin — CloudFront custom origins require a resolvable DNS hostname, not a raw IP
+- assuming Lightsail provides a public DNS hostname like EC2 does —
+  `aws lightsail get-instance --query 'instance.publicDnsName'` always
+  returns `None`; construct the CloudFront origin hostname from the static
+  IP Terraform output using nip.io for staging (see §4.6 step 4)
+- naming the Lightsail static IP and instance the same — Lightsail rejects
+  instance creation with "Some names are already in use" because static IPs
+  and instances share a single namespace; `lightsail.tf` uses distinct names
+  (`footbag-staging-web-ip` for the static IP, `footbag-staging-web` for
+  the instance); do not change these to match
 - skipping or mis-sequencing the two-pass CloudFront bootstrap
 - running `sudo dnf install -y docker-compose-plugin` without first adding the Docker CE repo — the package is not in Amazon Linux 2023 default repos
 - running `docker compose pull` instead of `docker compose build` when using locally built images
+- SSH to the Lightsail instance timing out despite correct `operator_cidrs` and a running instance — some ISPs block outbound port 22 to AWS EC2 IP ranges; use `-p 2222` and the Lightsail browser SSH console to configure sshd if needed (see §4.4 note and §4.7 step 1)
+- Claude Code hooks failing with a PreToolUse hook error on every Bash call — `jq` is required by the hook scripts; install with `sudo apt-get install -y jq`
 
 ### 6.2 Deterministic seed-data reference
 

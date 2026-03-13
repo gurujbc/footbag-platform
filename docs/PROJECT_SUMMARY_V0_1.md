@@ -352,8 +352,8 @@ The platform could run on any cloud provider (Azure, Google Cloud, DigitalOcean)
 
 **Key AWS Services:**
 
-- AWS Lightsail: Simplified virtual server (4GB RAM, 2 vCPUs) hosting all Docker containers in us-west-2 region.
-- AWS S3: Object storage with 99.999999999% durability; primary bucket (us-west-2), backup bucket (us-east-1), and archive bucket for footbag.org mirror.
+- AWS Lightsail: Simplified virtual server (4GB RAM, 2 vCPUs) hosting all Docker containers in us-east-1 region.
+- AWS S3: Object storage with 99.999999999% durability; primary bucket (us-east-1), backup bucket (us-west-2), and archive bucket for footbag.org mirror.
 - AWS CloudFront - Global CDN for caching content at edge locations globally, and serving custom error pages when the origin is unavailable. When the Lightsail origin returns 5xx errors or is unreachable, CloudFront serves a maintenance page from S3. 
 - AWS SES: Email delivery with authentication (SPF, DKIM, DMARC) and bounce handling.
 - AWS Parameter Store: Stores webhook/Stripe secrets and non-key config. JWT tokens are signed with an AWS KMS asymmetric key; signing keys are not stored in Parameter Store. SecureString secrets (organized hierarchically under /footbag/ namespace with /prod/, /staging/, /dev/ environment subpaths) can hold sensitive configuration details that must not be checked into source control.

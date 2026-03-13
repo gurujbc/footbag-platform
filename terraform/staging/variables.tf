@@ -102,15 +102,16 @@ variable "operator_cidrs" {
 
 variable "lightsail_origin_dns" {
   description = <<-EOT
-    Public DNS hostname of the Lightsail instance, used as the CloudFront
-    custom origin domain_name. CloudFront requires a resolvable DNS name —
-    a raw IP address is not supported.
-    Retrieve after first apply (Lightsail only):
-      aws lightsail get-instance \
-        --instance-name footbag-staging-web \
-        --query 'instance.publicDnsName' \
-        --output text \
-        --profile footbag-operator
+    Resolvable DNS hostname used as the CloudFront custom origin domain_name.
+    CloudFront requires a DNS hostname — a raw IP address is not supported.
+    Lightsail does not provide public DNS hostnames (unlike EC2). The
+    publicDnsName field in the Lightsail API always returns None.
+    For staging: construct from the static IP Terraform output using nip.io:
+      lightsail_origin_dns = "<static_ip>.nip.io"
+      e.g. lightsail_origin_dns = "34.192.250.246.nip.io"
+    For production: use a real DNS A record pointing to the static IP,
+    e.g. origin.staging.footbag.org. Do not use nip.io in production.
+    Set this value and enable_cloudfront = true for the second apply pass.
     Leave as empty string for the first apply pass (set enable_cloudfront = false).
   EOT
   type    = string
@@ -121,8 +122,9 @@ variable "enable_cloudfront" {
   description = <<-EOT
     Controls whether the CloudFront distribution is created.
     Set to false for the first apply pass (creates Lightsail only).
-    After retrieving the instance public DNS name, set lightsail_origin_dns
-    and set this to true for the second apply pass (full stack).
+    After constructing the nip.io hostname from the static IP Terraform output
+    (staging) or creating a real DNS A record (production), set
+    lightsail_origin_dns and set this to true for the second apply pass.
   EOT
   type    = bool
   default = false

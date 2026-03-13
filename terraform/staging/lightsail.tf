@@ -23,7 +23,7 @@ resource "aws_lightsail_instance" "web" {
 }
 
 resource "aws_lightsail_static_ip" "web" {
-  name = "${local.prefix}-web"
+  name = "${local.prefix}-web-ip"
 }
 
 resource "aws_lightsail_static_ip_attachment" "web" {
@@ -50,6 +50,16 @@ resource "aws_lightsail_instance_public_ports" "web" {
     from_port = 80
     to_port   = 80
     cidrs     = ["0.0.0.0/0"]
+  }
+
+  # SSH alternate port — operator access when port 22 is ISP-blocked
+  # Some ISPs block outbound port 22 to AWS EC2 IP ranges.
+  # sshd is configured to listen on both 22 and 2222 on the host.
+  port_info {
+    protocol  = "tcp"
+    from_port = 2222
+    to_port   = 2222
+    cidrs     = var.operator_cidrs
   }
 
   # HTTPS — not terminated at Lightsail; CloudFront handles TLS

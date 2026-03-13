@@ -217,7 +217,7 @@ Local filesystem at /data/photos/ mounted as Docker volume mirrors production S3
 
 Backup and Replication:
 
-Photos are backed up separately from database via S3 cross-region replication. Primary bucket (us-west-2) replicates automatically to backup bucket (us-east-1) using One Zone-IA storage class. Replication is continuous with RPO less than 15 minutes. No backup job required; S3 native feature handles this automatically.
+Photos are backed up separately from database via S3 cross-region replication. Primary bucket (us-east-1) replicates automatically to backup bucket (us-west-2) using One Zone-IA storage class. Replication is continuous with RPO less than 15 minutes. No backup job required; S3 native feature handles this automatically.
 
 Deletion and Retention: No referential integrity concerns from photo deletion because photos are leaf nodes in the data model. When member deletes account: member's photos automatically hard-deleted.
 
@@ -2169,7 +2169,7 @@ Alternative considered: The AWS free tier does not provide viable continuous dat
 
 Photo Backup (S3 replication):
 
-Photos are backed up separately from database due to data volume. Amazon S3 cross-region replication handles photo backup automatically and continuously. Primary bucket (footbag-media-prod in us-west-2) replicates all photo objects to backup bucket (footbag-media-backup in us-east-1) using S3 One Zone-IA storage class for 45% cost savings on backup storage. Replication is continuous with Recovery Point Objective (RPO) of less than 15 minutes. No backup job or cron process is required; S3's native cross-region replication feature handles this automatically. Photo backup is completely decoupled from database backup cycle. Backup bucket uses identical directory structure (hash-based sharding) as primary bucket for operational consistency during disaster recovery scenarios.
+Photos are backed up separately from database due to data volume. Amazon S3 cross-region replication handles photo backup automatically and continuously. Primary bucket (footbag-media-prod in us-east-1) replicates all photo objects to backup bucket (footbag-media-backup in us-west-2) using S3 One Zone-IA storage class for 45% cost savings on backup storage. Replication is continuous with Recovery Point Objective (RPO) of less than 15 minutes. No backup job or cron process is required; S3's native cross-region replication feature handles this automatically. Photo backup is completely decoupled from database backup cycle. Backup bucket uses identical directory structure (hash-based sharding) as primary bucket for operational consistency during disaster recovery scenarios.
 
 Recovery procedure: Promote backup bucket to primary by updating CloudFront origin configuration and PhotoStorageAdapter bucket settings, or restore objects from backup bucket to new primary bucket.
 

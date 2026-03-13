@@ -36,7 +36,7 @@ Visual aids for understanding the system design. Eight diagrams cover production
                 Route 53 → CloudFront      origin requests (~5%)
                              ↓
 ╔═════════════════════════════════════════════════════════════════════╗
-║  Lightsail 4GB Instance  (us-west-2)                                ║
+║  Lightsail 4GB Instance  (us-east-1)                                ║
 ║                                                                     ║
 ║  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌────────┐         ║
 ║  │    nginx    │ │     web     │ │   worker    │ │ image  │         ║

@@ -31,13 +31,13 @@ operator_cidrs = ["TODO-your-public-ip/32"]
 
 # ── CloudFront two-pass bootstrap ─────────────────────────────────────────────
 # First apply: set enable_cloudfront = false (creates Lightsail only).
-# After first apply, retrieve the instance public DNS name:
-#   aws lightsail get-instance \
-#     --instance-name footbag-staging-web \
-#     --query 'instance.publicDnsName' \
-#     --output text \
-#     --profile footbag-operator
+# After first apply, construct the CloudFront origin hostname from the static IP.
+# Lightsail does not provide public DNS hostnames — publicDnsName always returns None.
+# For staging, use nip.io:
+#   STATIC_IP=$(terraform output -raw lightsail_static_ip)
+#   echo "${STATIC_IP}.nip.io"
 # Then set lightsail_origin_dns to that value and enable_cloudfront = true.
+# For production: use a real DNS A record pointing to the static IP instead.
 # Second apply: creates the full stack including CloudFront.
 enable_cloudfront    = false
 lightsail_origin_dns = ""

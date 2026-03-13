@@ -19,10 +19,12 @@ resource "aws_cloudfront_distribution" "main" {
   # aliases = [var.domain_name, "www.${var.domain_name}"]
 
   # ── Origin: Lightsail nginx ───────────────────────────────────────────────
-  # Use the instance public DNS name, not the raw static IP.
-  # CloudFront custom_origin_config requires a resolvable DNS hostname.
-  # Retrieve the DNS name after the first apply (Lightsail only) and set
-  # lightsail_origin_dns in terraform.tfvars before the second apply.
+  # CloudFront requires a resolvable DNS hostname — raw IPs are not supported.
+  # Lightsail does not provide public DNS hostnames (unlike EC2).
+  # publicDnsName in the Lightsail API always returns None.
+  # For staging: set lightsail_origin_dns = "<static_ip>.nip.io"
+  # For production: use a real DNS A record pointing to the static IP.
+  # Set lightsail_origin_dns in terraform.tfvars before the second apply pass.
   origin {
     origin_id   = "lightsail-origin"
     domain_name = var.lightsail_origin_dns

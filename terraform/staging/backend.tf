@@ -1,12 +1,8 @@
 # Remote state — S3 bucket provisioned by terraform/shared.
-# Run `terraform/shared` first to create the bucket, then fill in values below.
-#
-# TODO: Replace all TODO values before running `terraform init`.
 
 terraform {
   backend "s3" {
-    # TODO: Set to the bucket name output from terraform/shared
-    bucket = "footbag-terraform-state-TODO-set-unique-suffix"
+    bucket = "footbag-terraform-state-a1b2c3d4e5"
     key    = "staging/terraform.tfstate"
     region = "us-east-1"
 

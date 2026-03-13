@@ -123,5 +123,15 @@ CLAUDE.local.md
 # Local audit reports (never commit)
 prepublish_audit_*.txt
 
+# Local AWS project specifics (sensitive values, never commit)
+AWS_PROJECT_SPECIFICS.md
+
+# AWS CLI installer bundle (local tooling, never commit)
+aws/
+
+# Terraform plan files (binary, may contain sensitive data, never commit)
+tfplan
+*.tfplan
+
 # Generated cache files (never commit)
 legacy_data/robots_cache.json
