@@ -40,8 +40,7 @@ Before making any recommendation, read:
 - `PROJECT_SUMMARY_CONCISE.md` if present
 - the most relevant local documentation for the affected area
 - the touched code files
-- any nearby configuration, schema, migration, or test files needed to understand the change
-- any existing architecture or ADR-style notes that define the relevant boundary
+- any configuration, schema, or code files needed to understand the change
 
 ## Workflow
 
@@ -83,31 +82,29 @@ Do not treat these as drift:
 - missing nice-to-have explanation when the docs are still accurate
 
 ### 4) Escalate when meaning changes
-Always escalate to the human before any doc edit if the mismatch affects:
+Always escalate to the human before any documentation edit:
 - user-visible behavior
 - interfaces or interface semantics
 - identifiers
 - data meaning or schema meaning
 - service, system, ownership, or architectural boundaries
 - feature scope
-- anything pending an IFPA Board decision (see GOVERNANCE.md)
 - any case where the correct source of truth is not fully clear
 
 ### 5) Propose the smallest correct fix
 When a doc update is appropriate, propose only the minimum necessary changes.
 
 Requirements:
-- keep edits surgical
+- keep edits surgical with precise before and after text
 - preserve surrounding structure unless a structural move is actually required
 - group all edits needed for one issue together
-- include every place that must change for consistency
-- do not rewrite entire sections when a few lines will do
-- do not silently introduce new scope, policy, or design language
+- review the whole doc to include every place that must change for consistency
+- do not propose to rewrite entire sections when a few lines will do
 
 For each proposed edit, provide:
 - file path
 - section or location
-- why it is wrong now
+- why the edit is required or recommended, plus important context
 - precise before text
 - precise after text
 
@@ -117,14 +114,14 @@ Never edit documentation unless the human explicitly approves.
 Valid approval:
 - yes / y
 - ok / go
-- approved
-- apply it
-- do it
+- any other reasonable affirmation
+
+Alsways provide the human with the option to approve all edits in the current session.
+If a human answers no to a proposed edit, ask why, then carefully adjust accordingly.
 
 Not valid approval:
 - silence
 - pressing Enter
-- "looks good" without a direct approval word
 - approval of a different earlier edit in the same session
 
 If approval is missing or ambiguous, stop after presenting findings and proposed edits.
@@ -135,23 +132,7 @@ If the human approves, make only the agreed documentation edits:
 - do not make opportunistic cleanup edits
 - do not rewrite adjacent text unless explicitly approved
 - do not modify unrelated docs in the same pass
-
-## Output shape
-
-### Match
-- docs already align
-- no update required
-
-### Small sync suggested
-- issue summary
-- affected file(s)
-- grouped proposed edits with: location / why / before / after
-
-### Human decision needed
-- what conflicts
-- why it matters
-- what decision is needed
-- smallest doc options after the decision is made
+- Always verify all modified text when you think you are done with a file; look for layout, formatting, and numbered-heading bugs.
 
 ## Guardrails
 Do not:
@@ -162,10 +143,9 @@ Do not:
 - edit docs without explicit human approval
 - mix confirmed drift with speculative improvements
 - expand scope beyond the area actually under review
-- treat anything flagged as pending IFPA Board decision as settled
 
 ## Default stance
 - prefer no change over unnecessary change
 - prefer one precise edit over a rewrite
-- prefer escalation over guesswork
+- prefer escalation to human over guesswork
 - prefer human approval over autonomous editing
