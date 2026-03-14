@@ -8,7 +8,7 @@ This repository contains the open-source modernization project for the global fo
 - **Institutional context:** Developed under IFPA auspices
 - **Goal:** A simple, low-cost, volunteer-maintainable platform for long-term community use
 
-Legacy site (HTTP only): <http://www.footbag.org/>
+Legacy site (HTTP only): [http://www.footbag.org/](http://www.footbag.org/)
 
 ## Start here
 
@@ -17,14 +17,16 @@ Legacy site (HTTP only): <http://www.footbag.org/>
 
 ## Current project state
 
-**Minimum Viable First Page (MVFP v0.1) is complete and running locally.**
+**Minimum Viable First Page (MVFP v0.1) is running on AWS Lightsail.**
 
-- For this initial slice, we have code, tests, seed data, and complete documentation.
-- AWS deployment is the next step. 
+Sneek Preview!! Look here:  [http://34.192.250.246/events/event_2025_beaver_open](http://34.192.250.246/events/event_2025_beaver_open)
+
+- For this initial deployment, we have code, tests, AI-created seed data, and complete documentation.
 - Some legacy migration tooling is done, including a full mirror of the current live footbag.org.
 - Scripts to process and clean historic event-results data are nearly complete.
 - This is why the MVFP scope is viewing events and results. 
 - Some official rule/policy simplification proposals were recently **Approved by IFPA Board Decision** and will be incorporated in v0.2
+- V0.2 will also have real event result data, and a bit more.
 
 ## Governance
 

@@ -110,7 +110,7 @@ The previous DevOps draft had a useful set of System Administrator stories. Thos
 | `SA_Configure_Budgets_And_SNS_Alerting` | configure budgets, notifications, and cost alarms | §12.5 |
 | `SA_Configure_Email_Delivery_Infrastructure` | SES domain verification, SPF, DKIM, DMARC, bounce handling | §4.5, §13.5 |
 | `SA_Configure_Job_Schedules` | define and maintain the scheduler for system jobs | §11 |
-| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING_V0_1.md Part H |
+| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING_V0_1.md Path D; DEVOPS_GUIDE_V0_1.md §17 (when added) |
 
 ---
 
@@ -168,7 +168,7 @@ The AWS side of this project must be operated as a zero-trust environment:
 
 The workload AWS principal must be a narrow and explicit runtime assumed role. Do not describe it as an EC2-style role attached to the Lightsail host. Operator SSH access to the host is a separate mechanism and must not be confused with the runtime principal.
 
-> **v0.1 credential mechanism — IAM user with direct env vars.** The full source-profile + AssumeRole chain described above is the long-term target but is deferred for v0.1. Instead, a dedicated IAM user (`footbag-staging-runtime`) with scoped SSM read access has its access keys set directly as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in the root-owned host env file (`/srv/footbag/env`). systemd `EnvironmentFile` injects them into the service; Docker Compose propagates them into containers. The AssumeRole model should be adopted when the platform matures beyond MVFP. Note: the current public Events + Results MVFP slice makes no runtime AWS calls; the `footbag-staging-runtime` user is not needed until runtime AWS calls are activated.
+> **v0.1 runtime credential model — none required.** The current public Events + Results MVFP slice makes no runtime AWS API calls. The application reads `process.env` (sourced from `/srv/footbag/env`) and SQLite only. Do not add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, or any AWS credential to `/srv/footbag/env` for the current slice. Do not mount the human operator CLI credentials into containers. The `app-runtime` IAM role created by `iam.tf` is deferred groundwork — it appears in `terraform state list` but is not active. Lightsail does not support EC2 instance profiles. The full source-profile + AssumeRole chain described in this section is the intended long-term model when the app begins making runtime AWS API calls (S3 backup writes, SES sends, etc.).
 
 | AWS service | Runtime access | Notes |
 |---|---|---|
@@ -194,14 +194,14 @@ Host shell access is exceptional. It exists for deployment, restore, patching, d
 - Do not use shared private SSH keys.
 - Use key-based authentication only; disable password authentication.
 - Do not use direct root login as the normal operator path.
-- Restrict inbound SSH port 22 to approved operator IPv4 and IPv6 source ranges; never leave SSH open to the world.
+- Restrict inbound SSH ports 22 and 2222 to approved operator IPv4 and IPv6 source ranges (Terraform-managed via `operator_cidrs` in `lightsail.tf`); never leave SSH open to the world. Port 2222 is the reliable operator port — some ISPs block outbound port 22 to AWS EC2 IP ranges. Both ports are restricted to `operator_cidrs`; only port 80 (for CloudFront origin traffic) is open to the world.
 - Keep a host-access inventory that records, at minimum, the operator name, host account, public-key fingerprint, environments allowed, approval date, and removal date when offboarded.
 - Distribute only public keys for host access. Private keys remain under the custody of the individual operator and must not be stored in the repository, Parameter Store, application containers, or shared team storage.
 - Onboard a System Administrator by creating or enabling the named host account, installing the approved public key, verifying SSH login, verifying `sudo`, and recording the inventory entry.
 - Offboard a System Administrator by removing the public key or disabling the host account immediately, verifying loss of access, and reviewing `authorized_keys` / `sudoers` for stale access.
 - Every shell session must have a clear reason: deployment, incident, restore, patching, diagnostic verification, or drill.
-- If Lightsail browser-based SSH is used during recovery, treat it as break-glass and document why it was needed.
-- Standard connection pattern is ssh operator-user at host-or-static-ip. 
+- Lightsail browser-based SSH is an acceptable recovery mechanism (e.g., to configure sshd to listen on port 2222 after an instance rebuild, or when key-based SSH is temporarily unavailable). Treat all browser SSH sessions as exceptional, confirm the reason, and exit promptly.
+- Standard connection pattern: `ssh -i ~/.ssh/<keyfile> -p 2222 <operator-user>@<static-ip>`. Use port 22 only if your network does not block it.
 
 #### Operator checklist
 
@@ -471,6 +471,10 @@ Use clearly separated Terraform state backends for dev, staging, and production.
 - protect access to state because it is sensitive operational metadata
 - never bypass locking for routine operations
 - treat state changes as production-impacting changes
+- Terraform >= 1.11 is required — `use_lockfile = true` (S3 native locking) requires this version floor; do not use DynamoDB locking
+- AWS provider is pinned to `~> 5.0` in `providers.tf` — do not upgrade to v6 without reviewing the migration guide (v6 released June 2025, breaking changes)
+- `terraform.tfvars` is excluded from git via `*.tfvars` in `.gitignore` — never commit it; it contains real IP addresses and account IDs; `*.tfvars.example` files are tracked and safe to commit
+- `use_lockfile = true` requires `s3:PutObject` and `s3:DeleteObject` on `<bucket>/<key>*.tflock`; ensure the operator IAM policy includes these or `terraform apply` will fail with `AccessDenied` at lock acquisition
 
 ### 6.3 Standard workflow
 
@@ -495,7 +499,7 @@ For the initial blank-account bootstrap, apply in this sequence:
 8. CloudFront distribution
 9. public DNS records
 
-> **v0.1 test deployment — steps 3, 4, and 9 deferred.** Route 53 zone, ACM certificate, and public DNS records are not required when using the CloudFront default URL. The `terraform/shared/` module must be applied first to create the state bucket before applying `terraform/staging/`. See Part G.5 of `DEV_ONBOARDING_V0_1.md` for the full v0.1 bootstrap sequence.
+> **v0.1 test deployment — steps 3, 4, and 9 deferred.** Route 53 zone, ACM certificate, and public DNS records are not required when using the CloudFront default URL. The `terraform/shared/` module must be applied first to create the state bucket before applying `terraform/staging/`. See `DEV_ONBOARDING_V0_1.md` §4.6 (Terraform staging apply) for the full v0.1 bootstrap sequence.
 
 ### 6.4 Environment separation
 
@@ -1241,3 +1245,586 @@ If SSH access fails:
 - timing recorded
 - issues logged
 - follow-up actions assigned
+
+---
+
+## 17. AWS Bootstrap and Initial Deployment
+
+This section is the authoritative hands-on reference for bootstrapping a blank AWS account
+and completing the first staging deployment. It absorbs the content previously in the
+separate `docs/AWS_GUIDE_V0_1.md` draft (which is not checked in and should be deleted
+locally once this section is confirmed complete).
+
+For the developer-facing step-by-step walkthrough, see `DEV_ONBOARDING_V0_1.md` Path D.
+This section is the operational reference: it explains what each step controls, what the
+constraints are, and what to do when things go wrong.
+
+---
+
+### 17.1 AWS account structure
+
+| Item | Value |
+|------|-------|
+| Account purpose | Footbag Platform — all environments |
+| Environments present | `staging` |
+| Environments planned | `production` |
+| Primary region | `us-east-1` |
+| Terraform state | S3 backend with `use_lockfile = true` |
+| Operator identity | `footbag-operator` IAM user (bootstrap shortcut — scope down after first deploy) |
+
+> **PLACEHOLDER:** When production is added, decide whether it lives in the same AWS account
+> (with strict IAM boundaries) or a separate account. A separate account is the cleaner
+> long-term model but adds management overhead for a small volunteer project.
+
+---
+
+### 17.2 Root account hardening
+
+**One-time procedure. Do not reuse root for ongoing work.**
+
+1. Sign in as root at https://console.aws.amazon.com → **Root user**.
+2. Enable MFA: click your account name (top right) → **Security credentials** → scroll to
+   **Multi-factor authentication (MFA)** → **Assign MFA device**. Name it `root-mfa`, choose
+   **Authenticator app**, and on the QR code screen look for the **"show secret key"** link —
+   copy that text string. Store the secret key as a TOTP field in the team KeePassXC vault.
+   Do not store it on a single device. Use KeePassXC to generate two consecutive TOTP codes
+   to complete enrollment.
+3. Confirm no root access keys exist: still on **Security credentials**, scroll to **Access
+   keys**. Delete any that exist.
+4. Sign out of root.
+
+Do not use root again except to complete the next bootstrap step (creating the first operator
+identity), then only in an account-recovery emergency.
+
+**Team secrets vault:** The project uses KeePassXC with a shared encrypted vault file
+(`footbag-platform-aws.kdbx`) on shared Google Drive. The vault holds: root email and
+password, root MFA TOTP secret, `footbag-operator` access key ID and secret, and any
+additional shared secrets as they are added. The vault master password is shared out of band
+(Signal or in person — never email or Slack). To revoke access: remove the contributor from
+the Google Drive share and rotate the master password and all secrets in the vault.
+
+---
+
+### 17.3 First operator identity
+
+Sign in as root one more time to create the first IAM user.
+
+1. Search bar → **IAM** → **Users** → **Create user**. User name: `footbag-operator`.
+2. Choose **Attach policies directly** → search for and check **AdministratorAccess** → **Next**
+   → **Create user**.
+
+   > **Bootstrap shortcut:** `AdministratorAccess` is intentionally broad for the bootstrap
+   > phase. Scope it down after first successful deploy — see §17.9.
+
+3. Enable MFA for `footbag-operator`: click `footbag-operator` → **Security credentials** tab
+   → **MFA** → **Assign MFA device**. Name it `footbag-operator-mfa`, choose **Authenticator
+   app**. Scan, enter two codes, click **Add MFA**.
+
+4. Create CLI access keys: still on **Security credentials** → **Access keys** → **Create
+   access key** → use case: **Command Line Interface (CLI)** → check acknowledgement → **Next**
+   → description tag `footbag-operator-bootstrap` → **Create access key**. **Copy both the
+   Access Key ID and Secret Access Key immediately.** Click **Download .csv** and store it
+   securely outside the repo. Click **Done**.
+
+   > AWS shows the Secret Access Key only once. If you lose it, delete the key and create a new one.
+
+5. Sign out of root. Root work is complete.
+
+---
+
+### 17.4 AWS CLI configuration (WSL)
+
+All remaining steps run in the **WSL Ubuntu terminal**.
+
+```bash
+# Confirm AWS CLI is installed
+aws --version
+# Expected: aws-cli/2.x.x Python/3.x.x Linux/...
+
+# Configure the operator profile
+aws configure --profile footbag-operator
+# Enter when prompted:
+#   AWS Access Key ID:     <paste from step 17.3>
+#   AWS Secret Access Key: <paste from step 17.3>
+#   Default region name:   us-east-1
+#   Default output format: json
+
+# Activate for this shell session
+export AWS_PROFILE=footbag-operator
+
+# Verify
+aws sts get-caller-identity
+```
+
+Expected output:
+```json
+{
+    "UserId": "AIDAXXXXXXXXXXXXXXXXX",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/footbag-operator"
+}
+```
+
+> `export AWS_PROFILE=footbag-operator` applies only to the current shell session. Re-run
+> this export every time you open a new terminal before any Terraform or AWS CLI command.
+> This is a common source of mid-bootstrap failures.
+
+To make it persistent:
+```bash
+echo 'export AWS_PROFILE=footbag-operator' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Troubleshooting:**
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `InvalidClientTokenId` | Access Key ID wrong | Re-run `aws configure --profile footbag-operator` |
+| `SignatureDoesNotMatch` | Secret Access Key wrong | Re-run `aws configure --profile footbag-operator` |
+| `Could not connect to endpoint` | No internet from WSL | Check WSL network |
+
+---
+
+### 17.5 Terraform remote state bootstrap
+
+`terraform/shared` uses local state intentionally — it is the thing that creates the remote
+backend. Apply it before initializing `terraform/staging`.
+
+```bash
+cd terraform/shared
+
+cat > terraform.tfvars <<EOF
+aws_account_id      = "YOUR_AWS_ACCOUNT_ID"
+state_bucket_suffix = "YOUR_UNIQUE_SUFFIX"
+EOF
+
+terraform init
+terraform validate
+terraform apply
+```
+
+After apply, record the state bucket name:
+```bash
+terraform output -raw terraform_state_bucket_name
+# Output format: footbag-terraform-state-<suffix>
+```
+
+Then:
+1. Open `terraform/staging/backend.tf` and replace the `TODO-set-unique-suffix` placeholder
+   with the real bucket name and region.
+2. Back up the shared local state immediately — if this state is ever lost, recreating it
+   against an existing bucket requires careful import to avoid destroying the bucket:
+   ```bash
+   cp terraform/shared/terraform.tfstate ~/footbag-shared-tfstate-backup.json
+   ```
+   Store this backup outside the repo.
+
+**Critical constraints:**
+- `terraform.tfvars` is gitignored via `*.tfvars` in `.gitignore` — never commit it;
+  `*.tfvars.example` files are tracked and safe to commit
+- `use_lockfile = true` requires Terraform >= 1.11 and AWS provider >= 5.x
+- Do not use DynamoDB locking — this project uses S3 native locking
+- AWS provider is pinned to `~> 5.0` — do not upgrade to v6 without reviewing the
+  migration guide (June 2025, breaking changes)
+- `use_lockfile = true` requires `s3:PutObject` and `s3:DeleteObject` on
+  `<bucket>/<key>*.tflock`; confirm the operator IAM policy includes these
+
+---
+
+### 17.6 Lightsail constraints
+
+**Namespace collision:** Lightsail static IPs and instances share a single AWS namespace —
+they cannot have the same name. `lightsail.tf` uses `${local.prefix}-web-ip` for the
+static IP (`footbag-staging-web-ip`) and `${local.prefix}-web` for the instance
+(`footbag-staging-web`). Do not change these to the same value or instance creation fails
+with "Some names are already in use."
+
+**No public DNS hostname:** Lightsail does not provide public DNS hostnames. The
+`publicDnsName` field in the Lightsail API always returns `None` (unlike EC2). Construct
+the CloudFront origin hostname from the static IP Terraform output using nip.io (staging)
+or a real DNS A record (production). See §17.7.
+
+**No EC2 instance profiles:** Lightsail does not support EC2 instance profiles. The
+`app-runtime` IAM role created by `iam.tf` is deferred groundwork — it appears in
+`terraform state list` but is not active in v0.1.
+
+**No user_data bootstrap:** `user_data` is intentionally omitted from `lightsail.tf`. All
+host bootstrap (Docker CE install, `/srv/footbag` setup, systemd service) is performed
+manually via SSH after first apply. See §17.8.
+
+**Terraform-managed firewall:** Do not change firewall rules in the Lightsail console —
+console changes are silently overwritten on the next `terraform apply`. To modify SSH
+access at any point, update `operator_cidrs` in `terraform.tfvars` and run `terraform apply`.
+
+**Port model (from `lightsail.tf`):**
+- Port 22: SSH, restricted to `operator_cidrs`
+- Port 2222: SSH alternate, restricted to `operator_cidrs` — use this if your ISP blocks port 22 to AWS EC2 IP ranges
+- Port 80: HTTP, open to `0.0.0.0/0` — CloudFront connects here; nginx proxies to the app container
+- Port 443: closed — TLS terminates at CloudFront, not at the origin
+
+---
+
+### 17.7 Two-pass CloudFront bootstrap
+
+CloudFront requires a publicly resolvable DNS hostname as the origin domain — raw IPs are
+not supported. `cloudfront.tf` uses `var.lightsail_origin_dns`. The instance must exist
+before its static IP is known, which creates a chicken-and-egg problem: hence the two-pass
+apply pattern.
+
+**Pass 1:** set `enable_cloudfront = false` in `terraform.tfvars` and apply. This creates
+Lightsail resources only. After it completes:
+
+```bash
+STATIC_IP=$(terraform output -raw lightsail_static_ip)
+echo "${STATIC_IP}.nip.io"
+```
+
+**For staging:** use `<static_ip>.nip.io`. nip.io is a free public DNS service that
+resolves `<ip>.nip.io` to `<ip>`. Verify resolution before proceeding:
+```bash
+dig "${STATIC_IP}.nip.io" +short
+# Must return the static IP
+```
+
+**For production:** use a real DNS A record (e.g. `origin.footbag.org`) pointing to the
+static IP. **Do not use nip.io in production.**
+
+Set in `terraform/staging/terraform.tfvars`:
+```hcl
+lightsail_origin_dns = "34.x.x.x.nip.io"   # use your actual static IP
+enable_cloudfront    = true
+```
+
+**Pass 2:** apply the full stack including CloudFront:
+```bash
+terraform plan -out=tfplan
+terraform apply tfplan
+```
+
+After pass 2, CloudFront takes **15–30 minutes** to propagate globally. The
+`*.cloudfront.net` URL is assigned immediately but returns errors during propagation:
+```bash
+CF_ID=$(terraform output -raw cloudfront_distribution_id)
+aws cloudfront get-distribution \
+  --id "$CF_ID" \
+  --query 'Distribution.Status' \
+  --output text \
+  --profile footbag-operator
+```
+Wait for `Deployed` before testing through the edge.
+
+**CloudFront 5xx alarm:** Gated on `enable_cloudfront` (`count = var.enable_cloudfront ? 1 : 0`
+in `cloudwatch.tf`). Does not exist after pass 1. Created in pass 2 alongside the distribution.
+
+**Current v0.1 CloudFront configuration:**
+
+| Item | Value |
+|------|-------|
+| Distribution | Terraform-managed (`count = var.enable_cloudfront ? 1 : 0`) |
+| Origin | `var.lightsail_origin_dns` — nip.io hostname for staging; real DNS A record for production |
+| Domain | Default `*.cloudfront.net` URL (custom domain deferred) |
+| HTTPS | CloudFront default certificate only (ACM cert deferred) |
+| Maintenance mode | Not functional in v0.1 — S3 OAC and `ordered_cache_behavior` not yet implemented |
+| Origin bypass protection | Not implemented in v0.1 — `X-Origin-Verify` header omitted from `cloudfront.tf` |
+
+---
+
+### 17.8 Host bootstrap sequence
+
+After `terraform apply` completes and the static IP is available, bootstrap the host in this order.
+
+#### Step 1 — First SSH login and named operator account
+
+```bash
+LIGHTSAIL_IP=$(terraform output -raw lightsail_static_ip)
+ssh -i ~/.ssh/id_ed25519 -p 2222 ec2-user@$LIGHTSAIL_IP
+```
+
+> If port 2222 times out on a fresh instance, sshd has not yet been configured to listen
+> on it. Use the Lightsail browser SSH console (AWS Console → Lightsail →
+> `footbag-staging-web` → Connect) to log in as `ec2-user` and run:
+> ```bash
+> sudo sed -i 's/^#Port 22/Port 22\nPort 2222/' /etc/ssh/sshd_config && sudo systemctl reload sshd
+> ```
+> Then retry the SSH command.
+
+Once logged in as `ec2-user`, create your named operator account:
+
+```bash
+sudo useradd -m -G wheel yourname
+sudo mkdir -p /home/yourname/.ssh
+sudo bash -c 'echo "<your-ssh-public-key>" > /home/yourname/.ssh/authorized_keys'
+sudo chown -R yourname:yourname /home/yourname/.ssh
+sudo chmod 700 /home/yourname/.ssh
+sudo chmod 600 /home/yourname/.ssh/authorized_keys
+```
+
+> **Do not** use `tee <<< "..."` for the `authorized_keys` line on Amazon Linux 2023.
+> The `<<<` here-string wraps long keys across two lines, breaking SSH auth silently.
+> Use `sudo bash -c 'echo "..." > file'` instead.
+
+Verify from a second terminal **before** leaving `ec2-user`:
+```bash
+ssh -i ~/.ssh/id_ed25519 -p 2222 yourname@$LIGHTSAIL_IP
+sudo whoami   # must return: root
+```
+
+#### Step 2 — Install Docker CE
+
+Amazon Linux 2023 default repos do not include Docker CE. Add the Docker repo first:
+
+```bash
+sudo dnf install -y dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+sudo dnf install -y \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin \
+  sqlite \
+  rsync
+sudo systemctl enable --now docker
+sudo usermod -aG docker yourname
+```
+
+Log out and back in so group membership takes effect. Verify:
+```bash
+docker --version && docker compose version && sqlite3 --version
+```
+
+All three must return version strings.
+
+#### Step 3 — Prepare /srv/footbag and env file
+
+```bash
+sudo mkdir -p /srv/footbag
+sudo tee /srv/footbag/env > /dev/null <<EOF
+NODE_ENV=production
+LOG_LEVEL=info
+FOOTBAG_DB_PATH=/srv/footbag/footbag.db
+PUBLIC_BASE_URL=https://<cloudfront_domain from terraform output>
+EOF
+sudo chown root:root /srv/footbag/env
+sudo chmod 600 /srv/footbag/env
+```
+
+Required values for MVFP v0.1: `NODE_ENV`, `LOG_LEVEL`, `FOOTBAG_DB_PATH`, `PUBLIC_BASE_URL`.
+
+**Do not add runtime AWS credentials.** The current slice makes no runtime AWS API calls.
+See §3.4 and §17.9 for the full runtime credential model.
+
+#### Step 4 — Rsync application files (from local machine)
+
+```bash
+rsync -av --delete -e "ssh -p 2222" \
+  --exclude=node_modules \
+  --exclude=.git \
+  --exclude=.terraform \
+  --exclude=legacy_data \
+  --exclude=terraform \
+  --exclude=tests \
+  --exclude=docs \
+  --exclude=ifpa \
+  --exclude=.claude \
+  --exclude=aws \
+  --exclude=coverage \
+  --exclude=.env \
+  --exclude='.env.*' \
+  --exclude='*.db' \
+  --exclude='*.db-shm' \
+  --exclude='*.db-wal' \
+  ./ yourname@$LIGHTSAIL_IP:~/footbag-release/
+```
+
+> Adjust `-p 2222` to match your configured SSH port if different.
+
+Then on the host, promote to the runtime path:
+```bash
+sudo rsync -a --delete ~/footbag-release/ /srv/footbag/
+sudo chown -R root:root /srv/footbag
+```
+
+> Promote from a user-owned staging path into `/srv/footbag`. Do not copy directly into
+> the root-owned runtime path from your laptop.
+
+#### Step 5 — Initialize the database (first deploy only)
+
+```bash
+sudo sqlite3 /srv/footbag/footbag.db < /srv/footbag/database/schema_v0_1.sql
+sudo sqlite3 /srv/footbag/footbag.db < /srv/footbag/database/seeds/seed_mvfp_v0_1.sql
+sudo chown root:root /srv/footbag/footbag.db
+sudo chmod 600 /srv/footbag/footbag.db
+```
+
+On later deploys, reuse the existing DB file — do not re-run this step.
+
+#### Step 6 — Install and start footbag.service
+
+```bash
+cd /srv/footbag
+docker compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml build
+sudo cp ops/systemd/footbag.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now footbag
+sudo systemctl status footbag
+docker ps
+```
+
+Expected:
+- `footbag.service` may show `active (exited)` — correct for `Type=oneshot` with `RemainAfterExit=yes`
+- nginx and web containers running
+- worker container in `Exited (0)` state for MVFP v0.1 (stub worker exits cleanly)
+- worker must not be restart-looping
+
+---
+
+### 17.9 IAM identity model (v0.1 current state)
+
+| Identity | Type | Permissions | Purpose | Shortcut? |
+|----------|------|-------------|---------|-----------|
+| Root user | AWS root | Unrestricted | Account recovery only | No — correct |
+| `footbag-operator` | IAM user | `AdministratorAccess` | Human operator — Terraform + CLI | Yes — scope down |
+| `app-runtime` | IAM role | Deferred groundwork | Future app runtime calls | N/A — not active |
+
+**Scope down footbag-operator after first successful deploy:**
+
+The services touched by the current Terraform are: Lightsail, CloudFront, S3 (state bucket
++ project buckets), SSM, KMS, SNS, CloudWatch, and IAM (to create the app-runtime role).
+Review each `.tf` file to derive the exact actions needed, then replace `AdministratorAccess`
+with a least-privilege custom policy or IAM Identity Center permission set.
+
+In IAM Console: IAM → Users → `footbag-operator` → **Permissions** tab → Detach
+`AdministratorAccess` → Attach the scoped-down policy → Re-run `aws sts get-caller-identity`
+and `terraform plan` to confirm the new permissions are sufficient.
+
+**Remove long-lived access keys** after confirming MFA-backed short-lived credentials or
+IAM Identity Center work: IAM → Users → `footbag-operator` → **Security credentials** →
+**Access keys** → **Deactivate** first (confirm nothing breaks) → **Delete**.
+
+**Retire ec2-user** once your named operator accounts are confirmed working with `sudo`:
+```bash
+sudo passwd -l ec2-user
+# optionally: sudo userdel -r ec2-user
+```
+
+---
+
+### 17.10 S3 bucket inventory (v0.1 staging)
+
+| Bucket | Purpose | Managed by |
+|--------|---------|------------|
+| `footbag-terraform-state-<suffix>` | Terraform remote state | `terraform/shared` |
+| `footbag-staging-snapshots` | SQLite DB backups | `terraform/staging` |
+| `footbag-staging-dr` | Disaster recovery copies | `terraform/staging` |
+| `footbag-staging-maintenance` | Maintenance page HTML | `terraform/staging` |
+| `footbag-staging-media` | Media assets (deferred — not in use for MVFP v0.1) | `terraform/staging` |
+
+All project buckets are created by Terraform with versioning and encryption enabled.
+
+---
+
+### 17.11 SSM Parameter Store (v0.1)
+
+Provisioned by `terraform/staging/ssm.tf` as reference storage:
+
+```
+/footbag/staging/app/port
+/footbag/staging/app/log_level
+/footbag/staging/app/public_base_url
+/footbag/staging/app/db_path
+```
+
+Not yet provisioned (deferred):
+```
+/footbag/staging/app/node_env
+/footbag/staging/secrets/origin_verify_secret
+```
+
+**The running app reads `/srv/footbag/env`, not SSM.** Updating Parameter Store does not
+change the running app — update `/srv/footbag/env` and restart the service to apply changes.
+
+---
+
+### 17.12 Monitoring — v0.1 current state
+
+| Signal | Status | Notes |
+|--------|--------|-------|
+| CloudFront 5xx alarm | Created in pass 2 only | Gated on `enable_cloudfront` — does not exist until CloudFront distribution is created |
+| SNS email subscription | Created on first apply; must be confirmed | Check `alarm_email` inbox after apply and click the confirmation link |
+| CWAgent CPU/memory alarms | Disabled — `enable_cwagent_alarms = false` | Do not enable until CWAgent is installed and confirmed to be emitting metrics |
+| DB backup age alarm | Disabled — `enable_backup_alarm = false` | Do not enable until backup job exists and emits `BackupAgeMinutes` to `Footbag/{env}` CloudWatch namespace; uses `treat_missing_data = "breaching"` — enabling before the job exists fires the alarm continuously |
+
+Alarms for signals that do not exist are worse than no alarms — they train operators to
+ignore monitoring.
+
+---
+
+### 17.13 Subsequent deploy procedure
+
+After the first successful deploy, subsequent deploys follow this sequence.
+
+From local machine:
+```bash
+export LIGHTSAIL_IP=$(cd terraform/staging && terraform output -raw lightsail_static_ip)
+
+rsync -av --delete -e "ssh -p 2222" \
+  --exclude=node_modules \
+  --exclude=.git \
+  --exclude=.terraform \
+  --exclude=legacy_data \
+  --exclude=terraform \
+  --exclude=tests \
+  --exclude=docs \
+  --exclude=ifpa \
+  --exclude=.claude \
+  --exclude=aws \
+  --exclude=coverage \
+  --exclude=.env \
+  --exclude='.env.*' \
+  --exclude='*.db' \
+  --exclude='*.db-shm' \
+  --exclude='*.db-wal' \
+  ./ yourname@$LIGHTSAIL_IP:~/footbag-release/
+```
+
+On the host:
+```bash
+sudo rsync -a --delete ~/footbag-release/ /srv/footbag/
+sudo chown -R root:root /srv/footbag
+
+cd /srv/footbag
+docker compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml build
+sudo systemctl restart footbag
+sudo systemctl status footbag
+```
+
+Verify:
+```bash
+BASE_URL=http://$LIGHTSAIL_IP ./scripts/smoke-local.sh
+```
+
+---
+
+### 17.14 Bootstrap confirmation checklist
+
+Before moving to host bootstrap, confirm all of these:
+
+- [ ] Root MFA enabled; no root access keys exist; root not used for ongoing work
+- [ ] `footbag-operator` IAM user created with `AdministratorAccess`
+- [ ] `footbag-operator` MFA enabled
+- [ ] CLI access keys created and stored in KeePassXC vault (not in repo)
+- [ ] `aws configure --profile footbag-operator` completed
+- [ ] `export AWS_PROFILE=footbag-operator` set in this terminal
+- [ ] `aws sts get-caller-identity` returns correct account and `user/footbag-operator`
+- [ ] `terraform/shared` applied successfully
+- [ ] State bucket name recorded; `terraform/staging/backend.tf` placeholder replaced with real bucket name
+- [ ] Shared local state backed up outside the repo
+- [ ] `terraform/staging` pass 1 applied (`enable_cloudfront = false`)
+- [ ] Static IP captured; nip.io hostname constructed and verified with `dig`
+- [ ] `lightsail_origin_dns` and `enable_cloudfront = true` set in `terraform.tfvars`
+- [ ] `terraform/staging` pass 2 applied (full stack including CloudFront)
+- [ ] SNS email subscription confirmed
+- [ ] CloudFront status `Deployed` confirmed before testing through edge
+- [ ] Host bootstrap complete (§17.8 steps 1–6)
+- [ ] Application smoke checks pass (§4.9 of DEV_ONBOARDING_V0_1.md)

@@ -7,7 +7,8 @@
 #          sudo systemctl enable footbag
 #          sudo systemctl start footbag
 #
-# See docs/DEVOPS_GUIDE_V0_1.md §7.3 for the full deployment runbook.
+# See docs/DEV_ONBOARDING_V0_1.md §4.7-4.8 for host bootstrap and first deploy.
+# See docs/DEVOPS_GUIDE_V0_1.md §7 for the ongoing deployment runbook.
 # =============================================================================
 
 [Unit]

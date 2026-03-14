@@ -1015,9 +1015,9 @@ Done looks like:
 
 #### 5. Monitoring gates
 
-Keep `enable_cwagent_alarms = false` and `enable_backup_alarm = false` in `terraform.tfvars` for the first deployment. The `cloudfront_5xx` alarm is not gated and will be created. The CWAgent and backup-age alarms are gated because the signals they monitor do not exist yet.
+Keep `enable_cwagent_alarms = false` and `enable_backup_alarm = false` in `terraform.tfvars` for the first deployment. The `cloudfront_5xx` alarm is gated on `enable_cloudfront` and is created in pass 2 alongside the distribution — it does not exist after pass 1. The CWAgent and backup-age alarms are separately gated because the signals they monitor do not exist yet.
 
-Alarms for signals that do not exist are worse than no alarms — they train the team to ignore monitoring. The backup-age alarm will enter ALARM immediately if enabled before the backup job exists and emits metrics.
+Alarms for signals that do not exist are worse than no alarms — they train the team to ignore monitoring. The backup-age alarm uses `treat_missing_data = "breaching"` and will enter ALARM immediately if enabled before the backup job exists and emits metrics.
 
 #### 6. Confirm current Terraform operational assumptions
 
@@ -1089,7 +1089,7 @@ cd terraform/shared
 
 cat > terraform.tfvars <<EOF
 aws_account_id      = "123456789012"
-state_bucket_suffix = "a1b2c3d4"
+state_bucket_suffix = "a1b2c3d4e5"
 EOF
 
 terraform init
@@ -1267,7 +1267,7 @@ echo "${STATIC_IP}.nip.io"
 Set the output value as `lightsail_origin_dns` in `terraform.tfvars`:
 
 ```hcl
-lightsail_origin_dns = "34.x.x.x.nip.io"   # use your actual static IP
+lightsail_origin_dns = "34.192.250.246"   # 34.192.250.246.nip.io maps to 34.192.250.246 for DNS (use temp IP lightsail is handing out)
 enable_cloudfront    = true
 ```
 
@@ -1314,9 +1314,12 @@ terraform output alarm_topic_arn
 
 `lightsail_static_ip` is used to construct the nip.io origin hostname for the two-pass CloudFront setup (see step 4).
 
-#### 8. Confirm the alarm subscription and CloudFront status
+#### 8. Confirm the alarm subscription (and CloudFront status optionally)
 
-- confirm the SNS email subscription
+- confirm the SNS email subscription, just open the footbag aws root's @gmail.com and click the confirmation link AWS sent. 
+
+CloudFront status check: N/A — CloudFront doesn't exist yet (enable_cloudfront = false). 
+But if it does exist wehen you are reading this doc, then:
 - wait for the CloudFront distribution status to show `Deployed` before you test through the edge — CloudFront takes **15–30 minutes** to propagate globally after apply; the `*.cloudfront.net` URL is assigned immediately but returns errors during propagation
 
 ```bash
@@ -1346,6 +1349,8 @@ First login:
 > `sudo sed -i 's/^#Port 22/Port 22\nPort 2222/' /etc/ssh/sshd_config && sudo systemctl reload sshd`
 > Then retry the SSH command below.
 
+ec2-user is only used on first login, from then on, the user name will be footbag.
+
 ```bash
 LIGHTSAIL_IP=$(terraform output -raw lightsail_static_ip)
 ssh -i ~/.ssh/id_ed25519 -p 2222 ec2-user@$LIGHTSAIL_IP
@@ -1354,18 +1359,28 @@ ssh -i ~/.ssh/id_ed25519 -p 2222 ec2-user@$LIGHTSAIL_IP
 Immediately create your named operator account:
 
 ```bash
-sudo useradd -m -G wheel yourname
-sudo mkdir -p /home/yourname/.ssh
-sudo tee /home/yourname/.ssh/authorized_keys <<< "<your SSH public key>"
-sudo chown -R yourname:yourname /home/yourname/.ssh
-sudo chmod 700 /home/yourname/.ssh
-sudo chmod 600 /home/yourname/.ssh/authorized_keys
+sudo useradd -m -G wheel footbag
+sudo mkdir -p /home/footbag/.ssh
+sudo bash -c 'echo "<your SSH public key>" > /home/footbag/.ssh/authorized_keys'
+sudo chown -R footbag:footbag /home/footbag/.ssh
+sudo chmod 700 /home/footbag/.ssh
+sudo chmod 600 /home/footbag/.ssh/authorized_keys
 ```
+
+> **Note:** Do not use `tee <<< "..."` for authorized_keys on Amazon Linux 2023. The here-string wraps long keys across two lines, breaking SSH auth silently. Use `sudo bash -c 'echo "..." > file'` instead.
+
+Still as `ec2-user`, set a password for the footbag account (required for sudo):
+
+```bash
+sudo passwd footbag
+```
+
+Store this password in your credentials vault (KeePassXC).
 
 Then verify in a new terminal:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 -p 2222 yourname@$LIGHTSAIL_IP
+ssh -i ~/.ssh/id_ed25519 -p 2222 footbag@$LIGHTSAIL_IP
 sudo whoami
 ```
 
@@ -1379,18 +1394,20 @@ sudo whoami
 On the host:
 
 ```bash
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-sudo dnf install -y \
-  docker-ce \
-  docker-ce-cli \
-  containerd.io \
-  docker-buildx-plugin \
-  docker-compose-plugin \
-  sqlite \
-  rsync
+# Docker engine — from AL2023 native repos (moby-engine)
+sudo dnf install -y docker sqlite
+
+# Docker Compose plugin — not in AL2023 native repos; install binary from Docker GitHub
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+COMPOSE_VER=$(curl -s https://api.github.com/repos/docker/compose/releases/latest \
+  | grep -oP '"tag_name": "\K[^"]+')
+sudo curl -SL \
+  "https://github.com/docker/compose/releases/download/${COMPOSE_VER}/docker-compose-linux-x86_64" \
+  -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
 sudo systemctl enable --now docker
-sudo usermod -aG docker yourname
+sudo usermod -aG docker footbag
 ```
 
 Log out and back in so group membership takes effect.
@@ -1406,7 +1423,7 @@ sqlite3 --version
 All three must return version strings.
 
 > [!IMPORTANT]
-> Do not assume Amazon Linux 2023 default repos provide the right Docker packages. Add the Docker CE repo first.
+> Do not use the Docker CE RHEL repo (`download.docker.com/linux/rhel`) on Amazon Linux 2023. AL2023 reports a version string of `2023.x.x` which matches no RHEL repo path and returns 404. Use the AL2023 native `docker` package and install the Compose plugin as a standalone binary as shown above.
 
 #### 3. Prepare /srv/footbag and the live env file
 
@@ -1435,25 +1452,37 @@ If you mirror values into Parameter Store for reference, keep the same values un
 
 #### 4. Copy application files
 
-From your local machine:
+From your local machine: use footbag@34.192.250.246 
+Note that 34.192.250.246.nip.io maps to 34.192.250.246 for DNS (use temp IP lightsail is handing out)
 
 ```bash
-rsync -av --delete \
+rsync -av --delete -e "ssh -p 2222" \
   --exclude=node_modules \
   --exclude=.git \
+  --exclude=.terraform \
+  --exclude=legacy_data \
+  --exclude=terraform \
+  --exclude=tests \
+  --exclude=docs \
+  --exclude=ifpa \
+  --exclude=.claude \
+  --exclude=aws \
+  --exclude=coverage \
+  --exclude=.env \
+  --exclude='.env.*' \
   --exclude='*.db' \
   --exclude='*.db-shm' \
   --exclude='*.db-wal' \
-  ./ yourname@$LIGHTSAIL_IP:~/footbag-release/
+  ./ footbag@34.192.250.246:~/footbag-release/
 ```
+
+> Adjust `-p 2222` to match your configured SSH port if different.
 
 Then on the host:
 
 ```bash
 sudo rsync -a --delete ~/footbag-release/ /srv/footbag/
 sudo chown -R root:root /srv/footbag
-sudo chown root:root /srv/footbag/env
-sudo chmod 600 /srv/footbag/env
 ```
 
 > [!IMPORTANT]
@@ -1545,11 +1574,11 @@ sudo systemctl restart footbag
 
 ### 4.9 Verification
 
-Keep verification ordered.
-
 #### 1. Verify the origin directly
 
-Use the local smoke script against the Lightsail host on port 80:
+In a browser: http://34.192.250.246/events (or whatever temp IP lightsail is handing out)
+
+ALso: Use the local smoke script against the Lightsail host on port 80:
 
 ```bash
 BASE_URL=http://$LIGHTSAIL_IP ./scripts/smoke-local.sh
