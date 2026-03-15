@@ -9,7 +9,7 @@ import {
 import { NotFoundError, ValidationError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
 
-const PUBLIC_EVENT_KEY_PATTERN = /^event_(\d{4})_([a-z0-9_]+)$/;
+const PUBLIC_EVENT_KEY_PATTERN = /^[a-z0-9_]+$/;
 const NO_RESULTS_MESSAGE = 'Results are not yet available.';
 
 export interface PublicEventSummary {
@@ -50,6 +50,7 @@ export interface PublicEventDiscipline {
 export interface PublicEventResultParticipant {
   participantDisplayName: string;
   participantOrder: number;
+  participantPersonId: string | null;
 }
 
 export interface PublicResultPlacement {
@@ -232,6 +233,7 @@ function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResult
     placement.participants.push({
       participantDisplayName: row.participant_display_name,
       participantOrder: row.participant_order,
+      participantPersonId: row.participant_historical_person_id ?? null,
     });
   }
 
