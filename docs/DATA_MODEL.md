@@ -1,12 +1,12 @@
 # Footbag Website Modernization Project — Data Model
-**Version:** 0.1 / March 5, 2026
+**Last updated:** March 16, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 **Schema file:** `database/schema_v0_1.sql`  
 **Schema counts:** 48 tables · 9 views · 106 named indexes · 18 triggers
 
 **Quick routing:**
 - Use this document for: persisted entities, relationships, schema conventions, retained triggers, and DB-vs-app enforcement boundaries.
-- Next docs: `database/schema_v0_1.sql` for exact SQL definitions, `docs/SERVICE_CATALOG_V0_1.md` for service-layer usage, `docs/DESIGN_DECISIONS_V0_1.md` for rationale, `src/db/db.ts` for sql queries.
+- Next docs: `database/schema_v0_1.sql` for exact SQL definitions, `docs/SERVICE_CATALOG.md` for service-layer usage, `docs/DESIGN_DECISIONS.md` for rationale, `src/db/db.ts` for sql queries.
 
 ---
 

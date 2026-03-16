@@ -1,5 +1,5 @@
 # Footbag Website Modernization Project — Service Catalog
-**Version:** 0.1 / March 5, 2026
+**Last updated:** March 16, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 
 ---

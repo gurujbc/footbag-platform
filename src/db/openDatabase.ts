@@ -17,7 +17,7 @@ import BetterSqlite3 = require('better-sqlite3');
  * - health/readiness composition
  * - any schema migration or initialization script behavior
  */
-export const DEFAULT_DB_FILENAME = 'footbag.db';
+export const DEFAULT_DB_FILENAME = './database/footbag.db';
 
 export type SqliteDatabase = BetterSqlite3.Database;
 

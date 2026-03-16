@@ -2,7 +2,7 @@
   "name": "footbag-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "IFPA Footbag Platform — MVFP v0.1 public Events + Results slice",
+  "description": "IFPA Footbag Platform — current deployed public baseline and long-term community platform",
   "engines": {
     "node": ">=22.0.0"
   },

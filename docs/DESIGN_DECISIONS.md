@@ -1,5 +1,5 @@
 # Footbag Website Modernization Project — Design Decisions
-**Version:** 0.1 / March 4, 2026
+**Last updated:** March 16, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 
 **Document Purpose:**
@@ -8,13 +8,13 @@ This document captures technical decisions and rationale so that volunteers can 
 
 Scoping note: Numeric values in this document may represent fixed technical constants, deployment/infrastructure resource allocations and thresholds, or implementation notes. For Administrator-configurable operational, security, reminder, pricing, and retention values, normative defaults are defined in the User Stories document and loaded via configuration seeds. DD may describe parameterization, ranges, and ownership, but if a value is Administrator-configurable, DD does not define the normative default. Any numeric value in this document that conflicts with the User Stories normative defaults section is an error; User Stories wins.
 
-Current implementation note (MVFP V0.1): this document is the long-term architecture reference. For the current public Events + Results MVFP implementation, preserve these narrower rules where they differ from broader design discussion later in this document:
+Current implementation note (current deployed public baseline): this document is the long-term architecture reference. For the current deployed public baseline, preserve these narrower rules where they differ from broader design discussion later in this document:
 - `/health/ready` is only the minimal SQLite readiness path;
 - initial database bootstrap comes directly from `schema_v0_1.sql`, with numbered migrations deferred until after the first stable baseline;
 - the initial runtime requires `nginx`, `web`, and `worker`; the `image` container is a later-phase artifact;
 - the initial staging deployment uses the CloudFront default `*.cloudfront.net` URL; Route 53, ACM certificate, and custom domain aliases are deferred and commented out in Terraform (see `acm.tf` activation checklist);
 - the v0.1 runtime credential mechanism uses a dedicated IAM user (`footbag-staging-runtime`) with access keys injected directly as environment variables — the source-profile + AssumeRole pattern from §7.2 is the long-term target and is deferred until post-MVFP;
-- the current public Events + Results MVFP slice makes no runtime AWS calls, so the `footbag-staging-runtime` user is not required for the minimum stand-up described in DEV_ONBOARDING_V0_1.md; the credential mechanism above applies once runtime AWS calls (SSM, S3, SES, KMS) are activated;
+- the current public Events + Results MVFP slice makes no runtime AWS calls, so the `footbag-staging-runtime` user is not required for the minimum stand-up described in DEV_ONBOARDING.md; the credential mechanism above applies once runtime AWS calls (SSM, S3, SES, KMS) are activated;
 - the maintenance page (§6.3) is not functional in v0.1 — no `ordered_cache_behavior` routes to the S3 origin; this is a known reliability gap to be addressed post-MVFP.
 
 **Table of Contents**

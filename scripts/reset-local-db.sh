@@ -9,7 +9,6 @@
 
 set -euo pipefail
 
-# sqlite3 CLI is a documented prerequisite (see docs/DEV_ONBOARDING_V0_1.md §13.3)
 if ! command -v sqlite3 &>/dev/null; then
   echo "Error: sqlite3 CLI not found. Install it first:"
   echo "  Ubuntu/Debian: sudo apt-get install sqlite3"

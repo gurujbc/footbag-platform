@@ -1,14 +1,11 @@
 import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabase';
 
 /**
- * PROVISIONAL / MVFP-SCOPED DATABASE MODULE
- *
- * This file is intentionally limited to the first public-events slice of the
- * platform. It is not the final whole-platform db.ts.
+ * DATABASE MODULE
  *
  * This file owns:
  * - opening the single SQLite connection for application use at startup
- * - preparing the explicit MVFP statement groups needed by services
+ * - preparing the explicit statement groups needed by services
  * - exporting the shared transaction helper used by services
  * - providing the minimal database-readiness probe used as one readiness input
  *
@@ -38,16 +35,6 @@ import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabas
  * - Result grouping / display shaping belongs in services.
  * - Future expansion should add explicit statement groups rather than abstract
  *   frameworks or hidden data-access layers.
- *
- * Re-read these source docs before expanding this file:
- * 1. PROJECT_SUMMARY_CONCISE.md
- * 2. README.md
- * 3. docs/PROJECT_SUMMARY_V0_1.md
- * 4. docs/DESIGN_DECISIONS_V0_1.md
- * 5. docs/USER_STORIES_V0_1.md
- * 6. docs/DATA_MODEL_V0_1.md
- * 7. docs/SERVICE_CATALOG_V0_1.md
- * 8. database/schema_v0_1.sql
  */
 
 const DB_FILENAME = process.env.FOOTBAG_DB_PATH ?? DEFAULT_DB_FILENAME;

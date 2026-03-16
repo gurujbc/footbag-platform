@@ -1,6 +1,6 @@
 # Footbag Website Modernization Project —  Developer Onboarding Guide
 
-**Version:** 0.1 / March 12, 2026
+**Last updated:** March 16, 2026
 
 ## Local Quickstart, Architecture Orientation, and AWS Staging Deployment
 
@@ -484,12 +484,12 @@ Treat this guide as one document in a wider authority-doc set.
 
 Read these first when working on code:
 
-- `PROJECT_SUMMARY_V0_1.md`
-- `USER_STORIES_V0_1.md`
-- `VIEW_CATALOG_V0_1.md`
-- `SERVICE_CATALOG_V0_1.md`
-- `DESIGN_DECISIONS_V0_1.md`
-- `DATA_MODEL_V0_1.md`
+- `PROJECT_SUMMARY.md`
+- `USER_STORIES.md`
+- `VIEW_CATALOG.md`
+- `SERVICE_CATALOG.md`
+- `DESIGN_DECISIONS.md`
+- `DATA_MODEL.md`
 
 How they relate:
 
@@ -677,7 +677,7 @@ The repository shape remains the right mental map:
 │  ├─ staging/
 │  └─ production/
 ├─ docs/
-│  └─ DEV_ONBOARDING_V0_1.md
+│  └─ DEV_ONBOARDING.md
 ├─ .env.example
 ├─ .gitignore
 ├─ package.json
@@ -1801,7 +1801,7 @@ A minimal real monitoring loop includes:
 - enable `enable_backup_alarm = true`
 - verify the metric appears in CloudWatch
 - force a temporary alarm state to confirm SNS email delivery
-- document operator health-check locations in `docs/DEVOPS_GUIDE_V0_1.md`
+- document operator health-check locations in `docs/DEVOPS_GUIDE.md`
 
 ## 6. Path F — Iterative deploy: test locally, push to staging
 
@@ -1827,6 +1827,40 @@ Use this path when:
 - `/srv/footbag/env`, `/etc/systemd/system/footbag.service`, and the expected `/srv/footbag` layout already exist and are healthy
 
 Do **not** use this path to repair a broken host bootstrap or recreate the live runtime tree from scratch.
+
+### 6.1A Claude Code Plan Mode for iteration
+
+Use Claude Code Plan Mode before editing when the task is primarily planning-heavy or the implementation is not yet obvious.
+
+Use Plan Mode when:
+- the change touches multiple files or layers
+- you need to inspect route/service/db/test dependencies first
+- you are working from `IMPLEMENTATION_PLAN.md`
+- you are planning legacy-data migration, member import, account-claim, or password-reset migration work
+- you are doing refactor planning, sequencing analysis, or "what should we build next?" work
+
+Skip Plan Mode when:
+- the change is small and obvious
+- you can describe the diff in one sentence
+- the task is a simple local fix, rename, or link update
+
+How to use it:
+- in an active Claude Code session, press `Shift+Tab` until `⏸ plan mode on`
+- or type `/plan mode` in the Claude Code prompt
+
+Recommended prompt pattern for this repo:
+- tell Claude to read `IMPLEMENTATION_PLAN.md`, `CLAUDE.md`, the nearest local `CLAUDE.md`, and the likely touched code/tests first
+- tell Claude current code is the source of truth for implemented behavior
+- tell Claude not to use browser automation unless explicitly asked
+- ask Claude to return:
+  1. baseline observed
+  2. files likely to change
+  3. dependencies or prerequisites
+  4. risks and tradeoffs
+  5. verification plan
+  6. recommended implementation order
+
+After the plan is reviewed, switch back to normal mode to implement.
 
 ### 6.2 Local: test the change first
 

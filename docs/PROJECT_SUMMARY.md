@@ -1,6 +1,6 @@
 # Footbag Website Modernization Project — Project Summary
 
-**Version:** 0.1 / March 4, 2026
+**Last updated:** March 16, 2026
 
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 

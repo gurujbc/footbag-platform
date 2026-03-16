@@ -1,6 +1,6 @@
 # Footbag Website Modernization Project — Diagrams
 
-**Version:** 0.1 / February 28, 2026
+**Last updated:** March 16, 2026
 
 **Prepared by:** David Leberknight / DavidLeberknight@gmail.com
 

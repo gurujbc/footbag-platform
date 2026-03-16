@@ -1,6 +1,6 @@
 ---
 name: doc-sync
-description: Detect documentation drift against current code and confirmed decisions, then propose only the smallest accurate doc updates. Never edit docs without explicit human approval.
+description: Detect documentation drift against current code and confirmed decisions, then propose only the smallest accurate doc updates. Never edit docs without explicit human approval. Use when user asks whether docs need updating, code behavior has changed, interfaces or identifiers have changed, or suspected drift needs investigation.
 ---
 
 # Doc Sync
@@ -116,7 +116,7 @@ Valid approval:
 - ok / go
 - any other reasonable affirmation
 
-Alsways provide the human with the option to approve all edits in the current session.
+Always provide the human with the option to approve all edits in the current session.
 If a human answers no to a proposed edit, ask why, then carefully adjust accordingly.
 
 Not valid approval:

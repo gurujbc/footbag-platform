@@ -1,32 +1,41 @@
-# Footbag Website Modernization - Project Summary for AI 
+# Footbag Website Modernization — Project Summary for AI
+
+## Purpose
+
+Use this file for quick orientation and document routing.
+
+## Current-state rule
+
+For the **current implemented baseline**, near-term sequencing, dependencies, and migration/refactor ordering, read `IMPLEMENTATION_PLAN.md`, only if in Plan Mode.
+
+Current code is the source of truth for implemented behavior.
 
 ## Fast routing
 - Use this file for contextual refresh and document routing only.
-- For page/UI/view/route/view-model details, load `docs/VIEW_CATALOG_V0_1.md`.
-- For service-layer ownership and method contracts, load `docs/SERVICE_CATALOG_V0_1.md`.
-- For functional requirements and user stories with acceptance criteria, load `docs/USER_STORIES_V0_1.md`.
-- For non-functional requirements and technical/design detail, load `docs/DESIGN_DECISIONS_V0_1.md`.
-- For database schema explanation, load `docs/DATA_MODEL_V0_1.md` or database/schema_V0_1.sql for detail.
+- For page/UI/view/route/view-model details, load `docs/VIEW_CATALOG.md`.
+- For service-layer ownership and method contracts, load `docs/SERVICE_CATALOG.md`.
+- For functional requirements and user stories with acceptance criteria, load `docs/USER_STORIES.md`.
+- For non-functional requirements and technical/design detail, load `docs/DESIGN_DECISIONS.md`.
+- For database schema explanation, load `docs/DATA_MODEL.md` or `database/schema_v0_1.sql` for detail.
+- For near-term sequencing, dependency analysis, and incremental work order, read `IMPLEMENTATION_PLAN.md`.
 
-### Current implementation - stay focused (the MVFP)
-- The current design focus is the MVFP public Events + Results browsing slice.
-- The public route contract is: `GET /events`, `GET /events/year/:year`, `GET /events/:eventKey`, `GET /health/live`, and `GET /health/ready`.
-- `GET /events/year/:year` is a non-paginated whole-year completed-events/results page.
-- `GET /events/:eventKey` remains the canonical single-event drill-down route.
-- For exact page routes, canonical `eventKey` behavior, and page/view-model expectations, read **View Catalog**.
-- For exact service ownership and page-oriented method contracts for that slice, read **Service Catalog**.
-- Preserve the existing server-rendered Express + Handlebars approach for this slice: HTML page routes, thin controllers, service-owned use-case logic, one prepared-statement `db.ts` module, logic-light templates, no repository layer, no ORM, and no REST API for this slice.
-- The MVFP does not require member login.
-- The relevant MVFP user stories are: `V_Browse_Upcoming_Events` and `V_Browse_Past_Events`.
+## Current implemented baseline
 
+Current code is the source of truth for implemented behavior.
+
+The currently implemented public routes are:
+- `GET /`
+- `GET /clubs` (placeholder — real data coming in Sprint 3)
+- `GET /events`
+- `GET /events/year/:year`
+- `GET /events/:eventKey`
+- `GET /health/live`
+- `GET /health/ready`
 
 ## Project identity
 
 - **Repo:** github.com/davidleberknight/footbag-platform
-- **Maintainer:** David Leberknight (@davidleberknight, davidleberknight@gmail.com) 
-- **Target domain:** footbag.org (replacing/modernizing)
 - **Institutional context:** Developed under IFPA auspices (International Footbag Players Association)
-- **Licence:** Apache-2.0 (code) 
 
 ## Project mission and operating philosophy
 
@@ -35,6 +44,7 @@
 - Prefer **simplicity, transparency, and explicitness** over clever abstractions.
 - Use standard, widely understood technologies and patterns so future contributors can onboard quickly.
 - Keep code and docs aligned so the project remains maintainable over time.
+- Route and integration tests are the first verification path; browser verification is explicit-human-request-only.
 
 ## Big-picture architecture (mental model to preserve)
 
@@ -131,6 +141,5 @@ Also: the agent may read the **full human-oriented documents** when needed; it i
 - Need entity relationships, persisted state conventions, schema invariants, or exact SQL surface -> **Data Model** + **Schema SQL**
 - Need rationale / trade-offs / "why was it done this way" -> **Design Decisions**
 - Need deployment, backups, recovery, infrastructure changes, or CI/CD -> **DevOps guide**. Use **Developer Onboarding** for blank-machine setup and first-pass bootstrap guidance.
-- Need terminology clarification -> **Glossary**
 - Need big-picture human context or document relationships -> **Project Summary** (full version)
 

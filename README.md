@@ -12,21 +12,22 @@ Legacy site (HTTP only): [http://www.footbag.org/](http://www.footbag.org/)
 
 ## Start here
 
-- **Humans:** read `docs/PROJECT_SUMMARY_V0_1.md`
+- **Humans:** read `docs/PROJECT_SUMMARY.md`
 - **AI tools:** read `PROJECT_SUMMARY_CONCISE.md`
+- **Near-term sequencing:** read `IMPLEMENTATION_PLAN.md`
 
 ## Current project state
 
-**Minimum Viable First Page (MVFP v0.1) is running on AWS Lightsail.**
+The current public slice is already deployed on AWS and is the baseline for ongoing work.
 
-Sneek Preview!! Look here:  [http://34.192.250.246/events/event_2025_beaver_open](http://34.192.250.246/events/event_2025_beaver_open)
+Sneak Preview: [http://34.192.250.246/events/event_2025_beaver_open](http://34.192.250.246/events/event_2025_beaver_open)
 
-- For this initial deployment, we have code, tests, AI-created seed data, and complete documentation.
 - Some legacy migration tooling is done, including a full mirror of the current live footbag.org.
 - Scripts to process and clean historic event-results data are nearly complete.
-- This is why the MVFP scope is viewing events and results. 
+- This is why the MVFP scope is viewing events and results.
 - Some official rule/policy simplification proposals were recently **Approved by IFPA Board Decision** and will be incorporated in v0.2
 - V0.2 will also have real event result data, and a bit more.
+- An early-draft implementation plan is in `IMPLEMENTATION_PLAN.md`.
 
 ## Governance
 
@@ -36,8 +37,6 @@ This repository distinguishes between:
 
 - **Category A (maintainer authority):** technical implementation, repo configuration, tooling, code/docs changes
 - **Category B (requires IFPA Board approval):** official IFPA policy/rules, rankings/eligibility definitions, authorized IFPA branding decisions, repository ownership transfer
-
-Changes that are **Pending IFPA Board Decision** must not be treated as official IFPA policy.
 
 ## Contributing
 
@@ -49,22 +48,24 @@ Please read:
 ## Using AI tools (Claude Code)
 
 See `CLAUDE.md` for the full rules Claude operates under.
-These are the project conventions enforced with Claude Code skills and hooks:
 
-- **Secrets are hard-blocked.** Some key files cannot be edited by Claude under any circumstances.
-- **Git commits and pushes are hard-blocked.** Claude can never commit or push to GitHub. 
-- **Editing Project Docs requires explicit approval.** Claude must propose exact before and after text for human approval.
+Project conventions enforced with Claude Code:
+- secret-bearing and local-private files are blocked from editing
+- git commits and pushes are blocked
+- risky/destructive commands may require confirmation
+- editing project docs, `.github/`, or `.claude/` requires explicit human approval
 
 ## Project docs
 
-See `docs/` for project documentation and design materials.
-See `database/` for the database schema sql.
+- `docs/` contains canonical long-term product, design, and operating docs
+- `IMPLEMENTATION_PLAN.md` contains near-term sequencing, dependency analysis, and incremental planning
+- `database/` contains the schema SQL and runtime database notes
 
 ## Technology stack
 
 TypeScript · Node.js · Express · Handlebars · SQLite · AWS (Lightsail, S3, SES, CloudFront) · Docker · Terraform
 
-Stripe and additional platform integrations are planned for future delivery slices.
+Stripe and additional platform integrations are planned for later delivery.
 
 ## License and trademarks
 

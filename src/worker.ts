@@ -7,7 +7,7 @@
  * without errors.
  *
  * When job processing is implemented, OperationsPlatformService will own the
- * job catalog and scheduler integration (see docs/DEVOPS_GUIDE_V0_1.md §11).
+ * job catalog and scheduler integration.
  */
 import 'dotenv/config';
 import { logger } from './config/logger';

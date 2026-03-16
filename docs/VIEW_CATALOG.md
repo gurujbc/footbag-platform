@@ -1,5 +1,5 @@
 # Footbag Website Modernization Project -- View Catalog
-**Version:** 0.1 / March 15, 2026
+**Last updated:** March 16, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 
 ---
@@ -24,7 +24,7 @@ This document covers:
 - the public visual and structural standard for server-rendered visitor pages
 - the current public route catalog
 - the required page contract for public rendering
-- the current public pages (Project scope for V0.1 only as of today):
+- the current public pages in the current deployed public baseline:
   - Home  (main landing page for site)
   - Events index (main landing page for events)
   - Events year archive

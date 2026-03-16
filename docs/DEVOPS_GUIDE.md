@@ -1,10 +1,10 @@
 # Footbag Website Modernization Project — DevOps Guide
 
-**Version:** 0.1 / March 7, 2026
+**Last updated:** March 16, 2026
 
 This file is the operator manual for the deployed platform. It assumes the solution architecture, functional requirements, and service boundaries are already defined elsewhere and intentionally does not repeat that material. It focuses on what a System Administrator must provision, secure, deploy, monitor, back up, restore, and maintain.
 
-Current implementation note (MVFP V0.1): this guide covers the long-term operating model, but the current public Events + Results MVFP release is narrower in three places that must not be lost:
+Current implementation note (current deployed public baseline): this guide covers the long-term operating model, but the current deployed public baseline is narrower in three places that must not be lost:
 - `/health/ready` is currently only the minimal SQLite readiness check;
 - the initial database baseline comes from `schema_v0_1.sql`, so the migration-chain runbooks here are post-baseline guidance rather than a bootstrap prerequisite;
 - Backup freshness, required-config breadth, and memory-pressure handling remain operational monitoring concerns for this stage rather than readiness gates.
@@ -110,7 +110,7 @@ The previous DevOps draft had a useful set of System Administrator stories. Thos
 | `SA_Configure_Budgets_And_SNS_Alerting` | configure budgets, notifications, and cost alarms | §12.5 |
 | `SA_Configure_Email_Delivery_Infrastructure` | SES domain verification, SPF, DKIM, DMARC, bounce handling | §4.5, §13.5 |
 | `SA_Configure_Job_Schedules` | define and maintain the scheduler for system jobs | §11 |
-| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING_V0_1.md Path D; DEVOPS_GUIDE_V0_1.md §17 (when added) |
+| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING.md Path D; DEVOPS_GUIDE.md §17 (when added) |
 
 ---
 
@@ -499,7 +499,7 @@ For the initial blank-account bootstrap, apply in this sequence:
 8. CloudFront distribution
 9. public DNS records
 
-> **v0.1 test deployment — steps 3, 4, and 9 deferred.** Route 53 zone, ACM certificate, and public DNS records are not required when using the CloudFront default URL. The `terraform/shared/` module must be applied first to create the state bucket before applying `terraform/staging/`. See `DEV_ONBOARDING_V0_1.md` §4.6 (Terraform staging apply) for the full v0.1 bootstrap sequence.
+> **v0.1 test deployment — steps 3, 4, and 9 deferred.** Route 53 zone, ACM certificate, and public DNS records are not required when using the CloudFront default URL. The `terraform/shared/` module must be applied first to create the state bucket before applying `terraform/staging/`. See `DEV_ONBOARDING.md` §4.6 (Terraform staging apply) for the full v0.1 bootstrap sequence.
 
 ### 6.4 Environment separation
 
@@ -1255,7 +1255,7 @@ and completing the first staging deployment. It absorbs the content previously i
 separate `docs/AWS_GUIDE_V0_1.md` draft (which is not checked in and should be deleted
 locally once this section is confirmed complete).
 
-For the developer-facing step-by-step walkthrough, see `DEV_ONBOARDING_V0_1.md` Path D.
+For the developer-facing step-by-step walkthrough, see `DEV_ONBOARDING.md` Path D.
 This section is the operational reference: it explains what each step controls, what the
 constraints are, and what to do when things go wrong.
 
@@ -1827,4 +1827,4 @@ Before moving to host bootstrap, confirm all of these:
 - [ ] SNS email subscription confirmed
 - [ ] CloudFront status `Deployed` confirmed before testing through edge
 - [ ] Host bootstrap complete (§17.8 steps 1–6)
-- [ ] Application smoke checks pass (§4.9 of DEV_ONBOARDING_V0_1.md)
+- [ ] Application smoke checks pass (§4.9 of DEV_ONBOARDING.md)
