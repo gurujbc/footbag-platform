@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# block-git-commit.sh
-# git add: ask for confirmation first
-# git commit, git push: hard block, never allowed
 set -euo pipefail
 
 INPUT="$(cat)"
@@ -9,7 +6,7 @@ COMMAND="$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')"
 
 [ -n "$COMMAND" ] || exit 0
 
-if printf '%s' "$COMMAND" | grep -qE 'git\s+(commit|push)'; then
+if printf '%s' "$COMMAND" | grep -Eq '(^|[;&|[:space:]])git[[:space:]]+commit([[:space:]]|$)|(^|[;&|[:space:]])git[[:space:]]+push([[:space:]]|$)'; then
   jq -n '{
     hookSpecificOutput: {
       hookEventName: "PreToolUse",
@@ -20,7 +17,7 @@ if printf '%s' "$COMMAND" | grep -qE 'git\s+(commit|push)'; then
   exit 0
 fi
 
-if printf '%s' "$COMMAND" | grep -qE 'git\s+add'; then
+if printf '%s' "$COMMAND" | grep -Eq '(^|[;&|[:space:]])git[[:space:]]+add([[:space:]]|$)'; then
   jq -n '{
     hookSpecificOutput: {
       hookEventName: "PreToolUse",
@@ -30,5 +27,3 @@ if printf '%s' "$COMMAND" | grep -qE 'git\s+add'; then
   }'
   exit 0
 fi
-
-exit 0
