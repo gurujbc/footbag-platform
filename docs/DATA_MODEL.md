@@ -2,7 +2,7 @@
 **Last updated:** March 16, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 **Schema file:** `database/schema_v0_1.sql`  
-**Schema counts:** 48 tables · 9 views · 106 named indexes · 18 triggers
+**Schema counts:** 49 tables · 9 views · 108 named indexes · 18 triggers
 
 **Quick routing:**
 - Use this document for: persisted entities, relationships, schema conventions, retained triggers, and DB-vs-app enforcement boundaries.
@@ -166,6 +166,8 @@ Standard tags (`is_standard = 1`) follow platform patterns:
 - Clubs: `#club_{location_slug}`
 
 Freeform tags are unrestricted beyond security input validation (HTML stripping, Unicode normalization, max 100 characters).
+
+The event tag/key pattern is exact and underscore-based. Documentation and route contracts must not assume hyphen/underscore rewrites, aliasing, or fuzzy matching.
 
 The `tag_normalized` column stores the lowercased form; `tag_display` stores the original capitalization for rendering.
 
@@ -548,6 +550,10 @@ If the latest ledger row shows an annual tier (`tier1_annual` or `tier2_annual`)
 #### Stripe identity
 `stripe_customer_id` is the member-level canonical Stripe Customer ID (set when a recurring donation is first created). `payments.stripe_customer_id` is a per-payment snapshot and is **not** the canonical ID.
 
+#### `legacy_member_id`
+
+`legacy_member_id` is a migration-era traceability field. It may help reconcile imported historical records with current members, but it does not by itself imply account ownership, authenticated access, or a unified persons model.
+
 #### PII purge
 `login_email`, `login_email_normalized`, `password_hash`, and `password_changed_at` are nullable to support GDPR account purge. A `CHECK` constraint enforces a two-way invariant: they are required for un-purged members (`personal_data_purged_at IS NULL`) and must be `NULL` once `personal_data_purged_at` is set.
 
@@ -571,7 +577,7 @@ URLs are validated by the application before insertion (must be `https`, well-fo
 
 ### 4.16 Registrations & Event Results
 
-**Tables:** `registrations`, `roster_access_grants`, `registration_discipline_selections`, `event_results_uploads`, `event_result_entries`, `event_result_entry_participants`
+**Tables:** `registrations`, `roster_access_grants`, `registration_discipline_selections`, `event_results_uploads`, `event_result_entries`, `historical_persons`, `event_result_entry_participants`
 
 #### Competitor registration completeness (APP-013)
 Before a competitor registration reaches `status = 'confirmed'`, the application must ensure at least one `registration_discipline_selections` row exists for that registration.
@@ -582,8 +588,31 @@ Before a competitor registration reaches `status = 'confirmed'`, the application
 **DB responsibility:** store the window and enforce basic interval sanity (`CHECK (expires_at > granted_at)`).  
 **Application responsibility:** determine eligibility, compute duration from config (`vouch_window_days`), issue/revoke grants, and prevent duplicate or invalid grants beyond the schema's structural constraints.
 
+#### Historical imported people
+
+`historical_persons` stores imported read-only historical identities used by legacy result imports.
+
+These rows may or may not correspond to current rows in `members`. They exist so imported historical results can preserve participant identity without requiring that every historical person be a current Member.
+
+`legacy_member_id` on `members` and `historical_persons` is migration-era traceability only for this design. It is not, by itself, a platform-wide unified identity system.
+
+> **Maintainer note (longer-term design):** Longer-term, the platform may distinguish a broader Person concept from Member account/membership status, so historical imported people and other non-member identities do not need to be forced into the members table. That longer-term direction is not implemented by this slice. This document should describe the accepted current schema as-is and should not be read as requiring a platform-wide unified persons model yet.
+
 #### Results
 `event_result_entries.discipline_id` is nullable (NULL = discipline-agnostic / general ranking). `UNIQUE(event_id, discipline_id, placement)` prevents duplicate placements for discipline-specific rows. For general-ranking rows (`discipline_id IS NULL`), the partial unique index `ux_result_entries_general_placement` on `(event_id, placement) WHERE discipline_id IS NULL` prevents duplicates — required because SQLite treats `NULL` values as distinct in `UNIQUE` constraints.
+
+#### Result participants and linkage semantics
+
+`event_result_entry_participants.display_name` is the canonical always-renderable participant label for public results.
+
+`event_result_entry_participants.member_id` remains the optional link to a current member row when known.
+
+`event_result_entry_participants.historical_person_id` is the optional link to `historical_persons(person_id)` for imported historical identity when known.
+
+For public rendering in the current slice:
+- always render `display_name`
+- only expose a participant link when a supported historical-person-backed detail target exists
+- otherwise render plain text
 
 #### MVFP public-results clarification
 Version 0.1 of the schema does not define a separate publish/unpublish state for event results. For the MVFP public events/results slice, **public results exist** in application logic only when both of the following are true:

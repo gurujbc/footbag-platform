@@ -6,7 +6,9 @@
 
 ## 1. Purpose
 
-This document is the authoritative catalog for the current public website pages and the authoritative standard those pages must follow.
+This document is the authoritative catalog for the public pages that are already implemented or actively specified in the current slice, and for the rendering standard those cataloged pages must follow.
+
+It is intentionally partial. A view may still be part of the product because it is defined in `docs/USER_STORIES.md` even when it is not yet cataloged here.
 
 It has two jobs:
 
@@ -32,6 +34,8 @@ This document covers:
   - Clubs landing placeholder
 - the rules future pages must follow to join the catalog
 
+`docs/USER_STORIES.md` remains broader than this file. This catalog is authoritative for the views it includes; it does not attempt to catalog the full future product yet.
+
 This document does not cover (yet):
 
 - member-only pages
@@ -41,6 +45,9 @@ This document does not cover (yet):
 - authentication flows
 - internal tools
 - implementation details that belong in code patches rather than catalog definition
+- media pages that remain out of scope for the current slice
+- news pages that remain out of scope for the current slice
+- tutorial pages that remain out of scope for the current slice
 
 ---
 
@@ -70,6 +77,10 @@ The existing Events pages are part of the catalog, but they do not define the si
 ### 3.4 Future pages must fit the standard
 
 A new public page may join the catalog only if it can be expressed through the same generic standard. If a genuinely reusable new primitive is needed, that primitive must be added to the standard itself and then reused.
+
+### 3.5 Home is a special composition-page exception
+
+Home (`/`) is the one intentional exception to the otherwise route/page pattern used by the current public slice. It still follows the reusable public frame, thin-controller rule, and service-owned shaping rule, but it is a landing-page composition view and should be shaped by a dedicated `HomeService`.
 
 ---
 
@@ -284,6 +295,8 @@ Public visitor.
 ### Standard relationship
 
 This page consumes the generic public rendering standard.
+
+It is also the one intentional Home-page exception: a landing-page composition view rather than a generic list/detail consumer. It should be shaped by a dedicated `HomeService`.
 
 ### Page intent
 
@@ -540,6 +553,7 @@ Events with status `draft`, `pending_approval`, or `canceled` resolve through st
     - `participants[]`
       - `participantDisplayName`
       - `participantOrder`
+      - optional `participantHref` — present only when the participant resolves to a historical-person-backed read-only detail target; omit otherwise and render plain text
 
 ### Canonical event identity rule
 
@@ -548,8 +562,9 @@ For the current slice, the public route key is `eventKey`.
 Rules:
 
 - `GET /events/:eventKey` is the canonical public detail route
-- the public key format remains `event_{year}_{event_slug}` for the current slice
-- validation and normalization happen in controller/service code, not templates
+- the public key format is exactly `event_{year}_{event_slug}` for the current slice
+- exactness is underscore-based; the catalog does not authorize hyphen/underscore rewrites, aliasing, or fuzzy matching
+- route validation belongs in controller/service code, not templates
 - the catalog does not authorize alternate public detail URL patterns
 
 ### Navigation outputs
@@ -567,7 +582,7 @@ There is no empty state for a missing event. A valid missing-record path should 
 
 ### Purpose
 
-Establish Clubs as a first-class public section in the site structure even before the club directory is implemented.
+Establish Clubs as a first-class public section in the site structure even before the club directory is implemented. This is a drafted next-level placeholder contract in the current slice, not the full future clubs-directory contract.
 
 ### Route
 

@@ -28,19 +28,27 @@ Do not use this skill for:
 - broad documentation improvement passes unrelated to actual drift
 
 ## Source-of-truth order
-When sources conflict, evaluate in this order:
-1. explicit human decisions in the current task
-2. current local repository code and configuration
-3. current local project documentation
 
-If code and docs disagree and intended behavior is unclear, do not guess. Escalate to the human.
+When sources conflict, evaluate in this order:
+
+1. explicit human decisions in the current task
+2. `docs/USER_STORIES.md` for functional requirements
+3. the top active-slice/status block in `IMPLEMENTATION_PLAN.md` for current scope and out-of-scope boundaries
+4. current local repository code and configuration for implemented behavior
+5. derived local documentation (`VIEW_CATALOG`, `SERVICE_CATALOG`, `DATA_MODEL`, etc.)
+
+When code, plan, and derived docs disagree, surface the drift explicitly. Do not flatten the disagreement into one invented source of truth.
 
 ## Read first
-Before making any recommendation, read:
+
+Before making any recommendation, read selectively:
+
 - `PROJECT_SUMMARY_CONCISE.md` if present
-- the most relevant local documentation for the affected area
+- the top active-slice/status block in `IMPLEMENTATION_PLAN.md`
+- `docs/USER_STORIES.md`
+- the most relevant derived documentation for the affected area
 - the touched code files
-- any configuration, schema, or code files needed to understand the change
+- any schema/configuration needed to understand the change
 
 ## Workflow
 

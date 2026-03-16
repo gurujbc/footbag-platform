@@ -2,20 +2,21 @@
 
 ## Purpose
 
-Local rules for editing project documentation.
+Local rules for documentation-first work in this repository.
 
 ## Source precedence
 
-- Prefer the latest local docs when they conflict with older external snapshots.
-- Treat `PROJECT_SUMMARY_CONCISE.md` as the quickest repo overview and routing file.
-- Use project docs to reconcile intended scope and contracts before proposing doc changes.
-- Surface conflicts instead of silently blending incompatible sources.
-- Always ask the human if in doubt.
+- Explicit human decisions in the current task override everything else.
+- `docs/USER_STORIES.md` is the functional source of truth.
+- The top active-slice/status block in `IMPLEMENTATION_PLAN.md` governs current scope and out-of-scope boundaries.
+- Current code is the source of truth for implemented behavior.
+- Derived docs must be read in that light: `docs/VIEW_CATALOG.md` may be intentionally partial for the current public slice, while `docs/SERVICE_CATALOG.md` remains a broader canonical service-contract reference.
+- Surface conflicts explicitly instead of silently blending incompatible sources.
 
 ## Documentation rules
 
-- Canonical docs in `docs/` are long-term, design-oriented references.
-- Do not turn canonical docs into slice trackers or sprint notes.
-- Near-term sequencing and implementation order belong in `IMPLEMENTATION_PLAN.md`.
-- Always invoke the `doc-sync` skill before proposing any doc edits.
-- DO NOT EDIT project documents unless the human explicitly gives consent.
+- Canonical docs remain canonical references; do not turn them into scope trackers except where `docs/VIEW_CATALOG.md` is intentionally partial by design.
+- `IMPLEMENTATION_PLAN.md` is intentionally the active-slice tracker and scope governor.
+- Read only the relevant sections needed for the task.
+- Use the `doc-sync` skill when the task is documentation drift detection or documentation synchronization.
+- Do not edit project documents unless the human explicitly gives consent.

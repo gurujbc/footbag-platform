@@ -6,18 +6,20 @@ Use this file for quick orientation and document routing.
 
 ## Current-state rule
 
-For the **current implemented baseline**, near-term sequencing, dependencies, and migration/refactor ordering, read `IMPLEMENTATION_PLAN.md`, only if in Plan Mode.
+For non-trivial work, read the top active-slice/status block in `IMPLEMENTATION_PLAN.md`. The plan is active during normal repo work and governs the current slice.
+
+`docs/USER_STORIES.md` is the functional source of truth.
 
 Current code is the source of truth for implemented behavior.
 
 ## Fast routing
 - Use this file for contextual refresh and document routing only.
-- For page/UI/view/route/view-model details, load `docs/VIEW_CATALOG.md`.
-- For service-layer ownership and method contracts, load `docs/SERVICE_CATALOG.md`.
-- For functional requirements and user stories with acceptance criteria, load `docs/USER_STORIES.md`.
+- For functional requirements and user stories with acceptance criteria, load `docs/USER_STORIES.md` first.
+- For current slice/scope, known drift, and sequencing, read the top active-slice/status block in `IMPLEMENTATION_PLAN.md`; for sequencing, dependency analysis, or phased planning, read the full document in Plan Mode.
+- For page/UI/view/route/view-model details already in scope, load `docs/VIEW_CATALOG.md`.
+- For service-layer ownership and method contracts, load `docs/SERVICE_CATALOG.md`; use the plan to determine what is implemented now versus what is broader design / planned work.
+- For database schema explanation, load `docs/DATA_MODEL.md` or `database/schema_v0_1.sql`.
 - For non-functional requirements and technical/design detail, load `docs/DESIGN_DECISIONS.md`.
-- For database schema explanation, load `docs/DATA_MODEL.md` or `database/schema_v0_1.sql` for detail.
-- For near-term sequencing, dependency analysis, and incremental work order, read `IMPLEMENTATION_PLAN.md`.
 
 ## Current implemented baseline
 
@@ -31,6 +33,13 @@ The currently implemented public routes are:
 - `GET /events/:eventKey`
 - `GET /health/live`
 - `GET /health/ready`
+
+## Current operating model
+
+- Home (`/`) is the landing-page composition exception in the public architecture.
+- Public event identity is exact and underscore-based: `event_{year}_{event_slug}` / `#event_{year}_{event_slug}`.
+- Historical imported people may appear in legacy results without being current Members.
+- Media, news, and tutorial flows remain in the user stories but are out of scope for the current slice.
 
 ## Project identity
 

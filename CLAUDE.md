@@ -10,7 +10,7 @@ Modernizing footbag.org for the International Footbag Players Association (IFPA)
 
 **Start here:**
 - `PROJECT_SUMMARY_CONCISE.md` for orientation and document routing, if required for task.
-- `IMPLEMENTATION_PLAN.md` — consult only when in Plan Mode (sequencing, dependencies, phased work).
+- `IMPLEMENTATION_PLAN.md` — for any non-trivial task, read the top active-slice/status block to confirm scope; for tasks primarily about sequencing, dependency ordering, or phased planning, read the full document in Plan Mode.
 
 ## Repo layout
 
@@ -29,6 +29,15 @@ terraform/    AWS infrastructure
 tests/        Integration tests
 ```
 
+## Source-of-truth order for active work
+
+1. explicit human decisions in the current task
+2. `docs/USER_STORIES.md` for functional requirements
+3. the top active-slice/status block in `IMPLEMENTATION_PLAN.md` for scope
+4. current code for implemented behavior
+5. relevant derived docs (`docs/VIEW_CATALOG.md`, `docs/SERVICE_CATALOG.md`, `docs/DATA_MODEL.md`)
+6. `docs/DESIGN_DECISIONS.md` for rationale and non-negotiable architectural commitments
+
 ## Non-negotiable rules
 
 1. Never edit documentation, `.github/`, or `.claude/` files without explicit human approval.
@@ -41,11 +50,12 @@ tests/        Integration tests
 - Explicit human decisions in this session override everything else.
 - Current code is the source of truth for implemented behavior.
 - Documentation in /docs describe long-term product and design intent, not necessarily the current Sprint's reality.
-- If a human prompt is primarily a planning task and Claude is not already in Plan Mode, ask exactly:
-  `Do you want to invoke Plan Mode for this prompt?`
+- Use Plan Mode when the task is primarily about sequencing, dependency ordering, or phased planning. For normal implementation work, the top active-slice/status block in `IMPLEMENTATION_PLAN.md` is sufficient.
 - Do not use browser automation or MCP tools unless the human explicitly asks for browser testing or verification.
 
 ## Skills
+
+Only rely on skills that actually exist under `.claude/skills`.
 
 Available workflow skills and when to use them:
 

@@ -22,21 +22,24 @@ Use this skill — not general editing — when a task does any of the following
 
 Read these before proposing any change:
 
-1. **`docs/USER_STORIES.md`** — find the acceptance criteria that motivate this change. Understand what behavior is being added or corrected.
-2. **`docs/SERVICE_CATALOG.md`** — locate the section for the affected service. Read:
+1. **The top active-slice/status block in `IMPLEMENTATION_PLAN.md`** — confirm the service change is in scope now.
+2. **`docs/USER_STORIES.md`** — find the acceptance criteria that motivate this change. Understand what behavior is being added or corrected.
+3. **`docs/SERVICE_CATALOG.md`** — locate the section for the affected service. Read:
    - the service's stated ownership and responsibility boundary
    - current method contracts (parameters, return shapes, pre/postconditions)
    - listed business rules and invariants
    - persistence touchpoints and `db.ts` statement groups used
    - service-level error semantics
-3. **`database/schema_v0_1.sql`** — verify exact column names, types, nullable vs. required, status enums, FK relationships, and any trigger behavior relevant to the change.
-4. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved.
-5. **`docs/DESIGN_DECISIONS.md`** (targeted sections) — check for invariants relevant to the change:
+4. **`database/schema_v0_1.sql`** — verify exact column names, types, nullable vs. required, status enums, FK relationships, and any trigger behavior relevant to the change.
+5. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved.
+6. **`docs/DESIGN_DECISIONS.md`** (targeted sections) — check for invariants relevant to the change:
    - §1.6 Controller to Service Pattern
    - §2.2 Data Access Pattern
    - §2.3 Soft Deletes
    - §2.4 Immutable Audit Logs
    - auth/security invariants if the service touches sessions, passwords, or ballots
+
+`docs/SERVICE_CATALOG.md` may describe broader service contracts than the active slice. Use `IMPLEMENTATION_PLAN.md` to determine what is implemented now versus what remains broader planned/design contract.
 
 ## Step 2 — Inspect current code
 

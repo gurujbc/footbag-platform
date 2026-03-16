@@ -35,6 +35,10 @@
 
 ## 1. Shared Conventions
 
+For current implementation scope, active-slice boundaries, and what is implemented now versus only planned or documented more broadly here, consult `IMPLEMENTATION_PLAN.md`. This catalog remains the canonical service-contract reference and may be broader than the active slice.
+
+There is no target-design `publicController` layer. Public controllers/routes stay thin and delegate to services.
+
 **Rule notation:** `[DB]` = enforced by schema/trigger · `[APP]` = application-enforced · `[DB+APP]` = both layers
 
 **Delete semantics:** `HD` = hard-delete (row gone) · `SD` = soft-delete (`deleted_at` set) · `SA` = status-archive (`status='archived'`; clubs only — no `deleted_at` column)
@@ -90,6 +94,11 @@ Source-of-truth note: This document defines service ownership, method contracts,
 ---
 
 ### Clubs & Events
+
+**`HomeService`**
+- **Owns:** Home page composition for `GET /`
+- **Does NOT own:** generic event browsing or club-directory domain logic
+- **Primary tables:** none directly; composes public read models from service-owned reads
 
 **`ClubService`**
 - **Owns:** Club lifecycle (create through archive), leader and co-leader management, club roster management, operability enforcement
@@ -261,6 +270,22 @@ Source-of-truth note: This document defines service ownership, method contracts,
 
 ---
 
+### 4.0 `HomeService`
+
+**Purpose/Boundary:** Owns the landing-page composition read for `GET /`. This is the one intentional Home-page exception in the current public architecture. It does not own generic event browsing, club-domain lifecycle logic, or controller concerns.
+
+**Consumers:** Public home controller
+
+**Key Methods:**
+- `getPublicHomePage(nowIso) -> {featuredUpcomingEvents, primaryLinks, comingSoonSections}`
+
+**Key Rules:**
+- Home remains within the thin-controller / service-owned-shaping architecture.
+- Do not introduce or preserve a `publicController` abstraction as target design.
+- `HomeService` may compose read models from other services, but the page-composition contract belongs here.
+
+---
+
 ### 4.1 `ClubService`
 
 **Purpose/Boundary:** Owns club lifecycle (create, edit, activate/deactivate, archive), leader/co-leader management, roster management, and club operability enforcement. Does NOT own media or payments.
@@ -309,7 +334,7 @@ Source-of-truth note: This document defines service ownership, method contracts,
 For the MVFP V0.1 public routes, `EventService` is responsible for:
 - validating `year` as a four-digit archive-year input;
 - validating `eventKey` against `event_{year}_{event_slug}`;
-- lowercasing and normalizing the valid public key to stored standard-tag form `#event_{year}_{event_slug}` before DB lookup;
+- validating the exact underscore-based public key pattern `event_{year}_{event_slug}` and mapping that exact key to stored standard-tag form `#event_{year}_{event_slug}` before DB lookup; no hyphen/underscore rewrite, aliasing, or fuzzy-match behavior is authorized;
 - treating invalid keys, unknown public keys, and non-public event lookups as not-found at the public-route boundary;
 - translating SQLite busy/locked read failures into temporary-unavailable service failures for controller-level safe failure handling.
 
@@ -333,6 +358,11 @@ For the MVFP V0.1 public routes, `EventService` is responsible for:
 - `getPublicEventsYearPage(year) -> {year, previousYear, nextYear, archiveYears, events}` — page-oriented read method for `GET /events/year/:year`; validates year input, returns the full non-paginated year-page view model, and includes grouped inline result sections for events that have public results
 - `getPublicEventPage(eventKey) -> {event, disciplines, hasResults, primarySection, resultSections}` — page-oriented read method for `GET /events/:eventKey`; validates and normalizes the public key, enforces public-visible status rules, and returns a grouped page model for the canonical event page
 - Lower-level helper reads such as `listPublicUpcomingEvents`, `listPublicArchiveYears`, `listPublicCompletedEventsByYear`, `getPublicEventDetail`, and result-row readers may still exist internally, but controllers should consume page-oriented read methods for the MVFP V0.1 slice
+
+**Historical imported people read boundary:**
+- `event_result_entry_participants.display_name` is the always-renderable participant label.
+- `historical_person_id` supports read-only historical detail linking when present and when a historical detail target is actually exposed.
+- Historical imported people remain distinct from current Members in this design. They do not automatically participate in member search, profile ownership, roster visibility, or authenticated-member behavior.
 
 **Authz:** Create: Tier 1+. Edit/manage: event organizer or co-organizer scope. Sanction approval, result correction, reassign: admin only.
 

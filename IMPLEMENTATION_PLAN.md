@@ -1,22 +1,42 @@
 # IMPLEMENTATION_PLAN.md
 
-> **Plan Mode only.** This document is for use during Plan Mode sessions. Do not load or reference it in normal operation.
+This document is active during normal repo work. It is the current-slice tracker and scope governor for maintainers, contributors, and AI assistants.
 
-## Purpose
+For non-trivial work, read this top status block first, then only the relevant downstream docs and code.
 
-Near-term implementation planning and sequencing for the repository.
+## Source-of-truth order for active work
 
-Use it for:
-- dependency-aware implementation order
-- near-term refactor sequencing
-- migration and import planning
-- infrastructure and deployment prerequisites
-- verification planning
-- phase-based work coordination
+- `docs/USER_STORIES.md` is the functional source of truth; for current work, focus on the specific User Stories in question.
+- Current code is the source of truth for implemented behavior.
+- This plan governs current-slice scope, sequencing, out-of-scope boundaries, and known drift.
+- Derived docs in `docs/` remain canonical references for the areas they cover, but only `docs/VIEW_CATALOG.md` is intentionally partial for the current public slice.
 
-Do not use it as the source of truth for long-term product requirements or architecture. Current code is the source of truth for implemented behavior. Canonical docs in `docs/` are the source of truth for long-term design intent.
+## Active slice now
 
----
+- docs-first alignment for the deployed public baseline
+- Home + Events public browsing/detail slice
+- PR-era migration/data documentation for historical imported people and result-participant linkage
+- exact public event key behavior: `event_{year}_{event_slug}` / `#event_{year}_{event_slug}`
+
+## Drafted next, but not active code focus now
+
+- Clubs next-level public contract may be drafted, but clubs are not the active implementation focus of this slice.
+- Broader service contracts may remain documented in `docs/SERVICE_CATALOG.md`, but implementation status is governed here, not there.
+
+## Out of scope now
+
+- media/news/tutorial implementation work
+- broad person-identity redesign
+- a platform-wide persons subsystem
+- authenticated account-claim requirements for historical imported people
+- fuzzy event-key rewriting or hyphen/underscore alias behavior
+- a `publicController` target design
+
+## Known current drift rules
+
+- `docs/VIEW_CATALOG.md` is intentionally partial and only needs to catalog implemented or actively specified current-slice views.
+- `docs/SERVICE_CATALOG.md` may remain broader than the active slice and should not be treated as a status board.
+- When code and docs diverge, contributors and AI assistants must say so explicitly rather than flattening the disagreement.
 
 ## Current deployed baseline
 

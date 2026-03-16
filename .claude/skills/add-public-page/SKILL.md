@@ -11,16 +11,19 @@ Public pages in this project are IFPA-facing visitor pages. Every page must conf
 
 Read these in order before proposing any change:
 
-1. **`docs/USER_STORIES.md`** — find the acceptance criteria that drive this page. Do not infer behavior; derive it from the stories.
-2. **`docs/VIEW_CATALOG.md`** — the authoritative page contract. Read:
+1. **The top active-slice/status block in `IMPLEMENTATION_PLAN.md`** — confirm the page is in scope now, drafted next, or out of scope.
+2. **`docs/USER_STORIES.md`** — find the acceptance criteria that drive this page. Do not infer behavior; derive it from the stories.
+3. **`docs/VIEW_CATALOG.md`** — the authoritative page contract for views already implemented or actively specified in the current slice. Read:
    - §4.2 Required top-level view-model shape (`seo`, `page`, `navigation`, `content`)
    - §4.3 Required reusable primitives (event card, discipline tag, result section, year nav, etc.)
    - §4.4 Implementation rules (thin controllers, logic-light templates, service-owned shaping)
    - §4.5 Visual rules and CSS token baseline
    - §5 Route catalog — confirm the route is cataloged or explain why it should be added
    - §6.x Page specification for the affected page — required content, required view-model fields, navigation outputs, empty states
-3. **`docs/SERVICE_CATALOG.md`** — identify the owning service, its method contracts, and any business rules that must remain in the service layer. If the required service method does not yet exist, **invoke `extend-service-contract` first and complete it before continuing here**.
-4. **`database/schema_v0_1.sql`** — verify field names, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model.
+4. **`docs/SERVICE_CATALOG.md`** — identify the owning service, its method contracts, and any business rules that must remain in the service layer. If the required service method does not yet exist, **invoke `extend-service-contract` first and complete it before continuing here**.
+5. **`database/schema_v0_1.sql`** — verify field names, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model.
+
+`docs/VIEW_CATALOG.md` may be intentionally partial. If the requested page is not cataloged, first determine whether it is out of scope for the current slice before proposing catalog expansion.
 
 ## Step 2 — Inspect current code
 

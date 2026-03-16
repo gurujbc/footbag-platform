@@ -67,6 +67,8 @@ Security tokens: Email verification tokens and password reset tokens are stored 
 
 Privacy, visibility, and moderation: Profiles, club rosters, participant lists, and member search results are member-only unless explicitly stated otherwise. Media galleries and tag gallery pages are public, but uploader details (email/phone, uploaded_by) remain private.
 
+Historical imported people may appear in legacy event results and related read-only historical displays even when they are not current Members. This supports historical accuracy only. It does not imply authenticated-member capabilities, profile ownership, member-search inclusion, club-roster visibility, or any other current-member behavior.
+
 Moderation flows favor transparency and human oversight: when members flag content, flagged items remain visible until an administrator reviews and decides; no content is hidden or de-ranked automatically by secret algorithms.
 
 Unless explicitly stated otherwise, all numeric limits (counts, sizes), time windows (expiry/grace periods), reminder offsets, and security thresholds described in this document are defaults and are Administrator-configurable.
