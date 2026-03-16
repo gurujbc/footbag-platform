@@ -18,7 +18,7 @@ if printf '%s' "$COMMAND" | grep -Eq '(^|[;&|[:space:]])terraform([[:space:]].*)
   exit 0
 fi
 
-if printf '%s' "$COMMAND" | grep -Eq '(^|[;&|[:space:]])(sudo[[:space:]]+)?systemctl[[:space:]]+(start|stop|restart)([[:space:]]+footbag([.]service)?)?([[:space:]]|$)'; then
+if printf '%s' "$COMMAND" | grep -Eq '(^|[;&|[:space:]])(sudo[[:space:]]+)?systemctl[[:space:]]+(start|stop|restart)[[:space:]]+footbag([.]service)?([[:space:]]|$)'; then
   jq -n '{
     hookSpecificOutput: {
       hookEventName: "PreToolUse",

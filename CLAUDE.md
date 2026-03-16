@@ -33,7 +33,7 @@ tests/        Integration tests
 
 1. Never edit documentation, `.github/`, or `.claude/` files without explicit human approval.
 2. Never take a destructive or risky action without explicit human approval.
-3. All hooks in .claude are non-negotiable.
+3. When asking the human a question, always provide context so the human can understand clearly.
 4. Refer to appropriate Claude skills whenever appropriate for the task at hand.
 
 ## Workflow rules
@@ -47,9 +47,15 @@ tests/        Integration tests
 
 ## Skills
 
-- Use `.claude/skills/doc-sync/SKILL.md` before proposing any approved doc edits.
-- After completing any change of significance to design, behavior, or requirements, invoke doc-sync to check whether documentation needs updating before considering the task done.
-- Use the narrower workflow skills when their task descriptions match the request.
+Available workflow skills and when to use them:
+
+- **doc-sync** — mandatory after any change of significance to design, behavior, or requirements; also mandatory before proposing any approved doc edit. Never edit docs without running doc-sync first.
+- **add-public-page** — use when a task adds or changes a public route, controller, template, or route-level tests.
+- **extend-service-contract** — use when a task changes a service method signature, return shape, db.ts statements, or service-level error semantics. Run this before add-public-page when a new service method is also needed.
+- **prepare-pr** — use at task completion to produce a human-reviewable PR summary. Ensure doc-sync has run first.
+- **browser-qa** — use only when the human explicitly requests browser testing or rendered-page verification.
+
+Correct sequencing when skills compose: `extend-service-contract` → `add-public-page` → `doc-sync` → `prepare-pr`
 
 ## Hooks
 
