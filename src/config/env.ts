@@ -13,6 +13,9 @@ export interface AppConfig {
   logLevel: string;
   dbPath: string;
   publicBaseUrl: string;
+  sessionSecret: string;
+  stubUsername: string;
+  stubPassword: string;
 }
 
 function requireEnv(name: string): string {
@@ -36,6 +39,9 @@ function loadConfig(): AppConfig {
     logLevel: process.env.LOG_LEVEL ?? 'info',
     dbPath: requireEnv('FOOTBAG_DB_PATH'),
     publicBaseUrl: requireEnv('PUBLIC_BASE_URL'),
+    sessionSecret: requireEnv('SESSION_SECRET'),
+    stubUsername: process.env.STUB_USERNAME ?? 'footbag',
+    stubPassword: process.env.STUB_PASSWORD ?? 'Footbag!',
   };
 }
 

@@ -1,5 +1,7 @@
 # Security Policy
 
+This file covers vulnerability reporting only. For the project's security, privacy, and historical data governance policy, see [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md).
+
 Only the current `main` branch is supported.
 
 ## Reporting a vulnerability

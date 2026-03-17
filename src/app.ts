@@ -1,7 +1,10 @@
 import express from 'express';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import { engine } from 'express-handlebars';
 import { logger } from './config/logger';
+import { config } from './config/env';
+import { authStub } from './middleware/authStub';
 import { healthRouter } from './routes/healthRoutes';
 import { publicRouter } from './routes/publicRoutes';
 
@@ -58,6 +61,7 @@ export function createApp(): express.Application {
         countryFlag: (country: string) => COUNTRY_FLAGS[country] ?? '',
         eq:  (a: unknown, b: unknown) => a === b,
         gt:  (a: unknown, b: unknown) => (a as number) > (b as number),
+        not: (a: unknown) => !a,
       },
     }),
   );
@@ -66,14 +70,21 @@ export function createApp(): express.Application {
 
   // ── Body parsing ─────────────────────────────────────────────────────────
   app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cookieParser());
 
-  // ── Active nav section ───────────────────────────────────────────────────
+  // ── Auth stub ────────────────────────────────────────────────────────────
+  app.use(authStub(config.sessionSecret));
+
+  // ── Active nav section + auth locals ─────────────────────────────────────
   app.use((req, res, next) => {
     res.locals.currentSection = req.path === '/' ? 'home'
       : req.path.startsWith('/events') ? 'events'
       : req.path.startsWith('/members') ? 'members'
       : req.path.startsWith('/clubs') ? 'clubs'
       : '';
+    res.locals.isAuthenticated = req.isAuthenticated;
+    res.locals.currentUser = req.user;
     next();
   });
 

@@ -43,6 +43,7 @@ This repository distinguishes between:
 Please read:
 
 - `CONTRIBUTING.md`
+- `docs/GOVERNANCE.md` (security, privacy, and historical data publication policy)
 - `SECURITY.md` (for vulnerability reporting — **do not use public issues**)
 
 ## Using AI tools (Claude Code)

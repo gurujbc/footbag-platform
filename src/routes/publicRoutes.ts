@@ -3,6 +3,8 @@ import { homeController } from '../controllers/homeController';
 import { clubController } from '../controllers/clubController';
 import { eventController } from '../controllers/eventController';
 import { memberController } from '../controllers/memberController';
+import { authController } from '../controllers/authController';
+import { requireAuth } from '../middleware/authStub';
 
 export const publicRouter = Router();
 
@@ -18,5 +20,9 @@ publicRouter.get('/events',              eventController.landing);
 publicRouter.get('/events/year/:year',   eventController.year);
 publicRouter.get('/events/:eventKey',    eventController.event);
 
-publicRouter.get('/members',             memberController.index);
-publicRouter.get('/members/:personId',   memberController.detail);
+publicRouter.get('/members',             requireAuth, memberController.index);
+publicRouter.get('/members/:personId',   requireAuth, memberController.detail);
+
+publicRouter.get('/login',   authController.getLogin);
+publicRouter.post('/login',  authController.postLogin);
+publicRouter.post('/logout', authController.postLogout);

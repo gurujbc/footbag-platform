@@ -565,6 +565,8 @@ If the latest ledger row shows an annual tier (`tier1_annual` or `tier2_annual`)
 #### `members_searchable` view
 **The member search endpoint MUST query this view.** It applies all four exclusion conditions: soft-deleted, deceased, opted-out (`searchable = 0`), and PII-purged accounts. Do not add extra `WHERE` clauses on top of `members_active` or the bare `members` table for search.
 
+`searchable = 1` means the member is **eligible for authenticated current-member lookup only**. It does not mean publicly discoverable, publicly contactable, or visible on public historical-person pages. Member search is authenticated Tier 0+, anti-enumeration, and never public. See `docs/GOVERNANCE.md §7`.
+
 ### 4.15 Member Links
 
 **Table:** `member_links`
@@ -595,6 +597,8 @@ Before a competitor registration reaches `status = 'confirmed'`, the application
 These rows may or may not correspond to current rows in `members`. They exist so imported historical results can preserve participant identity without requiring that every historical person be a current Member.
 
 `legacy_member_id` on `members` and `historical_persons` is migration-era traceability only for this design. It is not, by itself, a platform-wide unified identity system.
+
+**Governance note:** Imported `historical_persons` rows are public historical record surfaces only. They do not confer member-account status, searchability, or contactability. The imported aggregate fields (`event_count`, `placement_count`, freestyle metrics, etc.) are migration-era metadata — not automatic public statistics. Any aggregate field shown publicly must satisfy the historian-value and completeness/caveat requirements in `docs/GOVERNANCE.md §6`. When a `historical_person_id` is linked to a `member` row (account claim), the historical public pages must continue to show only historical-record data; the link does not escalate the historical identity into a searchable or contactable current-member account.
 
 > **Maintainer note (longer-term design):** Longer-term, the platform may distinguish a broader Person concept from Member account/membership status, so historical imported people and other non-member identities do not need to be forced into the members table. That longer-term direction is not implemented by this slice. This document should describe the accepted current schema as-is and should not be read as requiring a platform-wide unified persons model yet.
 

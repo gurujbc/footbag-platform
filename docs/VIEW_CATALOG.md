@@ -42,7 +42,7 @@ This document does not cover (yet):
 - organizer workflows
 - admin pages
 - APIs
-- authentication flows
+- full authentication flows (the current auth stub login page at `GET /login` is cataloged; full auth implementation is out of scope for the current slice)
 - internal tools
 - implementation details that belong in code patches rather than catalog definition
 - media pages that remain out of scope for the current slice
@@ -262,9 +262,10 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /events` | Events index | Browse upcoming events and archive entry points | Current |
 | `GET /events/year/:year` | Events year archive | Browse completed events for one year | Current |
 | `GET /events/:eventKey` | Event detail | Canonical public event page | Current |
-| `GET /members` | Members landing | Public Members section entry page; current-slice placeholder / login-oriented landing | Current minimal |
-| `GET /members/:personId` | Historical member detail | Minimal read-only historical member page backed by imported historical person data | Current minimal |
+| `GET /members` | Members section | Members section entry; public historical-record index for anonymous visitors; auth stub gates member-only content in this sprint | Current |
+| `GET /members/:personId` | Member detail | Member detail page; current slice serves public historical-person record for imported competitive players; will grow to full authenticated member profile (route will migrate from personId to memberId as the section matures) | Current |
 | `GET /clubs` | Clubs landing | Placeholder public clubs entry page | Current stub |
+| `GET /login` | Login | Auth stub login form; redirects authenticated users to `/members` | Current stub |
 | `GET /health/live` | Operational endpoint | Liveness check | Not a cataloged page |
 | `GET /health/ready` | Operational endpoint | Readiness check | Not a cataloged page |
 
@@ -273,9 +274,10 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /` is the canonical public home route.
 - `GET /events` is the canonical events section entry route.
 - `GET /events/:eventKey` is the canonical public event detail route.
-- `GET /members` is the canonical Members section entry route for the current slice.
-- `GET /members/:personId` is the canonical current-slice historical member detail route.
+- `GET /members` is the canonical Members section entry route. Currently serves a public historical-record index with auth stub gating for member-only content; will grow to a full authenticated members area.
+- `GET /members/:personId` is the canonical member detail route for the current slice, currently backed by imported historical person data. Route will migrate to `/members/:memberId` as the section grows to serve full authenticated member profiles.
 - `GET /clubs` is the canonical clubs section entry route for the current slice.
+- `GET /login` is the auth stub login route. `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
 - health routes are operational and are outside the cataloged page system.
 
 ---
@@ -345,11 +347,11 @@ If there are no featured upcoming events, the page still renders normally with a
 
 ---
 
-## 6.2 Members landing
+## 6.2 Members section landing
 
 ### Purpose
 
-Provide the current-slice public entry page for the Members section.
+Provide the Members section entry page. Currently shows a public historical-record index for competitive footbag players. The auth stub in this sprint gates member-only content at this route. The section will grow to full authenticated member features.
 
 ### Route
 
@@ -357,26 +359,25 @@ Provide the current-slice public entry page for the Members section.
 
 ### Audience
 
-Public visitor.
+Public visitor (historical record content). Authenticated member (member-only content, gated by auth stub in current sprint).
 
 ### Standard relationship
 
-This page consumes the generic public rendering standard. It is not a full authenticated-member area; it is the current-slice public entry/placeholder for that future section.
+This page consumes the generic public rendering standard. It is the Members section root — not solely a placeholder and not yet a full authenticated-member area. Historical competitive records are public; member-only content is auth-gated.
 
 ### Page intent
 
-- identify Members as a first-class site section
-- direct current Members toward login/auth flows when available
-- avoid implying that full member account/profile features are implemented in this slice
-- optionally explain that historical imported people may appear through linked public results and historical member detail pages
+- present the public historical competitive record index for footbag players
+- make clear this is the Members section and that member accounts and login are part of this section
+- provide entry point for auth/login flows (currently via auth stub)
+- avoid implying historical imported people are current-member accounts or publicly searchable/contactable members
 
 ### Required content
 
 - hero for the Members section
-- short explanatory notice about current-slice scope
-- login-oriented call to action / placeholder message
-- optional link target(s) for future auth entry points
-- optional explanatory text about historical imported people versus current Members
+- public historical-record listing (players with imported event data)
+- auth entry point / login call to action
+- optional explanatory text clarifying that historical records and current member accounts are distinct
 
 ### Required view-model fields
 
@@ -398,11 +399,11 @@ This page does not require data-backed list content and should still render norm
 
 ---
 
-## 6.3 Historical member detail
+## 6.3 Member detail
 
 ### Purpose
 
-Provide the current-slice minimal read-only public page for one imported historical person under the Members section.
+Provide the member detail page. Current slice shows a minimal public read-only page for one imported historical person. Future slices will add authenticated member profile content at this route as the Members section matures.
 
 ### Route
 
@@ -414,13 +415,14 @@ Public visitor.
 
 ### Standard relationship
 
-This page consumes the generic public rendering standard. It is a minimal historical read page only, not an authenticated member profile.
+This page consumes the generic public rendering standard. In the current slice it is a public historical read page only. It must not imply current-member capabilities, profile ownership, member-search inclusion, or club-roster visibility for historical-only persons.
 
 ### Page intent
 
-- present the imported historical identity clearly
+- present the imported historical person's competitive record clearly
 - support result-participant linking from public event pages when a historical person is known
-- preserve historical accuracy without implying current-member capabilities
+- preserve historical accuracy
+- for historical-only persons: must not imply current-member account, public discoverability, or contactability
 
 ### Required content
 

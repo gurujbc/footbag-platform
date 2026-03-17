@@ -1,6 +1,6 @@
 {{! Events landing page — upcoming events + archive year links }}
 
-<div class="hero">
+<div class="hero hero-sm">
   <div>
     <h1>Footbag Events</h1>
     <p>Tournaments, competitions, and gatherings from around the world.</p>
@@ -8,6 +8,21 @@
 </div>
 
 <div class="wrapper">
+
+  {{! ── Past events by year ─────────────────────────────────────── }}
+  {{#if archiveYears.length}}
+  <section>
+    <div class="section-heading">
+      <h2>Past Events</h2>
+    </div>
+    <p class="text-muted mb-4">Browse completed events and results by year.</p>
+    <div class="year-grid">
+      {{#each archiveYears}}
+        <a href="/events/year/{{this}}" class="year-pill">{{this}}</a>
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
 
   {{! ── Upcoming events ─────────────────────────────────────────── }}
   <section>
@@ -27,26 +42,6 @@
     {{else}}
       <div class="empty-state">
         <p>No upcoming events are currently listed. Check back soon.</p>
-      </div>
-    {{/if}}
-  </section>
-
-  {{! ── Past events by year ─────────────────────────────────────── }}
-  <section>
-    <div class="section-heading">
-      <h2>Past Events</h2>
-    </div>
-
-    {{#if archiveYears.length}}
-      <p class="text-muted mb-4">Browse completed events and results by year.</p>
-      <div class="year-grid">
-        {{#each archiveYears}}
-          <a href="/events/year/{{this}}" class="year-pill">{{this}}</a>
-        {{/each}}
-      </div>
-    {{else}}
-      <div class="empty-state">
-        <p>No past events are available yet.</p>
       </div>
     {{/if}}
   </section>

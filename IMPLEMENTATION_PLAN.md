@@ -13,11 +13,14 @@ For non-trivial work, read this top status block first, then only the relevant d
 
 ## Active slice now
 
-- Events results + member pages: look and feel improvements
-- Visitor auth stub: `isLoggedIn` dev-toggle (env var) gates member-only content without implementing real auth
-- TDD expansion: integration tests written alongside or before each feature increment
-- Home page stats (event count, player count, year count already queryable)
-- BAP/HoF honor-roll page and member-list indicators
+- **Event results pages:** historical-record UX refinement — provenance, caveats, layout improvements; year-listing pages do not show results inline (results live on separate result-slug pages); result pages more prominent
+- **Members pages:** major reframe from ambiguous "members section" into explicit public historical-record index and detail surfaces; reduce directory-style language; auth stub gates any content not appropriate for anonymous visitors
+- **World records:** add as public historical record surfaces (new in this slice)
+- **BAP/HoF:** honor-roll pages and member-page indicators
+- **Historical-data caveats:** no uncaveated derived stats; scope and completeness messaging where needed; no misleading "all-time" or "career total" claims from partial import data
+- **First fake auth foundation stub:** retire `isLoggedIn` env-toggle; introduce stubbed session middleware; real route-level authorization behavior; designed to mirror the future real auth path except for the stub credential mechanism; runs in all environments including staging during this sprint
+- **TDD expansion:** integration tests for members routes, world-record routes, and auth-stub visibility behaviors
+- Home page stats: event count, player count, year count (already queryable)
 - Teammate links on member detail (service change needed to carry person IDs through)
 
 ## Drafted next, but not active code focus now
@@ -28,7 +31,7 @@ For non-trivial work, read this top status block first, then only the relevant d
 ## Out of scope now
 
 - Schema migration framework — schema changes are handled by rebuilding the DB; no migration runner needed
-- Auth implementation (Phase 4 sequencing unchanged; `isLoggedIn` stub is the placeholder)
+- Full auth implementation (Phase 4 sequencing unchanged; current sprint introduces the first fake auth stub only, not real JWT/DB auth)
 - media/news/tutorial implementation work
 - broad person-identity redesign
 - a platform-wide persons subsystem
@@ -52,8 +55,11 @@ Current implemented public routes:
 - `/events`
 - `/events/year/:year`
 - `/events/:eventKey`
-- `/members`
-- `/members/:personId`
+- `/members` (auth-gated; redirects to `/login` when not authenticated)
+- `/members/:personId` (auth-gated; redirects to `/login` when not authenticated)
+- `GET /login` (auth stub login form)
+- `POST /login` (auth stub login handler — sets session cookie, redirects to `/members`)
+- `POST /logout` (clears session cookie, redirects to `/`)
 - `/health/live`
 - `/health/ready`
 

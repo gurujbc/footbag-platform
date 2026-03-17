@@ -1,0 +1,21 @@
+<section class="page-section">
+  <div class="wrapper">
+    <h1 class="page-title">Login</h1>
+
+    {{#if error}}
+      <p class="form-error" role="alert">{{error}}</p>
+    {{/if}}
+
+    <form method="POST" action="/login" class="login-form">
+      <div class="form-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autocomplete="username" required />
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn-primary">Log in</button>
+    </form>
+  </div>
+</section>

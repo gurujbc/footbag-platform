@@ -21,10 +21,17 @@ process.env.PORT             = '3001';
 process.env.NODE_ENV         = 'test';
 process.env.LOG_LEVEL        = 'error'; // silence logs in test output
 process.env.PUBLIC_BASE_URL  = 'http://localhost:3001';
+process.env.SESSION_SECRET   = 'test-secret-for-integration-tests';
 
 // Dynamic import after env is set so db.ts picks up TEST_DB_PATH.
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
+import { createSessionCookie } from '../../src/middleware/authStub';
+
+const TEST_SESSION_SECRET = process.env.SESSION_SECRET!;
+function validAuthCookie(): string {
+  return `footbag_session=${createSessionCookie('test-user', 'admin', TEST_SESSION_SECRET)}`;
+}
 
 function buildTestDatabase(): void {
   const schema = fs.readFileSync(
@@ -168,6 +175,17 @@ function buildTestDatabase(): void {
       0, 'USD', 0, 0,
       '2025-01-01T00:00:00.000Z', 'system', '2025-01-01T00:00:00.000Z', 'system', 1
     );
+  `);
+
+  // ── Seed E: historical persons for member route tests ─────────────────────
+  db.exec(`
+    INSERT INTO historical_persons (
+      person_id, person_name, country,
+      event_count, placement_count,
+      bap_member, fbhof_member
+    ) VALUES
+      ('person-alice-001', 'Alice Footbag', 'US', 3, 5, 0, 0),
+      ('person-bob-002',   'Bob Hackysack', 'CA', 1, 2, 0, 0);
   `);
 
   db.close();
@@ -362,5 +380,144 @@ describe('GET /clubs', () => {
     const res = await request(app).get('/clubs');
     expect(res.text).toContain('href="/"');
     expect(res.text).toContain('href="/events"');
+  });
+});
+
+// ── Auth: login page ───────────────────────────────────────────────────────────
+
+describe('GET /login', () => {
+  it('returns 200 with login form for unauthenticated visitor', async () => {
+    const app = createApp();
+    const res = await request(app).get('/login');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<form');
+    expect(res.text).toContain('name="username"');
+    expect(res.text).toContain('name="password"');
+  });
+
+  it('redirects to /members when already authenticated', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get('/login')
+      .set('Cookie', validAuthCookie());
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/members');
+  });
+});
+
+// ── Auth: POST /login ──────────────────────────────────────────────────────────
+
+describe('POST /login', () => {
+  it('redirects to /members and sets cookie on valid credentials', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/login')
+      .send('username=footbag&password=Footbag!')
+      .set('Content-Type', 'application/x-www-form-urlencoded');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/members');
+    expect(res.headers['set-cookie']).toBeDefined();
+    const cookies: string[] = Array.isArray(res.headers['set-cookie'])
+      ? res.headers['set-cookie']
+      : [res.headers['set-cookie']];
+    expect(cookies.some((c: string) => c.startsWith('footbag_session='))).toBe(true);
+  });
+
+  it('returns 200 with error message on wrong password', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/login')
+      .send('username=footbag&password=wrongpassword')
+      .set('Content-Type', 'application/x-www-form-urlencoded');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Invalid username or password');
+  });
+
+  it('returns 200 with error message on wrong username', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/login')
+      .send('username=nobody&password=Footbag!')
+      .set('Content-Type', 'application/x-www-form-urlencoded');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Invalid username or password');
+  });
+});
+
+// ── Auth: POST /logout ─────────────────────────────────────────────────────────
+
+describe('POST /logout', () => {
+  it('clears the session cookie and redirects to /', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/logout')
+      .set('Cookie', validAuthCookie());
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/');
+    const cookies: string[] = Array.isArray(res.headers['set-cookie'])
+      ? res.headers['set-cookie']
+      : [res.headers['set-cookie'] ?? ''];
+    // Cookie should be cleared (Max-Age=0 or Expires in the past)
+    const sessionCookie = cookies.find((c: string) => c.startsWith('footbag_session='));
+    expect(sessionCookie).toBeDefined();
+    expect(sessionCookie).toMatch(/Max-Age=0|Expires=Thu, 01 Jan 1970/i);
+  });
+});
+
+// ── Members: auth gate ─────────────────────────────────────────────────────────
+
+describe('GET /members (auth gate)', () => {
+  it('redirects unauthenticated visitor to /login', async () => {
+    const app = createApp();
+    const res = await request(app).get('/members');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/login');
+  });
+
+  it('returns 200 for authenticated visitor and shows member list', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get('/members')
+      .set('Cookie', validAuthCookie());
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Alice Footbag');
+    expect(res.text).toContain('Bob Hackysack');
+  });
+
+  it('rejects a tampered session cookie with a redirect to /login', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get('/members')
+      .set('Cookie', 'footbag_session=invalidsignature.tampered');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/login');
+  });
+});
+
+// ── Members: detail page auth gate ────────────────────────────────────────────
+
+describe('GET /members/:personId (auth gate)', () => {
+  it('redirects unauthenticated visitor to /login', async () => {
+    const app = createApp();
+    const res = await request(app).get('/members/person-alice-001');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/login');
+  });
+
+  it('returns 200 for authenticated visitor viewing existing member', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get('/members/person-alice-001')
+      .set('Cookie', validAuthCookie());
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Alice Footbag');
+  });
+
+  it('returns 404 for authenticated visitor viewing non-existent member', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get('/members/person-does-not-exist')
+      .set('Cookie', validAuthCookie());
+    expect(res.status).toBe(404);
   });
 });

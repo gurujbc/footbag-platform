@@ -38,3 +38,7 @@ contribution under the Apache 2.0 licence per the
 - Schema changes: follow conventions in `docs/DATA_MODEL.md` and `database/schema_v0_1.sql`.
 - Prefer the smallest safe change that preserves volunteer readability.
 - No new external dependencies without prior discussion.
+
+## Privacy and governance
+
+Any task touching members, historical persons, search, contact fields, rosters, participant lists, exports, event results, HoF, BAP, world records, rankings, stats, or auth must follow [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md). Read it before writing or reviewing code in those areas.

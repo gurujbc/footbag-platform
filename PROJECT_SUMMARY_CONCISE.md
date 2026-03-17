@@ -8,12 +8,15 @@ Use this file for quick orientation and document routing.
 
 For non-trivial work, read the top active-slice/status block in `IMPLEMENTATION_PLAN.md`. The plan is active during normal repo work and governs the current slice.
 
+**Current sprint focus:** historical-record surface governance and privacy, members-page major reframe, world records, first fake auth stub, historical-data caveats. See `IMPLEMENTATION_PLAN.md` active-slice block.
+
 `docs/USER_STORIES.md` is the functional source of truth.
 
 Current code is the source of truth for implemented behavior.
 
 ## Fast routing
 - Use this file for contextual refresh and document routing only.
+- **For tasks touching members, historical persons, search, contact fields, records, stats, exports, or auth/privacy:** load `docs/GOVERNANCE.md` first (once created), then targeted sections of `docs/DESIGN_DECISIONS.md`.
 - For functional requirements and user stories with acceptance criteria, load `docs/USER_STORIES.md` first.
 - For current slice/scope, known drift, and sequencing, read the top active-slice/status block in `IMPLEMENTATION_PLAN.md`; for sequencing, dependency analysis, or phased planning, read the full document in Plan Mode.
 - For page/UI/view/route/view-model details already in scope, load `docs/VIEW_CATALOG.md`.
@@ -27,12 +30,16 @@ Current code is the source of truth for implemented behavior.
 
 The currently implemented public routes are:
 - `GET /`
-- `GET /clubs` (placeholder — real data coming in Sprint 3)
+- `GET /clubs` (placeholder — no club data imported yet)
 - `GET /events`
 - `GET /events/year/:year`
 - `GET /events/:eventKey`
+- `GET /members`
+- `GET /members/:personId`
 - `GET /health/live`
 - `GET /health/ready`
+
+Site is deployed on AWS staging (Lightsail + CloudFront). See `docs/DEVOPS_GUIDE.md` for ops details.
 
 ## Current operating model
 

@@ -55,7 +55,7 @@ p:last-child { margin-bottom: 0; }
   padding: 0 24px;
 }
 
-section { padding: 60px 0; }
+section { padding: 40px 0; }
 section + section { border-top: 1px solid var(--border); }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -532,7 +532,7 @@ th.sortable:hover { color: var(--primary); }
 /* ── Empty state ─────────────────────────────────────────────── */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 28px 20px;
   color: var(--text-muted);
 }
 .empty-state p { font-size: 1.05rem; }
@@ -602,6 +602,6 @@ th.sortable:hover { color: var(--primary); }
 
 @media (max-width: 480px) {
   .wrapper { padding: 0 16px; }
-  section { padding: 40px 0; }
+  section { padding: 28px 0; }
   .results-table th, .results-table td { padding: 8px 6px; }
 }

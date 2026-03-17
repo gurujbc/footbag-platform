@@ -521,7 +521,7 @@ Success Criteria:
 
 - Member profile creation and editing (photo, bio, contact preferences).
 - City, country, and email are mandatory fields; phone is optional.
-- Public member search results shows display name with city and country only by default; email remains private unless member opts in.
+- Member search is authenticated members only (Tier 0+) — never public. Search results show display name and country only; email and contact fields are never exposed in search results.
 - Public visibility (visible to all including visitors): Events list, news feed, public galleries (if explicitly marked public).
 - Members-only visibility (visible to logged-in members): Member profiles, club rosters, event participant lists, member search results.
 - Private visibility (visible only to owner or admins): Email addresses (unless member opts in), payment history, audit records.
@@ -536,16 +536,17 @@ Success Criteria:
 
 Access: Members an search for other members within the visibility and privacy rules.
 
-Story: As a member, I want to search for other members by name so that I can find contact information for collaboration.
+Story: As a member, I want to search for other members by name so that I can find and connect with other players in the community.
 
 Success Criteria:
 
 - Search by Display Name.
 - Support prefix matching (e.g., "jane" matches "Jane Doe").
 - Minimum 2-character query length; maximum 20 results per page.
-- Members may opt out via searchable: false profile flag.
-- Search results exclude: (a) members with `searchable: false`, (b) members currently in the deletion grace period (account deleted but not yet purged), and (c) deceased members. Only active members with `searchable: true` (or no preference set, which defaults to searchable) are returned.
-- This is the only search feature of the whole website. It exists because we do not want to show the whole list of members by policy, so this is the only way to find member friends and their contact info.
+- Members may opt out via `searchable: false` profile flag. `searchable` means eligible for authenticated member lookup only — it does not mean publicly discoverable or contactable.
+- Search results exclude: (a) members with `searchable: false`, (b) members currently in the deletion grace period (account deleted but not yet purged), and (c) deceased members. Only active members with `searchable: true` are returned.
+- Broad queries return a capped result set with a "refine your query" prompt; no exhaustive browse-all or full pagination.
+- This is the only member search feature. It is authenticated-only and deliberately narrowing — not a member directory.
 
 **M_View_Profile**
 
@@ -1108,7 +1109,7 @@ Success Criteria:
 - Co-organizer can opt out of leadership role via the member dashboard.
 - All co-organizer actions are audit-logged.
 - Organizers see a clear success message when co-organizer is added or removed.
-- Organizers array displayed on event detail page showing all current organizers and their contact info (email and/or WhatsApp number).
+- Organizers array displayed on event detail page showing all current organizers (names only on public page); contact info visible to authenticated members only.
 - The user interface hides remove-self functionality (button or link) when the current authenticated user is the sole organizer of the event.
 
 ## 4.2 Registration Management
@@ -1293,11 +1294,11 @@ Success Criteria:
 - Upon acceptance, co-leader gains club information editing permissions.
 - Maximum 5 total leaders per club.
 - Any leader can view list of all current co-leaders.
-- List shows: co-leader name, email, date added.
+- List shows: co-leader name, date added. Email visible to fellow leaders (role-scoped) only.
 - Co-leader can opt out of leadership role via the member dashboard.
 - All leader actions are audit-logged.
 - Leader sees a clear success message when co-leader is added or removed.
-- Leaders array displayed on club detail page showing all current leaders and their contact info (email or WhatsApp number).
+- Leaders array displayed on club detail page showing all current leaders (names only on public page); contact info visible to authenticated members only.
 - The user interface hides remove-self functionality (button or link) when the current authenticated user is the sole leader of the club.
 - After any leadership change, the system re-evaluates club operability. If the club has zero leaders, the system creates or updates a “Club Needs Leader” admin work queue item. If the club has no contact email, the system creates or updates a “Club Needs Contact” admin work queue item.
 

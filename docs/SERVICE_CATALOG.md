@@ -241,9 +241,9 @@ Source-of-truth note: This document defines service ownership, method contracts,
 **Consumers:** Member controllers, AdminGovernanceService, OperationsPlatformService (purge job)
 
 **Key Methods:**
-- `getProfile(memberId, viewerContext) -> {profile}` — applies visibility rules: email shown only to owner, or when `email_visibility = 'members'` (to logged-in members) or `'public'` (to all); tier badges to logged-in members only; honor badges (HoF, BAP, board) to all
+- `getProfile(memberId, viewerContext) -> {profile}` — applies visibility rules: email shown only to owner, or when `email_visibility = 'members'` (to logged-in members); `email_visibility = 'public'` is not a forward-looking supported value — contact fields must never be publicly exposed; tier badges to logged-in members only; honor badges (HoF, BAP, board) to all
 - `editProfile(memberId, input) -> {ok}` — validates/sanitizes display name (homograph prevention), URLs (https, max 3 via `member_links`), bio; audit-logs changed fields
-- `searchMembers(query) -> {results}` — queries `members_searchable` view exclusively; min 2-char query; max 20 results; prefix match on display name
+- `searchMembers(query) -> {results}` — **authenticated members only (Tier 0+); never public**; queries `members_searchable` view exclusively; min 2-char query; prefix match on display name; capped result count for broad queries with "refine your query" signal; no browse-all/exhaustive pagination; anti-enumeration by design
 - `deleteAccount(memberId) -> {ok}` — SD: sets `deleted_at`; synchronously deletes all S3 photos and `media_items` / `member_galleries` rows (HD); if S3 deletion fails, entire operation fails — account must NOT be marked deleted until S3 photos are confirmed removed; if member is sole club leader AND `club.contact_email IS NULL`: also inserts 'Needs Contact' work-queue item → admin-alerts notification; audit-logs
 - `requestDataExport(memberId) -> {downloadLinkToken}` — creates `account_tokens` row of type `data_export`; enqueues email with time-limited link (expires `data_export_link_expiry_hours`, default 72h)
 - `generateDataExport(token) -> {jsonFile}` — validates `data_export` token; assembles profile, tier status, payment history, event registrations, media metadata, vote participation (no ballot content or receipt tokens); audit-logs
@@ -251,7 +251,7 @@ Source-of-truth note: This document defines service ownership, method contracts,
 - `revertDeceasedFlag(adminId, memberId, reason) -> {ok}` — available within `deceased_cleanup_grace_days` only; clears `is_deceased`; audit-logs
 - `purgeAccountPII(memberId) -> {ok}` — called only by `OperationsPlatformService.runPIIPurgeJob()` after the applicable grace period (soft-delete branch or deceased-member branch); sets `personal_data_purged_at`; clears `login_email`, `login_email_normalized`, `password_hash`, `password_changed_at`, `phone`, `whatsapp`; overwrites `real_name`, `display_name`, `display_name_normalized`, `city`, `country` with anonymized placeholders (APP-022); retains row for referential integrity; HoF/BAP members: retain display name and honor badges
 
-**Authz:** `editProfile`, `deleteAccount`, `requestDataExport` — owner only. `searchMembers` — Tier 0+. `markDeceased`, `revertDeceasedFlag` — admin only.
+**Authz:** `editProfile`, `deleteAccount`, `requestDataExport` — owner only. `searchMembers` — authenticated Tier 0+ only; never callable from public routes. `markDeceased`, `revertDeceasedFlag` — admin only.
 
 **Persistence Touchpoints:** `members`, `members_active`, `members_all`, `members_searchable`, `member_links`, `media_items`, `member_galleries`, `account_tokens`, `audit_entries`, `outbox_emails`, `work_queue_items`
 
@@ -274,17 +274,18 @@ Source-of-truth note: This document defines service ownership, method contracts,
 
 ### 3.3 `MemberPublicReadService`
 
-**Purpose/Boundary:** Owns the current-slice public Members read models for `GET /members` and `GET /members/:personId`. This includes the Members landing placeholder/entry page and the minimal read-only historical member detail page backed by imported historical person data. It does NOT own authenticated account lifecycle, profile CRUD, member search, account-claim flow, or any broader platform-wide persons subsystem.
+**Purpose/Boundary:** Owns the current-slice public Members read models for `GET /members` and `GET /members/:personId`. This includes the Members section entry page (public historical-record index + auth entry point) and the member detail page (currently serving imported historical person data). It does NOT own authenticated account lifecycle, profile CRUD, member search, account-claim flow, or any broader platform-wide persons subsystem.
 
 **Consumers:** Public Members controller
 
 **Key Methods:**
-- `getPublicMembersLandingPage() -> pageModel` — shapes the current-slice Members entry/placeholder page; may include login-oriented CTA/notice text but does not implement auth flows
-- `getHistoricalMemberPage(personId) -> pageModel` — resolves one imported historical person into the minimal public historical detail page model; unknown/non-public IDs resolve as not-found
+- `getPublicMembersLandingPage() -> pageModel` — shapes the Members section entry page; includes public historical-record index content and auth entry point; does not implement auth flows directly
+- `getHistoricalMemberPage(personId) -> pageModel` — resolves one imported historical person into the public member detail page model for the current slice; unknown/non-public IDs resolve as not-found
 
 **Key Rules:**
-- `/members` in the current slice is a public section entry/placeholder, not a full authenticated member area
-- `/members/:personId` is a minimal historical read surface only; it must not imply current-member capabilities, profile ownership, member-search inclusion, or club-roster visibility
+- `/members` is the Members section entry; currently shows public historical records and auth entry point; will grow to full member area
+- `/members/:personId` currently serves historical person data only; must not imply current-member capabilities, profile ownership, member-search inclusion, or club-roster visibility for historical-only persons
+- public historical person pages are not current-member directory entries and must not expose contact fields
 - route handlers stay thin; page shaping belongs here
 - any distinction between imported historical people and current Members is enforced here and/or in the data/query layer, not in templates
 

@@ -116,6 +116,9 @@ CLAUDE.local.md
 # Local MCP overrides if you introduce them
 .mcp.local.json
 
+# Playwright MCP browser session artifacts (logs, screenshots)
+.playwright-mcp/
+
 # =========================
 # Windows / WSL NTFS alternate data stream markers
 # =========================

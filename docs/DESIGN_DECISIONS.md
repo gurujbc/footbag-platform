@@ -42,6 +42,7 @@ Current implementation note (current deployed public baseline): this document is
   3.6 Secrets Management via AWS Parameter Store
   3.7 Ballot Encryption with AWS KMS
   3.8 Account Security Tokens
+  3.9 Security, Privacy, and Historical Record Governance
 4. Front-End / UI Technology
   4.1 Server-rendered HTML with Handlebars Templates
   4.2 JavaScript Required for Interactivity
@@ -929,6 +930,53 @@ Validation: A presented token is hashed and compared to stored hashes; validatio
 Cleanup: A background cleanup job runs daily to delete expired or consumed token rows (tokens older than 7 days).
 
 Impact: Token generation/validation logic is centralized in an AuthService helper to avoid copy/paste drift across flows (verification, reset, onboarding).
+
+## 3.9 Security, Privacy, and Historical Record Governance
+
+Decision:
+
+Privacy is part of the platform's security model. Current member data, discoverability, contactability, exports, rosters, participant lists, and imported historical identities must be governed by explicit visibility rules.
+
+The platform preserves and publicly exposes official footbag history, including public event results, year archives, permanent honors such as Hall of Fame and Big Add Posse, and other explicitly approved historical-record surfaces such as world records.
+
+Public historical discoverability does not authorize a public current-member directory, public current-member search, public current-member profiles, or public contact discovery.
+
+Imported historical people and result-linked identities may appear publicly only as historical-record surfaces. They do not thereby become activated members, profile owners, searchable current members, or publicly contactable accounts.
+
+Any public or member-visible data surface must follow privacy-by-design and data-minimization rules. Contact fields, roster visibility, participant visibility, exports, and discoverability must be scoped to the minimum audience required for the product use case.
+
+Visibility taxonomy — the platform uses five tiers:
+
+1. **Public official historical record** — official event results, year archives, HoF/BAP honors, world records, minimal historical-person pages needed to make public results intelligible.
+2. **Authenticated current-member lookup** — logged-in-only search for current members; anti-enumeration; non-directory; minimal result fields.
+3. **Role-scoped operational surfaces** — organizer participant management, club-leader rosters, workflow exports; scoped to role.
+4. **Internal/admin only** — full member history, remediation/audit workflows, broad exports, identity resolution.
+5. **Archived member-only legacy** — immutable old archive; authenticated only; no search; no public indexing.
+
+Implementation note — derived statistics and incomplete historical data:
+
+Official result facts, honor rolls, and approved record tables are primary historical sources. Derived statistics are secondary editorial outputs and must not be treated as canonical merely because data fields exist in storage. The platform must not publish misleading or false-precision historical statistics from incomplete datasets. Public or member-visible stats are justified only when they are useful and interesting for historians of footbag or clearly valuable to the community's official historical record, and either (a) the underlying source scope is sufficiently complete for the claim being made, or (b) the UI presents clear caveats about scope, missing data, and interpretation limits. Where those conditions are not met, the platform must prefer raw official results, honors, and record listings over aggregate summaries.
+
+Two distinct risks apply to incomplete historical statistics. **Statistical accuracy risk:** misleading or uncaveated aggregates make false claims about real people's competitive records. **Privacy pressure risk:** misleading aggregates create pressure to over-link person-level identities to fill data holes, driving the system toward overexposure of person-level data. Both risks share the same policy response (caveat clearly or suppress) but are separate failure modes.
+
+No auth-bypass toggles: environment variables must not gate route-level authorization behavior. Auth is either fully stubbed (with the stub designed to mirror the real path) or real. Boolean env toggles that change what content is served are not allowed.
+
+Rationale:
+
+The platform handles real people's competitive history, identity, and contact information. Privacy violations in this domain carry reputational and potentially legal consequences. Treating privacy as part of the security model ensures that visibility rules are enforced at architecture boundaries rather than applied inconsistently across features.
+
+Public historical records are legitimate and required: the footbag community's history belongs to the community. But historical discoverability is categorically different from current-member discoverability. The platform must maintain that distinction explicitly in both code and docs.
+
+For normative policy detail, implementation rules, and reference tables, see `docs/GOVERNANCE.md`.
+
+Cross-references:
+
+- **2.4** Immutable Audit Logs with Privacy-safe Fields — extend audit guidance to member-search, export, and sensitive visibility checks.
+- **3.2/3.4** JWT Sessions / Token Lifecycle — session and auth boundaries protect current-member-only surfaces, not public historical record surfaces.
+- **6.4** Legacy Archive — member-only because it contains private legacy member information; explicitly distinct from public migrated historical results.
+- **6.5** Legacy Data Migration — imported people and imported stat fields do not automatically become public current-member data or authoritative public statistics.
+- **7.1** Dev/Prod Parity — forbids auth gating by env boolean toggles that bypass the real session path.
+- **8.3** Rate Limiting and Abuse Prevention — anti-enumeration controls for authenticated member search and any record/search surfaces vulnerable to scraping.
 
 # 4. Front-End / UI Technology
 

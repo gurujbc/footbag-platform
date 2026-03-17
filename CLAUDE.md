@@ -1,9 +1,5 @@
 # CLAUDE.md — footbag-platform
 
-This file is read by Claude Code at the start of every session.
-
----
-
 ## Project overview
 
 Modernizing footbag.org for the International Footbag Players Association (IFPA).
@@ -31,12 +27,19 @@ tests/        Integration tests
 
 ## Source-of-truth order for active work
 
-1. explicit human decisions in the current task
-2. `docs/USER_STORIES.md` for functional requirements
-3. the top active-slice/status block in `IMPLEMENTATION_PLAN.md` for scope
-4. current code for implemented behavior
-5. relevant derived docs (`docs/VIEW_CATALOG.md`, `docs/SERVICE_CATALOG.md`, `docs/DATA_MODEL.md`)
-6. `docs/DESIGN_DECISIONS.md` for rationale and non-negotiable architectural commitments
+Read the minimum the task requires. Default: active-slice block + code.
+Load docs in targeted sections only.
+
+1. Explicit human decisions in the current task
+2. `docs/DESIGN_DECISIONS.md` — highest authority; read rarely (already encoded in code patterns); load targeted sections only
+3. Active-slice block in `IMPLEMENTATION_PLAN.md` — current scope and out-of-scope
+4. Current code — implemented behavior
+5. When needed, targeted sections of:
+   - `docs/USER_STORIES.md` — functional requirements
+   - `docs/VIEW_CATALOG.md` — route/page contracts
+   - `docs/SERVICE_CATALOG.md` — service contracts
+   - `docs/DATA_MODEL.md` — schema semantics
+   - `docs/GOVERNANCE.md` — security, privacy, historical data policy
 
 ## Non-negotiable rules
 
@@ -44,14 +47,14 @@ tests/        Integration tests
 2. Never take a destructive or risky action without explicit human approval.
 3. When asking the human a question, always provide context so the human can understand clearly.
 4. Refer to appropriate Claude skills whenever appropriate for the task at hand.
+5. If unclear, escalate to the human. Never guess.
 
 ## Workflow rules
 
-- Explicit human decisions in this session override everything else.
-- Current code is the source of truth for implemented behavior.
 - Documentation in /docs describe long-term product and design intent, not necessarily the current Sprint's reality.
 - Use Plan Mode when the task is primarily about sequencing, dependency ordering, or phased planning. For normal implementation work, the top active-slice/status block in `IMPLEMENTATION_PLAN.md` is sufficient.
 - Do not use browser automation or MCP tools unless the human explicitly asks for browser testing or verification.
+- Use the Explore sub-agent for broad codebase searches; use the Plan sub-agent for sequencing or architecture tasks. Both protect the main context window.
 
 ## Skills
 
@@ -59,13 +62,22 @@ Only rely on skills that actually exist under `.claude/skills`.
 
 Available workflow skills and when to use them:
 
-- **doc-sync** — mandatory after any change of significance to design, behavior, or requirements; also mandatory before proposing any approved doc edit. Never edit docs without running doc-sync first.
+- **doc-sync** — mandatory after any change of significance to design, behavior, or requirements, unless the specific changes were explicitly pre-approved by the human.
 - **add-public-page** — use when a task adds or changes a public route, controller, template, or route-level tests.
 - **extend-service-contract** — use when a task changes a service method signature, return shape, db.ts statements, or service-level error semantics. Run this before add-public-page when a new service method is also needed.
 - **prepare-pr** — use at task completion to produce a human-reviewable PR summary. Ensure doc-sync has run first.
 - **browser-qa** — use only when the human explicitly names a specific page or check to run. Covers both visual layout review (screenshot + feedback) and QA verification. Never run unsolicited, never assume a broad test suite is wanted, minimize tool calls to what was asked.
 
 Correct sequencing when skills compose: `extend-service-contract` → `add-public-page` → `doc-sync` → `prepare-pr`
+
+## Memory hygiene
+
+Memory is for current-work context only (project state, behavioral
+corrections, preferences, external references). Not for code patterns,
+debugging fixes, or anything derivable from code or this file.
+Update existing entries rather than adding new ones. Remove entries
+no longer relevant. If an entry is permanently needed, propose moving
+it to CLAUDE.md instead.
 
 ## Hooks
 
@@ -74,8 +86,3 @@ Correct sequencing when skills compose: `extend-service-contract` → `add-publi
 - Destructive database, production-ops, and dangerous git commands may require explicit confirmation.
 - The `systemctl` guard covers `footbag.service` specifically; other host services are not guarded.
 
-## Source-of-truth order
-
-Explicit human decisions in this session > current code > existing docs.
-
-If unclear, escalate to the human. Never guess.

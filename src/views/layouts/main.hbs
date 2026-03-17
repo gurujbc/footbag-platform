@@ -19,6 +19,13 @@
         <a href="/events" {{#if (eq currentSection 'events')}}class="active"{{/if}}>Events</a>
         <a href="/members" {{#if (eq currentSection 'members')}}class="active"{{/if}}>Members</a>
         <a href="/clubs" {{#if (eq currentSection 'clubs')}}class="active"{{/if}}>Clubs</a>
+        {{#if isAuthenticated}}
+          <form method="POST" action="/logout" class="nav-logout">
+            <button type="submit" class="nav-logout-btn">Logout</button>
+          </form>
+        {{else}}
+          <a href="/login">Login</a>
+        {{/if}}
       </nav>
     </div>
   </header>
