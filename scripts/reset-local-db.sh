@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # reset-local-db.sh
-# Drops and rebuilds the local SQLite database from schema + seed data.
+# Drops and rebuilds the local SQLite database from schema + full seed pipeline.
 # Safe to run repeatedly — destroys all local data each time.
 #
 # Usage:
@@ -16,9 +16,26 @@ if ! command -v sqlite3 &>/dev/null; then
   exit 1
 fi
 
+if ! command -v python3 &>/dev/null; then
+  echo "Error: python3 not found. Install it first."
+  exit 1
+fi
+
 DB_FILE="${FOOTBAG_DB_PATH:-./database/footbag.db}"
 SCHEMA="database/schema_v0_1.sql"
-SEED="database/seeds/seed_mvfp_v0_1.sql"
+CANONICAL_INPUT="legacy_data/event_results/canonical_input"
+SEED_DIR="legacy_data/event_results/seed/mvfp_full"
+VENV="scripts/.venv"
+REQUIREMENTS="scripts/requirements.txt"
+
+# Create venv and install dependencies if not already present
+if [ ! -f "${VENV}/bin/python3" ]; then
+  echo "  → Creating Python venv..."
+  python3 -m venv "${VENV}"
+  "${VENV}/bin/pip" install --quiet -r "${REQUIREMENTS}"
+fi
+
+PYTHON="${VENV}/bin/python3"
 
 echo "Resetting database: ${DB_FILE}"
 
@@ -29,9 +46,16 @@ rm -f "${DB_FILE}" "${DB_FILE}-wal" "${DB_FILE}-shm"
 echo "  → Applying schema..."
 sqlite3 "${DB_FILE}" < "${SCHEMA}"
 
-# Apply seed data
-echo "  → Applying seed data..."
-sqlite3 "${DB_FILE}" < "${SEED}"
+# Build full seed CSVs from canonical input
+echo "  → Building seed CSVs from canonical input..."
+"${PYTHON}" legacy_data/event_results/scripts/07_build_mvfp_seed_full.py \
+  --input-dir "${CANONICAL_INPUT}"
+
+# Load seed CSVs into database
+echo "  → Loading seed data into database..."
+"${PYTHON}" legacy_data/event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py \
+  --db "${DB_FILE}" \
+  --seed-dir "${SEED_DIR}"
 
 # Sanity check
 EVENT_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM events;")
