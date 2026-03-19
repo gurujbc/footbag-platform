@@ -82,6 +82,7 @@ export function createApp(): express.Application {
       : req.path.startsWith('/events') ? 'events'
       : req.path.startsWith('/members') ? 'members'
       : req.path.startsWith('/clubs') ? 'clubs'
+      : req.path.startsWith('/hof') ? 'hof'
       : '';
     res.locals.isAuthenticated = req.isAuthenticated;
     res.locals.currentUser = req.user;

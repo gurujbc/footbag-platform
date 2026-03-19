@@ -65,7 +65,7 @@ Only rely on skills that actually exist under `.claude/skills`.
 Available workflow skills and when to use them:
 
 - **doc-sync** — mandatory after any change of significance to design, behavior, or requirements, unless the specific changes were explicitly pre-approved by the human.
-- **add-public-page** — use when a task adds or changes a public route, controller, template, or route-level tests.
+- **add-public-page** — use when a task adds a new public route, a new top-level nav section (including nav menu updates on `/`), or changes an existing public controller, template, or route-level tests.
 - **extend-service-contract** — use when a task changes a service method signature, return shape, db.ts statements, or service-level error semantics. Run this before add-public-page when a new service method is also needed.
 - **prepare-pr** — use at task completion to produce a human-reviewable PR summary. Ensure doc-sync has run first.
 - **browser-qa** — use only when the human explicitly names a specific page or check to run. Covers both visual layout review (screenshot + feedback) and QA verification. Never run unsolicited, never assume a broad test suite is wanted, minimize tool calls to what was asked.

@@ -18,13 +18,14 @@ For non-trivial work, read this top status block first, then only the relevant d
 - **Historical-data caveats:** no uncaveated derived stats; scope and completeness messaging where needed; no misleading "all-time" or "career total" claims from partial import data
 - **Shared page contract:** define and implement the common `seo / page / navigation / content` structure for all non-home pages; refactor existing non-home pages to comply; home page (`/`) is explicitly exempt
 - **TDD expansion:** integration tests for members routes and auth-stub visibility behaviors
+- **HoF landing page:** new public route `GET /hof`; add "HoF" nav item to main navigation; static/editorial content page for current slice (no DB queries); view model supports rich content sections for future About-Us-style text sourced from footbaghalloffame.net; renders as a styled placeholder with coming-soon notice until content is populated; `extend-service-contract` not needed (no new DB queries); use `add-public-page` skill
 - Teammate links on member detail — DONE (personId carried through service + template; plain text where no ID)
 
 ## Drafted next, but not active code focus now
 
 - Clubs page with real data (no club data yet; deferred until data exists)
 - World records — public historical record surfaces; deferred from current slice
-- BAP/HoF honor-roll pages — deferred; member-page indicators are already implemented
+- BAP honor-roll pages — deferred; member-page indicators are already implemented
 - Broader service contracts may remain documented in `docs/SERVICE_CATALOG.md`, but implementation status is governed here, not there.
 
 ## Out of scope now

@@ -4,12 +4,14 @@ import { clubController } from '../controllers/clubController';
 import { eventController } from '../controllers/eventController';
 import { memberController } from '../controllers/memberController';
 import { authController } from '../controllers/authController';
+import { hofController } from '../controllers/hofController';
 import { requireAuth } from '../middleware/authStub';
 
 export const publicRouter = Router();
 
 publicRouter.get('/',      homeController.home);
 publicRouter.get('/clubs', clubController.index);
+publicRouter.get('/hof',   hofController.index);
 
 // IMPORTANT: /events/year/:year MUST be registered before /events/:eventKey.
 // Express matches routes in registration order. Without this ordering,

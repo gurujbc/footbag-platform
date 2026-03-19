@@ -1,5 +1,5 @@
 # Footbag Website Modernization Project -- View Catalog
-**Last updated:** March 16, 2026
+**Last updated:** March 20, 2026
 **Prepared by:** David Leberknight / [DavidLeberknight@gmail.com](mailto:DavidLeberknight@gmail.com)
 
 ---
@@ -37,6 +37,7 @@ This document covers:
   - Members section landing (auth-gated for now; Tier 1 historical-person data)
   - Member detail (auth-gated for now; Tier 1 historical-person data)
   - Login (auth stub)
+  - HoF landing (placeholder; static/editorial content page)
 - the rules future pages must follow to join the catalog
 
 `docs/USER_STORIES.md` remains broader than this file. This catalog is authoritative for the views it includes; it does not attempt to catalog the full future product yet.
@@ -112,7 +113,7 @@ Every public page except Home (see §3.5) must render from the same top-level co
   - optional `intro`
   - optional `notice`
 - `navigation`
-  - current public nav items: Home (`/`), Events (`/events`), Members (`/members`), Clubs (`/clubs`)
+  - current public nav items: Home (`/`), Events (`/events`), Members (`/members`), Clubs (`/clubs`), HoF (`/hof`)
   - active section/page state
 - `content`
   - page-specific regions already shaped for rendering
@@ -271,6 +272,7 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /members/:personId` | Member detail | Tier 1 public historical-person detail; see GOVERNANCE.md §4 for visibility rules | Current |
 | `GET /clubs` | Clubs landing | Placeholder public clubs entry page | Current stub |
 | `GET /login` | Login | Auth stub login form; redirects authenticated users to `/members` | Current stub |
+| `GET /hof` | HoF landing | Footbag Hall of Fame editorial/informational landing page | Current stub |
 | `GET /health/live` | Operational endpoint | Liveness check | Not a cataloged page |
 | `GET /health/ready` | Operational endpoint | Readiness check | Not a cataloged page |
 
@@ -283,6 +285,7 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /members/:personId` is the canonical historical-person detail route for the current slice. Route will evolve as the Members section grows to serve authenticated member profiles.
 - `GET /clubs` is the canonical clubs section entry route for the current slice.
 - `GET /login` is the auth stub login route. `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
+- `GET /hof` is the canonical HoF section entry route.
 - health routes are operational and are outside the cataloged page system.
 
 ---
@@ -747,6 +750,65 @@ This page consumes the generic public rendering standard.
 ### Empty state
 
 This page is itself a controlled placeholder state and should use the standard notice / coming-soon treatment rather than a generic empty state.
+
+---
+
+## 6.8 HoF landing
+
+### Purpose
+
+Provide the public Footbag Hall of Fame informational landing page. For the current slice this is a static/editorial content page; it will eventually display About-Us-style text sourced from footbaghalloffame.net.
+
+### Route
+
+`GET /hof`
+
+### Audience
+
+Public visitor.
+
+### Standard relationship
+
+This page consumes the generic public rendering standard and the §4.2 page contract.
+
+### Page intent
+
+- establish the Footbag Hall of Fame as a first-class section in the site navigation
+- communicate that richer HoF content is coming
+- provide a view model shaped to accept rich editorial sections once content is ready
+
+### Required content
+
+- hero for the HoF section
+- placeholder notice that full HoF content is coming
+- optional editorial content sections when content is available (heading + body per section)
+
+### Required view-model fields
+
+- `page.sectionKey = hof`
+- `page.pageKey = hof_index`
+- `page.title`
+- optional `page.eyebrow`
+- `page.intro`
+- optional `page.notice`
+- optional `content.sections[]`
+  - `heading`
+  - `body`
+
+### Navigation outputs
+
+- `GET /`
+- `GET /events`
+
+### Empty state
+
+This page is itself a controlled placeholder state for the current slice and should use the standard notice / coming-soon treatment rather than a generic empty state.
+
+### Implementation notes
+
+- No DB queries required for the current slice; service shapes static page model only.
+- `extend-service-contract` skill is not needed. Use `add-public-page` directly.
+- Content sections are intentionally empty until the About-Us text is sourced and loaded.
 
 ---
 

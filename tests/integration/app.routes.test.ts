@@ -383,6 +383,48 @@ describe('GET /clubs', () => {
   });
 });
 
+// ── HoF landing ────────────────────────────────────────────────────────────────
+
+describe('GET /hof', () => {
+  it('returns 200', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.status).toBe(200);
+  });
+
+  it('includes Hall of Fame heading', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.text).toContain('Hall of Fame');
+  });
+
+  it('includes coming-soon notice', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.text).toContain('coming soon');
+  });
+
+  it('includes HoF nav link in header', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.text).toContain('href="/hof"');
+  });
+
+  it('includes navigation links to home and events', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.text).toContain('href="/"');
+    expect(res.text).toContain('href="/events"');
+  });
+
+  it('renders content sections', async () => {
+    const app = createApp();
+    const res = await request(app).get('/hof');
+    expect(res.text).toContain('A Bit of History');
+    expect(res.text).toContain('The Mike Marshall Award');
+  });
+});
+
 // ── Auth: login page ───────────────────────────────────────────────────────────
 
 describe('GET /login', () => {
