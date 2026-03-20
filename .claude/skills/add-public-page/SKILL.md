@@ -11,9 +11,9 @@ Public pages in this project are IFPA-facing visitor pages. Every page must conf
 
 Read these in order before proposing any change:
 
-1. **The top active-slice/status block in `IMPLEMENTATION_PLAN.md`** — confirm the page is in scope now, drafted next, or out of scope.
-2. **`docs/USER_STORIES.md`** — find the acceptance criteria that drive this page. Do not infer behavior; derive it from the stories.
-3. **`docs/VIEW_CATALOG.md`** — the authoritative page contract for views already implemented or actively specified in the current slice. Read:
+1. **The top active-slice/status block in `IMPLEMENTATION_PLAN.md`** — confirm the page is in scope now, drafted next, or out of scope, noting that some pages are only partially complete, with final details defered.
+2. **`docs/USER_STORIES.md`** (targeted sections) — find the acceptance criteria that drive this page. Do not infer behavior; derive it from the stories.
+3. **`docs/VIEW_CATALOG.md`** — the authoritative page contract for views already implemented, fully or partially, or specified in the current implementation slice / sprint. Read:
    - §4.2 Required top-level view-model shape (`seo`, `page`, `navigation`, `content`)
    - §4.3 Required reusable primitives (event card, discipline tag, result section, year nav, etc.)
    - §4.4 Implementation rules (thin controllers, logic-light templates, service-owned shaping)
@@ -21,20 +21,11 @@ Read these in order before proposing any change:
    - §5 Route catalog — confirm the route is cataloged or explain why it should be added
    - §6.x Page specification for the affected page — required content, required view-model fields, navigation outputs, empty states
 4. **`docs/SERVICE_CATALOG.md`** — identify the owning service, its method contracts, and any business rules that must remain in the service layer. If the required service method does not yet exist, **invoke `extend-service-contract` first and complete it before continuing here**.
-5. **`database/schema.sql`** — verify field names, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model.
+5. **`database/schema.sql`** — verify exact column or field names, types, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model, plus impacted FK relationships, indices, and/or triggers relevant to the change. The database schema was derived from early requirements analysis so there might be drift compared to current details. If drift is detected, call it out to the human and explain.
+6. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved. Double check against drift from the schema if impacted by this change to the view layer.
+7. **CODE** - Always follow existing code patterns and naming conventions if similar features have already been implemented. If there is no good pattern in existing code to follow for the task at hand, ask the human for adive. Do not write code that deviates from established patterns unless authorized by the human.
 
-`docs/VIEW_CATALOG.md` may be intentionally partial. If the requested page is not cataloged, first determine whether it is out of scope for the current slice before proposing catalog expansion.
-
-## Step 1b — Fetch external content if required
-
-If the page spec states that content is to be sourced from an external URL (e.g. an About Us page, editorial text, or an honor-roll from another site), fetch it **now** with WebFetch before writing any code:
-
-- Review the fetched content to understand its headings, sections, and body text.
-- Identify the section structure that will map to the view-model's `content.sections[]` (heading + body per section).
-- Plan how the service will return that content as shaped static data — never as raw HTML or hardcoded template strings.
-- If the content cannot be fetched (network error, paywall), stop and report to the human before continuing.
-
-Do not defer this step. Fetching after writing the service leads to rework.
+Note that `docs/VIEW_CATALOG.md` may be intentionally partial. If the requested page is not cataloged, first determine whether it is out of scope for the current slice before proposing catalog expansion.
 
 ## Step 2 — Inspect current code
 
@@ -47,7 +38,7 @@ After reading docs, read:
 
 If this task adds a **new top-level nav section**, also read:
 - `src/controllers/homeController.ts` — the home page composes `primaryLinks[]`; a new section must appear here
-- the shared nav partial or layout template that renders the `navigation.items` array — confirm the new section key will render correctly
+- the shared nav partial or layout template that renders the `navigation.items` array — confirm the new section key will render correctly.
 
 ## Step 3 — Preserve current architecture
 
@@ -81,7 +72,8 @@ Before touching any file, state:
 
 ## Step 6 — Verification
 
-- write or update integration tests in `tests/integration/` (Vitest + Supertest pattern)
+- write or update integration tests in `tests/integration/` using factory helpers from `tests/fixtures/factories.ts` (see `tests/CLAUDE.md` for conventions and `write-tests` skill for guidance)
+- make excellent adversarial tests: happy path, auth gates, not-found, draft/unpublished leakage, route ordering, edge cases from acceptance criteria
 - run `npm test` to confirm all tests pass
 - run `npm run build` (`tsc -p tsconfig.json`) to confirm no type errors
 - only use browser automation if the human explicitly asked for it (see `browser-qa` skill)

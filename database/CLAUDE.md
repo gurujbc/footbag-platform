@@ -16,6 +16,10 @@ Local rules for schema and data-model work in `database/` and related database d
 - Prefer explicit tables, columns, keys, and documented constraints over abstraction-heavy patterns.
 - Do not introduce ORM-style thinking, repository terminology, or speculative whole-platform persistence layers here.
 
+## Schema changes and tests
+
+When adding or removing columns from tables that appear in `tests/fixtures/factories.ts`, update the relevant factory inserts to stay in sync. Failing to do so will cause integration tests to fail with SQLite column errors.
+
 ## Boundary note
 
 - This file governs schema and database-documentation work.

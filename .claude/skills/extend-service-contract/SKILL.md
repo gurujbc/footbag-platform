@@ -23,23 +23,24 @@ Use this skill — not general editing — when a task does any of the following
 Read these before proposing any change:
 
 1. **The top active-slice/status block in `IMPLEMENTATION_PLAN.md`** — confirm the service change is in scope now.
-2. **`docs/USER_STORIES.md`** — find the acceptance criteria that motivate this change. Understand what behavior is being added or corrected.
+2. **`docs/USER_STORIES.md`** (targeted sections) — find the acceptance criteria that motivate this change. Understand what behavior is being added or corrected.
 3. **`docs/SERVICE_CATALOG.md`** — locate the section for the affected service. Read:
    - the service's stated ownership and responsibility boundary
    - current method contracts (parameters, return shapes, pre/postconditions)
    - listed business rules and invariants
    - persistence touchpoints and `db.ts` statement groups used
    - service-level error semantics
-4. **`database/schema.sql`** — verify exact column names, types, nullable vs. required, status enums, FK relationships, and any trigger behavior relevant to the change.
-5. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved.
+4. **`database/schema.sql`** — verify exact column or field names, types, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model, plus impacted FK relationships, indices, and triggers relevant to the change. The database schema was derived from early requirements analysis so there might be drift compared to current detail. If drift is detected, call it out to the human and explain.
+5. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved. Double check against drift from the schema if impacted by this change to the service layer.
 6. **`docs/DESIGN_DECISIONS.md`** (targeted sections) — check for invariants relevant to the change:
    - §1.6 Controller to Service Pattern
    - §2.2 Data Access Pattern
    - §2.3 Soft Deletes
    - §2.4 Immutable Audit Logs
    - auth/security invariants if the service touches sessions, passwords, or ballots
+7. **CODE** - Always follow existing code patterns and naming conventions if similar features have already been implemented. If there is no good pattern in existing code to follow for the task at hand, ask the human for adive. Do not write code that deviates from established patterns unless authorized by the human.
 
-`docs/SERVICE_CATALOG.md` may describe broader service contracts than the active slice. Use `IMPLEMENTATION_PLAN.md` to determine what is implemented now versus what remains broader planned/design contract.
+`docs/SERVICE_CATALOG.md` may describe broader service contracts than the active slice. Use `IMPLEMENTATION_PLAN.md` to determine what is implemented now versus what remains broader planned/design contract. Note that the IMPLEMENTATION_PLAN is clear about what services have already been implemented successfully, and those establish the correct patterns to follow.
 
 ## Step 2 — Inspect current code
 
@@ -63,6 +64,7 @@ Do not introduce:
 - mediator or orchestrator layers
 - generic query-builder layers
 - ad hoc SQL in controllers or templates
+- unauthorized design patterns or code hacks.
 
 **Naming conventions (enforced):**
 - Services: `{domain}Service.ts` — camelCase, singular noun, no plurals. Examples: `eventService.ts`, `memberService.ts`, `operationsPlatformService.ts`.
@@ -81,7 +83,8 @@ Before touching any file, state:
 
 ## Step 5 — Verification
 
-- write or update integration tests in `tests/integration/`
+- write or update integration tests in `tests/integration/` using factory helpers from `tests/fixtures/factories.ts` (see `tests/CLAUDE.md` for conventions and `write-tests` skill for guidance)
+- make excellent adversarial tests: edge cases, boundary values, invalid input, authorization bypass attempts, draft/deleted item leakage
 - run `npm test` to confirm all tests pass
 - run `npm run build` (`tsc -p tsconfig.json`) to confirm no type errors
 - after changes, invoke `doc-sync` to check whether SERVICE_CATALOG.md or DATA_MODEL.md needs updating

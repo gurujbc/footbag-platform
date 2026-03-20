@@ -448,7 +448,7 @@ def main() -> None:
             """,
             (
                 fx_event_key, ts, system_user, ts, system_user,
-                "2025 Beaver Open", "2025-08-30", "2025-09-01",
+                "45th Annual Moonin' and Noonin' Beaver Open", "2025-08-30", "2025-09-01",
                 "Eugene", "Oregon", "United States",
                 "completed", "closed",
                 fx_tag_id,

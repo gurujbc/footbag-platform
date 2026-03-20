@@ -30,3 +30,7 @@ Local rules for `src/db/` work.
 When functionality grows, add explicit statement groups and small helpers instead of abstraction layers.
 
 - Keep returned rows flat when possible; shape them above `db.ts`.
+
+## Schema changes and tests
+
+When adding or removing columns from tables that appear in `tests/fixtures/factories.ts`, update the relevant factory inserts to stay in sync with the schema. Failing to do so will cause tests to fail with SQLite column errors.
