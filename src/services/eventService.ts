@@ -186,6 +186,51 @@ function toPublicEvent(eventRow: PublicEventDetailRow): PublicEvent {
   };
 }
 
+const DISCIPLINE_CATEGORY_PRIORITY: Record<string, number> = {
+  net: 1,
+  freestyle: 2,
+  golf: 3,
+  sideline: 4,
+};
+
+// Priority 1: Open / Pro (word boundary for 'pro' to avoid "impromptu", "program")
+// Priority 2: Men unqualified (top-level men's division)
+// Priority 3: Women unqualified (top-level women's division)
+// Priority 4: Masters
+// Priority 5: Advanced / Amateur / Ultra
+// Priority 6: Intermediate (many spelling variants and abbreviations)
+// Priority 7: Novice / Beginner / Junior
+// Priority 8: Unmatched (last)
+const DIVISION_PRIORITY_RULES: Array<{ patterns: Array<string | RegExp>; priority: number }> = [
+  { patterns: ['open', /\bpro\b/], priority: 1 },
+  { patterns: ['master'], priority: 4 },
+  { patterns: ['advanc', 'amateur', 'ultra'], priority: 5 },
+  { patterns: ['interm', 'inter ', 'int '], priority: 6 },
+  { patterns: ['novice', 'beginner', 'junior', 'novato'], priority: 7 },
+];
+
+// Women must be checked before men: 'wo-MEN' contains the men markers as a substring.
+// Gendered names with no division qualifier are the top-level division for that gender.
+const WOMEN_MARKERS = ['women', 'woman', 'ladies', 'girl'];
+const MEN_MARKERS = ["men's", 'mens', ' men', "man's", 'gents'];
+
+function disciplineSortKey(category: string | null, name: string | null): [number, number, string] {
+  const catPriority = DISCIPLINE_CATEGORY_PRIORITY[category ?? ''] ?? 5;
+  const lower = (name ?? '').toLowerCase();
+  let divPriority = 8; // unmatched = last
+  for (const rule of DIVISION_PRIORITY_RULES) {
+    if (rule.patterns.some((p) => (typeof p === 'string' ? lower.includes(p) : p.test(lower)))) {
+      divPriority = rule.priority;
+      break;
+    }
+  }
+  if (divPriority === 8) {
+    if (WOMEN_MARKERS.some((m) => lower.includes(m))) divPriority = 3;
+    else if (MEN_MARKERS.some((m) => lower.includes(m))) divPriority = 2;
+  }
+  return [catPriority, divPriority, name ?? ''];
+}
+
 function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResultSection[] {
   type MutablePlacement = {
     placement: number;
@@ -245,13 +290,21 @@ function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResult
     });
   }
 
-  return sections.map((section) => ({
+  const mapped = sections.map((section) => ({
     disciplineId: section.disciplineId,
     disciplineName: section.disciplineName,
     disciplineCategory: section.disciplineCategory,
     teamType: section.teamType,
     placements: section.placements,
   }));
+
+  mapped.sort((a, b) => {
+    const [aCat, aDiv, aName] = disciplineSortKey(a.disciplineCategory, a.disciplineName);
+    const [bCat, bDiv, bName] = disciplineSortKey(b.disciplineCategory, b.disciplineName);
+    return aCat - bCat || aDiv - bDiv || aName.localeCompare(bName);
+  });
+
+  return mapped;
 }
 
 function getAdjacentArchiveYears(
@@ -299,7 +352,11 @@ function toPublicEventPage(
 
   return {
     event: toPublicEvent(eventRow),
-    disciplines: disciplineRows.map(toPublicEventDiscipline),
+    disciplines: disciplineRows.map(toPublicEventDiscipline).sort((a, b) => {
+      const [aCat, aDiv, aName] = disciplineSortKey(a.disciplineCategory, a.name);
+      const [bCat, bDiv, bName] = disciplineSortKey(b.disciplineCategory, b.name);
+      return aCat - bCat || aDiv - bDiv || aName.localeCompare(bName);
+    }),
     hasResults,
     primarySection: hasResults ? 'results' : 'details',
     resultSections,
