@@ -71,16 +71,25 @@ Available workflow skills and when to use them:
 - **prepare-pr** — use at task completion to produce a human-reviewable PR summary. Ensure doc-sync has run first.
 - **browser-qa** — use only when the human explicitly names a specific page or check to run. Covers both visual layout review (screenshot + feedback) and QA verification. Never run unsolicited, never assume a broad test suite is wanted, minimize tool calls to what was asked.
 
+When a task matches a skill's trigger condition, invoke that skill as the **first action** before reading any files or exploring the codebase.
+
 Correct sequencing when skills compose: `extend-service-contract` → `add-public-page` → `write-tests` → `doc-sync` → `prepare-pr`
 
 ## Memory hygiene
 
-Memory is for current-work context only (project state, behavioral
-corrections, preferences, external references). Not for code patterns,
-debugging fixes, or anything derivable from code or this file.
-Update existing entries rather than adding new ones. Remove entries
-no longer relevant. If an entry is permanently needed, propose moving
-it to CLAUDE.md instead.
+Memory is for facts that cannot be derived from code, CLAUDE.md, or project docs: behavioral corrections, user preferences, and external references (e.g. AWS_PROJECT_SPECIFICS.md).
+
+**Never store in memory:**
+- Implementation status, feature completion, or sprint state (read IMPLEMENTATION_PLAN.md instead)
+- File inventories, architecture snapshots, or code patterns (read the code instead)
+- Plans or task breakdowns (use tasks or Plan Mode instead)
+- Anything already in CLAUDE.md or project docs
+
+**Active cleanup rule:** Any session that reads or writes memory must audit and prune before closing. Do not defer. Delete anything completed, stale, or now captured elsewhere.
+
+**Size rule:** MEMORY.md must stay under 30 lines. Prune before adding.
+
+**Promotion rule:** If a memory entry survives more than one session and is still needed, it belongs in CLAUDE.md. Propose the move to the human.
 
 ## Hooks
 

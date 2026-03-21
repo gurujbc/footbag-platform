@@ -29,20 +29,28 @@
   <section>
     <div class="section-heading">
       <h2>Upcoming Events</h2>
-      {{#if upcomingEvents.length}}
-        <span class="section-count">{{upcomingEvents.length}}</span>
-      {{/if}}
     </div>
 
-    {{#if upcomingEvents.length}}
-      <div class="card-grid">
-        {{#each upcomingEvents}}
-          {{> event-card}}
-        {{/each}}
+    <div class="card-grid">
+
+      {{! 45th IFPA World Footbag Championships 2026 }}
+      <div class="card card-featured">
+        <div class="card-title">
+          <a href="https://www.footbag.jp/FootbagWorlds2026" target="_blank" rel="noopener noreferrer">45th IFPA World Footbag Championships 2026</a>
+        </div>
+        <div class="card-meta">
+          <span>10 August 2026 – 15 August 2026</span>
+          <span>Tsukuba, Ibaraki, Japan</span>
+        </div>
+        <p class="card-description">Asia's first World Footbag Championship will be in Japan in August!</p>
+        <a href="https://www.footbag.jp/FootbagWorlds2026" target="_blank" rel="noopener noreferrer" class="btn btn-white" style="margin-top: 16px;">Official Website</a>
       </div>
-    {{else}}
-      <p class="text-muted">Upcoming events are a work in progress. Check back soon.</p>
-    {{/if}}
+
+      {{#each upcomingEvents}}
+        {{> event-card}}
+      {{/each}}
+
+    </div>
   </section>
 
 </div>

@@ -306,6 +306,19 @@ th.sortable:hover { color: var(--primary); }
 .badge-closed         { background: #f0f0f0; color: #555; }
 .badge-completed      { background: #e8eaf6; color: #3949ab; }
 
+/* ── Featured event card ────────────────────────────────────── */
+.card-featured {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  border-color: transparent;
+  color: #fff;
+}
+.card-featured .card-title a { color: #fff; font-size: 1.15rem; }
+.card-featured .card-title a:hover { color: rgba(255,255,255,0.85); text-decoration: none; }
+.card-featured .card-meta { color: rgba(255,255,255,0.75); }
+.card-featured .card-description { color: rgba(255,255,255,0.9); }
+.btn-white { background: #fff; color: var(--secondary); }
+.btn-white:hover { background: rgba(255,255,255,0.9); color: var(--secondary); }
+
 /* ── Home section cards ─────────────────────────────────────── */
 .home-sections {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
