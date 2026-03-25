@@ -71,9 +71,11 @@ def append_note(existing: str, extra: str) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    repo_root = Path(__file__).resolve().parents[3]
+    default_input_dir = repo_root / "legacy_data/event_results/canonical_input"
     ap.add_argument(
         "--input-dir",
-        default="~/projects/footbag-platform/legacy_data/event_results/canonical_input",
+        default=str(default_input_dir),
         help="Directory containing canonical CSVs",
     )
     ap.add_argument(

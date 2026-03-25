@@ -111,11 +111,10 @@ def main() -> None:
     system_user = "seed_loader"
 
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = OFF;")
     conn.row_factory = sqlite3.Row
 
     try:
-        conn.execute("PRAGMA foreign_keys = ON;")
-
         # ------------------------------------------------------------------
         # Clear existing result/event data only
         # ------------------------------------------------------------------
@@ -492,6 +491,7 @@ def main() -> None:
             ),
         )
 
+        conn.execute("PRAGMA foreign_keys = ON;")
         conn.commit()
 
         print("\nDatabase row counts:")
