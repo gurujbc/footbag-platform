@@ -29,16 +29,25 @@ Sneak Preview: [http://34.192.250.246/events/event_2025_beaver_open](http://34.1
 
 ## Contributing
 
-- [CONTRIBUTING.md](CONTRIBUTING.md)
-- [docs/GOVERNANCE.md](docs/GOVERNANCE.md) (security, privacy, and historical data publication policy)
-- [SECURITY.md](SECURITY.md) (for vulnerability reporting — **do not use public issues**)
+- [CONTRIBUTING.md](CONTRIBUTING.md).
+- [docs/GOVERNANCE.md](docs/GOVERNANCE.md) (security, privacy, and historical data publication policy).
+- [SECURITY.md](SECURITY.md) (for vulnerability reporting — **do not use public issues**).
 - See [CLAUDE.md](CLAUDE.md) for Claude Code's standard operating rules.
+- Talk to Dave.
 
-## Project Documantation
+## Project Documentation
 
-- `docs/` contains the long-term product, design, and operating docs.
-- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) contains current sprint scope, dependency analysis, and incremental planning.
-- `database/` contains the schema SQL definition.
+- [docs/DATA_MODEL.md](docs/DATA_MODEL.md) — data model and schema semantics.
+- [docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md) — architectural decisions and rationale.
+- [docs/DEV_ONBOARDING.md](docs/DEV_ONBOARDING.md) — developer setup and onboarding.
+- [docs/DEVOPS_GUIDE.md](docs/DEVOPS_GUIDE.md) — deployment and operations.
+- [docs/DIAGRAMS.md](docs/DIAGRAMS.md) — architecture diagrams.
+- [docs/GLOSSARY.md](docs/GLOSSARY.md) — terminology and jargon.
+- [docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md) — project overview.
+- [docs/SERVICE_CATALOG.md](docs/SERVICE_CATALOG.md) — back-end code service contracts.
+- [docs/USER_STORIES.md](docs/USER_STORIES.md) — intended functional behaviors and success criteria.
+- [docs/VIEW_CATALOG.md](docs/VIEW_CATALOG.md) — route and web-page contracts.
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — current sprint scope, dependency analysis, and planning.
 
 ## Technology Stack
 
@@ -46,8 +55,8 @@ TypeScript · Node.js · Express · Handlebars · SQLite · AWS (Lightsail, S3, 
 
 ## License and Trademarks
 
-- Code in this repository is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE)
-- IFPA names, logos, and marks are **not** granted under Apache-2.0 — see [TRADEMARKS.md](TRADEMARKS.md)
+- Code in this repository is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE).
+- IFPA names, logos, and marks are **not** granted under Apache-2.0 — see [TRADEMARKS.md](TRADEMARKS.md).
 
 ---
 
