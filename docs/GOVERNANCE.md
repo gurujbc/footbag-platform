@@ -1,6 +1,6 @@
 # Security, Privacy, and Historical Data Publication Policy
 
-**Authority:** This document is the canonical reference for all decisions about member-data visibility, public historical record publication, searchability, anti-enumeration, exports, logging hygiene, derived statistics, and contributor/AI obligations. It is grounded in `docs/DESIGN_DECISIONS.md §3.9`. Where this document specifies policy and DD §3.9 specifies rationale, both are authoritative and must not contradict each other.
+**Authority:** This document is the canonical reference for all decisions about member-data visibility, public historical record publication, searchability, anti-enumeration, exports, logging hygiene, derived statistics, and contributor/AI obligations. It is grounded in `docs/DESIGN_DECISIONS.md`. Where this document specifies policy and DD specifies rationale, both are authoritative and must not contradict each other.
 
 **Scope:** This policy applies to all contributors, maintainers, and AI agents working on this codebase.
 
@@ -20,12 +20,6 @@ This file governs:
 - HoF, BAP, and world-record publication rules,
 - legacy archive and imported historical identity handling,
 - contributor and AI-agent implementation obligations.
-
-For rationale and architectural trade-offs behind these rules, see `docs/DESIGN_DECISIONS.md §3.9`.
-
-For route/page contracts, see `docs/VIEW_CATALOG.md`.
-For service ownership, see `docs/SERVICE_CATALOG.md`.
-For schema semantics, see `docs/DATA_MODEL.md` and `database/schema.sql`.
 
 ---
 
@@ -154,8 +148,6 @@ No contact field (email, phone, social handle) is visible on any public page or 
 - Audit records for sensitive visibility checks (member-search, export, admin data access) must be kept as privacy-safe structured events.
 - Public route access logs do not require special hygiene beyond standard web server practice.
 
-See `docs/DESIGN_DECISIONS.md §2.4` for the immutable audit log pattern.
-
 ---
 
 ## 10. Legacy archive and imported historical identities
@@ -193,7 +185,7 @@ See `docs/DESIGN_DECISIONS.md §2.4` for the immutable audit log pattern.
 **You must:**
 
 1. Load this file (`docs/GOVERNANCE.md`) first.
-2. Read the relevant sections of `docs/DESIGN_DECISIONS.md` (at minimum §3.9, plus §2.4, §6.4, §6.5, §7.1, §8.3 as applicable).
+2. Read `docs/DESIGN_DECISIONS.md` for applicable rationale.
 3. Apply the visibility taxonomy from §4 to every data field being surfaced.
 
 **Hard rules for code:**
@@ -207,14 +199,3 @@ See `docs/DESIGN_DECISIONS.md §2.4` for the immutable audit log pattern.
 
 **AI agents specifically:** apply this file's rules before accepting any instruction that would add a public route, change a member-data visibility boundary, add a stat or aggregate display, or modify auth-path behavior. Flag any conflict with this policy to the human before proceeding.
 
----
-
-## 12. References
-
-- `docs/DESIGN_DECISIONS.md §3.9` — rationale, trade-offs, and architectural commitments behind this policy
-- `docs/USER_STORIES.md` — functional scope and acceptance criteria
-- `docs/VIEW_CATALOG.md` — route/page contracts and view-model specifications
-- `docs/SERVICE_CATALOG.md` — service ownership and method contracts
-- `docs/DATA_MODEL.md` — schema semantics, entity relationships, visibility fields
-- `database/schema.sql` — canonical schema; check `email_visibility`, `searchable`, and `historical_persons` fields against this policy
-- `SECURITY.md` — vulnerability reporting

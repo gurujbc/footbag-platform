@@ -43,7 +43,6 @@ This document is the Source of Truth for Functional Requirements, defining all U
     - [M_Edit_Profile](#m_edit_profile)
     - [M_Search_Members](#m_search_members)
     - [M_View_Profile](#m_view_profile)
-    - [M_Send_Announce_Email](#m_send_announce_email)
   - [3.3 Club Membership](#33-club-membership)
     - [M_Join_Club](#m_join_club)
     - [M_Leave_Club](#m_leave_club)
@@ -74,6 +73,7 @@ This document is the Source of Truth for Functional Requirements, defining all U
     - [M_Flag_Media](#m_flag_media)
   - [3.9 Email](#39-email)
     - [M_Manage_Email_Subscriptions](#m_manage_email_subscriptions)
+    - [M_Send_Announce_Email](#m_send_announce_email)
 - [4. Event Organizer Stories](#4-event-organizer-stories)
   - [4.1 Event Lifecycle](#41-event-lifecycle)
     - [Event Status Lifecycle](#event-status-lifecycle)
@@ -715,17 +715,6 @@ Success Criteria:
 - When viewing own profile: link to edit profile, clear indication of current tier status and expiry date (if applicable).
 - When viewing other profile: no access to private information (payment history, audit logs).
 
-### M_Send_Announce_Email
-Access: Tier 2+ members.
-
-Story: As a Tier 2+ member, I can send an email to the IFPA announce mailing list so that I can create community announcements.
-
-Success Criteria:  
-- Email form includes: subject, message body, preview.  
-- System sends to configured announce list address (default [announce@footbag.org](mailto:announce@footbag.org)).  
-- Rate limiting to prevent abuse (admin-configurable).  
-- All sends audit-logged (actor ID, subject, timestamp).
-
 ## 3.3 Club Membership
 
 ### M_Join_Club
@@ -1160,6 +1149,17 @@ Success Criteria:
 - Event-specific communications may have separate, explicit opt-ins (for example, event reminders for registered participants).
 - Unsubscribe is persistent: once unsubscribed from a category, the member does not receive emails in that category until they explicitly opt back in.
 - Subscription changes logged to audit trail.
+
+### M_Send_Announce_Email
+Access: Tier 2+ members.
+
+Story: As a Tier 2+ member, I can send an email to the IFPA announce mailing list so that I can create community announcements.
+
+Success Criteria:  
+- Email form includes: subject, message body, preview.  
+- System sends to configured announce list address (default [announce@footbag.org](mailto:announce@footbag.org)).  
+- Rate limiting to prevent abuse (admin-configurable).  
+- All sends audit-logged (actor ID, subject, timestamp).
 
 # 4. Event Organizer Stories
 

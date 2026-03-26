@@ -4,10 +4,6 @@
 **Schema file:** `database/schema.sql`
 **Schema counts:** 49 tables · 9 views · 108 named indexes · 18 triggers
 
-**Quick routing:**
-- Use this document for: persisted entities, relationships, schema conventions, retained triggers, and DB-vs-app enforcement boundaries.
-- Next docs: `database/schema.sql` for exact SQL definitions, `docs/SERVICE_CATALOG.md` for service-layer usage, `docs/DESIGN_DECISIONS.md` for rationale, `src/db/db.ts` for sql queries.
-
 ---
 
 ## Table of Contents
@@ -627,7 +623,7 @@ The `members` table enforces a three-way credential-state invariant via a `CHECK
 #### `members_searchable` view
 **The member search endpoint MUST query this view.** It applies five exclusion conditions: soft-deleted, deceased, opted-out (`searchable = 0`), PII-purged, and unverified (`email_verified_at IS NULL`). The `email_verified_at IS NULL` condition is the primary mechanism preventing imported placeholder rows from appearing in search results; `searchable = 0` is defense-in-depth. Do not add extra `WHERE` clauses on top of `members_active` or the bare `members` table for search.
 
-`searchable = 1` means the member is **eligible for authenticated current-member lookup only**. It does not mean publicly discoverable, publicly contactable, or visible on public historical-person pages. Member search is authenticated Tier 0+, anti-enumeration, and never public. See `docs/GOVERNANCE.md §7`.
+`searchable = 1` means the member is **eligible for authenticated current-member lookup only**. It does not mean publicly discoverable, publicly contactable, or visible on public historical-person pages. Member search is authenticated Tier 0+, anti-enumeration, and never public.
 
 ### 4.15 Member Links
 
@@ -660,7 +656,7 @@ These rows may or may not correspond to current rows in `members`. They exist so
 
 `legacy_member_id` on `members` and `historical_persons` is migration-era traceability only for this design. It is not, by itself, a platform-wide unified identity system.
 
-**Governance note:** Imported `historical_persons` rows are public historical record surfaces only. They do not confer member-account status, searchability, or contactability. The imported aggregate fields (`event_count`, `placement_count`, freestyle metrics, etc.) are migration-era metadata — not automatic public statistics. Any aggregate field shown publicly must satisfy the historian-value and completeness/caveat requirements in `docs/GOVERNANCE.md §6`. When a `historical_person_id` is linked to a `member` row (account claim), the historical public pages must continue to show only historical-record data; the link does not escalate the historical identity into a searchable or contactable current-member account.
+**Governance note:** Imported `historical_persons` rows are public historical record surfaces only. They do not confer member-account status, searchability, or contactability. The imported aggregate fields (`event_count`, `placement_count`, freestyle metrics, etc.) are migration-era metadata — not automatic public statistics. Any aggregate field shown publicly must satisfy the historian-value and completeness/caveat requirements in `docs/GOVERNANCE.md`. When a `historical_person_id` is linked to a `member` row (account claim), the historical public pages must continue to show only historical-record data; the link does not escalate the historical identity into a searchable or contactable current-member account.
 
 > **Maintainer note (longer-term design):** Longer-term, the platform may distinguish a broader Person concept from Member account/membership status, so historical imported people and other non-member identities do not need to be forced into the members table. That longer-term direction is not implemented by this slice. This document should describe the accepted current schema as-is and should not be read as requiring a platform-wide unified persons model yet.
 

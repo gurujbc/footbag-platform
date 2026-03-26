@@ -211,7 +211,7 @@ The previous DevOps draft had a useful set of System Administrator stories. Thos
 | `SA_Configure_Budgets_And_SNS_Alerting` | configure budgets, notifications, and cost alarms | §12.5 |
 | `SA_Configure_Email_Delivery_Infrastructure` | SES domain verification, SPF, DKIM, DMARC, bounce handling | §4.5, §13.5 |
 | `SA_Configure_Job_Schedules` | define and maintain the scheduler for system jobs | §11 |
-| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING.md Path D; DEVOPS_GUIDE.md §17 (when added) |
+| `SA_Bootstrap_New_Environment` | provision a new environment from scratch: root account hardening, IAM operator user, Terraform state bucket, environment apply, Lightsail host setup, Docker, first deployment, and CloudFront verification | DEV_ONBOARDING.md Path D; DEVOPS_GUIDE.md §17 |
 
 ---
 

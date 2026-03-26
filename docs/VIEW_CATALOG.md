@@ -335,8 +335,8 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /events` | Events index | Browse upcoming events and archive entry points | Current |
 | `GET /events/year/:year` | Events year archive | Browse completed events for one year | Current |
 | `GET /events/:eventKey` | Event detail | Canonical public event page | Current |
-| `GET /members` | Members section | Tier 1 public historical-person index; see GOVERNANCE.md §4 for visibility rules | Current |
-| `GET /members/:personId` | Member detail | Tier 1 public historical-person detail; see GOVERNANCE.md §4 for visibility rules | Current |
+| `GET /members` | Members section | Tier 1 public historical-person index | Current |
+| `GET /members/:personId` | Member detail | Tier 1 public historical-person detail | Current |
 | `GET /clubs` | Clubs landing | Placeholder public clubs entry page | Current stub |
 | `GET /login` | Login | Member login preview; functional stub for members with preview password | Current |
 | `GET /hof` | HoF landing | Footbag Hall of Fame editorial/informational landing page | Current stub |
@@ -348,7 +348,7 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /` is the canonical public home route.
 - `GET /events` is the canonical events section entry route.
 - `GET /events/:eventKey` is the canonical public event detail route.
-- `GET /members` is the canonical Members section entry route. Serves a Tier 1 public historical-person index. See GOVERNANCE.md §4 for visibility rules.
+- `GET /members` is the canonical Members section entry route. Serves a Tier 1 public historical-person index.
 - `GET /members/:personId` is the canonical historical-person detail route for the current slice. Route will evolve as the Members section grows to serve authenticated member profiles.
 - `GET /clubs` is the canonical clubs section entry route for the current slice.
 - `GET /login` is the member login route. `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
@@ -445,7 +445,6 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - present the public historical competitive record index for footbag players
 - make clear this is the Members section and that member accounts and login are part of this section
 - avoid implying historical imported people are current-member accounts or publicly searchable/contactable members
-- see GOVERNANCE.md §4–5 for visibility rules
 
 ### Required content
 
