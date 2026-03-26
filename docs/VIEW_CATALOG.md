@@ -139,32 +139,40 @@ Every public page except Home (see §3.5) must render from the same top-level co
 ### Required top-level shape
 
 - `seo`
-  - `title`
-  - optional `description`
+  - `title` — tab suffix (e.g. `"Events"`, `"2025 Events"`, `"Alice Footbag"`); the layout renders `Footbag {seo.title}` in the `<title>` tag; never include the word "Footbag" in this value
+  - optional `description` — meta description for future SEO use
 - `page`
-  - `sectionKey`
-  - `pageKey`
-  - `title`
-  - optional `eyebrow`
-  - optional `intro`
-  - optional `notice`
-- `navigation`
-  - current public nav items: Home (`/`), Events (`/events`), Members (`/members`), Clubs (`/clubs`), HoF (`/hof`)
-  - active section/page state
+  - `sectionKey` — nav section identifier (`'events'`, `'members'`, `'clubs'`, `'hof'`, or `''` for login/error pages)
+  - `pageKey` — unique page identifier (`'events_index'`, `'event_detail'`, `'member_history_detail'`, etc.)
+  - `title` — displayed h1 text
+  - optional `eyebrow` — small label rendered above h1
+  - optional `intro` — subtitle paragraph rendered below h1
+  - optional `notice` — WIP or caveat notice block
+- `navigation` — contextual navigation; service-provided and distinct from middleware locals
+  - Middleware provides `currentSection` (drives active nav link) and `isAuthenticated` (drives login/logout display) via `res.locals` on every request; these are not part of the service contract
+  - Services provide an optional `navigation` object for page-specific nav context that middleware cannot infer:
+  - optional `breadcrumbs` — `{ label: string; href?: string }[]`; last entry is the current page (no `href`); used for hierarchical pages (clubs, deep member pages); omitted on flat pages
+  - optional `siblings` — `{ previous?: { label: string; href: string }; next?: { label: string; href: string } }`; sequential browsing (year archive prev/next); omitted on pages with no sequential relationship
+  - optional `contextLinks` — `{ label: string; href: string; variant?: 'primary' | 'outline' }[]`; page-scoped related actions (back to members, more events from year); templates place these explicitly — the layout does not render them automatically
 - `content`
-  - page-specific regions already shaped for rendering
+  - page-specific regions, always nested under this key
+  - services compute all hrefs (e.g. `participantHref`, `eventHref`, `memberHref`) — templates never construct URLs
+  - services compute domain-derived display labels (e.g. `teamTypeLabel`) and boolean display flags (e.g. `hasResults`)
+  - services compute `summaryFacts[]` for entity metadata regions
+  - templates use registered helpers (`formatDate`, `countryFlag`) for presentation formatting only
+  - templates iterate typed arrays for structured content (results, event groups, discipline lists)
 
 Templates must consume this contract rather than derive it.
 
 ### Browser tab title rule
 
-The HTML `<title>` tag follows the pattern `Footbag {pageTitle}` for all pages. The sole exception is the home page (`/`), which renders as `Footbag Worldwide` (no suffix, no `pageTitle` passed).
+The HTML `<title>` tag follows the pattern `Footbag {seo.title}` for all pages. The sole exception is the home page (`/`), which renders as `Footbag Worldwide` (no suffix, no `seo` contract applies). The layout accesses `seo.title` directly from the view model.
 
-`pageTitle` values by page:
+`seo.title` values by page:
 
-| Page | `pageTitle` | Tab result |
+| Page | `seo.title` | Tab result |
 |---|---|---|
-| Home `/` | *(none)* | `Footbag Worldwide` |
+| Home `/` | *(none — home is exempt)* | `Footbag Worldwide` |
 | Events index | `Events` | `Footbag Events` |
 | Events year archive | `{year} Events` | `Footbag 2024 Events` |
 | Event detail | `event.standardTagDisplay` | `Footbag #event_{year}_{slug}` |
@@ -175,7 +183,7 @@ The HTML `<title>` tag follows the pattern `Footbag {pageTitle}` for all pages. 
 | Login | `Login` | `Footbag Login` |
 | Error pages | `Page Not Found` / `Service Unavailable` | `Footbag {error label}` |
 
-New pages must follow this pattern. `pageTitle` is the short section or entity label only — never include the word "Footbag" in `pageTitle`.
+New pages must follow this pattern. `seo.title` is the short section or entity label only — never include the word "Footbag" in it. Note that `page.title` is the full displayed h1 text (e.g. `"Footbag Events"`, `"Member Login"`) and is distinct from `seo.title`.
 
 ### 4.3 Required reusable primitives
 
@@ -454,17 +462,28 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 
 ### Required view-model fields
 
+- `seo.title = Members`
 - `page.sectionKey = members`
 - `page.pageKey = members_index`
 - `page.title`
 - optional `page.eyebrow`
 - `page.intro`
 - optional `page.notice`
-- optional `primaryLinks[]`
+- `content.memberCount` — total count of listed members
+- `content.countryCount` — count of distinct non-global countries represented
+- `content.members[]`
+  - `personId`
+  - `personName`
+  - `memberHref` — service-computed; `'/members/{personId}'`; templates must not construct this URL
+  - optional `country`
+  - optional `eventCount`
+  - optional `placementCount`
+  - `bapMember: boolean`
+  - `fbhofMember: boolean`
 
 ### Navigation outputs
 
-- `GET /members/:personId` (only when linking to a known historical member detail target)
+No service-provided navigation outputs. Member detail links are part of `content.members[].memberHref`, not the `navigation` object. Global nav (`currentSection`) is set by middleware.
 
 ### Empty state
 
@@ -508,20 +527,22 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 
 - `page.sectionKey = members`
 - `page.pageKey = member_history_detail`
-- `page.title`
-- optional `page.eyebrow`
+- `page.title` — the person's display name (plain text, for h1 and tab title)
+- optional `page.eyebrow` — e.g. `"Historical member record"`
 - optional `page.intro`
 - optional `page.notice`
-- `personId`
-- `displayName`
-- optional `summaryFacts[]`
-- optional `relatedResultLinks[]`
+- `navigation.contextLinks` — typed back link to `GET /members` (service-computed)
+- `content.personId`
+- `content.displayName` — the person's display name
+- optional `content.honorificNickname` — BAP nickname when present; rendered in a styled span alongside `displayName` in the h1
+- `content.summaryFacts` — `{ label: string; value: string }[]`; service-computed list of key facts (country, BAP induction year, HoF induction year, etc.); includes only facts with values; empty array when none apply
+- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/members/{personId}"` when a historical person link exists
 
 ### Navigation outputs
 
-- `GET /events/:eventKey`
+- `GET /events/:eventKey` (via `content.eventGroups[].eventHref`)
 - `GET /events/year/:year`
-- `GET /members`
+- `GET /members` (via `navigation.contextLinks`)
 
 ### Empty state
 
@@ -561,13 +582,14 @@ This page consumes the generic public rendering standard.
 
 ### Required view-model fields
 
+- `seo.title = Events`
 - `page.sectionKey = events`
 - `page.pageKey = events_index`
-- `page.title`
+- `page.title` — e.g. `"Footbag Events"`
 - optional `page.eyebrow`
 - `page.intro`
 - optional `page.notice`
-- `upcomingEvents[]`
+- `content.upcomingEvents[]`
   - `eventKey`
   - `title`
   - `description`
@@ -579,7 +601,7 @@ This page consumes the generic public rendering standard.
   - `hostClub`
   - `registrationStatus`
   - `status`
-- `archiveYears[]`
+- `content.archiveYears[]`
 
 ### Navigation outputs
 
@@ -626,22 +648,22 @@ This page consumes the generic public rendering standard.
 
 ### Data constraints
 
-- years before 1997 are excluded from `archiveYears[]` and from the year navigation
+- years before 1997 are excluded from year navigation
 - direct navigation to a pre-1997 year URL returns a standard 404
 
 ### Required view-model fields
 
+- `seo.title` — e.g. `"{year} Events"`
 - `page.sectionKey = events`
 - `page.pageKey = events_year_archive`
-- `page.title`
+- `page.title` — e.g. `"Footbag Events from {year}"`
 - optional `page.eyebrow`
-- `page.intro`
+- optional `page.intro`
 - optional `page.notice`
-- `year`
-- `previousYear` (nullable)
-- `nextYear` (nullable)
-- `archiveYears[]`
-- `events[]`
+- optional `navigation.siblings.previous: { label, href }` — service-computed; present when a previous archive year exists; omitted otherwise
+- optional `navigation.siblings.next: { label, href }` — service-computed; present when a next archive year exists; omitted otherwise
+- `content.year`
+- `content.events[]`
   - `eventKey`
   - `title`
   - optional `description`
@@ -652,7 +674,7 @@ This page consumes the generic public rendering standard.
   - `country`
   - optional `hostClub`
   - `status`
-  - `hasResults`
+  - `hasResults` — may be used for a visual indicator; results are not rendered inline on this page
 
 ### Navigation outputs
 
@@ -706,13 +728,15 @@ Events with status `draft`, `pending_approval`, or `canceled` resolve through st
 
 ### Required view-model fields
 
+- `seo.title = event.standardTagDisplay` — the event's canonical display tag (e.g. `"World Championships 2024"`)
 - `page.sectionKey = events`
 - `page.pageKey = event_detail`
 - `page.title`
 - optional `page.eyebrow`
 - optional `page.intro`
 - optional `page.notice`
-- `event`
+- `navigation.contextLinks[]` — service-provided; one entry: `{ label: "More events from {year}", href: "/events/year/{year}" }` where year is derived from `event.startDate`
+- `content.event`
   - `eventKey`
   - `title`
   - optional `description`
@@ -727,16 +751,16 @@ Events with status `draft`, `pending_approval`, or `canceled` resolve through st
   - optional `registrationDeadline`
   - optional `capacityLimit`
   - optional `externalUrl`
-- `disciplines[]`
+- `content.disciplines[]`
   - `disciplineId`
   - `name`
   - `disciplineCategory`
   - `teamType` (`singles` | `doubles` | `mixed_doubles`)
   - `teamTypeLabel` (`null` for singles; `"Doubles"` or `"Mixed Doubles"` for non-singles — computed by service; templates use this for display)
   - `sortOrder`
-- `hasResults`
-- `primarySection` (`details` when no results exist; `results` when results exist — affects emphasis only, not route shape)
-- `resultSections[]`
+- `content.hasResults`
+- `content.primarySection` (`details` when no results exist; `results` when results exist — affects emphasis only, not route shape)
+- `content.resultSections[]`
   - optional `disciplineId`
   - optional `disciplineName`
   - optional `disciplineCategory`
@@ -763,8 +787,7 @@ Rules:
 
 ### Navigation outputs
 
-- `GET /events/year/:year` — "More events from {year}" button (`.btn.btn-outline`) at the bottom of the page, using `yearFromDate` on `event.startDate`
-- related public links already shaped into the page model
+`navigation.contextLinks` is the sole navigation output for this page. The "More events from {year}" link is included as the single entry (see Required view-model fields above). Templates render contextLinks as a button (`.btn.btn-outline`) at the bottom of the page. No other navigation outputs are produced.
 
 ### Empty state
 
@@ -804,19 +827,19 @@ This page consumes the generic public rendering standard.
 
 ### Required view-model fields
 
+- `seo.title = Clubs`
 - `page.sectionKey = clubs`
 - `page.pageKey = clubs_index`
 - `page.title`
 - optional `page.eyebrow`
 - `page.intro`
 - optional `page.notice`
-- optional `placeholderLinks[]`
-- optional `comingSoonSections[]`
+- optional `content.placeholderLinks[]`
+- optional `content.comingSoonSections[]`
 
 ### Navigation outputs
 
-- `GET /`
-- `GET /events`
+No service-provided navigation outputs. Global nav (`currentSection`) is set by middleware.
 
 ### Empty state
 
@@ -856,20 +879,21 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 
 ### Required view-model fields
 
+- `seo.title = Hall of Fame`
 - `page.sectionKey = hof`
 - `page.pageKey = hof_index`
 - `page.title`
 - optional `page.eyebrow`
 - `page.intro`
 - optional `page.notice`
+- optional `content.externalLink: { href: string; label: string }` — when present, rendered as a call-to-action link (e.g. "Visit FootbagHallOfFame.net"); service-provided; templates must not construct this URL
 - optional `content.sections[]`
   - `heading`
-  - `body`
+  - `paragraphs: string[]`
 
 ### Navigation outputs
 
-- `GET /`
-- `GET /events`
+No service-provided navigation outputs. Global nav (`currentSection`) is set by middleware.
 
 ### Empty state
 
@@ -916,14 +940,16 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 
 ### Required view-model fields
 
+- `seo.title = Login`
 - `page.sectionKey` — none (login is not a primary nav section)
 - `page.pageKey = login`
-- `page.title = Login`
-- optional `error` — rendered inline above the form when authentication fails
+- `page.title = Member Login` — displayed h1; `seo.title` is the shorter tab suffix
+- optional `content.error` — rendered inline above the form when authentication fails
+- optional `content.returnTo: string` — the path to redirect to after successful login; read by the controller from the `?returnTo` query parameter; must be validated as a relative same-site path (starts with `/`, not `//` or `http`) before use — invalid or absent values fall back to `/members`; rendered as a hidden form field so the destination survives the `POST /login` submission
 
 ### Navigation outputs
 
-- `GET /members` — on successful authentication
+No service-provided navigation outputs. When `requireAuth` intercepts an unauthenticated request, it redirects to `/login?returnTo=<originalUrl>`. On successful `POST /login`, the controller redirects to `content.returnTo` (the validated return path) when present; otherwise falls back to `GET /members`.
 
 ### Empty state
 

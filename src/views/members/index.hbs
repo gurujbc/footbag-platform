@@ -1,10 +1,10 @@
 <div class="hero hero-sm">
   <div>
-    <h1>Members</h1>
-    <p>This section is under construction.</p>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
     <div class="hero-stats">
-      <span>{{memberCount}} historical members</span>
-      <span>{{countryCount}} countries</span>
+      <span>{{content.memberCount}} historical members</span>
+      <span>{{content.countryCount}} countries</span>
     </div>
   </div>
 </div>
@@ -18,7 +18,7 @@
   <section>
     <div class="section-heading">
       <h2>Historical Records</h2>
-      <span class="section-count">{{memberCount}}</span>
+      <span class="section-count">{{content.memberCount}}</span>
     </div>
 
     <div class="player-search-bar">
@@ -40,9 +40,9 @@
         </tr>
       </thead>
       <tbody>
-        {{#each members}}
+        {{#each content.members}}
           <tr>
-            <td><a href="/members/{{personId}}">{{personName}}</a></td>
+            <td><a href="{{memberHref}}">{{personName}}</a></td>
             <td>{{countryFlag country}} {{country}}</td>
             <td>{{eventCount}}</td>
             <td>{{placementCount}}</td>

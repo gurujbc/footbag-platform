@@ -1,34 +1,27 @@
-import { BADFLAGS } from "dns";
+import { PageViewModel } from '../types/page';
 
 interface HofSection {
   heading: string;
   paragraphs: string[];
 }
 
-interface HofLandingPage {
-  page: {
-    sectionKey: string;
-    pageKey: string;
-    title: string;
-    intro: string;
-    externalLink: { href: string; label: string };
-  };
-  content: {
-    sections: HofSection[];
-  };
+interface HofContent {
+  externalLink: { href: string; label: string };
+  sections: HofSection[];
 }
 
 export const hofService = {
-  getHofLandingPage(): HofLandingPage {
+  getHofLandingPage(): PageViewModel<HofContent> {
     return {
+      seo: { title: 'Hall of Fame' },
       page: {
         sectionKey: 'hof',
         pageKey: 'hof_index',
         title: 'Footbag Hall of Fame',
         intro: 'Honouring the pioneers, champions, and promoters of footbag sports.',
-        externalLink: { href: 'https://www.footbaghalloffame.net/', label: 'Visit FootbagHallOfFame.net' },
       },
       content: {
+        externalLink: { href: 'https://www.footbaghalloffame.net/', label: 'Visit FootbagHallOfFame.net' },
         sections: [
           {
             heading: 'A Bit of History...',

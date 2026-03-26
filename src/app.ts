@@ -110,7 +110,10 @@ export function createApp(): express.Application {
 
   // ── 404 handler ──────────────────────────────────────────────────────────
   app.use((_req, res) => {
-    res.status(404).render('errors/not-found', { pageTitle: 'Page Not Found' });
+    res.status(404).render('errors/not-found', {
+      seo:  { title: 'Page Not Found' },
+      page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+    });
   });
 
   // ── 500 error handler ────────────────────────────────────────────────────
@@ -120,7 +123,10 @@ export function createApp(): express.Application {
       url: req.url,
       error: err instanceof Error ? err.message : String(err),
     });
-    res.status(500).render('errors/unavailable', { pageTitle: 'Something Went Wrong' });
+    res.status(500).render('errors/unavailable', {
+      seo:  { title: 'Service Unavailable' },
+      page: { sectionKey: '', pageKey: 'error_503', title: 'Service Unavailable' },
+    });
   });
 
   return app;

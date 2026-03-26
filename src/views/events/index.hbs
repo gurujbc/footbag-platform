@@ -2,22 +2,22 @@
 
 <div class="hero hero-sm">
   <div>
-    <h1>Footbag Events</h1>
-    <p>Tournaments, competitions, and gatherings from around the world.</p>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
   </div>
 </div>
 
 <div class="wrapper">
 
   {{! ── Past events by year ─────────────────────────────────────── }}
-  {{#if archiveYears.length}}
+  {{#if content.archiveYears.length}}
   <section>
     <div class="section-heading">
       <h2>Past Events</h2>
     </div>
     <p class="text-muted mb-4">Browse completed events and results by year.</p>
     <div class="year-grid">
-      {{#each archiveYears}}
+      {{#each content.archiveYears}}
         <a href="/events/year/{{this}}" class="year-pill">{{this}}</a>
       {{/each}}
     </div>
@@ -46,7 +46,7 @@
         <a href="https://www.footbag.jp/FootbagWorlds2026" target="_blank" rel="noopener noreferrer" class="btn btn-white" style="margin-top: 16px;">Official Website</a>
       </div>
 
-      {{#each upcomingEvents}}
+      {{#each content.upcomingEvents}}
         {{> event-card}}
       {{/each}}
 

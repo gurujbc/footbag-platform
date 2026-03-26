@@ -2,7 +2,7 @@
 
 <div class="hero hero-sm">
   <div>
-    <h1>Footbag Events from {{year}}</h1>
+    <h1>{{page.title}}</h1>
   </div>
 </div>
 
@@ -10,22 +10,22 @@
   <section style="padding-top: 24px;">
 
     <div class="year-page-nav">
-      {{#if previousYear}}
-        <a href="/events/year/{{previousYear}}" class="hero-year-arrow">&#8592; {{previousYear}}</a>
+      {{#if navigation.siblings.previous}}
+        <a href="{{navigation.siblings.previous.href}}" class="hero-year-arrow">&#8592; {{navigation.siblings.previous.label}}</a>
       {{else}}
         <span class="hero-year-arrow hero-year-arrow--disabled">&#8592;</span>
       {{/if}}
 
-      {{#if nextYear}}
-        <a href="/events/year/{{nextYear}}" class="hero-year-arrow">{{nextYear}} &#8594;</a>
+      {{#if navigation.siblings.next}}
+        <a href="{{navigation.siblings.next.href}}" class="hero-year-arrow">{{navigation.siblings.next.label}} &#8594;</a>
       {{else}}
         <span class="hero-year-arrow hero-year-arrow--disabled">&#8594;</span>
       {{/if}}
     </div>
 
-    {{#if events.length}}
+    {{#if content.events.length}}
       <div class="event-list">
-        {{#each events}}
+        {{#each content.events}}
           <a href="/events/{{eventKey}}" class="event-list-row">
             <div class="event-list-main">
               <span class="event-list-title">{{title}}</span>
@@ -39,7 +39,7 @@
         {{/each}}
       </div>
     {{else}}
-      <p class="text-muted">No events found for {{year}}.</p>
+      <p class="text-muted">No events found for {{content.year}}.</p>
     {{/if}}
 
   </section>

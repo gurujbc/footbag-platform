@@ -1,6 +1,7 @@
 import { PublicPlayerResultRow, publicPlayers } from '../db/db';
 import { NotFoundError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
+import { PageViewModel } from '../types/page';
 
 export interface MemberResultEntry {
   disciplineName: string | null;
@@ -8,11 +9,12 @@ export interface MemberResultEntry {
   teamType: string | null;
   placement: number;
   scoreText: string | null;
-  teammates: { name: string; personId: string | null }[];
+  teammates: { name: string; memberHref?: string }[];
 }
 
 export interface MemberEventGroup {
   eventKey: string;
+  eventHref: string;
   eventTitle: string;
   startDate: string;
   city: string;
@@ -44,6 +46,36 @@ export interface MemberListEntry {
   fbhofMember: boolean;
 }
 
+export interface SummaryFact {
+  label: string;
+  value: string;
+}
+
+export interface MembersLandingContent {
+  memberCount: number;
+  countryCount: number;
+  members: Array<MemberListEntry & { memberHref: string }>;
+}
+
+export interface MemberDetailContent {
+  personId: string;
+  displayName: string;
+  honorificNickname?: string;
+  country: string | null;
+  summaryFacts: SummaryFact[];
+  eventGroups: MemberEventGroup[];
+}
+
+function buildSummaryFacts(member: MemberDetail): SummaryFact[] {
+  const facts: SummaryFact[] = [];
+  if (member.country) facts.push({ label: 'Country', value: member.country });
+  if (member.eventCount > 0) facts.push({ label: 'Events', value: String(member.eventCount) });
+  if (member.placementCount > 0) facts.push({ label: 'Placements', value: String(member.placementCount) });
+  if (member.bapMember) facts.push({ label: 'BAP Member since', value: member.bapInductionYear ? String(member.bapInductionYear) : 'Yes' });
+  if (member.fbhofMember) facts.push({ label: 'Footbag HOF', value: member.fbhofInductionYear ? String(member.fbhofInductionYear) : 'Yes' });
+  return facts;
+}
+
 function groupResults(rows: PublicPlayerResultRow[], personId: string): MemberEventGroup[] {
   const eventMap = new Map<string, MemberEventGroup>();
 
@@ -55,6 +87,7 @@ function groupResults(rows: PublicPlayerResultRow[], personId: string): MemberEv
     if (!eventMap.has(eventKey)) {
       eventMap.set(eventKey, {
         eventKey,
+        eventHref: `/events/${eventKey}`,
         eventTitle:   row.event_title,
         startDate:    row.start_date,
         city:         row.city,
@@ -84,7 +117,11 @@ function groupResults(rows: PublicPlayerResultRow[], personId: string): MemberEv
 
     const isSelf = row.participant_person_id === personId;
     if (!isSelf && !entry.teammates.some(t => t.name === row.participant_display_name)) {
-      entry.teammates.push({ name: row.participant_display_name, personId: row.participant_person_id ?? null });
+      const pid = row.participant_person_id ?? null;
+      entry.teammates.push({
+        name: row.participant_display_name,
+        memberHref: pid ? `/members/${pid}` : undefined,
+      });
     }
   }
 
@@ -92,7 +129,7 @@ function groupResults(rows: PublicPlayerResultRow[], personId: string): MemberEv
 }
 
 export const memberService = {
-  getMembersIndexPage(): { members: MemberListEntry[]; memberCount: number; countryCount: number } {
+  getPublicMembersLandingPage(): PageViewModel<MembersLandingContent> {
     const rows = runSqliteRead('listAllMembers', () =>
       publicPlayers.listAll.all(),
     ) as Array<{
@@ -105,7 +142,7 @@ export const memberService = {
       fbhof_member: number;
     }>;
 
-    const members: MemberListEntry[] = rows.map(r => ({
+    const members = rows.map(r => ({
       personId:       r.person_id,
       personName:     r.person_name,
       country:        r.country ?? null,
@@ -113,16 +150,26 @@ export const memberService = {
       placementCount: r.placement_count ?? null,
       bapMember:      Boolean(r.bap_member),
       fbhofMember:    Boolean(r.fbhof_member),
+      memberHref:     `/members/${r.person_id}`,
     }));
 
     const countryCount = new Set(
       members.map(m => m.country).filter(c => c && c !== 'Global'),
     ).size;
 
-    return { members, memberCount: members.length, countryCount };
+    return {
+      seo: { title: 'Members' },
+      page: {
+        sectionKey: 'members',
+        pageKey: 'members_index',
+        title: 'Members',
+        intro: 'Historical player records linked to competitive footbag results.',
+      },
+      content: { memberCount: members.length, countryCount, members },
+    };
   },
 
-  getMemberDetailPage(personId: string): { member: MemberDetail } {
+  getHistoricalMemberPage(personId: string): PageViewModel<MemberDetailContent> {
     const row = runSqliteRead('getMemberById', () =>
       publicPlayers.getById.get(personId),
     );
@@ -151,6 +198,25 @@ export const memberService = {
       eventGroups:        groupResults(resultRows, personId),
     };
 
-    return { member };
+    return {
+      seo: { title: member.personName },
+      page: {
+        sectionKey: 'members',
+        pageKey: 'member_history_detail',
+        title: member.personName,
+        eyebrow: 'Historical member record',
+      },
+      navigation: {
+        contextLinks: [{ label: 'All Members', href: '/members' }],
+      },
+      content: {
+        personId: member.personId,
+        displayName: member.personName,
+        honorificNickname: member.bapNickname ?? undefined,
+        country: member.country,
+        summaryFacts: buildSummaryFacts(member),
+        eventGroups: member.eventGroups,
+      },
+    };
   },
 };

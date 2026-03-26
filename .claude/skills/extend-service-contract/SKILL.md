@@ -33,7 +33,7 @@ Read these before proposing any change:
 4. **`database/schema.sql`** — verify exact column or field names, types, nullable vs. required, status enum values, and any computed or join-derived fields used in the view-model, plus impacted FK relationships, indices, and triggers relevant to the change. The database schema was derived from early requirements analysis so there might be drift compared to current detail. If drift is detected, call it out to the human and explain.
 5. **`docs/DATA_MODEL.md`** — understand entity relationships, soft-delete conventions (`deleted_at`), audit patterns, and any data invariants that must be preserved. Double check against drift from the schema if impacted by this change to the service layer.
 6. **`docs/DESIGN_DECISIONS.md`** (targeted sections) — check for invariants relevant to the change:
-   - §1.6 Controller to Service Pattern
+   - §1.9 Controller to Service Pattern
    - §2.2 Data Access Pattern
    - §2.3 Soft Deletes
    - §2.4 Immutable Audit Logs

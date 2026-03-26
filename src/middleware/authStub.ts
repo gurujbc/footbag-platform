@@ -68,7 +68,7 @@ export function authStub(secret: string) {
 
 export function requireAuth(req: Request, res: Response, next: NextFunction): void {
   if (!req.isAuthenticated) {
-    res.redirect('/login');
+    res.redirect(`/login?returnTo=${encodeURIComponent(req.originalUrl)}`);
     return;
   }
   next();

@@ -2,8 +2,8 @@
 
 <div class="hero hero-sm">
   <div>
-    <h1>{{event.title}}</h1>
-    <p>{{event.city}}{{#if event.region}}, {{event.region}}{{/if}}, {{event.country}} &middot; {{formatDate event.startDate}}{{#unless (eq event.startDate event.endDate)}} – {{formatDate event.endDate}}{{/unless}}</p>
+    <h1>{{page.title}}</h1>
+    <p>{{content.event.city}}{{#if content.event.region}}, {{content.event.region}}{{/if}}, {{content.event.country}} &middot; {{formatDate content.event.startDate}}{{#unless (eq content.event.startDate content.event.endDate)}} – {{formatDate content.event.endDate}}{{/unless}}</p>
   </div>
 </div>
 
@@ -14,32 +14,32 @@
       {{! ── Event header ──────────────────────────────────────── }}
       <div class="event-header">
         <div class="event-meta-row">
-          <span>&#128197; {{formatDate event.startDate}}{{#unless (eq event.startDate event.endDate)}} – {{formatDate event.endDate}}{{/unless}}</span>
-          <span>&#128205; {{event.city}}{{#if event.region}}, {{event.region}}{{/if}}, {{event.country}}</span>
-          {{#if event.hostClub}}
-            <span>&#127968; {{event.hostClub}}</span>
+          <span>&#128197; {{formatDate content.event.startDate}}{{#unless (eq content.event.startDate content.event.endDate)}} – {{formatDate content.event.endDate}}{{/unless}}</span>
+          <span>&#128205; {{content.event.city}}{{#if content.event.region}}, {{content.event.region}}{{/if}}, {{content.event.country}}</span>
+          {{#if content.event.hostClub}}
+            <span>&#127968; {{content.event.hostClub}}</span>
           {{/if}}
-          <span class="badge badge-{{event.status}}">{{event.status}}</span>
+          <span class="badge badge-{{content.event.status}}">{{content.event.status}}</span>
         </div>
 
-        {{#if event.externalUrl}}
-          <a href="{{event.externalUrl}}" class="btn btn-outline event-external-link" target="_blank" rel="noopener noreferrer">
+        {{#if content.event.externalUrl}}
+          <a href="{{content.event.externalUrl}}" class="btn btn-outline event-external-link" target="_blank" rel="noopener noreferrer">
             Event Website &#8599;
           </a>
         {{/if}}
       </div>
 
       {{! ── Description ───────────────────────────────────────── }}
-      {{#if event.description}}
-        <p>{{event.description}}</p>
+      {{#if content.event.description}}
+        <p>{{content.event.description}}</p>
       {{/if}}
 
       {{! ── Disciplines ───────────────────────────────────────── }}
-      {{#if disciplines.length}}
+      {{#if content.disciplines.length}}
         <div style="margin-bottom:32px">
           <h2>Disciplines</h2>
           <ul class="disciplines-list" style="margin-top:12px">
-            {{#each disciplines}}
+            {{#each content.disciplines}}
               <li class="discipline-tag">{{name}}{{#if teamTypeLabel}} ({{teamTypeLabel}}){{/if}}</li>
             {{/each}}
           </ul>
@@ -49,9 +49,9 @@
       {{! ── Results ───────────────────────────────────────────── }}
       <div>
         <h2>Results</h2>
-        {{#if hasResults}}
+        {{#if content.hasResults}}
           <div style="margin-top:20px">
-            {{#each resultSections}}
+            {{#each content.resultSections}}
               {{> result-section}}
             {{/each}}
           </div>
@@ -62,9 +62,11 @@
         {{/if}}
       </div>
 
-      <div style="margin-top: 40px;">
-        <a href="/events/year/{{yearFromDate event.startDate}}" class="btn btn-outline">More events from {{yearFromDate event.startDate}}</a>
-      </div>
+      {{#each navigation.contextLinks}}
+        <div style="margin-top: 40px;">
+          <a href="{{href}}" class="btn btn-outline">{{label}}</a>
+        </div>
+      {{/each}}
 
     </div>
   </section>

@@ -1,41 +1,34 @@
 <div class="hero hero-sm">
   <div>
-    <div class="eyebrow">Historical member record</div>
-    <h1>{{member.personName}}{{#if member.bapNickname}} <span class="player-nickname">"{{member.bapNickname}}"</span>{{/if}}</h1>
-    {{#if member.country}}
-      <p>{{countryFlag member.country}} {{member.country}}</p>
+    {{#if page.eyebrow}}<div class="eyebrow">{{page.eyebrow}}</div>{{/if}}
+    <h1>{{page.title}}{{#if content.honorificNickname}} <span class="player-nickname">"{{content.honorificNickname}}"</span>{{/if}}</h1>
+    {{#if content.country}}
+      <p>{{countryFlag content.country}} {{content.country}}</p>
     {{/if}}
     <div class="hero-stats">
-      {{#if member.eventCount}}
-        <span>{{member.eventCount}} events</span>
-      {{/if}}
-      {{#if member.placementCount}}
-        <span>{{member.placementCount}} placements</span>
-      {{/if}}
-      {{#if member.bapMember}}
-        <span>BAP Member{{#if member.bapInductionYear}} · {{member.bapInductionYear}}{{/if}}</span>
-      {{/if}}
-      {{#if member.fbhofMember}}
-        <span>Footbag HOF{{#if member.fbhofInductionYear}} · {{member.fbhofInductionYear}}{{/if}}</span>
-      {{/if}}
+      {{#each content.summaryFacts}}
+        <span>{{label}}: {{value}}</span>
+      {{/each}}
     </div>
   </div>
 </div>
 
 <div class="wrapper">
   <section>
-    <a href="/members" class="back-link">&#8592; All Members</a>
+    {{#each navigation.contextLinks}}
+      <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
+    {{/each}}
 
-    {{#if member.eventGroups.length}}
+    {{#if content.eventGroups.length}}
       <div class="section-heading" style="margin-top: 28px;">
         <h2>Historical Results</h2>
-        <span class="section-count">{{member.eventGroups.length}} events</span>
+        <span class="section-count">{{content.eventGroups.length}} events</span>
       </div>
 
-      {{#each member.eventGroups}}
+      {{#each content.eventGroups}}
         <div class="player-event-block">
           <div class="player-event-header">
-            <a href="/events/{{eventKey}}" class="player-event-title">{{eventTitle}}</a>
+            <a href="{{eventHref}}" class="player-event-title">{{eventTitle}}</a>
             <span class="player-event-meta">{{formatDate startDate}} &middot; {{city}}, {{eventCountry}}</span>
           </div>
           <table class="results-table player-results-table">
@@ -55,7 +48,7 @@
                   </td>
                   <td>
                     {{#if (gt teammates.length 0)}}
-                      {{#each teammates}}{{#unless @first}}, {{/unless}}{{#if personId}}<a href="/members/{{personId}}">{{name}}</a>{{else}}{{name}}{{/if}}{{/each}}
+                      {{#each teammates}}{{#unless @first}}, {{/unless}}{{#if memberHref}}<a href="{{memberHref}}">{{name}}</a>{{else}}{{name}}{{/if}}{{/each}}
                     {{/if}}
                   </td>
                 </tr>

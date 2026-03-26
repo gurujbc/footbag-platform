@@ -360,8 +360,8 @@ Success Criteria:
 - All historic events are viewed grouped by year (one page per year), with events sorted by start date. The year page shows the full completed public event list for the selected year even when some events do not have results.
 - The year page at `GET /events/year/:year` is a whole-year archive/results page. It is not paginated. The list of events for any given year is short enough that it does not need UI pagination.
 - Each year-page event block shows the public summary fields required for browsing historic events: title, date, location, host club when known, description when present, and the standardized event hashtag / canonical key when available.
-- When result rows exist for a completed public event, the year page shows grouped public results for that event inline.
-- When no result rows exist for a completed public event, the year page still shows the event and explicitly indicates that no results are available yet.
+- The year page shows event summaries only; results are on the canonical event detail page at `GET /events/:eventKey`.
+- When no result rows exist for a completed public event, the year page still shows the event; the event detail page explicitly indicates that no results are available yet.
 - Each completed public event also has a canonical public page at `GET /events/:eventKey` for event-focused viewing and direct linking.
 - If a historical event page is opened and no result rows exist for that event, the page still shows the event and explicitly notes that no results are available yet.
 - Public canonical event pages are available only for events with status `published`, `registration_full`, `closed`, or `completed`.

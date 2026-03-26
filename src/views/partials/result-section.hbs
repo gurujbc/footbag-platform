@@ -24,8 +24,8 @@
                 <ul class="participants-list">
                   {{#each participants}}
                     <li>
-                      {{#if participantPersonId}}
-                        <a href="/members/{{participantPersonId}}">{{participantDisplayName}}</a>
+                      {{#if participantHref}}
+                        <a href="{{participantHref}}">{{participantDisplayName}}</a>
                       {{else}}
                         {{participantDisplayName}}
                       {{/if}}

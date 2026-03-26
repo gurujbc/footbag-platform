@@ -7,7 +7,7 @@ export const hofController = {
    * Hall of Fame landing page — static/editorial content, no DB queries.
    */
   index(_req: Request, res: Response): void {
-    const viewModel = hofService.getHofLandingPage();
-    res.render('public/hof', { pageTitle: 'Hall of Fame', ...viewModel });
+    const vm = hofService.getHofLandingPage();
+    res.render('public/hof', vm);
   },
 };

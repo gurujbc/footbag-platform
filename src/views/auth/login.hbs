@@ -2,8 +2,8 @@
 
 <div class="hero hero-sm">
   <div>
-    <h1>Member Login</h1>
-    <p>Sign in to your IFPA member account.</p>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
   </div>
 </div>
 
@@ -12,11 +12,14 @@
   <section>
     <p class="text-muted">Member login is a work in progress. If you are in the loop and have the preview password, feel free to try it out.</p>
 
-    {{#if error}}
-      <p class="form-error" role="alert">{{error}}</p>
+    {{#if content.error}}
+      <p class="form-error" role="alert">{{content.error}}</p>
     {{/if}}
 
     <form method="POST" action="/login" class="login-form">
+      {{#if content.returnTo}}
+        <input type="hidden" name="returnTo" value="{{content.returnTo}}" />
+      {{/if}}
       <div class="form-field">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" autocomplete="username" required />

@@ -8,9 +8,9 @@ import {
 } from '../db/db';
 import { NotFoundError, ValidationError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
+import { PageViewModel } from '../types/page';
 
 const PUBLIC_EVENT_KEY_PATTERN = /^event_\d{4}_[a-z0-9_]+$/;
-const NO_RESULTS_MESSAGE = 'Results are not yet available.';
 
 export interface PublicEventSummary {
   eventId: string;
@@ -51,7 +51,7 @@ export interface PublicEventDiscipline {
 export interface PublicEventResultParticipant {
   participantDisplayName: string;
   participantOrder: number;
-  participantPersonId: string | null;
+  participantHref: string | null;
 }
 
 export interface PublicResultPlacement {
@@ -86,22 +86,22 @@ export interface PublicEventPage {
   resultSections: PublicResultSection[];
 }
 
-export interface PublicYearPageEvent extends PublicCompletedEventSummary {
-  resultSections: PublicResultSection[];
-  noResultsMessage: string | null;
-}
-
-export interface PublicEventsLandingPage {
+export interface EventsLandingContent {
   upcomingEvents: PublicEventSummary[];
   archiveYears: number[];
 }
 
-export interface PublicEventsYearPage {
+export interface EventsYearContent {
   year: number;
-  previousYear: number | null;
-  nextYear: number | null;
-  archiveYears: number[];
-  events: PublicYearPageEvent[];
+  events: PublicCompletedEventSummary[];
+}
+
+export interface EventDetailContent {
+  event: PublicEvent;
+  disciplines: PublicEventDiscipline[];
+  hasResults: boolean;
+  primarySection: 'details' | 'results';
+  resultSections: PublicResultSection[];
 }
 
 function assertArchiveYear(year: number): void {
@@ -286,7 +286,9 @@ function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResult
     placement.participants.push({
       participantDisplayName: row.participant_display_name,
       participantOrder: row.participant_order,
-      participantPersonId: row.participant_historical_person_id ?? null,
+      participantHref: row.participant_historical_person_id
+        ? `/members/${row.participant_historical_person_id}`
+        : null,
     });
   }
 
@@ -326,22 +328,6 @@ function getAdjacentArchiveYears(
   };
 }
 
-function toPublicYearPageEvent(
-  row: PublicCompletedEventSummaryRow,
-  resultRows: PublicEventResultRow[],
-): PublicYearPageEvent {
-  const summary = toPublicCompletedEventSummary(row);
-  const resultSections = groupPublicResultRows(resultRows);
-  const hasResults = resultSections.length > 0;
-
-  return {
-    ...summary,
-    hasResults,
-    resultSections,
-    noResultsMessage: hasResults ? null : NO_RESULTS_MESSAGE,
-  };
-}
-
 function toPublicEventPage(
   eventRow: PublicEventDetailRow,
   disciplineRows: PublicEventDisciplineRow[],
@@ -378,16 +364,12 @@ export class EventService {
     });
   }
 
-  listPublicCompletedEventsByYear(year: number): PublicYearPageEvent[] {
+  listPublicCompletedEventsByYear(year: number): PublicCompletedEventSummary[] {
     assertArchiveYear(year);
 
     return runSqliteRead('listPublicCompletedEventsByYear', () => {
       const rows = publicEvents.listCompletedByYear.all(year) as PublicCompletedEventSummaryRow[];
-
-      return rows.map((row) => {
-        const resultRows = publicEvents.listPublicResultRowsByEventId.all(row.event_id) as PublicEventResultRow[];
-        return toPublicYearPageEvent(row, resultRows);
-      });
+      return rows.map(toPublicCompletedEventSummary);
     });
   }
 
@@ -411,14 +393,23 @@ export class EventService {
     });
   }
 
-  getPublicEventsLandingPage(nowIso: string): PublicEventsLandingPage {
+  getPublicEventsLandingPage(nowIso: string): PageViewModel<EventsLandingContent> {
     return {
-      upcomingEvents: this.listPublicUpcomingEvents(nowIso),
-      archiveYears: this.listPublicArchiveYears(),
+      seo: { title: 'Events' },
+      page: {
+        sectionKey: 'events',
+        pageKey: 'events_index',
+        title: 'Footbag Events',
+        intro: 'Tournaments, competitions, and gatherings from around the world.',
+      },
+      content: {
+        upcomingEvents: this.listPublicUpcomingEvents(nowIso),
+        archiveYears: this.listPublicArchiveYears(),
+      },
     };
   }
 
-  getPublicEventsYearPage(year: number): PublicEventsYearPage {
+  getPublicEventsYearPage(year: number): PageViewModel<EventsYearContent> {
     if (year < 1997) {
       throw new NotFoundError('Year not available.', { field: 'year', value: String(year) });
     }
@@ -427,16 +418,32 @@ export class EventService {
     const { previousYear, nextYear } = getAdjacentArchiveYears(archiveYears, year);
 
     return {
-      year,
-      previousYear,
-      nextYear,
-      archiveYears,
-      events: this.listPublicCompletedEventsByYear(year),
+      seo: { title: `${year} Events` },
+      page: { sectionKey: 'events', pageKey: 'events_year_archive', title: `Footbag Events from ${year}` },
+      navigation: {
+        siblings: {
+          previous: previousYear !== null ? { label: String(previousYear), href: `/events/year/${previousYear}` } : undefined,
+          next: nextYear !== null ? { label: String(nextYear), href: `/events/year/${nextYear}` } : undefined,
+        },
+      },
+      content: {
+        year,
+        events: this.listPublicCompletedEventsByYear(year),
+      },
     };
   }
 
-  getPublicEventPage(eventKey: string): PublicEventPage {
-    return this.getPublicEventDetail(eventKey);
+  getPublicEventPage(eventKey: string): PageViewModel<EventDetailContent> {
+    const detail = this.getPublicEventDetail(eventKey);
+    const year = detail.event.startDate.slice(0, 4);
+    return {
+      seo: { title: detail.event.standardTagDisplay },
+      page: { sectionKey: 'events', pageKey: 'event_detail', title: detail.event.title },
+      navigation: {
+        contextLinks: [{ label: `More events from ${year}`, href: `/events/year/${year}` }],
+      },
+      content: detail,
+    };
   }
 }
 

@@ -14,25 +14,42 @@ This file — not auto memory — is the source of truth for current slice statu
 
 ## Active slice now
 
-- **Event results pages:** historical-record UX refinement — provenance, caveats, layout improvements; year-listing pages do not show results inline (results live on separate result-slug pages); result pages more prominent
-- **Members pages:** explicitly Tier 1 public historical-record surfaces per `docs/GOVERNANCE.md §4–5`; reduce directory-style language; auth stub currently gates both routes temporarily (see baseline note)
-- **Historical-data caveats:** no uncaveated derived stats; scope and completeness messaging where needed; no misleading "all-time" or "career total" claims from partial import data
-- **Shared page contract:** define and implement the common `seo / page / navigation / content` structure for all non-home pages; refactor existing non-home pages to comply; home page (`/`) is explicitly exempt
-- **TDD expansion:** integration tests for members routes and auth-stub visibility behaviors
-- **HoF landing page:** new public route `GET /hof`; add "HoF" nav item to main navigation; static/editorial content page for current slice (no DB queries); view model supports rich content sections for future About-Us-style text sourced from footbaghalloffame.net; renders as a styled placeholder with coming-soon notice until content is populated; `extend-service-contract` not needed (no new DB queries); use `add-public-page` skill
-- Teammate links on member detail — DONE (personId carried through service + template; plain text where no ID)
+### Infra track — CI/CD low-hanging fruit
+
+- 1-C: Write `scripts/deploy-staging.sh` — rsync + docker compose pull + restart, idempotent
+- Add terraform fmt/validate job to GitHub Actions CI workflow
+- Configure GitHub branch protection rules on main (require CI to pass before merge)
+
+Deferred to a later infra sprint: 1-E (CloudFront pass 2), 1-F (security hardening), 1-G (CloudWatch agent install)
+
+### Feature track
+
+- Legacy data gaps — James owns this track; no auth-gating changes until legacy data is complete
+
+### Completed this sprint
+
+- 1-B: Expand integration tests — health/ready edge cases, middleware behavior (content-type, auth not required, `checks.database.isReady` shape, auth redirects, tampered session, returnTo)
+- 404/500 error pages — proper templates using `PageViewModel`; `page.sectionKey = ''`
+- Fix VIEW_CATALOG drift: `navigation.siblings.previous`/`next` (doc corrected)
+
+### Decisions for this sprint
+
+- Members auth ungating: DEFERRED — remove gating only after legacy data is confirmed complete and member-list presentation is reviewed
+- Real login (Phase 4 auth): DEFERRED — legacy data must be 100% before onboarding members
+- `src/types/page.ts` is live (imported in eventService, memberService, hofService) and correct; the `PageViewModel<TContent>` contract is already enforced across non-home public pages; active-slice shared-page-contract note below is now resolved
 
 ## Drafted next, but not active code focus now
 
 - Clubs page with real data (no club data yet; deferred until data exists)
 - World records — public historical record surfaces; deferred from current slice
+- Members auth gating — remove gating on `/members` and `/members/:personId` only after legacy data complete and member-list presentation reviewed
 - BAP honor-roll pages — deferred; member-page indicators are already implemented
 - Broader service contracts may remain documented in `docs/SERVICE_CATALOG.md`, but implementation status is governed here, not there.
 
 ## Out of scope now
 
 - Schema migration framework — schema changes are handled by rebuilding the DB; no migration runner needed
-- Full auth implementation (Phase 4 sequencing unchanged; current sprint introduces the first fake auth stub only, not real JWT/DB auth)
+- Full auth implementation (Phase 4 sequencing unchanged; deferred until legacy data is complete)
 - media/news/tutorial implementation work
 - broad person-identity redesign
 - a platform-wide persons subsystem
@@ -197,9 +214,9 @@ Size labels: S = small, M = medium, L = large.
 | ~~0-C~~ | ~~AWS host bootstrap: /srv/footbag, rsync, DB init, footbag.service (§4.7 Steps 3–6)~~ | ~~M~~ | DONE |
 | ~~0-D~~ | ~~Build and start app in Docker on host (§4.8)~~ | ~~S~~ | DONE |
 | ~~0-E~~ | ~~Staging verification: direct-IP + CloudFront smoke check (§4.9)~~ | ~~S~~ | DONE |
-| 0-F | SNS email subscription confirmation | S | 0-D |
+| ~~0-F~~ | ~~SNS email subscription confirmation~~ | ~~S~~ | DONE |
 
-**Gate:** Substantially complete — site is live on staging and serving all public routes. CloudFront is responding. Task 0-F (SNS subscription confirmation) still outstanding.
+**Gate:** COMPLETE — site is live on staging and serving all public routes. CloudFront is responding. SNS subscription confirmed.
 
 ---
 

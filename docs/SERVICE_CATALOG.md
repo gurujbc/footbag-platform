@@ -284,8 +284,8 @@ Source-of-truth note: This document defines service ownership, method contracts,
 **Consumers:** Public Members controller
 
 **Key Methods:**
-- `getPublicMembersLandingPage() -> pageModel` — shapes the Members section entry page; includes public historical-record index content and auth entry point; does not implement auth flows directly
-- `getHistoricalMemberPage(personId) -> pageModel` — resolves one imported historical person into the public member detail page model for the current slice; unknown/non-public IDs resolve as not-found
+- `getPublicMembersLandingPage() -> { page, seo, content: { members, memberCount, countryCount } }` — shapes the Members section entry page; includes public historical-record index content and auth entry point; does not implement auth flows directly
+- `getHistoricalMemberPage(personId) -> { page, seo, navigation: { contextLinks }, content: { personId, displayName, honorificNickname?, summaryFacts, eventGroups } }` — resolves one imported historical person into the public member detail page model for the current slice; unknown/non-public IDs resolve as not-found; `displayName` is the person's display name; `honorificNickname` is the BAP nickname when present; `summaryFacts` is a service-computed list of `{ label, value }` pairs (country, BAP induction year, HoF induction year, etc.) including only facts with values; `eventGroups` carries typed event result history with service-computed `eventHref` and per-participant `memberHref` when a historical person link exists; `navigation.contextLinks` carries the typed back link to the Members index
 
 **Key Rules:**
 - `/members` is the Members section entry; currently shows public historical records and auth entry point; will grow to full member area
@@ -384,9 +384,9 @@ For the current public routes, `EventService` is responsible for:
 - `correctResults(adminId, eventId, corrections, reason) -> {ok}` — admin only; mandatory reason; audit-logs before/after values
 - `reassignOrganizer(adminId, eventId, newOrganizerId, reason) -> {ok}` — admin only; resolves "Needs Organizer" work-queue item; audit-logs
 
-- `getPublicEventsLandingPage(nowIso) -> {upcomingEvents, archiveYears}` — page-oriented read method for `GET /events`; may internally reuse lower-level list methods
-- `getPublicEventsYearPage(year) -> {year, previousYear, nextYear, archiveYears, events}` — page-oriented read method for `GET /events/year/:year`; validates year input, returns the full non-paginated year-page view model, and includes grouped inline result sections for events that have public results
-- `getPublicEventPage(eventKey) -> {event, disciplines, hasResults, primarySection, resultSections}` — page-oriented read method for `GET /events/:eventKey`; validates and normalizes the public key, enforces public-visible status rules, and returns a grouped page model for the canonical event page
+- `getPublicEventsLandingPage(nowIso) -> { page, seo, content: { upcomingEvents, archiveYears } }` — page-oriented read method for `GET /events`; may internally reuse lower-level list methods
+- `getPublicEventsYearPage(year) -> { page, seo, navigation: { siblings }, content: { year, events } }` — page-oriented read method for `GET /events/year/:year`; validates year input; returns the full non-paginated year-page view model; year page shows event summaries only — results are on the canonical event detail page; `navigation.siblings` carries typed previous/next year links when adjacent archive years exist
+- `getPublicEventPage(eventKey) -> { page, seo, navigation: { contextLinks }, content: { event, disciplines, hasResults, primarySection, resultSections } }` — page-oriented read method for `GET /events/:eventKey`; validates and normalizes the public key, enforces public-visible status rules, and returns a grouped page model for the canonical event page; `navigation.contextLinks` carries the typed "more events from {year}" link
 - Lower-level helper reads such as `listPublicUpcomingEvents`, `listPublicArchiveYears`, `listPublicCompletedEventsByYear`, `getPublicEventDetail`, and result-row readers may still exist internally, but controllers should consume page-oriented read methods for the current public slice
 
 **Historical imported people read boundary:**
@@ -417,11 +417,10 @@ For the current public routes, `EventService` is responsible for:
 - `[APP]` Public event browse/detail reads use prepared statements exported by `db.ts` directly; no repository layer and no ORM
 - `[APP]` `db.ts` may return flat ordered result rows; grouping and page/view shaping belong above `db.ts`
 - `[APP]` `hostClub` is route-facing display data sourced from `events.host_club_id -> clubs.name` when present and must not be inferred from `event_organizers`
-- `[APP]` when shaping public result rows, emit a participant link to `GET /members/:personId` only when a linked `historical_person_id` is present and public; otherwise emit plain participant display text with no placeholder link
+- `[APP]` when shaping public result rows, set `participantHref` to `"/members/{historical_person_id}"` when a linked `historical_person_id` is present and public; omit the field (or set to null) otherwise — templates render a plain name when `participantHref` is absent; no URL construction in templates
 - `[APP]` Public year archives include the full completed public event list for the selected year and are not paginated in the current slice
-- `[APP]` The year page includes grouped inline public results for events where result rows exist
-- `[APP]` A year-page event has `hasResults = true` only when the event is publicly visible and at least one result row exists for that event
-- `[APP]` If a historical event has no result rows yet, both the year page and the canonical event page still render the event and include an explicit no-results state
+- `[APP]` A year-page event has `hasResults = true` only when the event is publicly visible and at least one result row exists for that event; this flag may be used for visual treatment on the year page (e.g. a results indicator) but results are not rendered inline on the year page
+- `[APP]` If a historical event has no result rows yet, the canonical event page renders the event and includes an explicit no-results state; the year page shows the event summary regardless of result availability
 - `[APP]` The canonical public event page is one route and one template; render emphasis is expressed through page-model fields such as `primarySection`, not through alternate public URLs
 
 **Transaction + Idempotency:** Results upload is idempotent per upload; re-upload resets roster access window.

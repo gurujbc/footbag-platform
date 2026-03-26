@@ -190,6 +190,18 @@ describe('GET /health/live', () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ ok: true, check: 'live' });
   });
+
+  it('returns JSON content-type', async () => {
+    const app = createApp();
+    const res = await request(app).get('/health/live');
+    expect(res.headers['content-type']).toMatch(/application\/json/);
+  });
+
+  it('is accessible without authentication', async () => {
+    const app = createApp();
+    const res = await request(app).get('/health/live');
+    expect(res.status).toBe(200);
+  });
 });
 
 describe('GET /health/ready', () => {
@@ -198,6 +210,26 @@ describe('GET /health/ready', () => {
     const res = await request(app).get('/health/ready');
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ ok: true, check: 'ready' });
+  });
+
+  it('returns JSON content-type', async () => {
+    const app = createApp();
+    const res = await request(app).get('/health/ready');
+    expect(res.headers['content-type']).toMatch(/application\/json/);
+  });
+
+  it('includes checks.database.isReady in response body', async () => {
+    const app = createApp();
+    const res = await request(app).get('/health/ready');
+    expect(res.body).toMatchObject({
+      checks: { database: { isReady: true } },
+    });
+  });
+
+  it('is accessible without authentication', async () => {
+    const app = createApp();
+    const res = await request(app).get('/health/ready');
+    expect(res.status).toBe(200);
   });
 });
 
@@ -561,11 +593,11 @@ describe('POST /logout', () => {
 // ── Members: index ─────────────────────────────────────────────────────────────
 
 describe('GET /members', () => {
-  it('redirects unauthenticated visitor to /login', async () => {
+  it('redirects unauthenticated visitor to /login with returnTo', async () => {
     const app = createApp();
     const res = await request(app).get('/members');
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login');
+    expect(res.headers.location).toBe('/login?returnTo=%2Fmembers');
   });
 
   it('returns 200 for authenticated visitor', async () => {
@@ -588,24 +620,24 @@ describe('GET /members', () => {
     expect(res.text).toContain(`href="/members/${BOB_ID}"`);
   });
 
-  it('rejects a tampered session cookie with a redirect to /login', async () => {
+  it('rejects a tampered session cookie with a redirect to /login with returnTo', async () => {
     const app = createApp();
     const res = await request(app)
       .get('/members')
       .set('Cookie', 'footbag_session=invalidsignature.tampered');
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login');
+    expect(res.headers.location).toBe('/login?returnTo=%2Fmembers');
   });
 });
 
 // ── Members: detail page ──────────────────────────────────────────────────────
 
 describe('GET /members/:personId', () => {
-  it('redirects unauthenticated visitor to /login', async () => {
+  it('redirects unauthenticated visitor to /login with returnTo', async () => {
     const app = createApp();
     const res = await request(app).get(`/members/${ALICE_ID}`);
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login');
+    expect(res.headers.location).toBe(`/login?returnTo=%2Fmembers%2F${ALICE_ID}`);
   });
 
   it('returns 200 for authenticated visitor viewing existing member', async () => {
@@ -659,3 +691,20 @@ describe('GET /members/:personId', () => {
     expect(res.status).toBe(404);
   });
 });
+
+// ── 404 catch-all ──────────────────────────────────────────────────────────────
+
+describe('GET /nonexistent-route', () => {
+  it('returns 404 for an unknown route', async () => {
+    const app = createApp();
+    const res = await request(app).get('/this-route-does-not-exist');
+    expect(res.status).toBe(404);
+  });
+
+  it('renders the Page Not Found message', async () => {
+    const app = createApp();
+    const res = await request(app).get('/this-route-does-not-exist');
+    expect(res.text).toContain('Page Not Found');
+  });
+});
+
