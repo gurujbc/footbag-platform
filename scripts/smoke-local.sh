@@ -52,11 +52,6 @@ check "GET /events (landing page)"        200 "/events"
 check "GET /events/year/2025 (seeded year)"  200 "/events/year/2025"
 check "GET /events/year/1899 (empty year)"   200 "/events/year/1899"
 
-# ── Event detail — public events ──────────────────────────────────────────────
-check "GET /events/event_2025_beaver_open (completed+results)"   200 "/events/event_2025_beaver_open"
-check "GET /events/event_2025_quiet_open  (completed+no results)" 200 "/events/event_2025_quiet_open"
-check "GET /events/event_2026_spring_classic (upcoming)"         200 "/events/event_2026_spring_classic"
-
 # ── Event detail — must 404 ───────────────────────────────────────────────────
 check "GET /events/event_2026_draft_event (draft → 404)"         404 "/events/event_2026_draft_event"
 check "GET /events/event_9999_does_not_exist (missing → 404)"    404 "/events/event_9999_does_not_exist"

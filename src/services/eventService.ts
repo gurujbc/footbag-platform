@@ -440,10 +440,6 @@ export class EventService {
   }
 
   getPublicEventsYearPage(year: number): PageViewModel<EventsYearContent> {
-    if (year < 1997) {
-      throw new NotFoundError('Year not available.', { field: 'year', value: String(year) });
-    }
-
     const archiveYears = this.listPublicArchiveYears();
     const { previousYear, nextYear } = getAdjacentArchiveYears(archiveYears, year);
 

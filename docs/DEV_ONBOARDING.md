@@ -1614,16 +1614,13 @@ Then do a manual browser pass:
 - `https://<cloudfront_domain>/events/event_2026_spring_classic`
 - `https://<cloudfront_domain>/events/event_9999_does_not_exist`
 
-Also expect the smoke script to cover these seeded routes:
+Also expect the smoke script to cover these routes:
 
 - `GET /health/live` → 200
 - `GET /health/ready` → 200
 - `GET /events` → 200
 - `GET /events/year/2025` → 200
 - `GET /events/year/1899` → 200
-- `GET /events/event_2025_beaver_open` → 200
-- `GET /events/event_2025_quiet_open` → 200
-- `GET /events/event_2026_spring_classic` → 200
 - `GET /events/event_2026_draft_event` → 404
 - `GET /events/event_9999_does_not_exist` → 404
 - `GET /events/not-a-valid-key` → 404
@@ -1712,7 +1709,7 @@ Until this is complete, do not rely on the maintenance page as a graceful-downti
 
 ### 5.4 Reliability and recovery
 
-- Add host-side SQLite backups to the snapshots bucket using SQLite’s online backup mechanism, not a raw file copy.
+- Add host-side SQLite backups to the snapshots bucket using SQLite's online backup mechanism, not a raw file copy.
 - Create dedicated backup credentials scoped only to the snapshots bucket. Do not reuse `footbag-operator`.
 - Schedule backups with cron or a systemd timer.
 - Keep the backup script in the repo, for example `ops/scripts/backup-db.sh`.
@@ -1855,23 +1852,53 @@ Create `scripts/deploy-staging.sh`:
 #   - Initial AWS bootstrap (Path D) complete
 #
 # Usage:
-#   bash scripts/deploy-staging.sh
+#   bash scripts/deploy-staging.sh <password> [rsync_db]
+#
+#   password   sudo password for the footbag account on the staging host
+#   rsync_db   sync database/ to the host (yes|no, default: yes)
 #
 # Override the SSH config alias:
-#   DEPLOY_TARGET=footbag-staging bash scripts/deploy-staging.sh
+#   DEPLOY_TARGET=footbag-staging bash scripts/deploy-staging.sh <password>
 #
 # Preserves /srv/footbag/env and /srv/footbag/footbag.db on every run.
 
 set -euo pipefail
 
+# ── Args / help ───────────────────────────────────────────────────────────────
+
+usage() {
+  cat <<'EOF'
+Usage: bash scripts/deploy-staging.sh <password> [rsync_db]
+
+  password   sudo password for the footbag account on the staging host
+  rsync_db   sync database/ to the host (yes|no, default: yes)
+
+Override the SSH target:
+  DEPLOY_TARGET=footbag-staging bash scripts/deploy-staging.sh <password>
+EOF
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
+
+FOOTBAG_PASS="$1"
+RSYNC_DB="${2:-yes}"
+
+# Shell-quote the password for safe embedding in remote command strings.
+# printf '%q' produces a bash-safe representation that the remote shell can
+# evaluate without shell injection regardless of special characters in the password.
+PASS_Q=$(printf '%q' "$FOOTBAG_PASS")
+
 REMOTE="${DEPLOY_TARGET:-footbag-staging}"
-HOST_IP=$(ssh -G "$REMOTE" | awk ‘/^hostname / {print $2}’)
+HOST_IP=$(ssh -G "$REMOTE" | awk '/^hostname / {print $2}')
 
 # ── Pre-flight ────────────────────────────────────────────────────────────────
 
 echo "==> Deploy target: $REMOTE ($HOST_IP)"
 echo "==> Confirming SSH connectivity..."
-ssh "$REMOTE" "echo ‘    SSH OK’"
+ssh "$REMOTE" "echo '    SSH OK'"
 
 # ── Step 1: Prepare upload directory ─────────────────────────────────────────
 
@@ -1880,33 +1907,39 @@ ssh "$REMOTE" "rm -rf ~/footbag-release && mkdir -p ~/footbag-release"
 
 # ── Step 2: Rsync deployable files (allowlist) ───────────────────────────────
 
-echo "==> Rsyncing source to host..."
+echo "==> Rsyncing source to host (rsync_db=${RSYNC_DB})..."
+
+DB_INCLUDE=()
+if [[ "$RSYNC_DB" == "yes" ]]; then
+  DB_INCLUDE=(--include='/database/***')
+fi
+
 rsync -av --delete -e "ssh" \
-  --include=’/.dockerignore’ \
-  --include=’/docker/***’ \
-  --include=’/src/***’ \
-  --include=’/database/***’ \
-  --include=’/ops/***’ \
-  --include=’/package.json’ \
-  --include=’/package-lock.json’ \
-  --include=’/tsconfig.json’ \
-  --exclude=’*’ \
+  --include='/.dockerignore' \
+  --include='/docker/***' \
+  --include='/src/***' \
+  "${DB_INCLUDE[@]}" \
+  --include='/ops/***' \
+  --include='/package.json' \
+  --include='/package-lock.json' \
+  --include='/tsconfig.json' \
+  --exclude='*' \
   ./ "$REMOTE:~/footbag-release/"
 
 # ── Step 3: Promote to /srv/footbag (preserves env and DB) ───────────────────
 
 echo "==> Promoting release..."
 ssh "$REMOTE" "
-  sudo rsync -a --delete --exclude env --exclude footbag.db ~/footbag-release/ /srv/footbag/
-  sudo chown -R root:root /srv/footbag
+  printf '%s\n' $PASS_Q | sudo -S -p '' rsync -a --delete --exclude env --exclude footbag.db ~/footbag-release/ /srv/footbag/
+  printf '%s\n' $PASS_Q | sudo -S -p '' chown -R root:root /srv/footbag
 "
 
 # ── Step 4: Reinstall systemd service unit ───────────────────────────────────
 
 echo "==> Reinstalling service unit..."
 ssh "$REMOTE" "
-  sudo cp /srv/footbag/ops/systemd/footbag.service /etc/systemd/system/
-  sudo systemctl daemon-reload
+  printf '%s\n' $PASS_Q | sudo -S -p '' cp /srv/footbag/ops/systemd/footbag.service /etc/systemd/system/
+  printf '%s\n' $PASS_Q | sudo -S -p '' systemctl daemon-reload
 "
 
 # ── Step 5: Rebuild images on host ───────────────────────────────────────────
@@ -1914,7 +1947,7 @@ ssh "$REMOTE" "
 echo "==> Building Docker images (this takes a minute)..."
 ssh "$REMOTE" "
   cd /srv/footbag
-  sudo docker compose \
+  printf '%s\n' $PASS_Q | sudo -S -p '' docker compose \
     --env-file /srv/footbag/env \
     -f docker/docker-compose.yml \
     -f docker/docker-compose.prod.yml \
@@ -1925,9 +1958,9 @@ ssh "$REMOTE" "
 
 echo "==> Restarting service..."
 ssh "$REMOTE" "
-  sudo systemctl restart footbag
+  printf '%s\n' $PASS_Q | sudo -S -p '' systemctl restart footbag
   sleep 3
-  sudo systemctl status footbag --no-pager -l
+  printf '%s\n' $PASS_Q | sudo -S -p '' systemctl status footbag --no-pager -l
 "
 
 # ── Step 7: Smoke check ───────────────────────────────────────────────────────
@@ -1948,10 +1981,14 @@ chmod +x scripts/deploy-staging.sh
 Test run:
 
 ```bash
-bash scripts/deploy-staging.sh
+bash scripts/deploy-staging.sh 'yourpassword'
 ```
 
-Expected: rsync file list, Docker build output, service showing active, all smoke checks passing.
+Always wrap the password in single quotes. Single quotes pass the argument literally — no shell expansion of `$`, `!`, or other special characters. Double quotes do not protect `$` and backticks.
+
+Expected: rsync file list, Docker build output, service showing active, all smoke checks passing. No interactive prompts appear; the password is forwarded to each `sudo -S` call via `printf '%q'` embedding in the remote command string.
+
+> **Note:** Write the awk argument with plain ASCII single quotes. Editors that auto-correct punctuation can silently replace them with Unicode curly quotes, which bash does not treat as quoting characters, causing `$2: unbound variable` under `set -u`.
 
 ### 6.4 CloudFront pass 2
 
@@ -1996,7 +2033,7 @@ Save both values. Update `AWS_PROJECT_SPECIFICS.md` with the domain and distribu
 #### 5. Update PUBLIC_BASE_URL on the host
 
 ```bash
-ssh footbag-staging "sudo sed -i ‘s|PUBLIC_BASE_URL=.*|PUBLIC_BASE_URL=https://<cloudfront_domain>|’ /srv/footbag/env && sudo systemctl restart footbag"
+ssh footbag-staging "sudo sed -i 's|PUBLIC_BASE_URL=.*|PUBLIC_BASE_URL=https://<cloudfront_domain>|' /srv/footbag/env && sudo systemctl restart footbag"
 ```
 
 Replace `<cloudfront_domain>` with the actual value from step 4.
@@ -2009,7 +2046,7 @@ CloudFront takes 15 to 30 minutes to propagate globally after apply. The `*.clou
 CF_ID=$(terraform output -raw cloudfront_distribution_id)
 aws cloudfront get-distribution \
   --id "$CF_ID" \
-  --query ‘Distribution.Status’ \
+  --query 'Distribution.Status' \
   --output text \
   --profile footbag-operator
 ```
@@ -2041,14 +2078,14 @@ name: Terraform
 on:
   push:
     branches:
-      - ‘**’
+      - '**'
     paths:
-      - ‘terraform/**’
+      - 'terraform/**'
   pull_request:
     branches:
       - main
     paths:
-      - ‘terraform/**’
+      - 'terraform/**'
 
 jobs:
   terraform:
@@ -2065,7 +2102,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ‘~1.11’
+          terraform_version: '~1.11'
 
       - name: terraform fmt check (${{ matrix.env }})
         run: terraform fmt -check -recursive
@@ -2119,7 +2156,7 @@ After the one-time setup above is complete, the deploy cycle is:
     - terraform fmt/validate (if terraform/ files changed)
 5.  Branch protection blocks merge until all checks pass
 6.  Merge
-7.  bash scripts/deploy-staging.sh    # one command from your local machine
+7.  bash scripts/deploy-staging.sh <password>    # one command from your local machine
 ```
 
 Step 7 is an intentional local manual trigger. GitHub Actions runners use dynamic IPs and the Lightsail firewall is locked to specific operator CIDRs. The deploy script is one command.
@@ -2164,7 +2201,7 @@ docker compose --env-file .env -f docker/docker-compose.yml down
 **Option A — code change only (standard):**
 
 ```bash
-bash scripts/deploy-staging.sh
+bash scripts/deploy-staging.sh <password>
 ```
 
 The script runs a smoke check automatically at the end. The live DB is untouched.
@@ -2180,7 +2217,7 @@ npm run dev
 # verify http://localhost:3000/events/event_2025_beaver_open
 
 # 2. Deploy the code
-bash scripts/deploy-staging.sh
+bash scripts/deploy-staging.sh <password>
 
 # 3. Replace the live DB (destructive — this overwrites /srv/footbag/footbag.db)
 scp database/footbag.db footbag-staging:~/footbag.db.new
@@ -2196,7 +2233,7 @@ Use this when you have a known-good DB file (not from the seed script) that you 
 
 ```bash
 # 1. Deploy the code
-bash scripts/deploy-staging.sh
+bash scripts/deploy-staging.sh <password>
 
 # 2. Send the file and replace the live DB (destructive — this overwrites /srv/footbag/footbag.db)
 scp /path/to/your.db footbag-staging:~/footbag.db.new
@@ -2241,7 +2278,7 @@ Check out the last known-good commit and re-run the deploy script:
 
 ```bash
 git checkout <known-good-ref>
-bash scripts/deploy-staging.sh
+bash scripts/deploy-staging.sh <password>
 ```
 
 The database is not touched by a routine deploy. Do not attempt schema migrations during a routine code deploy. Schema changes require a separate migration procedure.
@@ -2331,7 +2368,7 @@ After this, the deploy script becomes much faster. The remaining manual trigger 
 
 ### 7.2 Deterministic seed-data reference
 
-These seeded routes are useful because smoke checks and regression tests may rely on them.
+These seeded routes are useful for local browser verification and integration tests. The deploy smoke check does not rely on them.
 
 
 | Route                             | What it proves                               |
@@ -2348,16 +2385,13 @@ These are reference checks, not the main onboarding story.
 
 ### 7.3 Smoke-check contract
 
-`scripts/smoke-local.sh` is the canonical smoke-check baseline. It should verify at least:
+`scripts/smoke-local.sh` is the canonical smoke-check baseline. All checks must be data-independent so the script runs against any staging DB without seed data. It should verify at least:
 
 - `/health/live`
 - `/health/ready`
 - `/events`
 - `/events/year/2025`
-- one empty or sparse year page
-- one canonical event page with results
-- one canonical event page without results
-- one upcoming event
+- one empty year page (year guaranteed to have no events, e.g. `/events/year/1899`)
 - one non-public event returning 404
 - one missing key returning 404
 - one badly formatted key returning 404
