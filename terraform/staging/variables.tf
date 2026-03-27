@@ -29,8 +29,8 @@ variable "domain_name" {
     DEFERRED: not used in test deployment mode (CloudFront default URL).
     Set to e.g. "staging.footbag.org" when attaching a real domain.
   EOT
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "route53_zone_id" {
@@ -39,8 +39,8 @@ variable "route53_zone_id" {
     DEFERRED: not used in test deployment mode (CloudFront default URL).
     Set when attaching a real domain (see acm.tf activation checklist).
   EOT
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 # ── Lightsail ─────────────────────────────────────────────────────────────────
@@ -53,8 +53,8 @@ variable "lightsail_bundle_id" {
     #   production: "small_3_0"   (1 vCPU, 2 GB RAM,  $10/mo)
     Run: aws lightsail get-bundles --query 'bundles[*].[bundleId,price]'
   EOT
-  type    = string
-  default = "nano_3_0"
+  type        = string
+  default     = "nano_3_0"
 }
 
 variable "lightsail_blueprint_id" {
@@ -69,7 +69,7 @@ variable "ssh_public_key" {
     # TODO: Paste the contents of your operator's ~/.ssh/id_ed25519.pub (or similar).
     Each operator needs a named account; see docs/DEVOPS_GUIDE.md for posture.
   EOT
-  type = string
+  type        = string
 }
 
 # ── Notifications ─────────────────────────────────────────────────────────────
@@ -114,8 +114,8 @@ variable "lightsail_origin_dns" {
     Set this value and enable_cloudfront = true for the second apply pass.
     Leave as empty string for the first apply pass (set enable_cloudfront = false).
   EOT
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "enable_cloudfront" {
@@ -126,8 +126,8 @@ variable "enable_cloudfront" {
     (staging) or creating a real DNS A record (production), set
     lightsail_origin_dns and set this to true for the second apply pass.
   EOT
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 # ── Monitoring gates ──────────────────────────────────────────────────────────
@@ -140,8 +140,8 @@ variable "enable_cwagent_alarms" {
     Enabling before the agent exists creates alarms that immediately enter
     INSUFFICIENT_DATA and train operators to ignore monitoring.
   EOT
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "enable_backup_alarm" {
@@ -152,6 +152,6 @@ variable "enable_backup_alarm" {
     Enabling before the job exists causes the alarm to immediately enter
     ALARM state (treat_missing_data = "breaching") and fire constantly.
   EOT
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
 }

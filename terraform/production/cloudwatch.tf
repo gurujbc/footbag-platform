@@ -31,13 +31,13 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   evaluation_periods  = 3
   metric_name         = "CPUUtilization"
   # TODO: Replace with Lightsail/CWAgent namespace once agent is configured
-  namespace           = "CWAgent"
-  period              = 60
-  statistic           = "Average"
-  threshold           = 85
-  alarm_description   = "CPU utilization above 85% for 3 consecutive minutes"
-  alarm_actions       = [aws_sns_topic.alarms.arn]
-  ok_actions          = [aws_sns_topic.alarms.arn]
+  namespace         = "CWAgent"
+  period            = 60
+  statistic         = "Average"
+  threshold         = 85
+  alarm_description = "CPU utilization above 85% for 3 consecutive minutes"
+  alarm_actions     = [aws_sns_topic.alarms.arn]
+  ok_actions        = [aws_sns_topic.alarms.arn]
 
   dimensions = {
     InstanceId = aws_lightsail_instance.web.id
@@ -70,7 +70,7 @@ resource "aws_cloudwatch_metric_alarm" "db_backup_age" {
   namespace           = "Footbag/${var.environment}"
   period              = 600 # 10 minutes
   statistic           = "Maximum"
-  threshold           = 15  # Alert if no backup in 15 minutes
+  threshold           = 15 # Alert if no backup in 15 minutes
   treat_missing_data  = "breaching"
   alarm_description   = "SQLite backup has not completed in 15+ minutes"
   alarm_actions       = [aws_sns_topic.alarms.arn]

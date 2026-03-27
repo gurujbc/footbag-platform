@@ -21,8 +21,8 @@ resource "aws_ssm_parameter" "app_log_level" {
 }
 
 resource "aws_ssm_parameter" "app_public_base_url" {
-  name  = "${local.ssm_prefix}/app/public_base_url"
-  type  = "String"
+  name = "${local.ssm_prefix}/app/public_base_url"
+  type = "String"
   # Set to the CloudFront default URL after first terraform apply.
   # Run: terraform output cloudfront_domain, then update this value and re-apply.
   # When a real domain is attached, change to "https://<your-domain>".

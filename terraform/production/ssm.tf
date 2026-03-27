@@ -21,8 +21,8 @@ resource "aws_ssm_parameter" "app_log_level" {
 }
 
 resource "aws_ssm_parameter" "app_public_base_url" {
-  name  = "${local.ssm_prefix}/app/public_base_url"
-  type  = "String"
+  name = "${local.ssm_prefix}/app/public_base_url"
+  type = "String"
   # TODO: Set to the actual public URL once CloudFront is provisioned
   value = "https://${var.domain_name}"
 }

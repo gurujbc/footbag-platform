@@ -10,8 +10,8 @@ variable "state_bucket_suffix" {
     # TODO: Set to a short random string (e.g. the last 8 chars of your AWS account ID).
     Example: "a1b2c3d4"
   EOT
-  type    = string
-  default = "TODO-set-unique-suffix"
+  type        = string
+  default     = "TODO-set-unique-suffix"
 }
 
 variable "aws_account_id" {
@@ -19,6 +19,6 @@ variable "aws_account_id" {
     AWS account ID.
     # TODO: Set to your 12-digit AWS account ID.
   EOT
-  type    = string
-  default = "TODO-123456789012"
+  type        = string
+  default     = "TODO-123456789012"
 }

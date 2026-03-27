@@ -27,7 +27,7 @@ resource "aws_cloudfront_distribution" "main" {
     }
 
     custom_header {
-      name  = "X-Origin-Verify"
+      name = "X-Origin-Verify"
       # TODO: Set to a random secret and verify it in nginx to block direct-to-origin requests
       value = "TODO-set-shared-secret"
     }

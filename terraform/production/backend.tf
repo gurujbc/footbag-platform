@@ -10,7 +10,7 @@ terraform {
     bucket       = "footbag-tfstate-TODO"
     key          = "production/terraform.tfstate"
     region       = "us-east-2" # TODO: Match var.aws_region
-    use_lockfile = true         # Native S3 locking — no DynamoDB table required
+    use_lockfile = true        # Native S3 locking — no DynamoDB table required
     encrypt      = true
   }
 }
