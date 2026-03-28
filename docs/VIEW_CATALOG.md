@@ -28,9 +28,11 @@
   - [6.4 Events index](#64-events-index)
   - [6.5 Events year archive](#65-events-year-archive)
   - [6.6 Event detail](#66-event-detail)
-  - [6.7 Clubs landing placeholder](#67-clubs-landing-placeholder)
-  - [6.8 HoF landing](#68-hof-landing)
-  - [6.9 Login](#69-login)
+  - [6.7 Clubs index](#67-clubs-index)
+  - [6.8 Clubs country page](#68-clubs-country-page)
+  - [6.9 Club detail](#69-club-detail)
+  - [6.10 HoF landing](#610-hof-landing)
+  - [6.11 Login](#611-login)
 - [7. Shared Public Behavior Rules](#7-shared-public-behavior-rules)
   - [7.1 Authorization boundary](#71-authorization-boundary)
   - [7.2 Error behavior](#72-error-behavior)
@@ -69,7 +71,7 @@ This document covers:
   - Events index (main landing page for events)
   - Events year archive
   - Event detail
-  - Clubs landing placeholder
+  - Clubs section — live with real club data, SVG world map (JS-enhanced, degrades gracefully, hidden on mobile ≤768px), country and club detail pages
   - Members section landing (auth-gated for now; Tier 1 historical-person data)
   - Member detail (auth-gated for now; Tier 1 historical-person data)
   - Login (member login preview stub)
@@ -182,7 +184,9 @@ The HTML `<title>` tag follows the pattern `Footbag {seo.title}` for all pages. 
 | Event detail | `event.standardTagDisplay` | `Footbag #event_{year}_{slug}` |
 | Members index | `Members` | `Footbag Members` |
 | Member detail | `{personName}` | `Footbag {name}` |
-| Clubs | `Clubs` | `Footbag Clubs` |
+| Clubs index | `Clubs` | `Footbag Clubs` |
+| Clubs country | `"{country} Clubs"` | `Footbag New Zealand Clubs` |
+| Club detail | `club.standardTagDisplay` | `Footbag #club_wellington_hack_crew` |
 | HoF | `Hall of Fame` | `Footbag Hall of Fame` |
 | Login | `Login` | `Footbag Login` |
 | Error pages | `Page Not Found` / `Service Unavailable` | `Footbag {error label}` |
@@ -272,6 +276,13 @@ The CSS vocabulary is split into two tiers.
 - Buttons: `.btn`, `.btn-primary`, `.btn-outline`
 - States: `.empty-state`
 
+**Clubs section — required within clubs pages only:**
+
+- Country nav: `.club-country-nav`, `.club-country-nav-list`, `.club-country-count`
+- Country sections: `.club-section`, `.club-region-heading`
+- Club list: `.club-list`, `.club-entry`, `.club-name`, `.club-location`, `.club-hashtag`, `.club-external-link`
+- Club detail: `.club-detail`, `.club-detail-meta`, `.club-detail-description`
+
 **Events section — required within events pages only:**
 
 - Archive years: `.year-grid`, `.year-pill`
@@ -349,7 +360,9 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /events/:eventKey` | Event detail | Canonical public event page | Current |
 | `GET /members` | Members section | Tier 1 public historical-person index | Current |
 | `GET /members/:personId` | Member detail | Tier 1 public historical-person detail | Current |
-| `GET /clubs` | Clubs landing | Placeholder public clubs entry page | Current stub |
+| `GET /clubs` | Clubs index | Country-grouped clubs directory entry page | Current |
+| `GET /clubs/:countrySlug` | Clubs country page | All clubs in one country, grouped by state/province | Current |
+| `GET /clubs/club_:clubKey` | Club detail | Canonical public club page | Current |
 | `GET /login` | Login | Member login preview; functional stub for members with preview password | Current |
 | `GET /hof` | HoF landing | Footbag Hall of Fame editorial/informational landing page | Current stub |
 | `GET /health/live` | Operational endpoint | Liveness check | Not a cataloged page |
@@ -362,7 +375,9 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /events/:eventKey` is the canonical public event detail route.
 - `GET /members` is the canonical Members section entry route. Serves a Tier 1 public historical-person index.
 - `GET /members/:personId` is the canonical historical-person detail route for the current slice. Route will evolve as the Members section grows to serve authenticated member profiles.
-- `GET /clubs` is the canonical clubs section entry route for the current slice.
+- `GET /clubs` is the canonical clubs section entry route.
+- `GET /clubs/:slug` is the shared Express handler for both the country page and the club detail page. The controller dispatches by prefix: a slug beginning with `club_` routes to the club detail handler; any other slug routes to the country page handler. No club tag may produce a `clubKey` that is also a valid `countrySlug` — the seed script enforces this collision constraint at data-load time.
+- `GET /clubs/club_:clubKey` is the canonical public club detail route. `clubKey` is `tag_normalized` with the leading `#` stripped (e.g. `club_wellington_hack_crew`). Pattern: `^club_[a-z0-9_]+$`.
 - `GET /login` is the member login route. `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
 - `GET /hof` is the canonical HoF section entry route.
 - health routes are operational and are outside the cataloged page system.
@@ -831,11 +846,11 @@ There is no empty state for a missing event. A valid missing-record path should 
 
 ---
 
-### 6.7 Clubs landing placeholder
+### 6.7 Clubs index
 
 ### Purpose
 
-Establish Clubs as a first-class public section in the site structure even before the club directory is implemented. This is a drafted next-level placeholder contract in the current slice, not the full future clubs-directory contract.
+Provide the primary public Clubs entry page showing all countries that have at least one active club, with counts and drill-down links.
 
 ### Route
 
@@ -847,19 +862,20 @@ Public visitor.
 
 ### Standard relationship
 
-This page consumes the generic public rendering standard.
+This page consumes the generic public rendering standard and the §4.2 page contract.
 
 ### Page intent
 
-- establish Clubs as a durable public navigation destination
-- communicate that richer club browsing is coming later
-- provide a reusable placeholder pattern for future sections in early rollout states
+- introduce the Clubs section as a first-class public destination
+- show all countries with active clubs as a scannable list with counts
+- provide drill-down links to each country's club page
+- expose total club and country counts in the hero
 
 ### Required content
 
-- hero for the Clubs section
-- concise explanation that the club directory is coming soon
-- optional placeholder cards or notice blocks for expected future browse paths
+- hero with title, intro, and stat counts (total clubs, total countries)
+- SVG world map: JS-enhanced; active-club countries highlighted; tooltip on hover; click drills to country page; requires JS to render and is hidden on mobile (≤768px); degrades to the country list when JS is absent or the fetch fails
+- country list: one entry per country with country flag, name, count, and link to country page
 
 ### Required view-model fields
 
@@ -867,23 +883,165 @@ This page consumes the generic public rendering standard.
 - `page.sectionKey = clubs`
 - `page.pageKey = clubs_index`
 - `page.title`
-- optional `page.eyebrow`
 - `page.intro`
-- optional `page.notice`
-- optional `content.placeholderLinks[]`
-- optional `content.comingSoonSections[]`
+- `content.totalClubs`
+- `content.totalCountries`
+- `content.countries[]`
+  - `country` — full country name
+  - `countryCode` — ISO 3166-1 alpha-2 code; service-computed; used for SVG map path matching
+  - `countrySlug` — slugified country name; service-computed; used in `countryHref`
+  - `countryHref` — service-computed; `/clubs/{countrySlug}`
+  - `total` — count of active clubs in this country
+- `content.mapDataJson` — JSON string; serialized array of `{ code, slug, name, total }` per country; injected into `window.__CLUBS_MAP_DATA__` for the client-side map script
 
 ### Navigation outputs
 
-No service-provided navigation outputs. Global nav (`currentSection`) is set by middleware.
+- `GET /clubs/:countrySlug` (via `content.countries[].countryHref`)
 
 ### Empty state
 
-This page is itself a controlled placeholder state and should use the standard notice / coming-soon treatment rather than a generic empty state.
+Render standard empty state if no clubs are active.
 
 ---
 
-### 6.8 HoF landing
+### 6.8 Clubs country page
+
+### Purpose
+
+Show all active clubs in one country, grouped by state or province when applicable, with anchor-linked section navigation for countries with many clubs.
+
+### Route
+
+`GET /clubs/:countrySlug`
+
+### Audience
+
+Public visitor.
+
+### Standard relationship
+
+This page consumes the generic public rendering standard and the §4.2 page contract.
+
+### Page intent
+
+- present all clubs in the selected country
+- group by state/province for countries with regional data (USA, Canada, etc.)
+- bake in region anchor IDs and `data-club-id` attributes on club entries for future map integration
+- optional coming-soon map notice (to be replaced by an interactive state/province map in a future slice — clicking a state on the map will anchor-jump to that region's section)
+
+### Required content
+
+- hero with country name and club count
+- anchor nav to state/province sections when two or more named regions exist
+- club list grouped by region; unnamed-region clubs appear last under no heading
+- each entry: club name (linked to club detail), city, hashtag, external URL when present
+- each region section must carry `id="region-{regionSlug}"` for future map anchor targeting
+- each club entry must carry `data-club-id="{clubId}"` for future map pin linking
+
+### Required view-model fields
+
+- `seo.title = "{country} Clubs"` — full country name (e.g. `"New Zealand Clubs"` → tab `Footbag New Zealand Clubs`)
+- `page.sectionKey = clubs`
+- `page.pageKey = clubs_country`
+- `page.title` — e.g. `"Clubs in New Zealand"`
+- `navigation.breadcrumbs` — `[{ label: 'Clubs', href: '/clubs' }, { label: country }]`
+- `content.country` — full country name
+- `content.countrySlug`
+- `content.total` — count of clubs on this page
+- `content.hasMultipleRegions` — boolean; true only when all clubs have a named region and 2+ distinct named regions exist; controls anchor nav and region heading rendering
+- `content.regions[]`
+  - optional `region` — state/province name; `null` for clubs with no region
+  - optional `regionSlug` — slugified region name; service-computed; used as anchor target `region-{regionSlug}`
+  - `clubs[]`
+    - `clubId`
+    - `clubKey` — service-computed; `tag_normalized.slice(1)`; used in `clubHref`
+    - `clubHref` — service-computed; `/clubs/{clubKey}`
+    - `name`
+    - `city`
+    - optional `externalUrl`
+    - `standardTagDisplay`
+
+### Navigation outputs
+
+- `GET /clubs` (via `navigation.breadcrumbs`)
+- `GET /clubs/club_:clubKey` (via `content.regions[].clubs[].clubHref`)
+
+### Empty state
+
+Unknown country slug returns standard 404. A valid country with zero active clubs renders a standard empty state.
+
+---
+
+### 6.9 Club detail
+
+### Purpose
+
+Provide the canonical public page for one club.
+
+### Route
+
+`GET /clubs/club_:clubKey`
+
+### Audience
+
+Public visitor.
+
+### Standard relationship
+
+This page consumes the generic public rendering standard and the §4.2 page contract.
+
+### Page intent
+
+- present the club's identity, location, and contact/web information
+- act as the canonical drill-down destination from the country page
+- support future map and membership features via stable `club_:clubKey` URLs
+
+### Canonical club identity rule
+
+- `clubKey` = `tag_normalized` with the leading `#` stripped: `club_wellington_hack_crew`
+- Pattern: `^club_[a-z0-9_]+$`
+- Controller dispatch: `slug.startsWith('club_')` → club detail; otherwise → country page
+- No aliasing, hyphen rewrites, or fuzzy matching
+
+### Required content
+
+- hero with club name
+- meta: city, region (when present), country, hashtag, external URL when present
+- optional description when non-empty
+
+### Required view-model fields
+
+- `seo.title = club.standardTagDisplay`
+- `page.sectionKey = clubs`
+- `page.pageKey = clubs_detail`
+- `page.title` — club name
+- `navigation.breadcrumbs` — `[{ label: 'Clubs', href: '/clubs' }, { label: country, href: '/clubs/{countrySlug}' }, { label: clubName }]`
+- `navigation.contextLinks` — `[{ label: "All clubs in {country}", href: "/clubs/{countrySlug}" }]`; service-computed; renders as a back-link button at the bottom of the page
+- `content.club`
+  - `clubId`
+  - `clubKey`
+  - `name`
+  - optional `description`
+  - `city`
+  - optional `region`
+  - `country`
+  - `countrySlug` — service-computed; used in breadcrumb href
+  - optional `externalUrl`
+  - `standardTagNormalized`
+  - `standardTagDisplay`
+
+### Navigation outputs
+
+- `GET /clubs` (via breadcrumbs)
+- `GET /clubs/:countrySlug` (via breadcrumbs)
+
+### Empty state
+
+Unknown or inactive club key returns standard 404.
+
+---
+
+### 6.10 HoF landing
 
 ### Purpose
 
@@ -946,7 +1104,7 @@ This page has editorial content in the current slice and does not use a generic 
 
 ---
 
-### 6.9 Login
+### 6.11 Login
 
 ### Purpose
 

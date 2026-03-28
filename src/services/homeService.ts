@@ -53,7 +53,7 @@ export interface HomePageViewModel {
 export const homeService = {
   getPublicHomePage(nowIso: string): HomePageViewModel {
     return {
-      seo: { title: 'Home' },
+      seo: { title: '' },
       page: {
         sectionKey: 'home',
         pageKey: 'home_index',
@@ -69,7 +69,6 @@ export const homeService = {
           label: 'Events',
           href: '/events',
           description: 'Browse competitive results from tournaments around the world.',
-          variant: 'primary',
         },
         {
           label: 'Members',

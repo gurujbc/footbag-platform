@@ -22,6 +22,7 @@ import {
   insertResultEntry,
   insertResultParticipant,
   insertHistoricalPerson,
+  insertClub,
 } from '../fixtures/factories';
 
 // ── Event keys (derived from tag_normalized, minus the leading #) ──────────────
@@ -164,6 +165,61 @@ function buildTestDatabase(): void {
     status:         'draft',
     start_date:     '2026-08-01',
     end_date:       '2026-08-03',
+  });
+
+  // ── Clubs ──────────────────────────────────────────────────────────────────
+  // USA club with region
+  insertClub(db, {
+    id:      'club-portland-001',
+    name:    'Rose City Footbag',
+    city:    'Portland',
+    region:  'Oregon',
+    country: 'USA',
+    hashtag_tag_id: insertTag(db, {
+      tag_normalized: '#club_rose_city',
+      tag_display:    '#club_rose_city',
+      standard_type:  'club',
+    }),
+  });
+  // USA club with region, different state
+  insertClub(db, {
+    id:      'club-boston-001',
+    name:    'Boston Hackers',
+    city:    'Boston',
+    region:  'Massachusetts',
+    country: 'USA',
+    hashtag_tag_id: insertTag(db, {
+      tag_normalized: '#club_boston_hackers',
+      tag_display:    '#club_boston_hackers',
+      standard_type:  'club',
+    }),
+  });
+  // International club, no region
+  insertClub(db, {
+    id:      'club-helsinki-001',
+    name:    'Helsinki Footbag',
+    city:    'Helsinki',
+    region:  null,
+    country: 'Finland',
+    external_url: 'https://example.com/helsinki',
+    hashtag_tag_id: insertTag(db, {
+      tag_normalized: '#club_helsinki',
+      tag_display:    '#club_helsinki',
+      standard_type:  'club',
+    }),
+  });
+  // Archived club — must NOT appear in public listing
+  insertClub(db, {
+    id:      'club-archived-001',
+    name:    'Old Defunct Club',
+    city:    'Nowhere',
+    country: 'USA',
+    status:  'archived',
+    hashtag_tag_id: insertTag(db, {
+      tag_normalized: '#club_old_defunct',
+      tag_display:    '#club_old_defunct',
+      standard_type:  'club',
+    }),
   });
 
   db.close();
@@ -447,7 +503,7 @@ describe('GET /', () => {
   });
 });
 
-// ── Clubs placeholder ──────────────────────────────────────────────────────────
+// ── Clubs index ────────────────────────────────────────────────────────────────
 
 describe('GET /clubs', () => {
   it('returns 200', async () => {
@@ -456,17 +512,166 @@ describe('GET /clubs', () => {
     expect(res.status).toBe(200);
   });
 
-  it('includes coming soon content', async () => {
+  it('shows country names', async () => {
     const app = createApp();
     const res = await request(app).get('/clubs');
-    expect(res.text).toContain('coming soon');
+    expect(res.text).toContain('USA');
+    expect(res.text).toContain('Finland');
   });
 
-  it('includes navigation links to home and events', async () => {
+  it('shows total club and country counts in hero', async () => {
     const app = createApp();
     const res = await request(app).get('/clubs');
-    expect(res.text).toContain('href="/"');
-    expect(res.text).toContain('href="/events"');
+    expect(res.text).toContain('3 clubs');
+    expect(res.text).toContain('2 countries');
+  });
+
+  it('links to country pages', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs');
+    expect(res.text).toContain('href="/clubs/usa"');
+    expect(res.text).toContain('href="/clubs/finland"');
+  });
+
+  it('does not show individual club names or hashtags on the index', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs');
+    expect(res.text).not.toContain('Rose City Footbag');
+    expect(res.text).not.toContain('#club_rose_city');
+  });
+
+  it('does not show archived club countries if they have no active clubs', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs');
+    expect(res.text).not.toContain('Old Defunct Club');
+  });
+});
+
+// ── Clubs country page ─────────────────────────────────────────────────────────
+
+describe('GET /clubs/:countrySlug', () => {
+  it('returns 200 for a known country', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows clubs in the requested country', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).toContain('Rose City Footbag');
+    expect(res.text).toContain('Boston Hackers');
+  });
+
+  it('does not show clubs from other countries', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).not.toContain('Helsinki Footbag');
+  });
+
+  it('shows region headings for clubs with regions', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).toContain('Oregon');
+    expect(res.text).toContain('Massachusetts');
+  });
+
+  it('links club names to club detail URLs', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).toContain('href="/clubs/club_rose_city"');
+    expect(res.text).toContain('href="/clubs/club_boston_hackers"');
+  });
+
+  it('renders data-club-id on each club entry', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).toContain('data-club-id="club-portland-001"');
+  });
+
+  it('renders region anchor IDs for map integration', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).toContain('id="region-oregon"');
+    expect(res.text).toContain('id="region-massachusetts"');
+  });
+
+  it('does not show archived clubs', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/usa');
+    expect(res.text).not.toContain('Old Defunct Club');
+  });
+
+  it('shows external links for clubs that have them', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/finland');
+    expect(res.text).toContain('https://example.com/helsinki');
+  });
+
+  it('includes breadcrumb back to clubs index', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/finland');
+    expect(res.text).toContain('href="/clubs"');
+  });
+
+  it('returns 404 for an unknown country slug', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/narnia');
+    expect(res.status).toBe(404);
+  });
+});
+
+// ── Club detail ────────────────────────────────────────────────────────────────
+
+describe('GET /clubs/club_:clubKey', () => {
+  it('returns 200 for a known club', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_rose_city');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows the club name', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_rose_city');
+    expect(res.text).toContain('Rose City Footbag');
+  });
+
+  it('shows the club hashtag', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_rose_city');
+    expect(res.text).toContain('#club_rose_city');
+  });
+
+  it('shows city and region', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_rose_city');
+    expect(res.text).toContain('Portland');
+    expect(res.text).toContain('Oregon');
+  });
+
+  it('shows external URL when present', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_helsinki');
+    expect(res.text).toContain('https://example.com/helsinki');
+  });
+
+  it('includes breadcrumbs to clubs index and country page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_rose_city');
+    expect(res.text).toContain('href="/clubs"');
+    expect(res.text).toContain('href="/clubs/usa"');
+  });
+
+  it('returns 404 for an unknown club key', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_nonexistent');
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 404 for an archived club', async () => {
+    const app = createApp();
+    const res = await request(app).get('/clubs/club_old_defunct');
+    expect(res.status).toBe(404);
   });
 });
 

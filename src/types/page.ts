@@ -17,6 +17,11 @@ export interface NavLink {
   href: string;
 }
 
+export interface BreadcrumbLink {
+  label: string;
+  href?: string;
+}
+
 export interface ContextLink extends NavLink {
   variant?: 'primary' | 'outline';
 }
@@ -27,7 +32,7 @@ export interface SiblingNav {
 }
 
 export interface NavigationMeta {
-  breadcrumbs?: NavLink[];
+  breadcrumbs?: BreadcrumbLink[];
   siblings?: SiblingNav;
   contextLinks?: ContextLink[];
 }

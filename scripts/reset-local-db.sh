@@ -28,12 +28,12 @@ SEED_DIR="legacy_data/event_results/seed/mvfp_full"
 VENV="scripts/.venv"
 REQUIREMENTS="scripts/requirements.txt"
 
-# Create venv and install dependencies if not already present
+# Create venv if not present; always sync dependencies
 if [ ! -f "${VENV}/bin/python3" ]; then
   echo "  → Creating Python venv..."
   python3 -m venv "${VENV}"
-  "${VENV}/bin/pip" install --quiet -r "${REQUIREMENTS}"
 fi
+"${VENV}/bin/pip" install --quiet -r "${REQUIREMENTS}"
 
 PYTHON="${VENV}/bin/python3"
 
@@ -46,10 +46,10 @@ rm -f "${DB_FILE}" "${DB_FILE}-wal" "${DB_FILE}-shm"
 echo "  → Applying schema..."
 sqlite3 "${DB_FILE}" < "${SCHEMA}"
 
-# Build full seed CSVs from canonical input
-echo "  → Building seed CSVs from canonical input..."
-"${PYTHON}" legacy_data/event_results/scripts/07_build_mvfp_seed_full.py \
-  --input-dir "${CANONICAL_INPUT}"
+# Persons come from the canonical list — authoritative, James-curated.
+# Overwrite seed_persons.csv so 08_load picks up the clean source.
+# (Extra columns in canonical are ignored by the loader's row.get() calls.)
+cp "${CANONICAL_INPUT}/persons.csv" "${SEED_DIR}/seed_persons.csv"
 
 # Load seed CSVs into database
 echo "  → Loading seed data into database..."
@@ -57,7 +57,25 @@ echo "  → Loading seed data into database..."
   --db "${DB_FILE}" \
   --seed-dir "${SEED_DIR}"
 
+# Extract club seed data from legacy mirror
+echo "  → Extracting club seed data from mirror..."
+"${PYTHON}" legacy_data/scripts/extract_clubs.py
+
+# Load club seed data into database
+echo "  → Loading club seed data into database..."
+"${PYTHON}" legacy_data/scripts/load_clubs_seed.py --db "${DB_FILE}"
+
+# Extract club member data from legacy mirror
+echo "  → Extracting club member data from mirror..."
+"${PYTHON}" legacy_data/scripts/extract_club_members.py
+
+# Load club member data into database
+echo "  → Loading club member data into database..."
+"${PYTHON}" legacy_data/scripts/load_club_members_seed.py --db "${DB_FILE}"
+
 # Sanity check
 EVENT_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM events;")
-echo "  → Done. ${EVENT_COUNT} events in database."
+CLUB_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM clubs;")
+MEMBER_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM legacy_person_club_affiliations;")
+echo "  → Done. ${EVENT_COUNT} events, ${CLUB_COUNT} clubs, ${MEMBER_COUNT} club affiliations in database."
 echo "Reset complete: ${DB_FILE}"

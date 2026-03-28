@@ -44,9 +44,17 @@ function postLogin(req: Request, res: Response): void {
   });
 }
 
-function postLogout(_req: Request, res: Response): void {
+function postLogout(req: Request, res: Response): void {
   res.clearCookie(COOKIE_NAME);
-  res.redirect('/');
+  const referer = req.get('Referer');
+  let returnTo = '/';
+  if (referer) {
+    try {
+      const parsed = new URL(referer);
+      if (isSafePath(parsed.pathname)) returnTo = parsed.pathname;
+    } catch { /* ignore malformed Referer */ }
+  }
+  res.redirect(returnTo);
 }
 
 export const authController = { getLogin, postLogin, postLogout };

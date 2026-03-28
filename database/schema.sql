@@ -2693,6 +2693,7 @@ CREATE TABLE legacy_person_club_affiliations (
       'needs_review','promoted','rejected','superseded'
     )),
   resolved_club_id TEXT REFERENCES clubs(id),
+  display_name     TEXT,
   notes            TEXT,
 
   CHECK(historical_person_id IS NOT NULL OR legacy_member_id IS NOT NULL)

@@ -67,8 +67,10 @@ ssh "$REMOTE" "rm -rf ~/footbag-release && mkdir -p ~/footbag-release"
 echo "==> Rsyncing source to host (rsync_db=${RSYNC_DB})..."
 
 DB_INCLUDE=()
+DB_EXCLUDE_FILE="--exclude footbag.db"
 if [[ "$RSYNC_DB" == "yes" ]]; then
   DB_INCLUDE=(--include='/database/***')
+  DB_EXCLUDE_FILE=""
 fi
 
 rsync -av --delete -e "ssh" \
@@ -83,11 +85,15 @@ rsync -av --delete -e "ssh" \
   --exclude='*' \
   ./ "$REMOTE:~/footbag-release/"
 
-# ── Step 3: Promote to /srv/footbag (preserves env and DB) ───────────────────
+# ── Step 3: Promote to /srv/footbag (preserves env; DB replaced when rsync_db=yes) ──
 
 echo "==> Promoting release..."
+if [[ "$RSYNC_DB" == "yes" ]]; then
+  echo "    Stopping service before replacing DB..."
+  ssh "$REMOTE" "printf '%s\n' $PASS_Q | sudo -S -p '' systemctl stop footbag || true"
+fi
 ssh "$REMOTE" "
-  printf '%s\n' $PASS_Q | sudo -S -p '' rsync -a --delete --exclude env --exclude footbag.db ~/footbag-release/ /srv/footbag/
+  printf '%s\n' $PASS_Q | sudo -S -p '' rsync -a --delete --exclude env $DB_EXCLUDE_FILE ~/footbag-release/ /srv/footbag/
   printf '%s\n' $PASS_Q | sudo -S -p '' chown -R root:root /srv/footbag
 "
 

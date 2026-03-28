@@ -14,45 +14,23 @@ This file — not auto memory — is the source of truth for current slice statu
 
 ## Active slice now
 
-### Sprint: Clubs page + members ungating
+### Sprint: Club + members ungating + world records
 
-**Goals:**
-1. Extract club seed data from legacy mirror into a CSV
-2. Load club seed data into local DB for dev/test
-3. Implement the clubs page with real data
-4. Ungate `/members` and `/members/:personId` (blocked on James sign-off)
-5. World records page (`/records`)
+**Status:** Clubs sprint is almost complete. Site is live with legacy (dirty) club data, initial world map, and home/clubs/members pages. Remaining items below.
 
-### Item 1 — Club seed data extraction
+**Completed this sprint:**
+- Club seed extraction: `legacy_data/scripts/extract_clubs.py` + `load_clubs_seed.py`; `scripts/reset-local-db.sh` updated
+- `src/services/clubService.ts`: `listPublicClubs()`, `getClubsByCountry()`, world-map data shaping
+- Clubs index page (`/clubs`): country-grouped list with SVG world map (interactive, JS-enhanced; degrades to list without JS; hidden on mobile ≤768px)
+- Clubs country page (`/clubs/:countrySlug`): clubs grouped by region, external links
+- Clubs detail page (`/clubs/:countrySlug/:clubSlug`): individual club view
+- Integration tests: `tests/integration/clubs-auth.routes.test.ts`
+- Home page polish: 3-column card layout, aligned buttons, correct tab title ("Footbag Worldwide"), fixed active nav highlight
+- Hero text updates: clubs intro, members intro
 
-**Step A: `legacy_data/scripts/extract_clubs.py`** (new)
-- Walk all `clubs/show/*/index.html` under `legacy_data/mirror_footbag_org/`
-- Parse with BeautifulSoup; extract name, city/region/country, email, external URL, description
-- CSS selectors: `h1.clubsShowName`, `div.clubsLocationHeader`, `div.clubsContacts`, `div.clubsURL a[href]`, `div#ClubsWelcome`
-- Derive `legacy_club_key` from directory name; skip pages with no name or country
-- Output: `legacy_data/seed/clubs.csv` (gitignored); columns: `legacy_club_key, name, city, region, country, contact_email, external_url, description`
-- Idempotent: skip if CSV already exists and is fresh
+**Remaining this sprint:**
 
-**Step B: `legacy_data/scripts/load_clubs_seed.py`** (new)
-- Read `legacy_data/seed/clubs.csv`
-- Generate `club_id = stable_id("club", legacy_club_key)`, `tag_id`, `tag_normalized = "#club_" + slugify(legacy_club_key).lower()`, `tag_display`
-- Insert into `tags` (is_standard=1, standard_type='club') then `clubs`; `created_by`/`updated_by = 'seed'`, `status = 'active'`
-- Skip on conflict (idempotent)
-- DB path from `FOOTBAG_DB_PATH` env var (default `./database/footbag.db`)
-
-**Step C: `scripts/reset-local-db.sh`** (update)
-- Add extract + load steps after the existing MVFP seed load
-
-### Item 2 — Clubs page implementation
-
-Sequencing: extend-service-contract → add-public-page → write-tests → doc-sync
-
-- `src/services/clubService.ts` (new): `listPublicClubs(): ClubSummary[]` — queries `clubs_open` view, returns id/name/city/region/country/external_url, sorted country/city/name ASC
-- `src/controllers/clubController.ts` (update): replace placeholder render with real service call; pass clubs grouped by country
-- `src/views/public/clubs.hbs` (update): country-grouped list; name, city/region, external link if present; no search/filter this sprint
-- Integration tests: 200 with empty DB; 200 with seeded clubs
-
-### Item 3 — Members ungating
+### Item 1 — Members ungating
 
 **Blocked on:** James confirming legacy data complete and member-list presentation reviewed.
 
@@ -61,8 +39,9 @@ When unblocked:
 - Review member-list template for presentation issues before removing gate
 - Update `docs/GOVERNANCE.md` note if needed
 - Integration test: confirm `/members` returns 200 without auth
+- Fully clean and integrate club-member data
 
-### Item 4 — World records page
+### Item 2 — World records page
 
 Route: `/records` (new public page). Sequencing: extend-service-contract → add-public-page → write-tests → doc-sync
 
@@ -76,21 +55,23 @@ Route: `/records` (new public page). Sequencing: extend-service-contract → add
 - Add `/records` route in `src/routes/publicRoutes.ts`
 - Integration tests for GET `/records`
 
-### Completed last sprint (infra sprint)
+### Completed last sprint (clubs sprint + infra sprint)
 
-- 1-B: Expand integration tests — health/ready edge cases, middleware behavior (content-type, auth not required, `checks.database.isReady` shape, auth redirects, tampered session, returnTo)
+- Club seed extraction and loading 
+- Clubs page with dirty legacy data, world map, country and detail pages
+- Home page polish: layout, tab title, nav active state, card buttons
+- 1-B: Expand integration tests — health/ready edge cases, middleware behavior
 - 404/500 error pages — proper templates using `PageViewModel`; `page.sectionKey = ''`
 - Fix VIEW_CATALOG drift: `navigation.siblings.previous`/`next` (doc corrected)
-- 1-C: `scripts/deploy-staging.sh` — password-arg deploy script with rsync_db flag, sudo via printf/%q, smoke check; `deploy_to_aws.sh` personal wrapper (gitignored)
-- Smoke check made data-independent: removed seed-dependent event key checks; removed `year < 1997` guard from event service
-- Add terraform fmt/validate job to GitHub Actions CI workflow; terraform files reformatted
-- GitHub branch protection ruleset `protect-main` on main: require CI to pass; admin bypass for repo owner
+- 1-C: `scripts/deploy-staging.sh` — password-arg deploy script with rsync_db flag
+- Smoke check made data-independent
+- Add terraform fmt/validate job to GitHub Actions CI workflow
+- GitHub branch protection ruleset `protect-main` on main
 
 ### Decisions for this sprint
 
 - Members ungating: BLOCKED — do not remove `requireAuth` until James confirms legacy data complete and member-list presentation is reviewed
-- Club detail pages: out of scope this sprint (no route contract yet)
-- Club join/leave flows: out of scope this sprint
+- Club join/leave flows: out of scope
 - World records schema: evaluate at sprint start whether a `world_records` table is needed
 - Real login (Phase 4 auth): DEFERRED — legacy data must be 100% before member onboarding
 - `src/types/page.ts` is live and correct; `PageViewModel<TContent>` contract enforced across non-home public pages
@@ -98,11 +79,9 @@ Route: `/records` (new public page). Sequencing: extend-service-contract → add
 ### Sprint verification checklist
 
 1. `bash scripts/reset-local-db.sh` — completes without errors
-2. `legacy_data/seed/clubs.csv` — inspect a sample of rows for quality
-3. `sqlite3 database/footbag.db "SELECT count(*) FROM clubs;"` — shows populated count
-4. `npm run dev` → visit `http://localhost:3000/clubs` — clubs listed by country
-5. `npm test` — all tests pass including new clubs integration test
-6. `bash scripts/deploy-staging.sh '<password>' no` — code-only deploy, smoke check passes
+2. `npm run dev` → visit `http://localhost:3000/clubs` — world map + clubs listed by country
+3. `npm test` — all tests pass
+4. `bash scripts/deploy-staging.sh '<password>' no` — code-only deploy, smoke check passes
 
 ## Drafted next, but not active code focus now
 
@@ -132,7 +111,8 @@ The current deployed public slice is the baseline, not a throwaway prototype.
 
 Current implemented public routes:
 - `/`
-- `/clubs` (placeholder — no real data)
+- `/clubs` — real data; SVG world map (JS-enhanced, degrades to list, hidden mobile); country index
+- `/clubs/:slug` — handles both country pages (clubs grouped by region) and individual club detail pages
 - `/hof` (first-class Hall of Fame landing page for the current slice; links out to the current standalone HoF site)
 - `/events`
 - `/events/year/:year`
@@ -335,14 +315,14 @@ Size labels: S = small, M = medium, L = large.
 
 | # | Task | Size | Dependency |
 |---|------|------|-----------|
-| 3-A | `ClubService` public methods: `listPublicClubs()`, page model shaping (see Service Catalog) | M | — |
-| 3-B | Clubs controller + route: replace "coming soon" placeholder with real data rendering | M | 3-A |
-| 3-C | Clubs integration tests: clubs listing, empty state, individual club route (if scoped) | M | 3-B |
-| 3-D | Clubs seed data: extract + load from legacy mirror (extract_clubs.py + load_clubs_seed.py) | S | clubs table exists in schema (DONE) |
+| ~~3-A~~ | ~~`ClubService` public methods: `listPublicClubs()`, page model shaping~~ | ~~M~~ | DONE |
+| ~~3-B~~ | ~~Clubs controller + route: real data rendering, world map, country + detail pages~~ | ~~M~~ | DONE |
+| ~~3-C~~ | ~~Clubs integration tests: clubs listing, empty state, auth routes~~ | ~~M~~ | DONE |
+| ~~3-D~~ | ~~Clubs seed data: extract + load from legacy mirror~~ | ~~S~~ | DONE |
 | 3-E | Broader legacy event import: assess `mirror_footbag_org` coverage; import next batch of historical events | L | 2-B |
 | 3-F | Production deploy (if staging validated from Phase 2 and CloudFront active) | M | Phase 2 gate, 1-E |
 
-**Gate:** `/clubs` serves real data. Production deploy is live (if approved).
+**Gate:** `/clubs` serves real data (DONE). Production deploy pending 1-E/staging validation.
 
 ---
 

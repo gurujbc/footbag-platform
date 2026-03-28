@@ -1,0 +1,60 @@
+<div class="hero hero-sm">
+  <div>
+    {{#if navigation.breadcrumbs}}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      {{#each navigation.breadcrumbs}}
+      {{#if this.href}}<a href="{{this.href}}">{{label}}</a> <span class="breadcrumb-sep">/</span> {{else}}<span>{{label}}</span>{{/if}}
+      {{/each}}
+    </nav>
+    {{/if}}
+    <h1>{{page.title}}</h1>
+    <p class="club-hashtag hero-hashtag">{{content.club.standardTagDisplay}}</p>
+  </div>
+</div>
+
+<div class="wrapper">
+  <div class="club-detail">
+
+    <dl class="club-detail-meta">
+      <dt>Location</dt>
+      <dd>
+        {{content.club.city}}{{#if content.club.region}}, {{content.club.region}}{{/if}}
+        &mdash; {{content.club.country}}
+      </dd>
+      {{#if content.club.externalUrl}}
+      <dt>Website</dt>
+      <dd><a href="{{content.club.externalUrl}}" class="club-external-link" target="_blank" rel="noopener noreferrer">{{content.club.externalUrl}}</a></dd>
+      {{/if}}
+    </dl>
+
+    {{#if content.club.description}}
+    <div class="club-detail-description">
+      <p>{{content.club.description}}</p>
+    </div>
+    {{/if}}
+
+    {{#if isAuthenticated}}
+    {{#if content.club.members.length}}
+    <div class="club-members">
+      <h2 class="club-members-heading">Members</h2>
+      <ul class="club-member-list">
+        {{#each content.club.members}}
+        <li class="club-member-entry">{{name}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+    {{else}}
+    <div class="club-members-gate">
+      <a href="/login?returnTo={{content.club.clubHref}}">Log in</a> to see club members.
+    </div>
+    {{/if}}
+
+    {{#each navigation.contextLinks}}
+    <div class="club-back-link">
+      <a href="{{href}}" class="btn btn-outline">{{label}}</a>
+    </div>
+    {{/each}}
+
+  </div>
+</div>

@@ -1,43 +1,47 @@
 <div class="hero hero-sm">
   <div>
-    <h1>{{page.title}}</h1>
-    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
-    {{#if content.totalClubs}}
-    <div class="hero-stats">
-      <span>{{content.totalClubs}} clubs</span>
-      <span>{{content.totalCountries}} countries</span>
-    </div>
+    {{#if navigation.breadcrumbs}}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      {{#each navigation.breadcrumbs}}
+      {{#if this.href}}<a href="{{this.href}}">{{label}}</a> <span class="breadcrumb-sep">/</span> {{else}}<span>{{label}}</span>{{/if}}
+      {{/each}}
+    </nav>
     {{/if}}
+    <h1>{{page.title}}</h1>
+    <div class="hero-stats">
+      <span>{{content.total}} clubs</span>
+    </div>
   </div>
 </div>
 
 <div class="wrapper">
 
-  {{#if content.countries}}
+  {{#if content.regions}}
 
-  <nav class="club-country-nav" aria-label="Jump to country">
+  {{#if content.hasMultipleRegions}}
+  <nav class="club-country-nav" aria-label="Jump to region">
     <ul class="club-country-nav-list">
-      {{#each content.countries}}
+      {{#each content.regions}}
+      {{#if region}}
       <li>
-        <a href="#country-{{countrySlug}}">
-          {{countryFlag country}} {{country}}
-          <span class="club-country-count">{{total}}</span>
+        <a href="#region-{{regionSlug}}">
+          {{region}}
+          <span class="club-country-count">{{clubs.length}}</span>
         </a>
       </li>
+      {{/if}}
       {{/each}}
     </ul>
   </nav>
+  {{/if}}
 
-  {{#each content.countries}}
-  <section id="country-{{countrySlug}}" class="club-section">
-    <div class="section-heading">
-      <h2>{{countryFlag country}} {{country}}</h2>
-      <span class="section-count">{{total}}</span>
-    </div>
-
-    {{#each regions}}
+  {{#each content.regions}}
+  <section {{#if regionSlug}}id="region-{{regionSlug}}"{{/if}} class="club-section">
     {{#if region}}
-    <h3 class="club-region-heading">{{region}}</h3>
+    <div class="section-heading">
+      <h2>{{region}}</h2>
+      <span class="section-count">{{clubs.length}}</span>
+    </div>
     {{/if}}
     <ul class="club-list">
       {{#each clubs}}
@@ -51,8 +55,6 @@
       </li>
       {{/each}}
     </ul>
-    {{/each}}
-
   </section>
   {{/each}}
 

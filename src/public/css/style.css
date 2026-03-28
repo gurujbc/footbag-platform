@@ -257,6 +257,7 @@ th.sortable:hover { color: var(--primary); }
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
+.card-grid-3col { grid-template-columns: repeat(3, 1fr); }
 
 .card {
   background: var(--bg);
@@ -265,7 +266,10 @@ th.sortable:hover { color: var(--primary); }
   padding: 24px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
+.card .btn { margin-top: auto; align-self: flex-start; }
 .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 
 .card-title { margin-bottom: 6px; }
@@ -601,6 +605,194 @@ th.sortable:hover { color: var(--primary); }
   font-size: 0.8rem;
 }
 
+/* ── Breadcrumb ──────────────────────────────────────────────── */
+.breadcrumb {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.breadcrumb a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep {
+  margin: 0 4px;
+  opacity: 0.5;
+}
+/* Hero has a dark gradient — breadcrumb must use white */
+.hero .breadcrumb,
+.hero .breadcrumb a,
+.hero .breadcrumb span {
+  color: rgba(255, 255, 255, 0.75);
+}
+.hero .breadcrumb a:hover {
+  color: #fff;
+}
+.hero .breadcrumb-sep {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Clubs directory ─────────────────────────────────────────── */
+/* world map */
+#clubs-map { margin: 24px 0 8px; border-radius: var(--radius); overflow: hidden; background: var(--bg-light); line-height: 0; }
+.clubs-map-svg { width: 100%; height: auto; display: block; max-height: 420px; }
+.clubs-map-svg path { fill: #d0d6dc; stroke: #fff; stroke-width: 0.4; }
+.clubs-map-svg path#n242 { fill: none; stroke: none; }
+.clubs-map-svg path.has-clubs { fill: var(--primary); cursor: pointer; transition: fill 0.12s; }
+.clubs-map-svg path.has-clubs:hover { fill: var(--primary-dk); }
+.clubs-map-tooltip { position: fixed; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; font-size: 0.82rem; box-shadow: var(--shadow-md); pointer-events: none; z-index: 200; white-space: nowrap; }
+
+/* index page — country list */
+.club-country-index {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 16px;
+}
+.club-country-index-entry {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-light, #f0f0f0);
+}
+.club-country-index-link {
+  font-size: 0.95rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.club-country-index-link:hover { color: var(--primary); text-decoration: underline; }
+
+/* detail page */
+.hero .hero-hashtag {
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.72);
+  opacity: 1;
+  margin-top: 6px;
+}
+.club-detail {
+  max-width: 680px;
+  padding: 32px 0 48px;
+}
+.club-detail-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+.club-detail-meta dt {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.club-detail-meta dd {
+  margin: 0;
+  color: var(--text);
+}
+.club-detail-description {
+  line-height: 1.7;
+  color: var(--text);
+}
+.club-members { margin-top: 32px; }
+.club-members-heading { font-size: 1rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+.club-member-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border); }
+.club-member-entry { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; color: var(--text); }
+.club-members-gate {
+  margin-top: 32px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.club-back-link {
+  margin-top: 32px;
+}
+
+
+.club-country-nav {
+  margin: 24px 0 32px;
+}
+.club-country-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.club-country-nav-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--surface);
+  transition: border-color 0.15s, background 0.15s;
+}
+.club-country-nav-list a:hover {
+  border-color: var(--primary);
+  background: var(--primary-light, #f0fdf4);
+}
+.club-country-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.club-section {
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+}
+.club-region-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 20px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.club-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+.club-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-light, #f0f0f0);
+  flex-wrap: wrap;
+}
+.club-name {
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+}
+.club-name:hover { text-decoration: underline; }
+.club-location {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.club-hashtag {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+.club-external-link {
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-left: auto;
+}
+
 /* ── Dividers & helpers ──────────────────────────────────────── */
 .text-muted { color: var(--text-muted); }
 .mt-4  { margin-top: 1rem; }
@@ -615,6 +807,7 @@ th.sortable:hover { color: var(--primary); }
   .card-grid { grid-template-columns: 1fr; }
   .site-footer .wrapper { flex-direction: column; }
   .main-nav a { padding: 6px 10px; font-size: 0.875rem; }
+  #clubs-map { display: none; }
 }
 
 @media (max-width: 480px) {

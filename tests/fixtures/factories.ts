@@ -194,6 +194,101 @@ export function insertResultParticipant(
   return id;
 }
 
+// ── Club ──────────────────────────────────────────────────────────────────────
+
+export interface ClubOverrides {
+  id?: string;
+  hashtag_tag_id?: string;
+  name?: string;
+  city?: string;
+  region?: string | null;
+  country?: string;
+  external_url?: string | null;
+  status?: 'active' | 'inactive' | 'archived';
+}
+
+export function insertClub(db: BetterSqlite3.Database, o: ClubOverrides = {}): string {
+  const id    = o.id             ?? `club-test-${uid()}`;
+  const tagId = o.hashtag_tag_id ?? insertTag(db, { standard_type: 'club', tag_normalized: `#club_test_${uid()}` });
+  db.prepare(`
+    INSERT INTO clubs (
+      id, hashtag_tag_id, name, description, city, region, country,
+      external_url, status,
+      created_at, created_by, updated_at, updated_by, version
+    ) VALUES (?, ?, ?, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `).run(
+    id, tagId,
+    o.name         ?? 'Test Club',
+    o.city         ?? 'Testville',
+    o.region       !== undefined ? o.region : null,
+    o.country      ?? 'USA',
+    o.external_url !== undefined ? o.external_url : null,
+    o.status       ?? 'active',
+    TS, SYS, TS, SYS,
+  );
+  return id;
+}
+
+// ── Legacy club candidate ─────────────────────────────────────────────────────
+
+export interface LegacyClubCandidateOverrides {
+  id?: string;
+  legacy_club_key?: string;
+  display_name?: string;
+  mapped_club_id?: string | null;
+}
+
+export function insertLegacyClubCandidate(db: BetterSqlite3.Database, o: LegacyClubCandidateOverrides = {}): string {
+  const id = o.id ?? `lcc-test-${uid()}`;
+  db.prepare(`
+    INSERT INTO legacy_club_candidates (
+      id, legacy_club_key, display_name, mapped_club_id,
+      created_at, created_by, updated_at, updated_by, version
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `).run(
+    id,
+    o.legacy_club_key ?? `legacy_club_${uid()}`,
+    o.display_name    ?? 'Test Club',
+    o.mapped_club_id  !== undefined ? o.mapped_club_id : null,
+    TS, SYS, TS, SYS,
+  );
+  return id;
+}
+
+// ── Legacy person–club affiliation ────────────────────────────────────────────
+
+export interface LegacyPersonClubAffiliationOverrides {
+  id?: string;
+  historical_person_id?: string;
+  legacy_club_candidate_id: string;
+  resolution_status?: string;
+  inferred_role?: string;
+  display_name?: string;
+}
+
+export function insertLegacyPersonClubAffiliation(
+  db: BetterSqlite3.Database,
+  o: LegacyPersonClubAffiliationOverrides,
+): string {
+  const id = o.id ?? `lpca-test-${uid()}`;
+  db.prepare(`
+    INSERT INTO legacy_person_club_affiliations (
+      id, historical_person_id, legacy_club_candidate_id,
+      inferred_role, resolution_status, display_name,
+      created_at, created_by, updated_at, updated_by, version
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `).run(
+    id,
+    o.historical_person_id        ?? null,
+    o.legacy_club_candidate_id,
+    o.inferred_role                ?? 'member',
+    o.resolution_status            ?? 'confirmed_current',
+    o.display_name                 ?? null,
+    TS, SYS, TS, SYS,
+  );
+  return id;
+}
+
 // ── Historical person ─────────────────────────────────────────────────────────
 
 export interface HistoricalPersonOverrides {

@@ -10,7 +10,8 @@ import { requireAuth } from '../middleware/authStub';
 export const publicRouter = Router();
 
 publicRouter.get('/',      homeController.home);
-publicRouter.get('/clubs', clubController.index);
+publicRouter.get('/clubs',       clubController.index);
+publicRouter.get('/clubs/:slug', clubController.slug);
 publicRouter.get('/hof',   hofController.index);
 
 // IMPORTANT: /events/year/:year MUST be registered before /events/:eventKey.

@@ -21,6 +21,9 @@ import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabas
  * - a repository layer, ORM, or generic query-builder abstraction
  *
  * Currently supported route/use-case slice:
+ * - GET /clubs
+ * - GET /clubs/:countrySlug
+ * - GET /clubs/club_:clubSlug
  * - GET /events
  * - GET /events/year/:year
  * - GET /events/:eventKey
@@ -168,6 +171,23 @@ export interface PublicPlayerResultRow {
 
 export interface HealthReadyRow {
   is_ready: number;
+}
+
+export interface PublicClubRow {
+  club_id: string;
+  name: string;
+  description: string;
+  city: string;
+  region: string | null;
+  country: string;
+  external_url: string | null;
+  tag_normalized: string;
+  tag_display: string;
+}
+
+export interface PublicClubMemberRow {
+  person_id: string | null;
+  person_name: string;
 }
 
 export const db: SqliteDatabase = openDatabase(DB_FILENAME);
@@ -381,32 +401,46 @@ export const publicEvents = {
 export const publicPlayers = {
   listAll: db.prepare(`
     SELECT
-      person_id,
-      person_name,
-      country,
-      event_count,
-      placement_count,
-      bap_member,
-      fbhof_member
-    FROM historical_persons
-    WHERE event_count IS NOT NULL
-    ORDER BY person_name COLLATE NOCASE
+      hp.person_id,
+      hp.person_name,
+      hp.country,
+      COUNT(DISTINCT ere.event_id)       AS event_count,
+      COUNT(DISTINCT erp.result_entry_id) AS placement_count,
+      hp.bap_member,
+      hp.fbhof_member
+    FROM historical_persons AS hp
+    INNER JOIN event_result_entry_participants AS erp
+      ON erp.historical_person_id = hp.person_id
+    INNER JOIN event_result_entries AS ere
+      ON ere.id = erp.result_entry_id
+    GROUP BY
+      hp.person_id, hp.person_name, hp.country,
+      hp.bap_member, hp.fbhof_member
+    ORDER BY hp.person_name COLLATE NOCASE
   `),
 
   getById: db.prepare(`
     SELECT
-      person_id,
-      person_name,
-      country,
-      event_count,
-      placement_count,
-      bap_member,
-      bap_nickname,
-      bap_induction_year,
-      fbhof_member,
-      fbhof_induction_year
-    FROM historical_persons
-    WHERE person_id = ?
+      hp.person_id,
+      hp.person_name,
+      hp.country,
+      COUNT(DISTINCT ere.event_id)       AS event_count,
+      COUNT(DISTINCT erp.result_entry_id) AS placement_count,
+      hp.bap_member,
+      hp.bap_nickname,
+      hp.bap_induction_year,
+      hp.fbhof_member,
+      hp.fbhof_induction_year
+    FROM historical_persons AS hp
+    LEFT JOIN event_result_entry_participants AS erp
+      ON erp.historical_person_id = hp.person_id
+    LEFT JOIN event_result_entries AS ere
+      ON ere.id = erp.result_entry_id
+    WHERE hp.person_id = ?
+    GROUP BY
+      hp.person_id, hp.person_name, hp.country,
+      hp.bap_member, hp.bap_nickname, hp.bap_induction_year,
+      hp.fbhof_member, hp.fbhof_induction_year
   `),
 
   listResultsByPersonId: db.prepare(`
@@ -444,6 +478,68 @@ export const publicPlayers = {
       COALESCE(ed.name, '') COLLATE NOCASE ASC,
       ere.placement ASC,
       erp_co.participant_order ASC
+  `),
+} as const;
+
+export const clubs = {
+  listOpen: db.prepare(`
+    SELECT
+      c.id          AS club_id,
+      c.name,
+      c.description,
+      c.city,
+      c.region,
+      c.country,
+      c.external_url,
+      t.tag_normalized,
+      t.tag_display
+    FROM clubs_open AS c
+    INNER JOIN tags AS t
+      ON t.id = c.hashtag_tag_id
+    WHERE
+      t.is_standard = 1
+      AND t.standard_type = 'club'
+    ORDER BY
+      c.country COLLATE NOCASE ASC,
+      CASE WHEN c.region IS NULL OR c.region = '' THEN 1 ELSE 0 END ASC,
+      c.region  COLLATE NOCASE ASC,
+      c.city    COLLATE NOCASE ASC,
+      c.name    COLLATE NOCASE ASC
+  `),
+
+  getByTagNormalized: db.prepare(`
+    SELECT
+      c.id          AS club_id,
+      c.name,
+      c.description,
+      c.city,
+      c.region,
+      c.country,
+      c.external_url,
+      t.tag_normalized,
+      t.tag_display
+    FROM clubs_open AS c
+    INNER JOIN tags AS t
+      ON t.id = c.hashtag_tag_id
+    WHERE
+      t.tag_normalized = ?
+      AND t.is_standard = 1
+      AND t.standard_type = 'club'
+  `),
+
+  listMembersByClubId: db.prepare(`
+    SELECT
+      lpca.historical_person_id AS person_id,
+      COALESCE(hp.person_name, lpca.display_name) AS person_name
+    FROM legacy_person_club_affiliations AS lpca
+    INNER JOIN legacy_club_candidates AS lcc
+      ON lcc.id = lpca.legacy_club_candidate_id
+    LEFT JOIN historical_persons AS hp
+      ON hp.person_id = lpca.historical_person_id
+    WHERE
+      lcc.mapped_club_id = ?
+      AND lpca.resolution_status IN ('confirmed_current', 'promoted')
+    ORDER BY person_name ASC
   `),
 } as const;
 

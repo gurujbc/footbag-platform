@@ -163,7 +163,7 @@ export const memberService = {
         sectionKey: 'members',
         pageKey: 'members_index',
         title: 'Members',
-        intro: 'Historical player records linked to competitive footbag results.',
+        intro: 'IFPA Members Area (a work in progress)',
       },
       content: { memberCount: members.length, countryCount, members },
     };
