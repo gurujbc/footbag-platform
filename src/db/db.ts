@@ -169,6 +169,7 @@ export interface PublicPlayerResultRow {
   participant_order: number;
   participant_display_name: string;
   participant_person_id: string | null;
+  participant_member_slug: string | null;
   event_tag_normalized: string;
 }
 
@@ -422,10 +423,11 @@ export const publicPlayers = {
       hp.bap_member,
       hp.fbhof_member,
       (SELECT m.slug
-       FROM event_result_entry_participants AS erp2
-       INNER JOIN members AS m ON m.id = erp2.member_id
-       WHERE erp2.historical_person_id = hp.person_id
-         AND erp2.member_id IS NOT NULL
+       FROM members AS m
+       WHERE m.deleted_at IS NULL
+         AND m.login_email IS NOT NULL
+         AND m.legacy_member_id = hp.legacy_member_id
+         AND hp.legacy_member_id IS NOT NULL
        LIMIT 1
       ) AS linked_member_slug
     FROM historical_persons AS hp
@@ -483,7 +485,8 @@ export const publicPlayers = {
       ere.score_text,
       erp_co.participant_order,
       erp_co.display_name         AS participant_display_name,
-      erp_co.historical_person_id AS participant_person_id
+      erp_co.historical_person_id AS participant_person_id,
+      COALESCE(m_co_linked.slug, m_co_legacy.slug) AS participant_member_slug
     FROM event_result_entry_participants AS erp_me
     JOIN event_result_entries AS ere
       ON ere.id = erp_me.result_entry_id
@@ -495,6 +498,15 @@ export const publicPlayers = {
       ON ed.id = ere.discipline_id
     JOIN event_result_entry_participants AS erp_co
       ON erp_co.result_entry_id = ere.id
+    LEFT JOIN members AS m_co_linked
+      ON m_co_linked.id = erp_co.member_id
+    LEFT JOIN historical_persons AS hp_co
+      ON hp_co.person_id = erp_co.historical_person_id
+      AND hp_co.legacy_member_id IS NOT NULL
+    LEFT JOIN members AS m_co_legacy
+      ON m_co_legacy.legacy_member_id = hp_co.legacy_member_id
+      AND m_co_legacy.deleted_at IS NULL
+      AND m_co_legacy.login_email IS NOT NULL
     WHERE erp_me.historical_person_id = ?
     ORDER BY
       e.start_date DESC,
@@ -619,6 +631,7 @@ export interface MemberProfileRow {
   is_bap: number;
   legacy_member_id: string | null;
   avatar_thumb_key: string | null;
+  historical_person_name: string | null;
 }
 
 export interface MemberResultRow {
@@ -649,10 +662,14 @@ export const account = {
       m.is_hof,
       m.is_bap,
       m.legacy_member_id,
-      mi.s3_key_thumb AS avatar_thumb_key
+      mi.s3_key_thumb AS avatar_thumb_key,
+      hp.person_name AS historical_person_name
     FROM members_active AS m
     LEFT JOIN media_items AS mi
       ON mi.id = m.avatar_media_id
+    LEFT JOIN historical_persons AS hp
+      ON hp.legacy_member_id = m.legacy_member_id
+      AND m.legacy_member_id IS NOT NULL
     WHERE m.slug = ?
       AND m.personal_data_purged_at IS NULL
   `),
@@ -750,6 +767,31 @@ export const account = {
       updated_by              = 'member',
       version                 = version + 1
     WHERE id = ?
+  `),
+
+  updateMemberSlug: db.prepare(`
+    UPDATE members
+    SET slug = ?, updated_at = ?, updated_by = 'member', version = version + 1
+    WHERE id = ?
+  `),
+} as const;
+
+export const slugRedirects = {
+  findBySlug: db.prepare(`
+    SELECT m.slug AS current_slug
+    FROM member_slug_redirects AS r
+    INNER JOIN members AS m ON m.id = r.member_id
+    WHERE r.old_slug = ?
+      AND m.deleted_at IS NULL
+  `),
+
+  insert: db.prepare(`
+    INSERT OR REPLACE INTO member_slug_redirects (old_slug, member_id, created_at)
+    VALUES (?, ?, ?)
+  `),
+
+  deleteBySlug: db.prepare(`
+    DELETE FROM member_slug_redirects WHERE old_slug = ?
   `),
 } as const;
 

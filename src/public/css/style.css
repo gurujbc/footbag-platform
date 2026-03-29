@@ -109,6 +109,9 @@ section + section { border-top: 1px solid var(--border); }
 
 .hero h1 { color: #fff; margin-bottom: 0.75rem; }
 .hero p  { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0; }
+.hero .text-muted { color: rgba(255, 255, 255, 0.75); }
+.hero-eyebrow { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.72); margin-bottom: 4px; }
+.hero-subtitle { font-size: 0.95rem; margin-top: 2px; color: rgba(255, 255, 255, 0.9); }
 .hero.hero-sm { padding: 36px 24px; }
 .hero.hero-sm h1 { margin-bottom: 0; }
 
@@ -846,6 +849,13 @@ th.sortable:hover { color: var(--primary); }
 .profile-location {
   font-size: 0.85rem;
   margin-bottom: 16px;
+}
+
+.profile-honor-badge {
+  color: var(--secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-top: 4px;
 }
 
 .profile-edit-btn {

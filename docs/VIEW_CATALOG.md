@@ -221,10 +221,12 @@ Every public page must be composed from the same small set of reusable primitive
 
 ### Page hero
 
-- optional eyebrow
+- optional eyebrow (`.hero-eyebrow`) — small label above the title (e.g. "Historical player record")
 - page title
-- optional intro
+- optional subtitle (`.hero-subtitle`) — secondary text below the title (e.g. historical record name, hashtag, intro text)
 - optional notice
+
+Both eyebrow and subtitle render in white with reduced opacity for contrast against the dark hero gradient. All text inside `.hero` must be white or `rgba(255, 255, 255, *)`. The `.text-muted` utility is overridden inside `.hero` as a safety net, but prefer the semantic classes `.hero-eyebrow`, `.hero-subtitle`, or `.hero-hashtag`.
 
 ### Content section
 
@@ -285,7 +287,7 @@ The CSS vocabulary is split into two tiers.
 **Shared — required across all public pages:**
 
 - Site frame: `.wrapper`, `.site-header`, `.site-logo`, `.main-nav`, `.site-footer`
-- Hero: `.hero` (base, 72px padding), `.hero-sm` (36px padding — use on all pages; `.hero` without `.hero-sm` is reserved for future large-format hero use only)
+- Hero: `.hero` (base, 72px padding), `.hero-sm` (36px padding — use on all pages; `.hero` without `.hero-sm` is reserved for future large-format hero use only), `.hero-eyebrow` (label above title), `.hero-subtitle` (secondary text below title), `.hero-hashtag` (hashtag display). All hero text classes use white with reduced opacity for dark-gradient contrast.
 - Sections: `.section-heading`, `.section-count`
 - Cards: `.card-grid`, `.card`, `.card-title`, `.card-meta`, `.card-description`
 - Badges: `.badge`, `.badge-published`, `.badge-registration_full`, `.badge-closed`, `.badge-completed`
@@ -298,6 +300,15 @@ The CSS vocabulary is split into two tiers.
 - Country sections: `.club-section`, `.club-region-heading`
 - Club list: `.club-list`, `.club-entry`, `.club-name`, `.club-location`, `.club-hashtag`, `.club-external-link`
 - Club detail: `.club-detail`, `.club-detail-meta`, `.club-detail-description`
+
+**Members section — required within member profile pages only:**
+
+- Profile layout: `.profile-layout`, `.profile-sidebar`, `.profile-main`
+- Avatar card: `.profile-avatar-card`, `.profile-avatar-img`, `.profile-avatar-placeholder`
+- Profile text: `.profile-name`, `.profile-location`, `.profile-honor-badge`
+- Profile sections: `.profile-section`, `.profile-section-heading`
+- Account list: `.profile-account-list`
+- Links grid: `.profile-link-grid`, `.profile-link-card`, `.profile-link-icon`, `.profile-link-label`
 
 **Events section — required within events pages only:**
 

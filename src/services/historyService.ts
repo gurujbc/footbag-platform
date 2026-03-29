@@ -1,5 +1,6 @@
 import { PublicPlayerResultRow, publicPlayers, account } from '../db/db';
 import { NotFoundError } from './serviceErrors';
+import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
 import { getPhotoStorage } from '../adapters/photoStorageInstance';
 import { PageViewModel } from '../types/page';
@@ -119,10 +120,9 @@ function groupResults(rows: PublicPlayerResultRow[], personId: string): HistoryE
 
     const isSelf = row.participant_person_id === personId;
     if (!isSelf && !entry.teammates.some(t => t.name === row.participant_display_name)) {
-      const pid = row.participant_person_id ?? null;
       entry.teammates.push({
         name:       row.participant_display_name,
-        playerHref: pid ? `/history/${pid}` : undefined,
+        playerHref: personHref(row.participant_member_slug, row.participant_person_id) ?? undefined,
       });
     }
   }
@@ -153,9 +153,7 @@ export const historyService = {
       placementCount: r.placement_count ?? null,
       bapMember:      Boolean(r.bap_member),
       hofMember:      Boolean(r.fbhof_member),
-      playerHref:     r.linked_member_slug
-        ? `/members/${r.linked_member_slug}`
-        : `/history/${r.person_id}`,
+      playerHref:     personHref(r.linked_member_slug, r.person_id)!,
     }));
 
     return {
@@ -204,11 +202,10 @@ export const historyService = {
       publicPlayers.findLinkedMemberSlug.get(personId),
     ) as { slug: string } | undefined;
 
-    let memberHref: string | null = null;
+    let memberHref: string | null = personHref(linkedRow?.slug ?? null, null);
     let avatarThumbUrl: string | null = null;
 
     if (linkedRow?.slug) {
-      memberHref = `/members/${linkedRow.slug}`;
       // Look up the member's avatar via the account query.
       const memberRow = runSqliteRead('findMemberBySlugForAvatar', () =>
         account.findMemberBySlug.get(linkedRow.slug),

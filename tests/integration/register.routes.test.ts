@@ -67,6 +67,7 @@ describe('GET /register', () => {
     const res = await request(app).get('/register');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Create an IFPA Account');
+    expect(res.text).toContain('name="realName"');
     expect(res.text).toContain('name="displayName"');
     expect(res.text).toContain('name="email"');
     expect(res.text).toContain('name="password"');
@@ -98,7 +99,7 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'New Player',
+        realName: 'New Player',
         email: 'newplayer@example.com',
         password: 'securepass123',
         confirmPassword: 'securepass123',
@@ -117,7 +118,7 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'Duplicate User',
+        realName: 'Duplicate User',
         email: 'existing@example.com',
         password: 'securepass123',
         confirmPassword: 'securepass123',
@@ -132,7 +133,7 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'Short Pass',
+        realName: 'Short Pass',
         email: 'shortpass@example.com',
         password: 'short',
         confirmPassword: 'short',
@@ -147,7 +148,7 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'Mismatch User',
+        realName: 'Mismatch User',
         email: 'mismatch@example.com',
         password: 'securepass123',
         confirmPassword: 'differentpass123',
@@ -156,19 +157,19 @@ describe('POST /register', () => {
     expect(res.text).toContain('do not match');
   });
 
-  it('missing display name → 422 with error', async () => {
+  it('missing real name → 422 with error', async () => {
     const app = createApp();
     const res = await request(app)
       .post('/register')
       .type('form')
       .send({
-        displayName: '',
+        realName: '',
         email: 'noname@example.com',
         password: 'securepass123',
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(422);
-    expect(res.text).toContain('Display name is required');
+    expect(res.text).toContain('Full legal name is required');
   });
 
   it('missing email → 422 with error', async () => {
@@ -177,13 +178,91 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'No Email',
+        realName: 'No Email',
         email: '',
         password: 'securepass123',
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(422);
     expect(res.text).toContain('Email address is required');
+  });
+
+  it('single-word real name → 422 with error', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({
+        realName: 'trained',
+        email: 'trained@example.com',
+        password: 'securepass123',
+        confirmPassword: 'securepass123',
+      });
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('first name and last name');
+  });
+
+  it('digits in real name → 422 with error', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({
+        realName: 'Player 123',
+        email: 'digits@example.com',
+        password: 'securepass123',
+        confirmPassword: 'securepass123',
+      });
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('must not contain digits');
+  });
+
+  it('display name with different surname → 422 with error', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({
+        realName: 'David Leberknight',
+        displayName: 'xXFootbagMasterXx',
+        email: 'badsurname@example.com',
+        password: 'securepass123',
+        confirmPassword: 'securepass123',
+      });
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('must include your last name');
+  });
+
+  it('display name with matching surname succeeds', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({
+        realName: 'David Leberknight',
+        displayName: 'Dave Leberknight',
+        email: 'daveleberknight@example.com',
+        password: 'securepass123',
+        confirmPassword: 'securepass123',
+      });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toMatch(/^\/members\/dave_leberknight/);
+  });
+
+  it('blank display name defaults to real name', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({
+        realName: 'Jane Footbagger',
+        displayName: '',
+        email: 'janefootbagger@example.com',
+        password: 'securepass123',
+        confirmPassword: 'securepass123',
+      });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toMatch(/^\/members\/jane_footbagger/);
   });
 
   it('slug conflict is resolved with suffix', async () => {
@@ -193,7 +272,7 @@ describe('POST /register', () => {
       .post('/register')
       .type('form')
       .send({
-        displayName: 'Existing User',
+        realName: 'Existing User',
         email: 'existinguser2@example.com',
         password: 'securepass123',
         confirmPassword: 'securepass123',

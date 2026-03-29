@@ -1,6 +1,9 @@
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
+    {{#if content.hofMember}}<p class="hero-subtitle">Member of the Footbag Hall of Fame{{#if content.bapMember}} and the Big Add Posse{{/if}}</p>
+    {{else if content.bapMember}}<p class="hero-subtitle">Member of the Footbag Big Add Posse</p>
+    {{else if content.historicalPersonName}}<p class="hero-subtitle">Historical record: {{content.historicalPersonName}}</p>{{/if}}
     {{#if content.city}}<p>{{content.city}}{{#if content.country}}, {{content.country}}{{/if}}</p>{{/if}}
   </div>
 </div>
@@ -10,16 +13,6 @@
     {{#if content.avatarThumbUrl}}
     <div style="text-align:center; margin-bottom:24px">
       <img src="{{content.avatarThumbUrl}}" alt="{{content.displayName}}" class="profile-avatar-img" />
-    </div>
-    {{/if}}
-
-    {{#if content.hofMember}}
-    <div class="card" style="margin-bottom:24px">
-      <p class="card-description">{{content.displayName}} is a member of the Footbag Hall of Fame.</p>
-    </div>
-    {{else if content.bapMember}}
-    <div class="card" style="margin-bottom:24px">
-      <p class="card-description">{{content.displayName}} is a member of the Big Add Posse.</p>
     </div>
     {{/if}}
 

@@ -1,4 +1,5 @@
-import { account, MemberProfileRow, MemberResultRow } from '../db/db';
+import { account, slugRedirects, MemberProfileRow, MemberResultRow } from '../db/db';
+import { generateUniqueSlug, slugify } from './identityAccessService';
 import { NotFoundError, ValidationError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
 import { getPhotoStorage } from '../adapters/photoStorageInstance';
@@ -35,6 +36,7 @@ export interface OwnProfileContent {
   isHof: boolean;
   isBap: boolean;
   hasLegacyLink: boolean;
+  historicalPersonName: string | null;
   profileBase?: string;
   avatarThumbUrl: string | null;
   eventGroups?: ProfileEventGroup[];
@@ -68,6 +70,7 @@ export interface PublicProfileContent {
   avatarThumbUrl: string | null;
   hofMember: boolean;
   bapMember: boolean;
+  historicalPersonName: string | null;
   eventGroups: PublicProfileEventGroup[];
 }
 
@@ -99,6 +102,10 @@ function rowToContent(row: MemberProfileRow): OwnProfileContent {
     isHof:           Boolean(row.is_hof),
     isBap:           Boolean(row.is_bap),
     hasLegacyLink:   row.legacy_member_id !== null,
+    historicalPersonName: row.historical_person_name &&
+      row.historical_person_name.toLowerCase() !== row.display_name.toLowerCase()
+      ? row.historical_person_name
+      : null,
     avatarThumbUrl:  row.avatar_thumb_key ? storage.constructURL(row.avatar_thumb_key) : null,
   };
 }
@@ -184,6 +191,10 @@ export const memberService = {
         avatarThumbUrl: row.avatar_thumb_key ? storage.constructURL(row.avatar_thumb_key) : null,
         hofMember:      isHof,
         bapMember:      isBap,
+        historicalPersonName: row.historical_person_name &&
+          row.historical_person_name.toLowerCase() !== row.display_name.toLowerCase()
+          ? row.historical_person_name
+          : null,
         eventGroups:    fetchEventGroups(row),
       },
     };
@@ -201,7 +212,7 @@ export const memberService = {
     };
   },
 
-  updateOwnProfile(slug: string, input: ProfileEditInput): void {
+  updateOwnProfile(slug: string, input: ProfileEditInput): { newSlug: string } {
     const row = fetchMemberBySlug(slug);
     const displayName = normalizeText(input.displayName);
     const bio         = normalizeText(input.bio);
@@ -236,5 +247,23 @@ export const memberService = {
       now,
       row.id,
     );
+
+    // Regenerate slug if display name changed and would produce a different slug.
+    let newSlug = slug;
+    const candidateBase = slugify(displayName);
+    const currentBase = row.slug ? slugify(row.display_name) : null;
+    if (candidateBase && currentBase && candidateBase !== currentBase) {
+      newSlug = generateUniqueSlug(displayName);
+      // Delete any redirect that would collide with the new slug.
+      slugRedirects.deleteBySlug.run(newSlug);
+      // Store the old slug as a redirect.
+      if (row.slug) {
+        slugRedirects.insert.run(row.slug, row.id, now);
+      }
+      // Update the member's slug.
+      account.updateMemberSlug.run(newSlug, now, row.id);
+    }
+
+    return { newSlug };
   },
 };

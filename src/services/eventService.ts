@@ -7,6 +7,7 @@ import {
   publicEvents,
 } from '../db/db';
 import { NotFoundError, ValidationError } from './serviceErrors';
+import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
 import { PageViewModel } from '../types/page';
 
@@ -297,12 +298,10 @@ function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResult
       section.placements.push(placement);
     }
 
-    let participantHref: string | null = null;
-    if (row.participant_member_slug) {
-      participantHref = `/members/${row.participant_member_slug}`;
-    } else if (row.participant_historical_person_id) {
-      participantHref = `/history/${row.participant_historical_person_id}`;
-    }
+    const participantHref = personHref(
+      row.participant_member_slug,
+      row.participant_historical_person_id,
+    );
 
     placement.participants.push({
       participantDisplayName: row.participant_display_name,

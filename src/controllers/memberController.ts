@@ -3,7 +3,14 @@ import Busboy from 'busboy';
 import { memberService, ProfileEditInput } from '../services/memberService';
 import { createAvatarService } from '../services/avatarService';
 import { getPhotoStorage } from '../adapters/photoStorageInstance';
+import { slugRedirects } from '../db/db';
 import { ValidationError, NotFoundError } from '../services/serviceErrors';
+import { runSqliteRead } from '../services/sqliteRetry';
+import { createSessionCookie } from '../middleware/authStub';
+import { config } from '../config/env';
+
+const COOKIE_NAME = 'footbag_session';
+const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 hours
 import { logger } from '../config/logger';
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
@@ -32,20 +39,37 @@ function renderNotFound(res: Response): void {
   });
 }
 
+/**
+ * Check if a slug is a redirect from a previous display_name.
+ * Returns the current slug if found, null otherwise.
+ */
+function checkSlugRedirect(oldSlug: string): string | null {
+  const row = runSqliteRead('findSlugRedirect', () =>
+    slugRedirects.findBySlug.get(oldSlug),
+  ) as { current_slug: string } | undefined;
+  return row?.current_slug ?? null;
+}
+
 export const memberController = {
   /** GET /members — redirect to own profile when authenticated. */
   landing(req: Request, res: Response): void {
     res.redirect(`/members/${req.user!.slug}`);
   },
 
-  /** GET /members/:memberKey — own profile, or public read-only for HoF/BAP members. */
+  /** GET /members/:memberKey — own profile, public read-only for HoF/BAP, or slug redirect. */
   getProfile(req: Request, res: Response, next: NextFunction): void {
+    const memberKey = req.params.memberKey;
+
     if (isOwnProfile(req)) {
       try {
-        const vm = memberService.getOwnProfile(req.params.memberKey);
+        const vm = memberService.getOwnProfile(memberKey);
         res.render('members/profile', vm);
       } catch (err) {
-        if (err instanceof NotFoundError) { renderNotFound(res); return; }
+        if (err instanceof NotFoundError) {
+          const redirect = checkSlugRedirect(memberKey);
+          if (redirect) { res.redirect(301, `/members/${redirect}`); return; }
+          renderNotFound(res); return;
+        }
         logger.error('member profile error', { error: err instanceof Error ? err.message : String(err) });
         next(err);
       }
@@ -54,13 +78,17 @@ export const memberController = {
 
     // Not own profile: try public HoF/BAP view.
     try {
-      const publicVm = memberService.getPublicProfile(req.params.memberKey);
+      const publicVm = memberService.getPublicProfile(memberKey);
       if (publicVm) {
         res.render('members/public-profile', publicVm);
         return;
       }
     } catch (err) {
-      if (err instanceof NotFoundError) { renderNotFound(res); return; }
+      if (err instanceof NotFoundError) {
+        const redirect = checkSlugRedirect(memberKey);
+        if (redirect) { res.redirect(301, `/members/${redirect}`); return; }
+        renderNotFound(res); return;
+      }
       logger.error('member public profile error', { error: err instanceof Error ? err.message : String(err) });
       next(err);
       return;
@@ -71,6 +99,10 @@ export const memberController = {
       res.redirect(`/login?returnTo=${encodeURIComponent(req.originalUrl)}`);
       return;
     }
+
+    // Check for slug redirect before final 404.
+    const redirect = checkSlugRedirect(memberKey);
+    if (redirect) { res.redirect(301, `/members/${redirect}`); return; }
     renderNotFound(res);
   },
 
@@ -108,8 +140,21 @@ export const memberController = {
         emailVisibility: req.body.emailVisibility ?? 'private',
       };
       try {
-        memberService.updateOwnProfile(memberKey, input);
-        res.redirect(`/members/${memberKey}`);
+        const { newSlug } = memberService.updateOwnProfile(memberKey, input);
+        // Refresh session cookie if slug or display name changed.
+        if (newSlug !== memberKey || input.displayName !== req.user!.displayName) {
+          const cookieValue = createSessionCookie(
+            req.user!.userId, req.user!.role, config.sessionSecret,
+            input.displayName.trim() || req.user!.displayName, newSlug,
+          );
+          res.cookie(COOKIE_NAME, cookieValue, {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: COOKIE_MAX_AGE,
+            secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+          });
+        }
+        res.redirect(`/members/${newSlug}`);
       } catch (err) {
         if (err instanceof ValidationError) {
           const vm = memberService.getProfileEditPage(memberKey, err.message);

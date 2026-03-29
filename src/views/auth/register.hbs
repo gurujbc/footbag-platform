@@ -21,16 +21,30 @@
 
     <form method="POST" action="/register" class="login-form">
       <div class="form-field">
-        <label for="displayName">Display name</label>
+        <label for="realName">Full legal name</label>
+        <input
+          type="text"
+          id="realName"
+          name="realName"
+          value="{{content.realName}}"
+          maxlength="64"
+          required
+          autocomplete="name"
+        />
+        <small class="form-hint">Your real first and last name, properly capitalized.</small>
+      </div>
+
+      <div class="form-field">
+        <label for="displayName">Display name <span class="text-muted">(optional)</span></label>
         <input
           type="text"
           id="displayName"
           name="displayName"
           value="{{content.displayName}}"
           maxlength="64"
-          required
           autocomplete="nickname"
         />
+        <small class="form-hint">How you want to appear on the site. Must include your last name. Defaults to your full name.</small>
       </div>
 
       <div class="form-field">

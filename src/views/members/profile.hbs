@@ -1,6 +1,9 @@
 <div class="hero hero-sm">
   <div>
     <h1>{{content.displayName}}</h1>
+    {{#if content.isHof}}<p class="hero-subtitle">Member of the Footbag Hall of Fame{{#if content.isBap}} and the Big Add Posse{{/if}}</p>
+    {{else if content.isBap}}<p class="hero-subtitle">Member of the Footbag Big Add Posse</p>
+    {{else if content.historicalPersonName}}<p class="hero-subtitle">Historical record: {{content.historicalPersonName}}</p>{{/if}}
     {{#if content.city}}<p>{{content.city}}{{#if content.country}}, {{content.country}}{{/if}}</p>{{/if}}
   </div>
 </div>
@@ -18,10 +21,10 @@
           {{/if}}
           <div class="profile-name">{{content.displayName}}</div>
           {{#if content.isHof}}
-            <div style="color:#0b5e6b; font-weight:500; font-size:0.9rem; margin-top:4px;">Hall of Fame</div>
+            <div class="profile-honor-badge">Hall of Fame</div>
           {{/if}}
           {{#if content.isBap}}
-            <div style="color:#0b5e6b; font-weight:500; font-size:0.9rem; margin-top:4px;">BAP Member</div>
+            <div class="profile-honor-badge">BAP Member</div>
           {{/if}}
           {{#if content.city}}
             <div class="profile-location text-muted">{{content.city}}{{#if content.region}}, {{content.region}}{{/if}}{{#if content.country}} · {{content.country}}{{/if}}</div>

@@ -26,7 +26,7 @@ function normalizeEmail(email: string): string {
  * Rules: lowercase, spaces become _, strip non-alphanumeric/underscore,
  * collapse consecutive underscores, trim leading/trailing underscores.
  */
-function slugify(displayName: string): string {
+export function slugify(displayName: string): string {
   return displayName
     .toLowerCase()
     .replace(/\s+/g, '_')
@@ -38,7 +38,7 @@ function slugify(displayName: string): string {
 /**
  * Generate a unique slug. Appends _2, _3, etc. on conflict.
  */
-function generateUniqueSlug(displayName: string): string {
+export function generateUniqueSlug(displayName: string): string {
   const base = slugify(displayName);
   if (!base) {
     // Fallback for names that produce empty slugs (e.g. all non-ASCII).
@@ -100,22 +100,81 @@ async function verifyMemberCredentials(
  * member row. Email is auto-verified in the current dev phase (real email
  * verification is a later-phase item).
  */
+/**
+ * Extract the surname (last word) from a name after stripping common suffixes.
+ */
+function extractSurname(name: string): string {
+  const suffixes = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'phd', 'md']);
+  const words = name.trim().split(/\s+/);
+  // Strip trailing suffixes
+  while (words.length > 1 && suffixes.has(words[words.length - 1].replace(/\.$/, '').toLowerCase())) {
+    words.pop();
+  }
+  return words[words.length - 1] || '';
+}
+
+/**
+ * Strip accents for comparison (Unicode NFD decomposition, remove combining marks).
+ */
+function stripAccents(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/**
+ * Validate a full legal name for registration.
+ * Rules: required, 2-64 chars, at least two words, at least one word 2+ chars, no digits.
+ */
+function validateRealName(name: string): void {
+  if (!name) {
+    throw new ValidationError('Full legal name is required.');
+  }
+  if (name.length > MAX_DISPLAY_NAME) {
+    throw new ValidationError(`Full legal name must be ${MAX_DISPLAY_NAME} characters or fewer.`);
+  }
+  if (/\d/.test(name)) {
+    throw new ValidationError('Full legal name must not contain digits.');
+  }
+  const words = name.split(/\s+/).filter(Boolean);
+  if (words.length < 2) {
+    throw new ValidationError('Full legal name must include at least a first name and last name.');
+  }
+  if (!words.some(w => w.length >= 2)) {
+    throw new ValidationError('Full legal name must include at least one name that is two or more characters.');
+  }
+}
+
+/**
+ * Validate that a display name shares a surname with the real name.
+ */
+function validateDisplayNameSurname(displayName: string, realName: string): void {
+  const displaySurname = stripAccents(extractSurname(displayName)).toLowerCase();
+  const realSurname = stripAccents(extractSurname(realName)).toLowerCase();
+  if (displaySurname !== realSurname) {
+    throw new ValidationError('Display name must include your last name.');
+  }
+}
+
 async function registerMember(
   email: string,
   password: string,
   confirmPassword: string,
+  realName: string,
   displayName: string,
 ): Promise<RegisteredMember> {
-  const trimmedName = displayName.trim();
+  const trimmedRealName = realName.trim();
+  const trimmedDisplayName = displayName.trim() || trimmedRealName;
   const trimmedEmail = email.trim();
   const normalizedEmail = normalizeEmail(trimmedEmail);
 
-  if (!trimmedName) {
-    throw new ValidationError('Display name is required.');
-  }
-  if (trimmedName.length > MAX_DISPLAY_NAME) {
+  validateRealName(trimmedRealName);
+
+  if (trimmedDisplayName.length > MAX_DISPLAY_NAME) {
     throw new ValidationError(`Display name must be ${MAX_DISPLAY_NAME} characters or fewer.`);
   }
+  if (trimmedDisplayName !== trimmedRealName) {
+    validateDisplayNameSurname(trimmedDisplayName, trimmedRealName);
+  }
+
   if (!trimmedEmail) {
     throw new ValidationError('Email address is required.');
   }
@@ -132,7 +191,7 @@ async function registerMember(
   }
 
   const id = `member_${randomUUID().replace(/-/g, '').slice(0, 24)}`;
-  const slug = generateUniqueSlug(trimmedName);
+  const slug = generateUniqueSlug(trimmedDisplayName);
   const hash = await argon2.hash(password);
   const now = new Date().toISOString();
 
@@ -144,14 +203,14 @@ async function registerMember(
     now,   // email_verified_at (auto-verify in dev)
     hash,
     now,   // password_changed_at
-    trimmedName,     // real_name
-    trimmedName,     // display_name
-    trimmedName.toLowerCase(), // display_name_normalized
+    trimmedRealName,                    // real_name
+    trimmedDisplayName,                 // display_name
+    trimmedDisplayName.toLowerCase(),   // display_name_normalized
     now,   // created_at
     now,   // updated_at
   );
 
-  return { id, slug, displayName: trimmedName, isAdmin: 0 };
+  return { id, slug, displayName: trimmedDisplayName, isAdmin: 0 };
 }
 
 /**

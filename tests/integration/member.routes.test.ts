@@ -224,6 +224,25 @@ describe('POST /members/:memberKey/edit — save profile', () => {
     expect(res.text).toContain('1000 characters');
   });
 
+  it('invalid emailVisibility value is silently coerced to private — no 422', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post(`/members/${OWN_SLUG}/edit`)
+      .set('Cookie', ownCookie())
+      .type('form')
+      .send({
+        displayName:     'Test Member',
+        bio:             '',
+        city:            '',
+        region:          '',
+        country:         '',
+        phone:           '',
+        emailVisibility: 'bad-value',
+      });
+    // Service coerces bad visibility to 'private' — no validation error.
+    expect(res.status).toBe(302);
+  });
+
   it('valid input → 302 redirect to own profile', async () => {
     const app = createApp();
     const res = await request(app)
@@ -240,26 +259,8 @@ describe('POST /members/:memberKey/edit — save profile', () => {
         emailVisibility: 'members',
       });
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe(`/members/${OWN_SLUG}`);
-  });
-
-  it('invalid emailVisibility value is silently coerced to private — no 422', async () => {
-    const app = createApp();
-    const res = await request(app)
-      .post(`/members/${OWN_SLUG}/edit`)
-      .set('Cookie', ownCookie())
-      .type('form')
-      .send({
-        displayName:     'Updated Name',
-        bio:             '',
-        city:            '',
-        region:          '',
-        country:         '',
-        phone:           '',
-        emailVisibility: 'bad-value',
-      });
-    // Service coerces bad visibility to 'private' — no validation error.
-    expect(res.status).toBe(302);
+    // Display name changed so slug is regenerated.
+    expect(res.headers.location).toBe('/members/updated_name');
   });
 });
 

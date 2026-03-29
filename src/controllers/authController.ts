@@ -93,8 +93,8 @@ function getRegister(req: Request, res: Response): void {
 }
 
 async function postRegister(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { displayName, email, password, confirmPassword } = req.body as {
-    displayName?: string; email?: string; password?: string; confirmPassword?: string;
+  const { realName, displayName, email, password, confirmPassword } = req.body as {
+    realName?: string; displayName?: string; email?: string; password?: string; confirmPassword?: string;
   };
 
   const renderError = (msg: string) => {
@@ -103,6 +103,7 @@ async function postRegister(req: Request, res: Response, next: NextFunction): Pr
       page: { sectionKey: '', pageKey: 'register', title: 'Create an IFPA Account' },
       content: {
         error: msg,
+        realName: realName ?? '',
         displayName: displayName ?? '',
         email: email ?? '',
       },
@@ -114,6 +115,7 @@ async function postRegister(req: Request, res: Response, next: NextFunction): Pr
       email ?? '',
       password ?? '',
       confirmPassword ?? '',
+      realName ?? '',
       displayName ?? '',
     );
 
