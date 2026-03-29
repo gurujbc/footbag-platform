@@ -81,9 +81,16 @@ def strip_redundant_suffix(slug: str) -> str:
     return slug
 
 
+def _clean_club_name(name: str) -> str:
+    """Strip parenthetical abbreviations and leading articles before slugifying."""
+    name = re.sub(r"\s*\([^)]*\)\s*", " ", name)  # strip (AFFC), (e.V.), etc.
+    name = re.sub(r"^the\s+", "", name, flags=re.IGNORECASE)  # strip leading "The"
+    return name.strip()
+
+
 def make_tag_normalized(name: str, country: str, city: str, seen: set[str]) -> str:
     """Generate a unique #club_{slug} tag using name, adding country/city only on collision."""
-    name_slug = strip_redundant_suffix(slugify(name))
+    name_slug = strip_redundant_suffix(slugify(_clean_club_name(name)))
     country_slug = slugify(country)
     city_slug = slugify(city)
 

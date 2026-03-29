@@ -202,8 +202,11 @@ def main() -> None:
 
             year = (row.get("year") or "").strip()
             slug = (row.get("event_slug") or "").strip().lower().replace(" ", "_") or event_key.lower().replace("-", "_")
-            # Strip trailing _{year} from slug — many slugs were generated from event
-            # names that already contain the year, so the prefix would double it.
+            # Strip leading or trailing year from slug — many slugs were generated
+            # from event names that already contain the year, so the
+            # #event_{year}_ prefix would double it.
+            if year and slug.startswith(f"{year}_"):
+                slug = slug[len(f"{year}_"):]
             if year and slug.endswith(f"_{year}"):
                 slug = slug[: -len(f"_{year}")]
             # Canonical platform format: #event_{year}_{slug}
