@@ -3,7 +3,7 @@
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
-    <p>{{content.event.city}}{{#if content.event.region}}, {{content.event.region}}{{/if}}, {{content.event.country}} &middot; {{formatDate content.event.startDate}}{{#unless (eq content.event.startDate content.event.endDate)}} – {{formatDate content.event.endDate}}{{/unless}}</p>
+    <p>{{formatLocation content.event.city content.event.region content.event.country}} &middot; {{formatDate content.event.startDate}}{{#unless (eq content.event.startDate content.event.endDate)}} – {{formatDate content.event.endDate}}{{/unless}}</p>
   </div>
 </div>
 
@@ -15,7 +15,7 @@
       <div class="event-header">
         <div class="event-meta-row">
           <span>&#128197; {{formatDate content.event.startDate}}{{#unless (eq content.event.startDate content.event.endDate)}} – {{formatDate content.event.endDate}}{{/unless}}</span>
-          <span>&#128205; {{content.event.city}}{{#if content.event.region}}, {{content.event.region}}{{/if}}, {{content.event.country}}</span>
+          <span>&#128205; {{formatLocation content.event.city content.event.region content.event.country}}</span>
           {{#if content.event.hostClub}}
             <span>&#127968; {{content.event.hostClub}}</span>
           {{/if}}

@@ -1761,7 +1761,8 @@ CREATE TABLE historical_persons (
   signature_trick_2    TEXT,
   signature_trick_3    TEXT,
   notes                TEXT,
-  source               TEXT
+  source               TEXT,
+  source_scope         TEXT
 );
 
 -- Participants (members or named non-members) for a single result entry.

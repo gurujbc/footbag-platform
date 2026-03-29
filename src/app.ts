@@ -87,7 +87,17 @@ export function createApp(): express.Application {
           const year  = parts[0];
           const month = parseInt(parts[1], 10);
           const day   = parseInt(parts[2], 10);
+          if (!parts[1]) return year;
+          if (!parts[2] || isNaN(day)) return `${months[month - 1]} ${year}`;
           return `${day} ${months[month - 1]} ${year}`;
+        },
+        formatLocation: (city: unknown, region: unknown, country: unknown) => {
+          const c = typeof city === 'string' ? city.trim() : '';
+          const r = typeof region === 'string' ? region.trim() : '';
+          const co = typeof country === 'string' ? country.trim() : '';
+          if (!c && (!co || co.toLowerCase() === 'unknown')) return 'Location under investigation';
+          const parts = [c, r, co].filter(Boolean);
+          return parts.join(', ');
         },
         yearFromDate: (iso: string) => String(iso).split('-')[0],
       },

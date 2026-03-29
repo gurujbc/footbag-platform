@@ -379,7 +379,7 @@ export class EventService {
   listPublicArchiveYears(): number[] {
     return runSqliteRead('listPublicArchiveYears', () => {
       const rows = publicEvents.listArchiveYears.all() as Array<{ archive_year: number }>;
-      return rows.map((row) => row.archive_year).filter((year) => year >= 1997);
+      return rows.map((row) => row.archive_year);
     });
   }
 

@@ -8,7 +8,7 @@
   </div>
   <div class="card-meta">
     <span>{{formatDate startDate}}{{#if endDate}} – {{formatDate endDate}}{{/if}}</span>
-    <span>{{city}}{{#if region}}, {{region}}{{/if}}, {{country}}</span>
+    <span>{{formatLocation city region country}}</span>
     {{#if hostClub}}<span>{{hostClub}}</span>{{/if}}
     {{#if registrationStatus}}<span>Registration: {{registrationStatus}}</span>{{/if}}
   </div>

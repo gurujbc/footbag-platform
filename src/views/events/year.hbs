@@ -33,7 +33,7 @@
             </div>
             <div class="event-list-meta">
               <span class="event-list-date">{{formatDate startDate}}{{#unless (eq startDate endDate)}} – {{formatDate endDate}}{{/unless}}</span>
-              <span class="event-list-location">{{city}}{{#if region}}, {{region}}{{/if}}, {{country}}</span>
+              <span class="event-list-location">{{formatLocation city region country}}</span>
             </div>
           </a>
         {{/each}}
