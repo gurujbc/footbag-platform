@@ -21,6 +21,9 @@ export function createApp(): express.Application {
   // process.cwd() resolves correctly from both tsx (dev) and dist/ (prod).
   app.use(express.static(path.join(process.cwd(), 'src', 'public')));
 
+  // ── Media uploads (avatars, photos) ─────────────────────────────────────
+  app.use('/media', express.static(config.mediaDir, { maxAge: '7d' }));
+
   // ── View engine ──────────────────────────────────────────────────────────
   const COUNTRY_FLAGS: Record<string, string> = {
     'Argentina':        '🇦🇷',
@@ -106,6 +109,7 @@ export function createApp(): express.Application {
     res.locals.currentSection = req.path === '/' ? 'home'
       : req.path.startsWith('/events') ? 'events'
       : req.path.startsWith('/members') ? 'members'
+      : req.path.startsWith('/history') ? 'history'
       : req.path.startsWith('/clubs') ? 'clubs'
       : req.path.startsWith('/hof') ? 'hof'
       : '';

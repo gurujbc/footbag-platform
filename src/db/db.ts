@@ -27,8 +27,10 @@ import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabas
  * - GET /events
  * - GET /events/year/:year
  * - GET /events/:eventKey
- * - GET /members
- * - GET /members/:personId
+ * - GET /history
+ * - GET /history/:personId
+ * - GET /members/:memberId
+ * - GET /members/:memberId/edit + POST
  * - GET /health/live   (process-only; this file does not participate)
  * - GET /health/ready  (minimal DB-readiness input only)
  *
@@ -134,6 +136,7 @@ export interface PublicEventResultRow {
   participant_row_id: string;
   participant_order: number;
   member_id: string | null;
+  participant_member_slug: string | null;
   participant_display_name: string;
   participant_historical_person_id: string | null;
 }
@@ -375,6 +378,7 @@ export const publicEvents = {
       erp.id AS participant_row_id,
       erp.participant_order,
       erp.member_id,
+      m_linked.slug AS participant_member_slug,
       erp.display_name AS participant_display_name,
       erp.historical_person_id AS participant_historical_person_id
     FROM events AS e
@@ -384,6 +388,8 @@ export const publicEvents = {
       ON ed.id = ere.discipline_id
     INNER JOIN event_result_entry_participants AS erp
       ON erp.result_entry_id = ere.id
+    LEFT JOIN members AS m_linked
+      ON m_linked.id = erp.member_id
     WHERE
       e.id = ?
       AND e.status IN (${PUBLIC_EVENT_DETAIL_VISIBLE_STATUS_SQL})
@@ -407,7 +413,14 @@ export const publicPlayers = {
       COUNT(DISTINCT ere.event_id)       AS event_count,
       COUNT(DISTINCT erp.result_entry_id) AS placement_count,
       hp.bap_member,
-      hp.fbhof_member
+      hp.fbhof_member,
+      (SELECT m.slug
+       FROM event_result_entry_participants AS erp2
+       INNER JOIN members AS m ON m.id = erp2.member_id
+       WHERE erp2.historical_person_id = hp.person_id
+         AND erp2.member_id IS NOT NULL
+       LIMIT 1
+      ) AS linked_member_slug
     FROM historical_persons AS hp
     INNER JOIN event_result_entry_participants AS erp
       ON erp.historical_person_id = hp.person_id
@@ -479,6 +492,22 @@ export const publicPlayers = {
       ere.placement ASC,
       erp_co.participant_order ASC
   `),
+  findLinkedMemberSlug: db.prepare(`
+    SELECT m.slug
+    FROM event_result_entry_participants AS erp
+    INNER JOIN members AS m ON m.id = erp.member_id
+    WHERE erp.historical_person_id = ?
+      AND erp.member_id IS NOT NULL
+    LIMIT 1
+  `),
+
+  findLinkedPersonId: db.prepare(`
+    SELECT erp.historical_person_id AS person_id
+    FROM event_result_entry_participants AS erp
+    WHERE erp.member_id = ?
+      AND erp.historical_person_id IS NOT NULL
+    LIMIT 1
+  `),
 } as const;
 
 export const clubs = {
@@ -548,6 +577,228 @@ export const health = {
     SELECT 1 AS is_ready
   `),
 } as const;
+
+export interface MemberAuthRow {
+  id: string;
+  slug: string | null;
+  display_name: string;
+  password_hash: string;
+  password_version: number;
+  is_admin: number;
+}
+
+export interface MemberProfileRow {
+  id: string;
+  slug: string | null;
+  display_name: string;
+  bio: string;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  phone: string | null;
+  email_visibility: string;
+  is_admin: number;
+  is_hof: number;
+  is_bap: number;
+  avatar_thumb_key: string | null;
+}
+
+export interface MemberResultRow {
+  event_id: string;
+  event_title: string;
+  start_date: string;
+  city: string;
+  event_country: string;
+  event_tag_normalized: string;
+  discipline_name: string | null;
+  placement: number;
+  score_text: string | null;
+}
+
+export const account = {
+  findMemberBySlug: db.prepare(`
+    SELECT
+      m.id,
+      m.slug,
+      m.display_name,
+      m.bio,
+      m.city,
+      m.region,
+      m.country,
+      m.phone,
+      m.email_visibility,
+      m.is_admin,
+      m.is_hof,
+      m.is_bap,
+      mi.s3_key_thumb AS avatar_thumb_key
+    FROM members_active AS m
+    LEFT JOIN media_items AS mi
+      ON mi.id = m.avatar_media_id
+    WHERE m.slug = ?
+      AND m.personal_data_purged_at IS NULL
+  `),
+
+  findMemberById: db.prepare(`
+    SELECT
+      m.id,
+      m.slug,
+      m.display_name,
+      m.bio,
+      m.city,
+      m.region,
+      m.country,
+      m.phone,
+      m.email_visibility,
+      m.is_admin,
+      m.is_hof,
+      m.is_bap,
+      mi.s3_key_thumb AS avatar_thumb_key
+    FROM members_active AS m
+    LEFT JOIN media_items AS mi
+      ON mi.id = m.avatar_media_id
+    WHERE m.id = ?
+      AND m.personal_data_purged_at IS NULL
+  `),
+
+  listResultsByMemberId: db.prepare(`
+    SELECT
+      e.id                        AS event_id,
+      e.title                     AS event_title,
+      e.start_date,
+      e.city,
+      e.country                   AS event_country,
+      t.tag_normalized            AS event_tag_normalized,
+      ed.name                     AS discipline_name,
+      ere.placement,
+      ere.score_text
+    FROM event_result_entry_participants AS erp
+    JOIN event_result_entries AS ere
+      ON ere.id = erp.result_entry_id
+    JOIN events AS e
+      ON e.id = ere.event_id
+    JOIN tags AS t
+      ON t.id = e.hashtag_tag_id
+    LEFT JOIN event_disciplines AS ed
+      ON ed.id = ere.discipline_id
+    WHERE erp.member_id = ?
+    ORDER BY
+      e.start_date DESC,
+      COALESCE(ed.sort_order, 0) ASC,
+      ere.placement ASC
+  `),
+
+  updateMemberProfile: db.prepare(`
+    UPDATE members
+    SET
+      display_name            = ?,
+      display_name_normalized = ?,
+      bio                     = ?,
+      city                    = ?,
+      region                  = ?,
+      country                 = ?,
+      phone                   = ?,
+      email_visibility        = ?,
+      updated_at              = ?,
+      updated_by              = 'member',
+      version                 = version + 1
+    WHERE id = ?
+  `),
+} as const;
+
+export const registration = {
+  checkEmailExists: db.prepare(`
+    SELECT 1 AS exists_flag
+    FROM members
+    WHERE login_email_normalized = ?
+      AND personal_data_purged_at IS NULL
+  `),
+
+  checkSlugExists: db.prepare(`
+    SELECT 1 AS exists_flag
+    FROM members
+    WHERE slug = ?
+  `),
+
+  insertMember: db.prepare(`
+    INSERT INTO members (
+      id, slug,
+      login_email, login_email_normalized, email_verified_at,
+      password_hash, password_changed_at,
+      real_name, display_name, display_name_normalized,
+      searchable,
+      created_at, created_by, updated_at, updated_by, version
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 'registration', ?, 'registration', 1)
+  `),
+} as const;
+
+export const auth = {
+  findMemberByEmail: db.prepare(`
+    SELECT
+      m.id,
+      m.slug,
+      m.display_name,
+      m.password_hash,
+      m.password_version,
+      m.is_admin
+    FROM members_active AS m
+    WHERE
+      m.login_email_normalized = ?
+      AND m.email_verified_at IS NOT NULL
+      AND m.is_deceased = 0
+  `),
+
+  updateMemberLastLogin: db.prepare(`
+    UPDATE members
+    SET
+      last_login_at = ?,
+      updated_at    = ?,
+      updated_by    = 'system',
+      version       = version + 1
+    WHERE id = ?
+  `),
+} as const;
+
+export const media = {
+  insertMediaItem: db.prepare(`
+    INSERT INTO media_items (
+      id, created_at, created_by, updated_at, updated_by, version,
+      uploader_member_id, gallery_id, media_type, is_avatar, caption, uploaded_at,
+      s3_key_thumb, s3_key_display, width_px, height_px
+    ) VALUES (?, ?, 'member', ?, 'member', 1, ?, NULL, 'photo', 1, NULL, ?, ?, ?, ?, ?)
+  `),
+
+  setMemberAvatar: db.prepare(`
+    UPDATE members
+    SET avatar_media_id = ?, updated_at = ?, updated_by = 'member', version = version + 1
+    WHERE id = ?
+  `),
+
+  getExistingAvatarMediaId: db.prepare(`
+    SELECT id, s3_key_thumb, s3_key_display
+    FROM media_items
+    WHERE uploader_member_id = ? AND is_avatar = 1
+  `),
+
+  deleteMediaItem: db.prepare(`
+    DELETE FROM media_items WHERE id = ?
+  `),
+
+  countRecentAvatarUploads: db.prepare(`
+    SELECT COUNT(*) AS upload_count
+    FROM media_items
+    WHERE uploader_member_id = ? AND is_avatar = 1 AND uploaded_at > ?
+  `),
+} as const;
+
+export interface ExistingAvatarRow {
+  id: string;
+  s3_key_thumb: string;
+  s3_key_display: string;
+}
+
+export interface AvatarUploadCountRow {
+  upload_count: number;
+}
 
 let helperTransactionOpen = false;
 

@@ -81,7 +81,7 @@ rsync -av --delete -e "ssh" \
 
 echo "==> Promoting release (env and live DB preserved)..."
 ssh "$REMOTE" "
-  printf '%s\n' $PASS_Q | sudo -S -p '' rsync -a --delete --exclude env --exclude footbag.db ~/footbag-release/ /srv/footbag/
+  printf '%s\n' $PASS_Q | sudo -S -p '' rsync -a --delete --exclude env --exclude footbag.db --exclude media ~/footbag-release/ /srv/footbag/
   printf '%s\n' $PASS_Q | sudo -S -p '' chown -R root:root /srv/footbag
 "
 

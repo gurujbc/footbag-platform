@@ -14,9 +14,21 @@ This file — not auto memory — is the source of truth for current slice statu
 
 ## Active slice now
 
-### Sprint: Club + members ungating + world records
+### Sprint: Member Auth + Profile MVP
 
-**Status:** Clubs sprint is almost complete. Site is live with legacy (dirty) club data, initial world map, and home/clubs/members pages. Remaining items below.
+See full item descriptions in the "Next sprint" section below (now active).
+
+**Status:** Items A, B, D, E, F, G complete. Item C (legacy account claim) is the one remaining item.
+
+**Routing (implemented):** Member profiles live at `/members/:memberId/*`. Historical persons live at `/history/*` (not in primary nav; accessed via event-result participant links only). Account creation at `/register`. The item descriptions below reflect the implemented routes.
+
+Both remaining clubs-sprint items are blocked on James (members ungating: data review; world records: records CSV). Clubs sprint archived below.
+
+---
+
+### Archived sprint: Club + members ungating + world records
+
+**Status:** Clubs work complete. Two items remain blocked on James; archived pending unblock.
 
 **Completed this sprint:**
 - Club seed extraction: `legacy_data/scripts/extract_clubs.py` + `load_clubs_seed.py`; `scripts/reset-local-db.sh` updated
@@ -42,6 +54,8 @@ When unblocked:
 - Fully clean and integrate club-member data
 
 ### Item 2 — World records page
+
+**Blocked on:** James providing the records CSV file.
 
 Route: `/records` (new public page). Sequencing: extend-service-contract → add-public-page → write-tests → doc-sync
 
@@ -76,106 +90,123 @@ Key deliverables: clubs page with real legacy data (world map, country pages, de
 
 ## Next sprint (planned, not yet active)
 
-### Sprint: Member Auth + Profile MVP
+### Sprint: (pending — Member Auth is now active; see above)
+
+---
+
+### Sprint: Member Auth + Profile MVP (NOW ACTIVE)
 
 **Goal:** Replace the single-credential stub with multi-user DB-backed login. Seed real test member accounts (David Leberknight, James Leberknight, Julie Symons). Give logged-in members a navigable account area with a real profile view/edit and stub pages for all future member features. Make the distinction between historical persons and active member accounts explicit in the UI.
 
 **Pre-implementation gate:** Read `docs/GOVERNANCE.md` before any work touching auth, members, or historical-persons visibility.
 
 **Decisions for this sprint:**
-- Auth dual-path: check `members` table first by email (argon2id hash); fall through to env-var stub if no match. Stub user (`footbag`) is unchanged; logs in with `footbag` in the email field, fails DB lookup, falls through to stub check.
-- Login form field renamed from `username` to `email`. Real member login is email-only.
-- Schema change: add `legacy_claim_tokens` table. Handled via DB rebuild (no migration runner).
-- Seed passwords via env vars (dev default documented in `.env.example`, never in any checked-in file); seed script marks accounts as `email_verified_at` so no email flow is needed.
-- Seed also creates state-2 placeholder `members` rows for David, James, Julie — needed for the claim flow to find and merge.
-- Avatar: show on profile if `avatar_media_id` is set; upload UI is a stub. No S3/media pipeline work this sprint.
-- Historical persons page (`/members`) remains showing `historical_persons` data; add a clear UI label distinguishing legacy records from authenticated accounts.
-- Claim email deviation: in non-production, the claim link is shown on-screen (email outbox deferred). See accepted deviations.
+- Auth is DB-backed via `identityAccessService.verifyMemberCredentials`. Env-var stub fallback remains for dev convenience.
+- Login form uses `email` field. The `login_email` column accepts any string; real members use email addresses.
+- **Known deviation:** "Footbag Hacky" is a seeded stub account with `login_email = 'footbag'` (not a real email). Preserves existing dev login path through real DB-backed auth. Unblock: remove when no longer needed for development.
+- Schema: `account_tokens` with `token_type = 'account_claim'` handles claim tokens. No new table needed.
+- Seed password via `STUB_PASSWORD` env var (never in checked-in files).
+- Account creation uses `/register` flow (Item G); no batch seed of named accounts.
+- Avatar: upload implemented with local photo storage (Busboy streaming, 5 MB limit). No S3/media pipeline this sprint.
+- Historical persons live at `/history/*` with clear "Historical Records" labeling.
+- `/members/:memberId` has conditional visibility: public read-only for HoF/BAP members; login required for all others.
+- Claim email deviation: in non-production, the claim link will be shown on-screen (email outbox deferred). See accepted deviations.
 
 **Items:**
 
-#### Item A — DB-backed multi-user auth
+#### Item A — DB-backed multi-user auth ✓ DONE
 
-- Add `argon2` dependency for `argon2id` hashing
-- `src/db/db.ts` new statements: `findMemberByEmail(email)`, `updateMemberLastLogin(memberId)`
-- `IdentityAccessService` (new or extend): `verifyMemberCredentials(email, password)` — returns member row or null
-- Update `authController.postLogin`: check DB first, fall through to env-var stub if no DB match
-- Update `SessionUser`: add `displayName` field so nav can show the member's name
-- Integration tests: login with real DB credentials succeeds; bad password fails; stub user still works
+- `argon2` for `argon2id` hashing
+- `src/db/db.ts` statements: `findMemberByEmail(email)`, `updateMemberLastLogin(memberId)`
+- `src/services/identityAccessService.ts`: `verifyMemberCredentials(email, password)` returns member row or null
+- `authController.postLogin`: DB-first verification, env-var stub fallback for dev
+- Session cookie carries `userId`, `role`, `displayName`, `slug`
+- Integration tests: login with DB credentials, bad password, stub user fallback
 
-#### Item B — Test seed data
+#### Item B — Test seed data ✓ DONE
 
-- `legacy_data/scripts/seed_members.py` (new): creates real `members` rows for David Leberknight, James Leberknight, Julie Symons; also creates state-2 placeholder rows for their legacy identities (no credentials, legacy fields set) for the claim flow to find and merge; env-var stub remains unchanged
-- Passwords from env vars (`SEED_PASSWORD_DAVID`, etc.); `.env.example` documents the var names
-- Seed accounts: `email_verified_at` set, `searchable = 1`, Tier 0 initially; can manually set `is_admin = 1` for David via script flag
-- Wire into `scripts/reset-local-db.sh`
+- `legacy_data/scripts/seed_members.py`: creates the Footbag Hacky stub account (`login_email = 'footbag'`); argon2 parameters match the Node.js `argon2` package defaults
+- Password from `STUB_PASSWORD` env var; `--allow-missing-passwords` flag for local dev
+- Wired into `scripts/reset-local-db.sh`
+- Other member accounts are created via the `/register` flow (Item G)
 
 #### Item C — Legacy account claim (real partial implementation)
 
-Route: `/account/claim/*`. Sequencing: extend-service-contract → add-public-page → write-tests.
+Route prefix: `/history/claim` (not `/account/claim` — see routing design change note above). Sequencing: extend-service-contract → add-public-page → write-tests.
 
 Follows `M_Claim_Legacy_Account` user story in full except the email send step (see deviation below).
 
-- New `legacy_claim_tokens` table in `database/schema.sql` (handled via DB rebuild)
-- `legacyClaim` DB statement group: find placeholder by legacy_member_id / legacy_user_id / legacy_email; create/find/consume token; atomic merge + placeholder delete
+- No new table needed: `account_tokens` (already in schema) handles claim tokens via `token_type = 'account_claim'` and `target_member_id` (the imported placeholder row). See `docs/DATA_MODEL.md §4.19`.
+- `legacyClaim` DB statement group targeting `account_tokens`: find placeholder by legacy_member_id / legacy_user_id / legacy_email; create/find/consume token (insert into `account_tokens` with `token_type = 'account_claim'`); atomic merge + placeholder delete
 - `identityAccessService`: `initiateClaim`, `validateClaimToken`, `completeClaim`
-- Routes: `GET /account/claim`, `POST /account/claim`, `GET /account/claim/verify/:token`, `POST /account/claim/verify/:token`
+- Routes: `GET /history/claim`, `POST /history/claim`, `GET /history/claim/verify/:token`, `POST /history/claim/verify/:token`
 - Templates: claim form, claim-sent page (with dev claim link), claim-verify confirmation
 - Integration tests: lookup found/not-found (enumeration-safe), token validation, wrong-member check, confirm merge + placeholder deleted
 
 **Accepted deviation:** claim link is shown on-screen in non-production (email outbox deferred). Unblock: Phase 4-D email outbox activation.
 **Out of scope this sprint:** `M_Review_Legacy_Club_Data_During_Claim` (no provisional club leadership data). Unblock: club-member leadership import.
 
-#### Item D — Member account area (routes + nav)
-
-All routes require auth. Sequencing: extend-service-contract → add-public-page → write-tests.
+#### Item D — Member account area (routes + nav) ✓ DONE
 
 **Real (full implementation):**
-- `GET /account` — redirect to `/account/profile`
-- `GET /account/profile` — view own profile: avatar placeholder, display name, bio, city/country, tier badge stub
-- `GET /account/profile/edit` + `POST /account/profile/edit` — edit bio, display name, city, region, country, phone, email visibility toggle
+- `GET /members` (auth-gated) — redirect to `/members/:slug` (own profile)
+- `GET /members/:memberId` — own profile (auth required) or public read-only for HoF/BAP members; non-HoF/BAP visitors redirected to login
+- `GET /members/:memberId/edit` + `POST /members/:memberId/edit` (auth, own-profile only) — edit display name, bio, city, region, country, phone, email visibility
+- `GET /members/:memberId/avatar` + `POST /members/:memberId/avatar` (auth, own-profile only) — avatar upload (Busboy streaming, 5 MB limit, local photo storage)
 
-**Stub pages (placeholder "coming soon" template, no backend):**
-- `GET /account/avatar` — Upload Avatar
-- `GET /account/media` — Share Media
-- `GET /account/settings` — Account Settings
-- `GET /account/password` — Change Password
-- `GET /account/download` — Download My Data
-- `GET /account/delete` — Delete Account
+**Stub pages (placeholder "coming soon" template, own-profile only):**
+- `GET /members/:memberId/media` — Share Media
+- `GET /members/:memberId/settings` — Account Settings
+- `GET /members/:memberId/password` — Change Password
+- `GET /members/:memberId/download` — Download My Data
+- `GET /members/:memberId/delete` — Delete Account
 
-**Nav:** Add "My Account" link in `main.hbs` when `isAuthenticated`; show member display name; links to profile, claim, and stub sections
+**Nav:** "My Account" link in `main.hbs` when `isAuthenticated`; shows member display name
 
-#### Item E — Historical persons page label
+#### Item E — Historical persons page label ✓ DONE
 
 - Add a visible "Historical Records" label / explainer to `/members` index and detail pages
 - Short text: these are legacy imported player records, not current member accounts
 - No data or routing changes; templates only
 
-#### Item F — Integration tests
+#### Item F — Integration tests ✓ DONE
 
-- Login with each seeded test account succeeds
-- Login with wrong password returns error
-- Stub user login still works
-- `GET /account/profile` returns 200 for authenticated user, 302 redirect for visitor
-- `POST /account/profile/edit` saves bio change, redirects back to profile
-- Stub pages return 200 for authenticated users
+- `tests/integration/auth.routes.test.ts` — login with DB credentials, bad password, stub fallback
+- `tests/integration/register.routes.test.ts` — registration, validation, email conflict
+- `tests/integration/member.routes.test.ts` — profile view/edit, auth gates, cross-member guards
+- `tests/integration/avatar.routes.test.ts` — avatar upload, validation, size limits
+- `tests/integration/clubs-auth.routes.test.ts` — clubs routes
+- `tests/integration/app.routes.test.ts` — health, home, clubs, hof, events, login, logout, auth redirects, history, 404
+- Total: 148 tests across 6 files
+
+#### Item G — Account registration ✓ DONE
+
+Implemented during the sprint but not originally planned as a separate item.
+
+- `GET /register` — registration form (redirects to profile if already authenticated)
+- `POST /register` — creates member account via `identityAccessService.registerMember()`; validates display name, email uniqueness, password match/strength; auto-logs in on success
+- `src/views/auth/register.hbs` — registration template
+- Integration tests in `tests/integration/register.routes.test.ts`
 
 **Sprint verification checklist:**
-1. `bash scripts/reset-local-db.sh` — completes, seeds test members
-2. `npm test` — all tests pass
-3. Log in as test member → see profile with display name → edit bio → save → see change
-4. Log in as stub admin → still works
-5. Visit `/members` → see "Historical Records" label
+1. `bash scripts/reset-local-db.sh` — completes, seeds Footbag Hacky account
+2. `npm test` — all 148 tests pass (6 files)
+3. `npm run build` — clean TypeScript compilation
+4. Log in as Footbag Hacky → see profile → edit bio → save → see change
+5. Register a new account → auto-login → see profile
+6. Visit `/history` → see "Historical Records" label
+7. Visit `/members/:memberId` for a HoF/BAP member without auth → see public profile
 
 **Out of scope:**
 - Email verification flow
 - Password reset / change password (stub page only)
-- Real avatar upload
+- S3 media pipeline (avatar upload uses local photo storage only)
 - Account deletion, data export (stub pages only)
 - `M_Review_Legacy_Club_Data_During_Claim` sub-flow (no provisional club leadership rows exist yet)
-- Member search
+- Public member directory / search
 - Membership tiers / dues
 - Email outbox activation (claim link shown on-screen in dev as accepted deviation)
+- Auth hardening (JWT, CSRF, session invalidation) -- Phase 4-A'
 
 ---
 
@@ -206,18 +237,25 @@ All routes require auth. Sequencing: extend-service-contract → add-public-page
 The current deployed public slice is the baseline, not a throwaway prototype.
 
 Current implemented public routes:
-- `/`
+- `/` — home page
 - `/clubs` — real data; SVG world map (JS-enhanced, degrades to list, hidden mobile); country index
 - `/clubs/:slug` — handles both country pages (clubs grouped by region) and individual club detail pages
-- `/hof` (first-class Hall of Fame landing page for the current slice; links out to the current standalone HoF site)
-- `/events`
-- `/events/year/:year`
-- `/events/:eventKey`
-- `/members` (auth-gated for now — Tier 1 historical data per GOVERNANCE.md §4, but kept gated temporarily: the current full-member-list render is a useful auth-path test and guards against exposing an unreviewed list; remove gating once member-list presentation is reviewed and scoped correctly)
-- `/members/:personId` (auth-gated for the same reason as above)
-- `GET /login` (auth stub login form)
-- `POST /login` (auth stub login handler — sets session cookie, redirects to `/members`)
-- `POST /logout` (clears session cookie, redirects to `/`)
+- `/hof` — Hall of Fame landing page; links out to standalone HoF site
+- `/events` — event listing
+- `/events/year/:year` — year archive
+- `/events/:eventKey` — event detail
+- `/history` — historical persons index ("Historical Records" label)
+- `/history/:personId` — historical person detail
+- `/members` (auth-gated) — redirects to own profile
+- `/members/:memberId` — own profile (auth required) or public read-only for HoF/BAP members; non-HoF/BAP visitors redirected to login
+- `/members/:memberId/edit` (auth, own-profile only) — profile editor
+- `/members/:memberId/avatar` (auth, own-profile only) — avatar upload
+- `/members/:memberId/:section` (auth, own-profile only) — stub pages (media, settings, password, download, delete)
+- `GET /login` — DB-backed login form
+- `POST /login` — DB-first auth with env-var fallback; sets session cookie
+- `GET /register` — account creation form
+- `POST /register` — creates member account, auto-logs in
+- `POST /logout` — clears session cookie, redirects to referrer or `/`
 - `/health/live`
 - `/health/ready`
 
@@ -236,8 +274,14 @@ Current implementation constraints:
 Current verification baseline:
 - canonical verification commands: `npm test` and `npm run build`
 - route and integration tests are the first verification path
-- a single integration test file (`tests/integration/app.routes.test.ts`) covers: health, home, clubs, hof, events (list/year/detail), login, logout, auth redirects, members index, members detail, catch-all 404
-- not yet covered: 500 error handler, world-record routes (this sprint), honor-roll routes (deferred), worker behavior, browser/UI verification
+- 148 tests across 6 files:
+  - `app.routes.test.ts` — health, home, clubs, hof, events (list/year/detail), login, logout, auth redirects, history, 404
+  - `auth.routes.test.ts` — DB-backed login, bad password, stub fallback
+  - `register.routes.test.ts` — registration, validation, email conflicts
+  - `member.routes.test.ts` — profile view/edit, auth gates, cross-member guards, public HoF/BAP profiles
+  - `avatar.routes.test.ts` — avatar upload, validation, size limits
+  - `clubs-auth.routes.test.ts` — clubs routes
+- not yet covered: 500 error handler, world-record routes, honor-roll routes (deferred), worker behavior, legacy claim flow, browser/UI verification
 - browser verification is explicit-human-request-only
 
 ## Accepted temporary deviations
@@ -246,11 +290,11 @@ These are known, intentional shortcuts. Each has an explicit unblock condition. 
 For current implementation work, this plan governs current scope.
 Long-term catalogs should preserve target design; current-slice exceptions belong here, not as scattered caveats throughout every cataloged page.
 
-1. **Auth is a fake stub.** HMAC-signed cookie, env-backed credentials, no DB session check, no CSRF flow, no password-version or session-invalidation model. Mirrors the real auth path structurally. Unblock: replace with real JWT/DB auth (Phase 4) before member onboarding.
+1. **Auth is DB-backed but not hardened.** HMAC-signed cookie with DB-backed argon2 credential verification. Env-var stub fallback remains for dev. No CSRF flow, no password-version or session-invalidation model, no JWT. Unblock: replace with real JWT/DB sessions, add CSRF, session invalidation before production member onboarding.
 
-2. **Members routes are temporarily auth-gated.** `/members` and `/members/:personId` are Tier 1 public historical-person data per `docs/GOVERNANCE.md §4–5` and should eventually be public. Currently gated to protect an unreviewed public presentation and to exercise the auth path. Unblock: review member-list presentation scope, then remove `requireAuth`.
+2. **Member profiles have conditional public visibility.** `/members/:memberId` is publicly visible for HoF/BAP members (read-only profile with competitive results). All other member profiles require authentication. `/members` (landing) is auth-gated and redirects to own profile. Historical persons live at `/history/*` (separate from member profiles). Unblock: finalize the privacy-safe public member discovery/search design.
 
-3. **The current `/members` full-list/filter surface is temporary.** The implemented page currently renders an authenticated full historical-record list with client-side filter/sort. This is a bootstrapping and review surface, not the final public member-directory/search design. Unblock: finalize the privacy-safe public member discovery/search design, then replace the current list/filter behavior accordingly.
+3. **No public member directory or search.** There is no public member listing page. `/members` redirects authenticated users to their own profile. Historical persons are browsable at `/history`. Unblock: design and implement a privacy-safe public member directory.
 
 4. **Worker has no real jobs.** `worker.ts` exits cleanly; the worker container is scaffolded only. No outbox, email, or background-job processing is active. Unblock: Phase 4 email outbox activation.
 
@@ -402,28 +446,32 @@ Size labels: S = small, M = medium, L = large.
 
 ---
 
-### Phase 4 — Auth foundation
+### Phase 4 — Auth hardening + email activation
 
-**Goal:** Members can register, log in, and claim legacy identities. Email delivery is operational.
+**Goal:** Harden auth (JWT, CSRF, session invalidation). Activate email delivery. Complete legacy claim flow. Enable password reset.
+
+**Already implemented (from Member Auth + Profile MVP sprint):**
+- ✓ 4-A (partial): DB-backed auth with argon2 password hashing, HMAC-signed session cookie. Not yet: JWT, per-request DB state check, CSRF, session invalidation.
+- ✓ 4-B (partial): `IdentityAccessService` with `verifyMemberCredentials`, `registerMember`. Not yet: password-version tracking, session invalidation on password change.
+- ✓ 4-C: Login, register, logout pages + controllers fully implemented and tested.
+- ✓ 4-F (partial): Legacy claim is the one remaining item in the current sprint. Service methods, routes, and templates not yet built.
+- ✓ 4-H (partial): 148 integration tests covering login, registration, member profiles. Not yet: claim flow, password reset, session invalidation.
 
 | # | Task | Size | Dependency |
 |---|------|------|-----------|
-| 4-A | Auth middleware: JWT cookie validation + per-request DB state check (see Design Decisions for cookie/session design) | L | — |
-| 4-B | `IdentityAccessService` bootstrap: registration, login, logout, password hashing | L | 4-A |
-| 4-C | Login / register / logout pages + controllers | M | 4-B |
-| 4-D | Email outbox worker: activate `worker.ts` stub for outbox_emails processing via SES | L | Phase 0 gate (SES configured), 4-B |
-| 4-E | Email verification flow: registration sends verification email, link activates account | M | 4-C, 4-D |
-| 4-F | Account claim flow: imported legacy person → authenticated member account linkage | M | 4-B, Phase 2 gate (persons imported) |
-| 4-G | Password reset flow: email-based reset using outbox worker | M | 4-D, 4-E |
-| 4-H | Auth integration tests: login, logout, registration, session validation, password reset | M | 4-A – 4-G |
+| 4-A' | Auth hardening: JWT cookie, per-request DB state check, CSRF protection, password-version session invalidation | L | — |
+| 4-D | Email outbox worker: activate `worker.ts` stub for outbox_emails processing via SES | L | Phase 0 gate (SES configured) |
+| 4-E | Email verification flow: registration sends verification email, link activates account | M | 4-D |
+| 4-F' | Legacy claim flow completion: routes, templates, service methods (see current sprint Item C) | M | — |
+| 4-G | Password reset flow: email-based reset using outbox worker | M | 4-D |
 
 **Notes:**
 - JWT sessions are NOT sufficient authority alone; current DB state must be checked on every request (see `PROJECT_SUMMARY_CONCISE.md` auth invariants).
 - Password changes must invalidate sessions via the password-version mechanism.
 - State-changing routes must follow documented CSRF / HTTP semantics patterns.
-- Do not begin organizer write flows or admin work queue until 4-A/4-B are solid and tested.
+- Do not begin organizer write flows or admin work queue until 4-A' is solid and tested.
 
-**Gate:** Members can register, verify email, log in, log out, and claim a legacy person identity. Password reset works end-to-end via email.
+**Gate:** Auth is hardened (JWT, CSRF, session invalidation). Members can verify email, claim legacy identities, and reset passwords via email.
 
 ---
 
@@ -479,8 +527,8 @@ Legacy data import directly affects the current public event/results surface and
 
 ## Open risks and decisions
 
-- Imported legacy identities may not cleanly map to future authenticated members; account-claim design is not final.
-- Password reset and account-claim semantics depend on that mapping.
+- Legacy claim flow (Item C) is the remaining sprint item; claim routes and service methods not yet built.
+- Password reset depends on email outbox activation (Phase 4-D).
 - Current readiness implementation is intentionally narrower than long-term docs.
 - Canonical docs remain broader than implemented code; phase planning must constantly separate implemented from intended.
 - Schema file is `database/schema.sql` (unversioned); seed pipeline runs via `scripts/reset-local-db.sh`.

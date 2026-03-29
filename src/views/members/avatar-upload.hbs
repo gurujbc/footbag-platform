@@ -1,0 +1,25 @@
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    {{#each navigation.contextLinks}}
+      <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
+    {{/each}}
+
+    {{#if content.error}}
+      <p class="form-error" role="alert">{{content.error}}</p>
+    {{/if}}
+
+    <form method="POST" enctype="multipart/form-data" class="avatar-upload-form">
+      <div class="form-field">
+        <label for="avatar">Select an image (JPEG or PNG, max 5 MB)</label>
+        <input type="file" id="avatar" name="avatar" accept="image/jpeg,image/png" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </section>
+</div>

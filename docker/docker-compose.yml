@@ -47,6 +47,8 @@ services:
       # Mount the local seed DB into the container read-write.
       # The app applies SQLite startup pragmas, so must be able to write..
       - ../database/footbag.db:/app/footbag.db:rw
+      # Local media uploads (avatars, photos).
+      - ../data/media:/app/data/media:rw
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health/live"]

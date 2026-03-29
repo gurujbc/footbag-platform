@@ -22,31 +22,36 @@ function uid(): string {
 
 export interface MemberOverrides {
   id?: string;
+  slug?: string;
   login_email?: string;
   real_name?: string;
   display_name?: string;
   city?: string;
   country?: string;
+  password_hash?: string;
+  email_verified_at?: string | null;
 }
 
 export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}): string {
   const id      = o.id            ?? `member-test-${uid()}`;
+  const slug    = o.slug          ?? `test_user_${uid()}`;
   const email   = o.login_email   ?? `test-${uid()}@example.com`;
   const name    = o.real_name     ?? 'Test User';
   const display = o.display_name  ?? name;
+  const emailVerifiedAt = o.email_verified_at !== undefined ? o.email_verified_at : TS;
   db.prepare(`
     INSERT INTO members (
-      id,
+      id, slug,
       login_email, login_email_normalized, email_verified_at,
       password_hash, password_changed_at,
       real_name, display_name, display_name_normalized,
       city, country,
       created_at, created_by, updated_at, updated_by, version
-    ) VALUES (?, ?, ?, ?, '[TEST_HASH]', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
   `).run(
-    id,
-    email, email.toLowerCase(), TS,
-    TS,
+    id, slug,
+    email, email.toLowerCase(), emailVerifiedAt,
+    o.password_hash ?? '[TEST_HASH]', TS,
     name, display, display.toLowerCase(),
     o.city ?? 'Testville', o.country ?? 'US',
     TS, SYS, TS, SYS,
@@ -285,6 +290,39 @@ export function insertLegacyPersonClubAffiliation(
     o.resolution_status            ?? 'confirmed_current',
     o.display_name                 ?? null,
     TS, SYS, TS, SYS,
+  );
+  return id;
+}
+
+// ── Media item ───────────────────────────────────────────────────────────────
+
+export interface MediaItemOverrides {
+  id?: string;
+  uploader_member_id: string;
+  is_avatar?: 0 | 1;
+  s3_key_thumb?: string;
+  s3_key_display?: string;
+  width_px?: number;
+  height_px?: number;
+}
+
+export function insertMediaItem(db: BetterSqlite3.Database, o: MediaItemOverrides): string {
+  const id = o.id ?? `media-test-${uid()}`;
+  db.prepare(`
+    INSERT INTO media_items (
+      id, created_at, created_by, updated_at, updated_by, version,
+      uploader_member_id, gallery_id, media_type, is_avatar, caption, uploaded_at,
+      s3_key_thumb, s3_key_display, width_px, height_px
+    ) VALUES (?, ?, 'test', ?, 'test', 1, ?, NULL, 'photo', ?, NULL, ?, ?, ?, ?, ?)
+  `).run(
+    id, TS, TS,
+    o.uploader_member_id,
+    o.is_avatar ?? 0,
+    TS,
+    o.s3_key_thumb   ?? `test/thumb_${id}.jpg`,
+    o.s3_key_display ?? `test/display_${id}.jpg`,
+    o.width_px  ?? 800,
+    o.height_px ?? 600,
   );
   return id;
 }

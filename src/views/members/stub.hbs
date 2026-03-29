@@ -1,0 +1,17 @@
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    {{#each navigation.contextLinks}}
+      <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
+    {{/each}}
+
+    <div class="card" style="margin-top:24px">
+      <p class="card-description">This feature is coming soon.</p>
+    </div>
+  </section>
+</div>

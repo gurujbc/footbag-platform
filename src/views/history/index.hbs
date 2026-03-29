@@ -3,8 +3,7 @@
     <h1>{{page.title}}</h1>
     {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
     <div class="hero-stats">
-      <span>{{content.memberCount}} historical members</span>
-      <span>{{content.countryCount}} countries</span>
+      <span>{{content.playerCount}} historical players</span>
     </div>
   </div>
 </div>
@@ -12,46 +11,44 @@
 <div class="wrapper">
 
   <div class="card" style="margin-bottom:24px">
-    <p class="card-description">For now you can browse players from our event-results database. These are historical records linked to competitive footbag results. Full member accounts and profiles are coming in a future release.</p>
+    <p class="card-description">These are historical records from our legacy event-results database. They represent competitive footbag players from past events and are not current member accounts.</p>
   </div>
 
   <section>
     <div class="section-heading">
-      <h2>Historical Records</h2>
-      <span class="section-count">{{content.memberCount}}</span>
+      <h2>Historical Players</h2>
+      <span class="section-count">{{content.playerCount}}</span>
     </div>
 
     <div class="player-search-bar">
       <input
         type="text"
-        id="member-search"
-        placeholder="Search by name or country…"
+        id="player-search"
+        placeholder="Search by name…"
         autocomplete="off"
       />
     </div>
 
-    <table class="results-table" id="members-table">
+    <table class="results-table" id="players-table">
       <thead>
         <tr>
           <th class="sortable sort-asc" data-col="0" data-type="text">Name</th>
-          <th class="sortable" data-col="1" data-type="text">Country</th>
-          <th class="sortable" data-col="2" data-type="num">Events</th>
-          <th class="sortable" data-col="3" data-type="num">Placements</th>
+          <th class="sortable" data-col="1" data-type="num">Events</th>
+          <th class="sortable" data-col="2" data-type="num">Placements</th>
         </tr>
       </thead>
       <tbody>
-        {{#each content.members}}
+        {{#each content.players}}
           <tr>
-            <td><a href="{{memberHref}}">{{personName}}</a></td>
-            <td>{{country}}</td>
+            <td><a href="{{playerHref}}">{{personName}}</a></td>
             <td>{{eventCount}}</td>
             <td>{{placementCount}}</td>
           </tr>
         {{/each}}
       </tbody>
     </table>
-    <p class="player-search-empty" id="member-search-empty" style="display:none">
-      No members match your search.
+    <p class="player-search-empty" id="player-search-empty" style="display:none">
+      No players match your search.
     </p>
 
   </section>
@@ -59,10 +56,10 @@
 
 <script>
   (function () {
-    const table   = document.getElementById('members-table');
+    const table   = document.getElementById('players-table');
     const tbody   = table.querySelector('tbody');
-    const input   = document.getElementById('member-search');
-    const empty   = document.getElementById('member-search-empty');
+    const input   = document.getElementById('player-search');
+    const empty   = document.getElementById('player-search-empty');
     const headers = table.querySelectorAll('th[data-col]');
 
     let sortCol = 0, sortAsc = true;

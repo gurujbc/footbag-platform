@@ -10,8 +10,9 @@
 <div class="wrapper">
 
   <section>
-    <p class="text-muted">Member login is a work in progress. If you are in the loop and have the preview password, feel free to try it out.</p>
-
+    {{#if content.authReason}}
+      <p class="form-notice">{{content.authReason}}</p>
+    {{/if}}
     {{#if content.error}}
       <p class="form-error" role="alert">{{content.error}}</p>
     {{/if}}
@@ -21,8 +22,8 @@
         <input type="hidden" name="returnTo" value="{{content.returnTo}}" />
       {{/if}}
       <div class="form-field">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" autocomplete="username" required />
+        <label for="email">Email address</label>
+        <input type="text" id="email" name="email" autocomplete="email" required />
       </div>
       <div class="form-field">
         <label for="password">Password</label>
@@ -30,6 +31,8 @@
       </div>
       <button type="submit" class="btn btn-primary">Log in</button>
     </form>
+
+    <p style="margin-top:24px">New to IFPA? <a href="/register">Create an account</a></p>
   </section>
 
 </div>

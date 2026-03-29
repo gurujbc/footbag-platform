@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { homeController } from '../controllers/homeController';
 import { clubController } from '../controllers/clubController';
 import { eventController } from '../controllers/eventController';
+import { historyController } from '../controllers/historyController';
 import { memberController } from '../controllers/memberController';
 import { authController } from '../controllers/authController';
 import { hofController } from '../controllers/hofController';
@@ -23,9 +24,22 @@ publicRouter.get('/events',              eventController.landing);
 publicRouter.get('/events/year/:year',   eventController.year);
 publicRouter.get('/events/:eventKey',    eventController.event);
 
-publicRouter.get('/members',             requireAuth, memberController.index);
-publicRouter.get('/members/:personId',   requireAuth, memberController.detail);
+publicRouter.get('/history',             historyController.index);
+publicRouter.get('/history/:personId',   historyController.detail);
 
-publicRouter.get('/login',   authController.getLogin);
-publicRouter.post('/login',  authController.postLogin);
-publicRouter.post('/logout', authController.postLogout);
+// IMPORTANT: /members/:memberId/edit and /members/:memberId/avatar must be
+// registered before /members/:memberId/:section so literal segments are not
+// captured as :section.
+publicRouter.get('/members',                       requireAuth, memberController.landing);
+publicRouter.get('/members/:memberId',             memberController.getProfile);
+publicRouter.get('/members/:memberId/edit',        requireAuth, memberController.getProfileEdit);
+publicRouter.post('/members/:memberId/edit',       requireAuth, memberController.postProfileEdit);
+publicRouter.get('/members/:memberId/avatar',      requireAuth, memberController.getAvatarUpload);
+publicRouter.post('/members/:memberId/avatar',     requireAuth, memberController.postAvatarUpload);
+publicRouter.get('/members/:memberId/:section',    requireAuth, memberController.getStub);
+
+publicRouter.get('/login',      authController.getLogin);
+publicRouter.post('/login',     authController.postLogin);
+publicRouter.get('/register',   authController.getRegister);
+publicRouter.post('/register',  authController.postRegister);
+publicRouter.post('/logout',    authController.postLogout);

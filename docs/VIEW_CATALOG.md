@@ -72,9 +72,9 @@ This document covers:
   - Events year archive
   - Event detail
   - Clubs section — live with real club data, SVG world map (JS-enhanced, degrades gracefully, hidden on mobile ≤768px), country and club detail pages
-  - Members section landing (auth-gated for now; Tier 1 historical-person data)
-  - Member detail (auth-gated for now; Tier 1 historical-person data)
-  - Login (member login preview stub)
+  - Historical players index (auth-gated; `/history`)
+  - Historical player detail (auth-gated; `/history/:personId`)
+  - Login (DB-backed member authentication)
   - HoF landing (placeholder; static/editorial content page)
 - the rules future pages must follow to join the catalog
 
@@ -462,19 +462,19 @@ Home still renders normally when optional featured/media regions are absent.
 
 ---
 
-### 6.2 Members section landing
+### 6.2 Historical players index
 
 ### Purpose
 
-Provide the Members section entry page. Serves a Tier 1 public historical-person index for competitive footbag players. The section will grow to full authenticated member features.
+Provide the historical-person index for competitive footbag players. Lists all imported historical persons with competitive records.
 
 ### Route
 
-`GET /members`
+`GET /history`
 
 ### Audience
 
-Public visitor. (Temporarily auth-gated — see IMPLEMENTATION_PLAN.md accepted deviations.)
+Authenticated member. Auth enforced at controller level (not route middleware). Unauthenticated visitors are redirected to `/login?returnTo=/history`.
 
 ### Standard relationship
 
@@ -506,7 +506,7 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - `content.members[]`
   - `personId`
   - `personName`
-  - `memberHref` — service-computed; `'/members/{personId}'`; templates must not construct this URL
+  - `memberHref` — service-computed; `'/members/{slug}'` when a linked member account exists, otherwise `'/history/{personId}'`; templates must not construct this URL
   - optional `country`
   - optional `eventCount`
   - optional `placementCount`
@@ -523,24 +523,23 @@ This page does not require data-backed list content and should still render norm
 
 ### Implementation notes
 
-- Current-slice exception: the implemented page currently includes an authenticated full historical-record table with client-side filter/sort. This is a temporary review and bootstrapping surface, not the final public member-directory/search design.
-- See `IMPLEMENTATION_PLAN.md` for the accepted temporary deviation and unblock condition.
+- The page currently includes an authenticated full historical-record table with client-side filter/sort. This is a review and bootstrapping surface, not the final public design.
 
 ---
 
-### 6.3 Member detail
+### 6.3 Historical player detail
 
 ### Purpose
 
-Provide the member detail page. Current slice shows a minimal public read-only page for one imported historical person. Future slices will add authenticated member profile content at this route as the Members section matures.
+Provide the detail page for one imported historical person's competitive record.
 
 ### Route
 
-`GET /members/:personId`
+`GET /history/:personId`
 
 ### Audience
 
-Public visitor. (Temporarily auth-gated — see IMPLEMENTATION_PLAN.md accepted deviations.)
+Public for HoF and BAP persons. Auth required otherwise. Auth enforced at controller level: the controller loads the person, checks honor flags, and redirects unauthenticated visitors to `/login?returnTo=/history/{personId}` for non-honored persons.
 
 ### Standard relationship
 
@@ -568,18 +567,18 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - optional `page.eyebrow` — e.g. `"Historical member record"`
 - optional `page.intro`
 - optional `page.notice`
-- `navigation.contextLinks` — typed back link to `GET /members` (service-computed)
+- `navigation.contextLinks` — typed back link to `GET /history` (service-computed)
 - `content.personId`
 - `content.displayName` — the person's display name
 - optional `content.honorificNickname` — BAP nickname when present; rendered in a styled span alongside `displayName` in the h1
 - `content.summaryFacts` — `{ label: string; value: string }[]`; service-computed list of key facts (country, BAP induction year, HoF induction year, etc.); includes only facts with values; empty array when none apply
-- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/members/{personId}"` when a historical person link exists
+- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/history/{personId}"` when a historical person link exists
 
 ### Navigation outputs
 
 - `GET /events/:eventKey` (via `content.eventGroups[].eventHref`)
 - `GET /events/year/:year`
-- `GET /members` (via `navigation.contextLinks`)
+- `GET /history` (via `navigation.contextLinks`)
 
 ### Empty state
 
@@ -1108,7 +1107,7 @@ This page has editorial content in the current slice and does not use a generic 
 
 ### Purpose
 
-Provide the public member login page. For the current slice this is a functional preview stub for members who are in the loop; full authentication is a future implementation.
+Provide the public member login page with DB-backed authentication.
 
 ### Route
 
@@ -1116,7 +1115,7 @@ Provide the public member login page. For the current slice this is a functional
 
 ### Audience
 
-Public visitor (specifically: members aware of the preview).
+Public visitor.
 
 ### Standard relationship
 
@@ -1125,15 +1124,16 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 ### Page intent
 
 - establish member login as a first-class section of the site
-- make clear this is an early preview, not a finished feature
-- allow members who have the preview password to try it out
+- allow registered members to authenticate
+- when a visitor arrives via `requireAuth` redirect, explain why login is required
 
 ### Required content
 
 - hero: "Member Login" title with a brief subtitle establishing context
-- a work-in-progress notice explaining this is an early preview for members who have the preview password
-- a login form with username and password fields
+- optional auth-reason notice when the visitor was redirected from a protected page
+- a login form with email and password fields
 - inline error display when authentication fails
+- link to registration page
 
 ### Required view-model fields
 
@@ -1142,11 +1142,12 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - `page.pageKey = login`
 - `page.title = Member Login` — displayed h1; `seo.title` is the shorter tab suffix
 - optional `content.error` — rendered inline above the form when authentication fails
-- optional `content.returnTo: string` — the path to redirect to after successful login; read by the controller from the `?returnTo` query parameter; must be validated as a relative same-site path (starts with `/`, not `//` or `http`) before use — invalid or absent values fall back to `/members`; rendered as a hidden form field so the destination survives the `POST /login` submission
+- optional `content.authReason` — informational notice shown when the visitor was redirected from a protected page (present when `returnTo` query param exists)
+- optional `content.returnTo: string` — the path to redirect to after successful login; read by the controller from the `?returnTo` query parameter; must be validated as a relative same-site path (starts with `/`, not `//` or `http`) before use — invalid or absent values fall back to `/members/{memberSlug}`; rendered as a hidden form field so the destination survives the `POST /login` submission
 
 ### Navigation outputs
 
-No service-provided navigation outputs. When `requireAuth` intercepts an unauthenticated request, it redirects to `/login?returnTo=<originalUrl>`. On successful `POST /login`, the controller redirects to `content.returnTo` (the validated return path) when present; otherwise falls back to `GET /members`.
+No service-provided navigation outputs. When `requireAuth` intercepts an unauthenticated request, it redirects to `/login?returnTo=<originalUrl>`. On successful `POST /login`, the controller redirects to `content.returnTo` (the validated return path) when present; otherwise falls back to `GET /members/{memberSlug}`.
 
 ### Empty state
 
@@ -1155,8 +1156,7 @@ Not applicable. The form always renders.
 ### Implementation notes
 
 - `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
-- The current implementation is an auth stub. Full member authentication is out of scope for the current slice.
-- WIP notices and stub behaviors in this page are intentional and must not be removed without a corresponding slice promotion.
+- `POST /logout` clears the session cookie and redirects to the Referer page if present and valid, otherwise `/`.
 
 ---
 
@@ -1164,9 +1164,16 @@ Not applicable. The form always renders.
 
 ### 7.1 Authorization boundary
 
-All pages in this catalog are public visitor pages.
+Most pages in this catalog are public visitor pages. The following routes require authentication and redirect unauthenticated visitors to `/login?returnTo=<originalUrl>`:
 
-They must not expose:
+- `GET /history` — historical players index (controller-enforced)
+- `GET /history/:personId` — historical player detail (public for HoF/BAP; controller-enforced for others)
+- `GET /members/:memberId` — public read-only view for HoF/BAP members; auth required otherwise (controller-enforced)
+- `GET /members/:memberId/edit`, `POST /members/:memberId/edit` — auth required (route middleware)
+- `GET /members/:memberId/avatar`, `POST /members/:memberId/avatar` — auth required (route middleware)
+- `GET /members/:memberId/:section` — auth required (route middleware)
+
+Public pages must not expose:
 
 - member-only data
 - organizer-only controls

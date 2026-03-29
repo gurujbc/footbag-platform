@@ -2,9 +2,6 @@
   <div>
     {{#if page.eyebrow}}<div class="eyebrow">{{page.eyebrow}}</div>{{/if}}
     <h1>{{page.title}}{{#if content.honorificNickname}} <span class="player-nickname">"{{content.honorificNickname}}"</span>{{/if}}</h1>
-    {{#if content.country}}
-      <p>{{content.country}}</p>
-    {{/if}}
     <div class="hero-stats">
       {{#each content.summaryFacts}}
         <span>{{label}}: {{value}}</span>
@@ -14,6 +11,27 @@
 </div>
 
 <div class="wrapper">
+
+  {{#if content.avatarThumbUrl}}
+  <div style="text-align:center; margin-bottom:24px">
+    <img src="{{content.avatarThumbUrl}}" alt="{{content.displayName}}" class="profile-avatar-img" />
+  </div>
+  {{/if}}
+
+  {{#if content.hofMember}}
+  <div class="card" style="margin-bottom:24px">
+    <p class="card-description">{{content.displayName}} is a member of the Footbag Hall of Fame.</p>
+  </div>
+  {{else if content.bapMember}}
+  <div class="card" style="margin-bottom:24px">
+    <p class="card-description">{{content.displayName}} is a member of the Big Add Posse.</p>
+  </div>
+  {{else}}
+  <div class="card" style="margin-bottom:24px">
+    <p class="card-description">This is a historical record linked to competitive footbag results. It is not a current member account.</p>
+  </div>
+  {{/if}}
+
   <section>
     {{#each navigation.contextLinks}}
       <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
@@ -48,7 +66,7 @@
                   </td>
                   <td>
                     {{#if (gt teammates.length 0)}}
-                      {{#each teammates}}{{#unless @first}}, {{/unless}}{{#if memberHref}}<a href="{{memberHref}}">{{name}}</a>{{else}}{{name}}{{/if}}{{/each}}
+                      {{#each teammates}}{{#unless @first}}, {{/unless}}{{#if playerHref}}<a href="{{playerHref}}">{{name}}</a>{{else}}{{name}}{{/if}}{{/each}}
                     {{/if}}
                   </td>
                 </tr>
@@ -60,7 +78,7 @@
 
     {{else}}
       <div class="empty-state" style="margin-top: 40px;">
-        <p>No historical results on record for this member.</p>
+        <p>No historical results on record for this player.</p>
       </div>
     {{/if}}
 

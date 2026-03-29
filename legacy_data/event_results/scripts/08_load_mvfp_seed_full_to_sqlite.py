@@ -477,17 +477,33 @@ def main() -> None:
                 fx_event_key, fx_disc_id, 1, "#BringBackTheHack",
             ),
         )
+        fx_member_id  = stable_id("member", "footbag-hacky")
+        fx_person_id  = stable_id("person", "footbag-hacky")
+
+        # Historical person record for Footbag Hacky (HoF member).
+        conn.execute(
+            """
+            INSERT OR IGNORE INTO historical_persons (
+              person_id, person_name, country,
+              event_count, placement_count,
+              bap_member, fbhof_member, fbhof_induction_year
+            ) VALUES (?, ?, ?, 1, 1, 0, 1, 2025)
+            """,
+            (fx_person_id, "Footbag Hacky", "New Zealand"),
+        )
+
+        # Link the result participant to both the member and the historical person.
         conn.execute(
             """
             INSERT OR IGNORE INTO event_result_entry_participants (
               id, created_at, created_by, updated_at, updated_by, version,
               result_entry_id, participant_order, member_id, display_name,
               historical_person_id
-            ) VALUES (?, ?, ?, ?, ?, 1, ?, ?, NULL, ?, NULL)
+            ) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
             """,
             (
                 fx_part_id, ts, system_user, ts, system_user,
-                fx_result_id, 1, "The Most Fun",
+                fx_result_id, 1, fx_member_id, "Footbag Hacky", fx_person_id,
             ),
         )
 

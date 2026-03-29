@@ -297,12 +297,17 @@ function groupPublicResultRows(resultRows: PublicEventResultRow[]): PublicResult
       section.placements.push(placement);
     }
 
+    let participantHref: string | null = null;
+    if (row.participant_member_slug) {
+      participantHref = `/members/${row.participant_member_slug}`;
+    } else if (row.participant_historical_person_id) {
+      participantHref = `/history/${row.participant_historical_person_id}`;
+    }
+
     placement.participants.push({
       participantDisplayName: row.participant_display_name,
       participantOrder: row.participant_order,
-      participantHref: row.participant_historical_person_id
-        ? `/members/${row.participant_historical_person_id}`
-        : null,
+      participantHref,
     });
   }
 

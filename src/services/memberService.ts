@@ -1,222 +1,209 @@
-import { PublicPlayerResultRow, publicPlayers } from '../db/db';
-import { NotFoundError } from './serviceErrors';
+import { account, MemberProfileRow, MemberResultRow } from '../db/db';
+import { NotFoundError, ValidationError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
+import { getPhotoStorage } from '../adapters/photoStorageInstance';
 import { PageViewModel } from '../types/page';
 
-export interface MemberResultEntry {
-  disciplineName: string | null;
-  disciplineCategory: string | null;
-  teamType: string | null;
-  placement: number;
-  scoreText: string | null;
-  teammates: { name: string; memberHref?: string }[];
+const MAX_DISPLAY_NAME = 64;
+const MAX_BIO = 1000;
+const VALID_EMAIL_VISIBILITY = new Set(['private', 'members', 'public']);
+
+export interface OwnProfileContent {
+  displayName: string;
+  bio: string;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  phone: string | null;
+  emailVisibility: string;
+  isAdmin: boolean;
+  profileBase?: string;
+  avatarThumbUrl: string | null;
 }
 
-export interface MemberEventGroup {
-  eventKey: string;
+export interface ProfileEditContent extends OwnProfileContent {
+  memberId: string;
+  error?: string;
+}
+
+export interface PublicProfileEventResult {
+  disciplineName: string | null;
+  placement: number;
+  scoreText: string | null;
+}
+
+export interface PublicProfileEventGroup {
   eventHref: string;
   eventTitle: string;
   startDate: string;
   city: string;
   eventCountry: string;
-  results: MemberResultEntry[];
+  results: PublicProfileEventResult[];
 }
 
-export interface MemberDetail {
-  personId: string;
-  personName: string;
-  country: string | null;
-  eventCount: number;
-  placementCount: number;
-  bapMember: boolean;
-  bapNickname: string | null;
-  bapInductionYear: number | null;
-  fbhofMember: boolean;
-  fbhofInductionYear: number | null;
-  eventGroups: MemberEventGroup[];
-}
-
-export interface MemberListEntry {
-  personId: string;
-  personName: string;
-  country: string | null;
-  eventCount: number | null;
-  placementCount: number | null;
-  bapMember: boolean;
-  fbhofMember: boolean;
-}
-
-export interface SummaryFact {
-  label: string;
-  value: string;
-}
-
-export interface MembersLandingContent {
-  memberCount: number;
-  countryCount: number;
-  members: Array<MemberListEntry & { memberHref: string }>;
-}
-
-export interface MemberDetailContent {
-  personId: string;
+export interface PublicProfileContent {
   displayName: string;
-  honorificNickname?: string;
+  city: string | null;
   country: string | null;
-  summaryFacts: SummaryFact[];
-  eventGroups: MemberEventGroup[];
+  bio: string;
+  avatarThumbUrl: string | null;
+  hofMember: boolean;
+  bapMember: boolean;
+  eventGroups: PublicProfileEventGroup[];
 }
 
-function buildSummaryFacts(member: MemberDetail): SummaryFact[] {
-  const facts: SummaryFact[] = [];
-  if (member.country) facts.push({ label: 'Country', value: member.country });
-  if (member.eventCount > 0) facts.push({ label: 'Events', value: String(member.eventCount) });
-  if (member.placementCount > 0) facts.push({ label: 'Placements', value: String(member.placementCount) });
-  if (member.bapMember) facts.push({ label: 'BAP Member since', value: member.bapInductionYear ? String(member.bapInductionYear) : 'Yes' });
-  if (member.fbhofMember) facts.push({ label: 'Footbag HOF', value: member.fbhofInductionYear ? String(member.fbhofInductionYear) : 'Yes' });
-  return facts;
+export interface ProfileEditInput {
+  displayName: string;
+  bio: string;
+  city: string;
+  region: string;
+  country: string;
+  phone: string;
+  emailVisibility: string;
 }
 
-function groupResults(rows: PublicPlayerResultRow[], personId: string): MemberEventGroup[] {
-  const eventMap = new Map<string, MemberEventGroup>();
+function normalizeText(val: unknown): string {
+  return typeof val === 'string' ? val.trim() : '';
+}
 
-  for (const row of rows) {
-    const eventKey = row.event_tag_normalized.startsWith('#')
-      ? row.event_tag_normalized.slice(1)
-      : row.event_tag_normalized;
+function rowToContent(row: MemberProfileRow): OwnProfileContent {
+  const storage = getPhotoStorage();
+  return {
+    displayName:     row.display_name,
+    bio:             row.bio,
+    city:            row.city,
+    region:          row.region,
+    country:         row.country,
+    phone:           row.phone,
+    emailVisibility: row.email_visibility,
+    isAdmin:         Boolean(row.is_admin),
+    avatarThumbUrl:  row.avatar_thumb_key ? storage.constructURL(row.avatar_thumb_key) : null,
+  };
+}
 
-    if (!eventMap.has(eventKey)) {
-      eventMap.set(eventKey, {
-        eventKey,
-        eventHref: `/events/${eventKey}`,
-        eventTitle:   row.event_title,
-        startDate:    row.start_date,
-        city:         row.city,
-        eventCountry: row.event_country,
-        results:      [],
-      });
-    }
-
-    const group = eventMap.get(eventKey)!;
-
-    const key = `${row.discipline_name ?? ''}__${row.placement}`;
-    let entry = group.results.find(
-      r => `${r.disciplineName ?? ''}__${r.placement}` === key,
-    );
-
-    if (!entry) {
-      entry = {
-        disciplineName:     row.discipline_name,
-        disciplineCategory: row.discipline_category,
-        teamType:           row.team_type,
-        placement:          row.placement,
-        scoreText:          row.score_text,
-        teammates:          [],
-      };
-      group.results.push(entry);
-    }
-
-    const isSelf = row.participant_person_id === personId;
-    if (!isSelf && !entry.teammates.some(t => t.name === row.participant_display_name)) {
-      const pid = row.participant_person_id ?? null;
-      entry.teammates.push({
-        name: row.participant_display_name,
-        memberHref: pid ? `/members/${pid}` : undefined,
-      });
-    }
-  }
-
-  return Array.from(eventMap.values());
+function fetchMemberBySlug(slug: string): MemberProfileRow {
+  const row = runSqliteRead('getOwnProfile', () =>
+    account.findMemberBySlug.get(slug),
+  ) as MemberProfileRow | undefined;
+  if (!row) throw new NotFoundError(`Member not found: ${slug}`);
+  return row;
 }
 
 export const memberService = {
-  getPublicMembersLandingPage(): PageViewModel<MembersLandingContent> {
-    const rows = runSqliteRead('listAllMembers', () =>
-      publicPlayers.listAll.all(),
-    ) as Array<{
-      person_id: string;
-      person_name: string;
-      country: string | null;
-      event_count: number | null;
-      placement_count: number | null;
-      bap_member: number;
-      fbhof_member: number;
-    }>;
-
-    const members = rows.map(r => ({
-      personId:       r.person_id,
-      personName:     r.person_name,
-      country:        r.country ?? null,
-      eventCount:     r.event_count ?? null,
-      placementCount: r.placement_count ?? null,
-      bapMember:      Boolean(r.bap_member),
-      fbhofMember:    Boolean(r.fbhof_member),
-      memberHref:     `/members/${r.person_id}`,
-    }));
-
-    const countryCount = new Set(
-      members.map(m => m.country).filter(c => c && c !== 'Global'),
-    ).size;
-
+  getOwnProfile(slug: string): PageViewModel<OwnProfileContent> {
+    const row = fetchMemberBySlug(slug);
     return {
-      seo: { title: 'Members' },
-      page: {
-        sectionKey: 'members',
-        pageKey: 'members_index',
-        title: 'Members',
-        intro: 'IFPA Members Area (a work in progress)',
+      seo:  { title: 'My Profile' },
+      page: { sectionKey: 'members', pageKey: 'member_profile', title: 'My Profile' },
+      navigation: {
+        contextLinks: [{ label: 'Edit Profile', href: `/members/${slug}/edit`, variant: 'outline' }],
       },
-      content: { memberCount: members.length, countryCount, members },
+      content: { ...rowToContent(row), profileBase: `/members/${slug}` },
     };
   },
 
-  getHistoricalMemberPage(personId: string): PageViewModel<MemberDetailContent> {
-    const row = runSqliteRead('getMemberById', () =>
-      publicPlayers.getById.get(personId),
-    );
+  /**
+   * Public read-only profile for HoF/BAP members. No PII, no edit links.
+   * Returns null if the member is not HoF/BAP (caller should 404 or require auth).
+   */
+  getPublicProfile(slug: string): PageViewModel<PublicProfileContent> | null {
+    const row = fetchMemberBySlug(slug);
+    const isHof = Boolean(row.is_hof);
+    const isBap = Boolean(row.is_bap);
+    if (!isHof && !isBap) return null;
 
-    if (!row) {
-      throw new NotFoundError(`Member not found: ${personId}`);
+    const storage = getPhotoStorage();
+
+    // Fetch competitive results linked to this member.
+    const resultRows = runSqliteRead('listResultsByMemberId', () =>
+      account.listResultsByMemberId.all(row.id),
+    ) as MemberResultRow[];
+
+    const eventMap = new Map<string, PublicProfileEventGroup>();
+    for (const r of resultRows) {
+      let group = eventMap.get(r.event_id);
+      if (!group) {
+        const tagNorm = r.event_tag_normalized;
+        group = {
+          eventHref:    `/events/${tagNorm.replace(/^#/, '')}`,
+          eventTitle:   r.event_title,
+          startDate:    r.start_date,
+          city:         r.city,
+          eventCountry: r.event_country,
+          results:      [],
+        };
+        eventMap.set(r.event_id, group);
+      }
+      group.results.push({
+        disciplineName: r.discipline_name,
+        placement:      r.placement,
+        scoreText:      r.score_text,
+      });
     }
 
-    const p = row as ReturnType<typeof publicPlayers.getById.get> & Record<string, unknown>;
-
-    const resultRows = runSqliteRead('listMemberResults', () =>
-      publicPlayers.listResultsByPersonId.all(personId),
-    ) as PublicPlayerResultRow[];
-
-    const member: MemberDetail = {
-      personId:           String(p['person_id']),
-      personName:         String(p['person_name']),
-      country:            (p['country'] as string | null) ?? null,
-      eventCount:         Number(p['event_count'] ?? 0),
-      placementCount:     Number(p['placement_count'] ?? 0),
-      bapMember:          Boolean(p['bap_member']),
-      bapNickname:        (p['bap_nickname'] as string | null) ?? null,
-      bapInductionYear:   (p['bap_induction_year'] as number | null) ?? null,
-      fbhofMember:        Boolean(p['fbhof_member']),
-      fbhofInductionYear: (p['fbhof_induction_year'] as number | null) ?? null,
-      eventGroups:        groupResults(resultRows, personId),
-    };
-
     return {
-      seo: { title: member.personName },
-      page: {
-        sectionKey: 'members',
-        pageKey: 'member_history_detail',
-        title: member.personName,
-        eyebrow: 'Historical member record',
-      },
-      navigation: {
-        contextLinks: [{ label: 'All Members', href: '/members' }],
-      },
+      seo:  { title: row.display_name },
+      page: { sectionKey: 'members', pageKey: 'member_public_profile', title: row.display_name },
+      navigation: { contextLinks: [] },
       content: {
-        personId: member.personId,
-        displayName: member.personName,
-        honorificNickname: member.bapNickname ?? undefined,
-        country: member.country,
-        summaryFacts: buildSummaryFacts(member),
-        eventGroups: member.eventGroups,
+        displayName:    row.display_name,
+        city:           row.city,
+        country:        row.country,
+        bio:            row.bio,
+        avatarThumbUrl: row.avatar_thumb_key ? storage.constructURL(row.avatar_thumb_key) : null,
+        hofMember:      isHof,
+        bapMember:      isBap,
+        eventGroups:    Array.from(eventMap.values()),
       },
     };
+  },
+
+  getProfileEditPage(slug: string, error?: string): PageViewModel<ProfileEditContent> {
+    const row = fetchMemberBySlug(slug);
+    return {
+      seo:  { title: 'Edit Profile' },
+      page: { sectionKey: 'members', pageKey: 'member_profile_edit', title: 'Edit Profile' },
+      navigation: {
+        contextLinks: [{ label: 'Back to Profile', href: `/members/${slug}` }],
+      },
+      content: { ...rowToContent(row), memberId: slug, error },
+    };
+  },
+
+  updateOwnProfile(slug: string, input: ProfileEditInput): void {
+    const row = fetchMemberBySlug(slug);
+    const displayName = normalizeText(input.displayName);
+    const bio         = normalizeText(input.bio);
+    const city        = normalizeText(input.city) || null;
+    const region      = normalizeText(input.region) || null;
+    const country     = normalizeText(input.country) || null;
+    const phone       = normalizeText(input.phone) || null;
+    const emailVis    = VALID_EMAIL_VISIBILITY.has(input.emailVisibility)
+      ? input.emailVisibility
+      : 'private';
+
+    if (!displayName) {
+      throw new ValidationError('Display name is required.');
+    }
+    if (displayName.length > MAX_DISPLAY_NAME) {
+      throw new ValidationError(`Display name must be ${MAX_DISPLAY_NAME} characters or fewer.`);
+    }
+    if (bio.length > MAX_BIO) {
+      throw new ValidationError(`Bio must be ${MAX_BIO} characters or fewer.`);
+    }
+
+    const now = new Date().toISOString();
+    account.updateMemberProfile.run(
+      displayName,
+      displayName.toLowerCase(),
+      bio,
+      city,
+      region,
+      country,
+      phone,
+      emailVis,
+      now,
+      row.id,
+    );
   },
 };

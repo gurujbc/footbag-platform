@@ -1491,6 +1491,7 @@ WHERE NOT EXISTS (
 -- Soft-delete (deleted_at); PII purge nullifies credential and contact fields.
 CREATE TABLE members (
   id         TEXT PRIMARY KEY,
+  slug       TEXT,
   created_at TEXT NOT NULL,
   created_by TEXT NOT NULL,
   updated_at TEXT NOT NULL,
@@ -1595,6 +1596,9 @@ CREATE UNIQUE INDEX ux_members_email
   WHERE personal_data_purged_at IS NULL
     AND login_email_normalized IS NOT NULL;
 CREATE INDEX idx_members_display_name ON members(display_name_normalized);
+CREATE UNIQUE INDEX ux_members_slug
+  ON members(slug)
+  WHERE slug IS NOT NULL;
 CREATE UNIQUE INDEX ux_members_legacy_id
   ON members(legacy_member_id)
   WHERE legacy_member_id IS NOT NULL;

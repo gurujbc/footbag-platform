@@ -1,0 +1,67 @@
+<div class="hero hero-sm">
+  <div>
+    <h1>{{content.displayName}}</h1>
+    {{#if content.city}}<p>{{content.city}}{{#if content.country}}, {{content.country}}{{/if}}</p>{{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    <div class="profile-layout">
+
+      <div class="profile-sidebar">
+        <div class="profile-avatar-card card">
+          {{#if content.avatarThumbUrl}}
+          <img src="{{content.avatarThumbUrl}}" alt="{{content.displayName}}" class="profile-avatar-img" />
+          {{else}}
+          <div class="profile-avatar-placeholder" aria-hidden="true">&#128100;</div>
+          {{/if}}
+          <div class="profile-name">{{content.displayName}}</div>
+          {{#if content.city}}
+            <div class="profile-location text-muted">{{content.city}}{{#if content.region}}, {{content.region}}{{/if}}{{#if content.country}} · {{content.country}}{{/if}}</div>
+          {{/if}}
+          {{#each navigation.contextLinks}}
+            <a href="{{href}}" class="btn btn-primary profile-edit-btn">{{label}}</a>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="profile-main">
+
+        <div class="profile-section">
+          <h2 class="profile-section-heading">About</h2>
+          {{#if content.bio}}
+            <p>{{content.bio}}</p>
+          {{else}}
+            <p class="text-muted">No bio yet. <a href="{{content.profileBase}}/edit">Edit your profile</a> to tell people about yourself.</p>
+          {{/if}}
+        </div>
+
+        <div class="profile-section">
+          <h2 class="profile-section-heading">Your Profile</h2>
+          <div class="profile-link-grid">
+            <a href="{{content.profileBase}}/avatar" class="profile-link-card card">
+              <span class="profile-link-icon" aria-hidden="true">&#128247;</span>
+              <span class="profile-link-label">Upload Avatar</span>
+            </a>
+            <span class="profile-link-card card disabled" aria-disabled="true">
+              <span class="profile-link-icon" aria-hidden="true">&#127910;</span>
+              <span class="profile-link-label">Share Media</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <h2 class="profile-section-heading">Account</h2>
+          <ul class="profile-account-list">
+            <li><span class="disabled">Account Settings</span></li>
+            <li><span class="disabled">Change Password</span></li>
+            <li><span class="disabled">Download My Data</span></li>
+            <li><span class="disabled">Delete Account</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>

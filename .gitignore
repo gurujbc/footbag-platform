@@ -44,6 +44,11 @@ htmlcov/
 *.pfx
 
 # =========================
+# Local media data (photo uploads — never commit)
+# =========================
+data/
+
+# =========================
 # Databases (local/dev/generated)
 # =========================
 *.db

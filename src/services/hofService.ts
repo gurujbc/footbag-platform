@@ -34,7 +34,8 @@ export const hofService = {
               'to honour the champions and promoters who left their mark, turning this back-yard game into a global phenomenon. ' +
               'Maybe some day you can become a HoF member too! Get involved, join a club, go to tournaments, ' +
               'and most of all, have fun! Go get a hack with a sack. The most fun wins. ' +
-              'Well, sometimes Kenny Shults still wins! #BringBackTheHack',
+              'Well, sometimes Kenny Shults still wins!\n\n' +
+              '#BringBackTheHack',
             ],
           },
         ],

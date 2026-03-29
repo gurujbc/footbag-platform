@@ -71,9 +71,9 @@ export const homeService = {
           description: 'Browse competitive results from tournaments around the world.',
         },
         {
-          label: 'Members',
-          href: '/members',
-          description: 'Member profiles, competitive history, and community features.',
+          label: 'Players',
+          href: '/history',
+          description: 'Historical players and competitive results from footbag events worldwide.',
         },
         {
           label: 'Clubs',

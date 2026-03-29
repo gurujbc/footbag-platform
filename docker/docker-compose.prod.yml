@@ -28,6 +28,8 @@ services:
       # The host operator sets FOOTBAG_DB_PATH in the systemd environment file
       # or passes it via `docker compose --env-file`.
       - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+      # Media uploads (avatars, photos). Persisted on host across deploys.
+      - ${FOOTBAG_MEDIA_DIR:-/srv/footbag/media}:/app/data/media:rw
     environment:
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
       SESSION_SECRET: ${SESSION_SECRET}

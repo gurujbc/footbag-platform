@@ -1,0 +1,78 @@
+{{! Registration page }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p>Join the International Footbag Players Association.</p>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <section>
+    <div class="card" style="margin-bottom:24px; border-left: 4px solid #d97706; background: #fffbeb;">
+      <p style="margin:0; font-weight:500; color:#92400e;">Early access notice</p>
+      <p style="margin:8px 0 0; color:#78350f;">This site is under active development. Account data may be deleted when we update the site, which happens frequently. Your account is real, but please be aware it may need to be re-created during this early period.</p>
+    </div>
+
+    {{#if content.error}}
+      <p class="form-error" role="alert">{{content.error}}</p>
+    {{/if}}
+
+    <form method="POST" action="/register" class="login-form">
+      <div class="form-field">
+        <label for="displayName">Display name</label>
+        <input
+          type="text"
+          id="displayName"
+          name="displayName"
+          value="{{content.displayName}}"
+          maxlength="64"
+          required
+          autocomplete="nickname"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value="{{content.email}}"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password (8 characters minimum)</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          minlength="8"
+          required
+          autocomplete="new-password"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          minlength="8"
+          required
+          autocomplete="new-password"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Create account</button>
+    </form>
+
+    <p style="margin-top:24px">Already have an account? <a href="/login">Log in</a></p>
+  </section>
+
+</div>

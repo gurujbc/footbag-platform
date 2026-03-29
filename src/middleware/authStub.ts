@@ -3,7 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 
 export interface SessionUser {
   userId: string;
+  slug: string;
   role: string;
+  displayName?: string;
 }
 
 // Augment Express Request so TypeScript knows about our auth properties.
@@ -16,8 +18,8 @@ declare global {
   }
 }
 
-export function createSessionCookie(userId: string, role: string, secret: string): string {
-  const payload = Buffer.from(JSON.stringify({ userId, role })).toString('base64');
+export function createSessionCookie(userId: string, role: string, secret: string, displayName?: string, slug?: string): string {
+  const payload = Buffer.from(JSON.stringify({ userId, role, displayName, slug })).toString('base64');
   const sig = createHmac('sha256', secret).update(payload).digest('base64');
   return `${payload}.${sig}`;
 }
@@ -43,7 +45,12 @@ export function parseSessionCookie(cookie: string, secret: string): SessionUser 
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
     if (typeof data.userId === 'string' && typeof data.role === 'string') {
-      return { userId: data.userId, role: data.role };
+      return {
+        userId: data.userId,
+        slug: typeof data.slug === 'string' ? data.slug : data.userId,
+        role: data.role,
+        displayName: typeof data.displayName === 'string' ? data.displayName : undefined,
+      };
     }
   } catch {
     // malformed payload

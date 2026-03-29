@@ -14,8 +14,9 @@ export interface AppConfig {
   dbPath: string;
   publicBaseUrl: string;
   sessionSecret: string;
-  stubUsername: string;
-  stubPassword: string;
+  stubUsername: string | undefined;
+  stubPassword: string | undefined;
+  mediaDir: string;
 }
 
 function requireEnv(name: string): string {
@@ -40,8 +41,9 @@ function loadConfig(): AppConfig {
     dbPath: requireEnv('FOOTBAG_DB_PATH'),
     publicBaseUrl: requireEnv('PUBLIC_BASE_URL'),
     sessionSecret: requireEnv('SESSION_SECRET'),
-    stubUsername: process.env.STUB_USERNAME ?? 'footbag',
-    stubPassword: process.env.STUB_PASSWORD ?? 'Footbag!',
+    stubUsername: process.env.STUB_USERNAME || undefined,
+    stubPassword: process.env.STUB_PASSWORD || undefined,
+    mediaDir: process.env.FOOTBAG_MEDIA_DIR || './data/media',
   };
 }
 

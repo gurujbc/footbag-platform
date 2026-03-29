@@ -1,0 +1,119 @@
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    {{#each navigation.contextLinks}}
+      <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
+    {{/each}}
+
+    {{#if content.error}}
+      <div class="form-error-banner" role="alert">
+        {{content.error}}
+      </div>
+    {{/if}}
+
+    <form method="POST" class="form-block">
+
+      <fieldset class="form-fieldset">
+        <legend>Personal Info</legend>
+
+        <div class="form-field">
+          <label for="displayName">Display name</label>
+          <input
+            type="text"
+            id="displayName"
+            name="displayName"
+            value="{{content.displayName}}"
+            maxlength="64"
+            required
+            autocomplete="nickname"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="bio">Bio</label>
+          <textarea
+            id="bio"
+            name="bio"
+            maxlength="1000"
+            rows="4"
+            placeholder="Tell people about yourself..."
+          >{{content.bio}}</textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend>Location</legend>
+
+        <div class="form-row-2col">
+          <div class="form-field">
+            <label for="city">City</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value="{{content.city}}"
+              autocomplete="address-level2"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="region">Region / State</label>
+            <input
+              type="text"
+              id="region"
+              name="region"
+              value="{{content.region}}"
+              autocomplete="address-level1"
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="country">Country</label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value="{{content.country}}"
+            autocomplete="country-name"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend>Privacy</legend>
+
+        <div class="form-field">
+          <label for="phone">Phone (optional)</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value="{{content.phone}}"
+            autocomplete="tel"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="emailVisibility">Email visibility</label>
+          <select id="emailVisibility" name="emailVisibility">
+            <option value="private"{{#if (eq content.emailVisibility 'private')}} selected{{/if}}>Private (only you)</option>
+            <option value="members"{{#if (eq content.emailVisibility 'members')}} selected{{/if}}>Members only</option>
+            <option value="public"{{#if (eq content.emailVisibility 'public')}} selected{{/if}}>Public</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/members/{{content.memberId}}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+
+  </section>
+</div>

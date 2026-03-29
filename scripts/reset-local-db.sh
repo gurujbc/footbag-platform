@@ -73,6 +73,10 @@ echo "  → Extracting club member data from mirror..."
 echo "  → Loading club member data into database..."
 "${PYTHON}" legacy_data/scripts/load_club_members_seed.py --db "${DB_FILE}"
 
+# Seed test member accounts (passwords from env vars)
+echo "  → Seeding member accounts..."
+"${PYTHON}" legacy_data/scripts/seed_members.py --db "${DB_FILE}" --allow-missing-passwords
+
 # Sanity check
 EVENT_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM events;")
 CLUB_COUNT=$(sqlite3 "${DB_FILE}" "SELECT COUNT(*) FROM clubs;")

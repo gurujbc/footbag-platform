@@ -225,7 +225,7 @@ echo "    Ensuring compose stack is fully down..."
 compose_cmd down --remove-orphans || true
 
 echo "    Promoting release into $LIVE_DIR ..."
-run_sudo rsync -a --delete --exclude env --exclude footbag.db "$RELEASE_DIR/" "$LIVE_DIR/"
+run_sudo rsync -a --delete --exclude env --exclude footbag.db --exclude media "$RELEASE_DIR/" "$LIVE_DIR/"
 
 echo "    Replacing live DB..."
 run_sudo mkdir -p "$(dirname "$DB_PATH")"

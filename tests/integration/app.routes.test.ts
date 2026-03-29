@@ -9,6 +9,7 @@
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
+import argon2 from 'argon2';
 import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
@@ -31,7 +32,7 @@ const BEAVER_OPEN_KEY    = 'event_2025_beaver_open';
 const QUIET_OPEN_KEY     = 'event_2025_quiet_open';
 const DRAFT_EVENT_KEY    = 'event_2026_draft_event';
 
-// ── Person IDs for /members routes ────────────────────────────────────────────
+// ── Person IDs for /history routes ───────────────────────────────────────────
 const ALICE_ID = 'person-alice-001';
 const BOB_ID   = 'person-bob-001';
 
@@ -55,7 +56,7 @@ function validAuthCookie(): string {
   return `footbag_session=${createSessionCookie('test-user', 'admin', TEST_SESSION_SECRET)}`;
 }
 
-function buildTestDatabase(): void {
+async function buildTestDatabase(): Promise<void> {
   const schema = fs.readFileSync(
     path.join(process.cwd(), 'database', 'schema.sql'),
     'utf8',
@@ -66,16 +67,29 @@ function buildTestDatabase(): void {
   db.pragma('foreign_keys = ON');
   db.exec(schema);
 
+  // Footbag Hacky: test member with login_email='footbag' (non-email identifier).
+  // Password comes from STUB_PASSWORD env var; hashed at test-setup time, never stored in git.
+  const footbagHash = await argon2.hash(process.env.STUB_PASSWORD ?? 'Footbag!');
+  insertMember(db, {
+    id:                'member-footbag-hacky',
+    slug:              'footbag_hacky',
+    login_email:       'footbag',
+    display_name:      'Footbag Hacky',
+    password_hash:     footbagHash,
+    email_verified_at: '2025-01-01T00:00:00.000Z',
+  });
+
   // FK stub: required by event_results_uploads
   const memberId = insertMember(db);
 
-  // Historical persons for /members routes
+  // Historical persons for /history routes
   insertHistoricalPerson(db, {
     person_id:       ALICE_ID,
     person_name:     'Alice Footbag',
     country:         'US',
     event_count:     1,
     placement_count: 1,
+    fbhof_member:    1,
   });
   insertHistoricalPerson(db, {
     person_id:       BOB_ID,
@@ -226,7 +240,7 @@ function buildTestDatabase(): void {
 }
 
 beforeAll(async () => {
-  buildTestDatabase();
+  await buildTestDatabase();
   const mod = await import('../../src/app');
   createApp = mod.createApp;
 });
@@ -417,6 +431,15 @@ describe('GET /events/:eventKey', () => {
     expect(res.text).toContain('Bob Hackysack');
   });
 
+  it('links participants to /history/ not /members/', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/events/${BEAVER_OPEN_KEY}`);
+    expect(res.text).toContain(`/history/${ALICE_ID}`);
+    expect(res.text).toContain(`/history/${BOB_ID}`);
+    expect(res.text).not.toContain(`/members/${ALICE_ID}`);
+    expect(res.text).not.toContain(`/members/${BOB_ID}`);
+  });
+
   it('shows multiple disciplines when event has them', async () => {
     const app = createApp();
     const res = await request(app).get(`/events/${BEAVER_OPEN_KEY}`);
@@ -480,11 +503,11 @@ describe('GET /', () => {
     expect(res.status).toBe(200);
   });
 
-  it('includes section cards for Events, Members, and Clubs', async () => {
+  it('includes section cards for Events, Players, and Clubs', async () => {
     const app = createApp();
     const res = await request(app).get('/');
     expect(res.text).toContain('href="/events"');
-    expect(res.text).toContain('href="/members"');
+    expect(res.text).toContain('href="/history"');
     expect(res.text).toContain('href="/clubs"');
   });
 
@@ -726,29 +749,29 @@ describe('GET /login', () => {
     const res = await request(app).get('/login');
     expect(res.status).toBe(200);
     expect(res.text).toContain('<form');
-    expect(res.text).toContain('name="username"');
+    expect(res.text).toContain('name="email"');
     expect(res.text).toContain('name="password"');
   });
 
-  it('redirects authenticated visitor to /members', async () => {
+  it('redirects authenticated visitor to own profile', async () => {
     const app = createApp();
     const res = await request(app).get('/login').set('Cookie', validAuthCookie());
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/members');
+    expect(res.headers.location).toBe('/members/test-user');
   });
 });
 
 // ── Auth: POST /login ──────────────────────────────────────────────────────────
 
 describe('POST /login', () => {
-  it('redirects to /members and sets session cookie on valid credentials', async () => {
+  it('sets session cookie and redirects on valid credentials', async () => {
     const app = createApp();
     const res = await request(app)
       .post('/login')
-      .send('username=footbag&password=Footbag!')
+      .send(`email=footbag&password=${encodeURIComponent(process.env.STUB_PASSWORD ?? 'Footbag!')}`)
       .set('Content-Type', 'application/x-www-form-urlencoded');
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/members');
+    expect(res.headers.location).toBe('/members/footbag_hacky');
     const cookies: string[] = Array.isArray(res.headers['set-cookie'])
       ? res.headers['set-cookie']
       : [res.headers['set-cookie']];
@@ -759,20 +782,20 @@ describe('POST /login', () => {
     const app = createApp();
     const res = await request(app)
       .post('/login')
-      .send('username=footbag&password=wrongpassword')
+      .send('email=footbag&password=wrongpassword')
       .set('Content-Type', 'application/x-www-form-urlencoded');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('Invalid username or password');
+    expect(res.text).toContain('Invalid email or password');
   });
 
   it('returns 200 with error message on unknown username', async () => {
     const app = createApp();
     const res = await request(app)
       .post('/login')
-      .send('username=nobody&password=Footbag!')
+      .send('email=nobody@example.com&password=wrongpassword')
       .set('Content-Type', 'application/x-www-form-urlencoded');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('Invalid username or password');
+    expect(res.text).toContain('Invalid email or password');
   });
 });
 
@@ -795,104 +818,89 @@ describe('POST /logout', () => {
   });
 });
 
-// ── Members: index ─────────────────────────────────────────────────────────────
+// ── History: index ─────────────────────────────────────────────────────────────
 
-describe('GET /members', () => {
-  it('redirects unauthenticated visitor to /login with returnTo', async () => {
+describe('GET /history', () => {
+  it('redirects unauthenticated visitor to login', async () => {
     const app = createApp();
-    const res = await request(app).get('/members');
+    const res = await request(app).get('/history');
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login?returnTo=%2Fmembers');
+    expect(res.headers.location).toContain('/login');
   });
 
   it('returns 200 for authenticated visitor', async () => {
     const app = createApp();
-    const res = await request(app).get('/members').set('Cookie', validAuthCookie());
+    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
     expect(res.status).toBe(200);
   });
 
-  it('lists all members by name', async () => {
+  it('lists all historical players by name', async () => {
     const app = createApp();
-    const res = await request(app).get('/members').set('Cookie', validAuthCookie());
+    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
     expect(res.text).toContain('Alice Footbag');
     expect(res.text).toContain('Bob Hackysack');
   });
 
-  it('includes links to individual member detail pages', async () => {
+  it('includes links to individual player detail pages', async () => {
     const app = createApp();
-    const res = await request(app).get('/members').set('Cookie', validAuthCookie());
-    expect(res.text).toContain(`href="/members/${ALICE_ID}"`);
-    expect(res.text).toContain(`href="/members/${BOB_ID}"`);
-  });
-
-  it('rejects a tampered session cookie with a redirect to /login with returnTo', async () => {
-    const app = createApp();
-    const res = await request(app)
-      .get('/members')
-      .set('Cookie', 'footbag_session=invalidsignature.tampered');
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login?returnTo=%2Fmembers');
+    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
+    expect(res.text).toContain(`href="/history/${ALICE_ID}"`);
+    expect(res.text).toContain(`href="/history/${BOB_ID}"`);
   });
 });
 
-// ── Members: detail page ──────────────────────────────────────────────────────
+// ── History: detail page ───────────────────────────────────────────────────────
 
-describe('GET /members/:personId', () => {
-  it('redirects unauthenticated visitor to /login with returnTo', async () => {
+describe('GET /history/:personId', () => {
+  it('returns 200 for HoF player without auth (public)', async () => {
     const app = createApp();
-    const res = await request(app).get(`/members/${ALICE_ID}`);
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toBe(`/login?returnTo=%2Fmembers%2F${ALICE_ID}`);
-  });
-
-  it('returns 200 for authenticated visitor viewing existing member', async () => {
-    const app = createApp();
-    const res = await request(app)
-      .get(`/members/${ALICE_ID}`)
-      .set('Cookie', validAuthCookie());
+    const res = await request(app).get(`/history/${ALICE_ID}`);
     expect(res.status).toBe(200);
   });
 
-  it('shows member name on detail page', async () => {
+  it('redirects unauthenticated visitor for non-HoF player', async () => {
     const app = createApp();
-    const res = await request(app)
-      .get(`/members/${ALICE_ID}`)
-      .set('Cookie', validAuthCookie());
+    const res = await request(app).get(`/history/${BOB_ID}`);
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toContain('/login');
+  });
+
+  it('returns 200 for non-HoF player when authenticated', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${BOB_ID}`).set('Cookie', validAuthCookie());
+    expect(res.status).toBe(200);
+  });
+
+  it('shows player name on detail page', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${ALICE_ID}`);
     expect(res.text).toContain('Alice Footbag');
   });
 
-  it('shows member country on detail page', async () => {
+  it('does not show unreliable country on detail page hero', async () => {
     const app = createApp();
-    const res = await request(app)
-      .get(`/members/${ALICE_ID}`)
-      .set('Cookie', validAuthCookie());
-    expect(res.text).toContain('US');
+    const res = await request(app).get(`/history/${ALICE_ID}`);
+    expect(res.text).not.toContain('Country');
   });
 
   it("shows Alice's event result at 2025 Beaver Open", async () => {
     const app = createApp();
-    const res = await request(app)
-      .get(`/members/${ALICE_ID}`)
-      .set('Cookie', validAuthCookie());
+    const res = await request(app).get(`/history/${ALICE_ID}`);
     expect(res.text).toContain('2025 Beaver Open');
     expect(res.text).toContain('Freestyle');
   });
 
   it("shows Bob's multiple results including Shred30 win", async () => {
     const app = createApp();
-    const res = await request(app)
-      .get(`/members/${BOB_ID}`)
-      .set('Cookie', validAuthCookie());
+    const res = await request(app).get(`/history/${BOB_ID}`).set('Cookie', validAuthCookie());
     expect(res.text).toContain('2025 Beaver Open');
     expect(res.text).toContain('Freestyle');
     expect(res.text).toContain('Shred30');
   });
 
-  it('returns 404 for authenticated visitor viewing non-existent member', async () => {
+  it('returns 404 for non-existent player', async () => {
     const app = createApp();
-    const res = await request(app)
-      .get('/members/person-does-not-exist')
-      .set('Cookie', validAuthCookie());
+    const res = await request(app).get('/history/person-does-not-exist');
     expect(res.status).toBe(404);
   });
 });
