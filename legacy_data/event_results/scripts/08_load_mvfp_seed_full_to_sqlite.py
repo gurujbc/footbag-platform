@@ -160,22 +160,23 @@ def main() -> None:
                   freestyle_diversity_ratio,
                   signature_trick_1,
                   signature_trick_2,
-                  signature_trick_3
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                  signature_trick_3,
+                  source_scope
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     row.get("person_id", "").strip() or None,
-                    row.get("person_name", "").strip() or None,
-                    row.get("legacy_member_id", "").strip() or None,
+                    row.get("person_canon", "").strip() or None,
+                    row.get("ifpa_member_id", "").strip() or None,
                     row.get("country", "").strip() or None,
                     int(row["first_year"]) if row.get("first_year", "").strip() else None,
                     int(row["last_year"]) if row.get("last_year", "").strip() else None,
                     int(row["event_count"]) if row.get("event_count", "").strip() else None,
                     int(row["placement_count"]) if row.get("placement_count", "").strip() else None,
-                    int(row["bap_member"]) if row.get("bap_member", "").strip() else 0,
+                    (1 if row.get("bap_member", "").strip().upper() == "Y" else int(row["bap_member"]) if row.get("bap_member", "").strip() not in ("", "N") else 0),
                     row.get("bap_nickname", "").strip() or None,
                     int(row["bap_induction_year"]) if row.get("bap_induction_year", "").strip() else None,
-                    int(row["fbhof_member"]) if row.get("fbhof_member", "").strip() else 0,
+                    (1 if row.get("fbhof_member", "").strip().upper() == "Y" else int(row["fbhof_member"]) if row.get("fbhof_member", "").strip() not in ("", "N") else 0),
                     int(row["fbhof_induction_year"]) if row.get("fbhof_induction_year", "").strip() else None,
                     int(row["freestyle_sequences"]) if row.get("freestyle_sequences", "").strip() else None,
                     float(row["freestyle_max_add"]) if row.get("freestyle_max_add", "").strip() else None,
@@ -184,6 +185,7 @@ def main() -> None:
                     row.get("signature_trick_1", "").strip() or None,
                     row.get("signature_trick_2", "").strip() or None,
                     row.get("signature_trick_3", "").strip() or None,
+                    row.get("source_scope", "").strip() or None,
                 ),
             )
 
