@@ -42,7 +42,7 @@
           </div>
           <div class="card-meta">
             <span>{{formatDate content.featuredPromo.startDate}} – {{formatDate content.featuredPromo.endDate}}</span>
-            <span>{{content.featuredPromo.city}}{{#if content.featuredPromo.region}}, {{content.featuredPromo.region}}{{/if}}, {{content.featuredPromo.country}}</span>
+            <span>{{formatLocation content.featuredPromo.city content.featuredPromo.region content.featuredPromo.country}}</span>
           </div>
           {{#if content.featuredPromo.description}}
             <p class="card-description">{{content.featuredPromo.description}}</p>

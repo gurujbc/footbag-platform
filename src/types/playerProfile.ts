@@ -18,6 +18,7 @@ export interface PlayerEventGroup {
   eventTitle: string;
   startDate: string;
   city: string;
+  eventRegion: string | null;
   eventCountry: string;
   results: PlayerResultEntry[];
 }

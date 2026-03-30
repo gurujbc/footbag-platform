@@ -7,6 +7,7 @@ function makeRow(overrides: Partial<PlayerResultRow> = {}): PlayerResultRow {
     event_title:              'Test Event',
     start_date:               '2025-06-01',
     city:                     'Portland',
+    event_region:             'Oregon',
     event_country:            'US',
     event_tag_normalized:     '#event_2025_test',
     discipline_name:          'Freestyle',

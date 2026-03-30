@@ -13,6 +13,7 @@ export interface PlayerResultRow {
   event_title: string;
   start_date: string;
   city: string;
+  event_region: string | null;
   event_country: string;
   event_tag_normalized: string;
   discipline_name: string | null;
@@ -51,6 +52,7 @@ export function groupPlayerResults(rows: PlayerResultRow[], opts: GroupResultsOp
         eventTitle:   row.event_title,
         startDate:    row.start_date,
         city:         row.city,
+        eventRegion:  row.event_region,
         eventCountry: row.event_country,
         results:      [],
       });

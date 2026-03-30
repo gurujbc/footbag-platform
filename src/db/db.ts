@@ -159,6 +159,7 @@ export interface PublicPlayerResultRow {
   event_title: string;
   start_date: string;
   city: string;
+  event_region: string | null;
   event_country: string;
   discipline_name: string | null;
   discipline_category: string | null;
@@ -475,6 +476,7 @@ export const publicPlayers = {
       e.title                     AS event_title,
       e.start_date,
       e.city,
+      e.region                    AS event_region,
       e.country                   AS event_country,
       t.tag_normalized            AS event_tag_normalized,
       ed.name                     AS discipline_name,
@@ -646,6 +648,7 @@ export interface MemberResultRow {
   event_title: string;
   start_date: string;
   city: string;
+  event_region: string | null;
   event_country: string;
   event_tag_normalized: string;
   discipline_name: string | null;
@@ -722,6 +725,7 @@ export const account = {
       e.title                     AS event_title,
       e.start_date,
       e.city,
+      e.region                    AS event_region,
       e.country                   AS event_country,
       t.tag_normalized            AS event_tag_normalized,
       ed.name                     AS discipline_name,
@@ -768,6 +772,7 @@ export const account = {
       e.title                     AS event_title,
       e.start_date,
       e.city,
+      e.region                    AS event_region,
       e.country                   AS event_country,
       t.tag_normalized            AS event_tag_normalized,
       ed.name                     AS discipline_name,

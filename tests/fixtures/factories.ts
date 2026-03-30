@@ -165,6 +165,7 @@ export interface EventOverrides {
   start_date?: string;
   end_date?: string;
   city?: string;
+  region?: string | null;
   country?: string;
   status?: 'draft' | 'published' | 'completed' | 'cancelled';
   registration_status?: string;
@@ -177,11 +178,11 @@ export function insertEvent(db: BetterSqlite3.Database, o: EventOverrides = {}):
   db.prepare(`
     INSERT INTO events (
       id, hashtag_tag_id, title, description, start_date, end_date,
-      city, country, status, registration_status, sanction_status,
+      city, region, country, status, registration_status, sanction_status,
       payment_enabled, currency,
       is_attendee_registration_open, is_tshirt_size_collected,
       created_at, created_by, updated_at, updated_by, version
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'USD', 0, 0, ?, ?, ?, ?, 1)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'USD', 0, 0, ?, ?, ?, ?, 1)
   `).run(
     id, tagId,
     o.title              ?? 'Test Event',
@@ -189,6 +190,7 @@ export function insertEvent(db: BetterSqlite3.Database, o: EventOverrides = {}):
     o.start_date         ?? '2026-06-01',
     o.end_date           ?? '2026-06-03',
     o.city               ?? 'Testville',
+    o.region             ?? null,
     o.country            ?? 'US',
     o.status             ?? 'published',
     o.registration_status ?? 'open',
