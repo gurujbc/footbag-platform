@@ -23,7 +23,7 @@ This document is the source of truth for all legacy data migration design: the t
 7. [Auto-link: matching historical persons to members](#7-auto-link-matching-historical-persons-to-members)
 8. [Self-serve legacy claim flow](#8-self-serve-legacy-claim-flow)
 9. [Merge rules](#9-merge-rules)
-10. [Club bootstrap and onboarding](#10-club-bootstrap-and-onboarding)
+10. [Club bootstrap and onboarding](#10-club-bootstrap-and-onboarding) (includes 10.1 classification rules, 10.3 registration onboarding flow)
 11. [Registration as the data-cleanup funnel](#11-registration-as-the-data-cleanup-funnel)
 12. [Required schema changes](#12-required-schema-changes)
 13. [Data pipeline inventory](#13-data-pipeline-inventory)
@@ -76,7 +76,7 @@ These are loaded into `historical_persons` and `event_result_entries`/`event_res
 
 The `legacy_data/mirror_footbag_org/` directory contains an offline crawl of www.footbag.org. Notably:
 
-- `www.footbag.org/clubs/`: 346 club subdirectories representing the full legacy club registry
+- `www.footbag.org/clubs/`: 458 club subdirectories (311 parse as valid clubs with name and country; 147 are defunct or empty pages)
 - `www.footbag.org/clublist/`: aggregate listings
 - Member profile pages (accessible via member ID paths)
 
@@ -88,10 +88,12 @@ Initial club extraction from the mirror exists. James is taking over these scrip
 
 - `legacy_data/scripts/extract_clubs.py`, `load_clubs_seed.py`: club identity extraction and loading
 - `legacy_data/scripts/extract_club_members.py`, `load_club_members_seed.py`: club membership extraction and loading
-- `legacy_data/seed/clubs.csv`: 311 extracted club identities
+- `legacy_data/seed/clubs.csv`: 311 extracted club identities (columns: legacy_club_key, name, city, region, country, contact_email, external_url, description, created, last_updated)
 - `legacy_data/seed/club_members.csv`: ~2,400 club membership associations
 
-Remaining work (James's sprint): confidence scoring, leadership inference, bootstrap eligibility, club-only person extraction into `historical_persons`, and `club_bootstrap_leaders` population.
+The `created` and `last_updated` columns in `clubs.csv` are CMS timestamps extracted from `div#MainModified` in each club's mirror HTML. They reflect when the club page was created and last edited on the legacy site, not when the mirror crawled it. These dates are a primary input to the club classification rules (see section 10.1).
+
+Remaining work (James's sprint): club classification per the rules in section 10.1, leadership inference, bootstrap eligibility, club-only person extraction into `historical_persons`, and `club_bootstrap_leaders` population.
 
 ### 2.4 Schema
 
@@ -137,23 +139,34 @@ James's pipeline must produce:
 - Inferred role classifications: `member`, `contact`, `leader`, `co-leader`
 - Linkage from inferred persons to `historical_persons.person_id` where possible
 - Preserved `legacy_member_id` when known from the mirror
-- Bootstrap eligibility decision per club
+- Club classification per section 10.1 rules (pre-populate, onboarding-visible, dormant, or junk)
+- Bootstrap eligibility decision for pre-populated clubs, based on leader candidate availability (section 3 bootstrap rule)
 - Review report including:
+  - Per-club classification with which rule(s) matched
   - Clubs with no credible leader candidate
   - Clubs with multiple competing leader candidates
-  - People with multiple apparent current-club indications
+  - People with multiple apparent current-club indications (store all affiliations with `resolution_status = 'pending'`; the member resolves at claim time by choosing one current club and marking others as former)
   - Unmapped club aliases or duplicate club identities
-  - Recommended split: bootstrap now / stage for manual review / do not create at go-live
+  - Recommended split per classification rules (section 10.1): pre-populate / onboarding-visible / dormant / junk
 
 #### Bootstrap rule
 
-A club may be bootstrapped into the live system only when all of the following hold:
+A pre-populated club (per section 10.1 rules R1-R4) receives bootstrap leader rows when all of the following hold:
 
-- Club identity is normalized with high confidence
-- At least one high-confidence leader candidate is available
-- That candidate maps to a `legacy_member_id` that will exist in the imported member rows
+- At least one leader candidate with `club_bootstrap_leaders.confidence_score >= 0.70`
+- That candidate maps to a `legacy_member_id` that will exist in the imported member rows (verified provisionally by James based on `legacy_member_id` presence; confirmed at test load when Steve's export arrives)
 
-If these conditions are not met, the club is staged for admin review and not auto-created.
+Leader candidate confidence is distinct from club classification. It measures how certain we are that a specific person is the right leader for this club. James's pipeline assigns this score based on:
+
+- Listed as contact on club page with matching `historical_persons` row and `legacy_member_id`: high (>= 0.70)
+- Listed as contact but no `historical_persons` match: medium (0.40 to 0.69)
+- Inferred from member roster (most active or most events) but not listed as contact: lower (< 0.40)
+
+The 0.70 threshold is tunable at test load via validation gate G8.
+
+Pre-populated clubs that do not meet the leader requirement are pre-populated without a provisional leader (first member with membership Tier 1+ to confirm affiliation is offered co-leadership; see leadership activation path 2 below).
+
+Clubs that fail the pre-populate rules (R1-R4) are classified as onboarding-visible, dormant, or junk per section 10.1.
 
 #### Leadership model
 
@@ -167,7 +180,7 @@ Bootstrap-eligible clubs are created with:
 **Leadership activation paths:**
 
 1. **Bootstrap leader registers and claims**: the claim flow presents the leadership for confirmation. On confirmation, the system promotes the bootstrap row to a live `club_leaders` row, and the leader can manage the club.
-2. **First affiliated member accepts leadership**: if no bootstrap leader has registered, the first member who registers and confirms affiliation with that club is offered leadership during onboarding (if Tier 1+). On acceptance, the system supersedes the bootstrap assignment and appoints the member as leader. No admin confirmation required.
+2. **First affiliated member accepts leadership**: if no bootstrap leader has yet registered, the first member who registers and confirms affiliation with that club is offered leadership during onboarding (if membership Tier 1+). On acceptance, the member is added as a co-leader. Any existing bootstrap leader assignments remain provisional until those candidates register and claim. Clubs may have multiple leaders.
 3. **Admin resolution**: admin can supersede bootstrap assignments and appoint any registered member as leader through the standard `club_leaders` workflow.
 
 ---
@@ -423,32 +436,164 @@ After merge, `legacy_email` may survive on the active account as legacy metadata
 
 ## 10. Club bootstrap and onboarding
 
-### Expanding historical_persons for club members
+### 10.1 Club classification rules
+
+Every club extracted from the mirror is classified into one of four categories based on rules applied to three data sources. The rules are deterministic: no weighted scores or tunable thresholds. Classification determines whether the club exists in the live `clubs` table at go-live, is shown as a suggestion during registration, is searchable but not suggested, or is excluded entirely.
+
+#### Source data
+
+All signals are derived from data that already exists in the mirror or the database. No external API calls or manual lookups are required.
+
+**Source 1: Mirror club HTML** (`mirror_footbag_org/www.footbag.org/clubs/show/{id}/index.html`)
+
+Each club detail page in the mirror contains structured HTML elements that the extraction scripts parse:
+
+- `div#MainModified`: contains two CMS timestamps in the format `Created Sun Jan 15 10:16:52 2012; last update Sun Jan 15 10:16:52 2012.` These are the dates the club page was created and last edited on footbag.org by a club contact or admin. Extracted into `clubs.csv` as the `created` and `last_updated` columns.
+- `div#ClubsWelcome`: free-text club description.
+- `div.clubsURL > a[href]`: external website URL, if present.
+- `div.clubsContacts`: contact person(s), each with a `members/profile/{id}` link identifying the contact's legacy member ID.
+- Member count: enumerated on the corresponding roster page (`ClubID_{id}/showmembers/index.html`).
+
+Of the 311 valid clubs, all 311 have `last_updated` timestamps, 309 have contact emails, 247 have descriptions, 97 have external URLs, and the median member count is 3.
+
+**Source 2: Event archive** (`mirror_footbag_org/www.footbag.org/events/show/*/index.html`)
+
+Event detail pages contain a `div.eventsHostClub` element with a link to the hosting club's `clubs/show/{id}` page. This establishes a direct, parseable relationship between events and clubs. Of the 311 clubs, 116 have hosted at least one event (1,215 total host references across the archive). The event date (from `div.eventsDate`) determines when the most recent hosted event occurred.
+
+**Source 3: Historical persons database** (`historical_persons` joined via `legacy_person_club_affiliations`)
+
+The `legacy_person_club_affiliations` table links club candidates to historical persons. Each historical person has a `last_year` field (the most recent year they appeared in event results). The club's listed contact person is identified by matching the contact's `members/profile/{id}` link to `historical_persons.legacy_member_id`. "Contact competed 2020 or later" means the specific person listed as the club's contact on the legacy site has a `historical_persons.last_year >= 2020`. This is distinct from any affiliated member competing recently; the contact is the person responsible for the club.
+
+Of the 311 clubs, 147 have at least one affiliated historical person, and 54 have a listed contact who competed in 2020 or later.
+
+#### Classification rules
+
+Rules are evaluated in order. A club is assigned to the first category whose rules it satisfies.
+
+**Pre-populate** (live `clubs` table at go-live, 63 clubs):
+
+A club is pre-populated if ANY of the following rules is true:
+
+| Rule | Condition | What it proves |
+|---|---|---|
+| R1 | Hosted an event in 2020 or later | Recent organizational activity |
+| R2 | Page updated 2020 or later AND ever hosted an event | Maintained page with proven hosting history |
+| R3 | Page updated 2020 or later AND club's listed contact competed 2020 or later | Maintained page with active, reachable leader |
+| R4 | Club's listed contact competed 2020 or later AND ever hosted an event | Active leader with proven hosting history |
+
+If the club also has a high-confidence leader candidate (`club_bootstrap_leaders.confidence_score >= 0.70`), it gets bootstrap leader rows. Otherwise it is pre-populated without a provisional leader (first member with membership Tier 1+ to confirm affiliation is offered co-leadership; see leadership activation path 2 in section 3).
+
+**Onboarding-visible** (in `legacy_club_candidates`, shown as suggestions during registration, 121 clubs):
+
+Fails all pre-populate rules but ANY of the following is true:
+
+| Rule | Condition | What it proves |
+|---|---|---|
+| R5 | Club's listed contact competed 2020 or later | Active leader exists; club resolves when they register |
+| R6 | Ever hosted an event | Proven organizational history |
+| R7 | Page edited 2016 or later AND after creation date | Someone maintained the club in the last 10 years |
+| R8 | Has affiliated member who competed 2020 or later | Recently active person connected to this club |
+| R9 | Club created 2022 or later | Too new to judge by historical signals |
+| R10 | 10 or more members OR 3 or more known historical players | Significant community investment |
+
+**Dormant** (in `legacy_club_candidates`, searchable by name during onboarding but not suggested proactively, 96 clubs):
+
+Fails all pre-populate and onboarding-visible rules. Has a description (so not junk). These are real clubs that went quiet: someone wrote about them, but they have no hosting history, no recent edits, no active connections.
+
+**Junk** (excluded, not imported, 31 clubs):
+
+ALL of the following are true:
+
+- Never edited after creation (created date equals last_updated date)
+- Never hosted an event
+- No affiliated members who competed 2020 or later
+- Club's listed contact did not compete 2020 or later
+- Created before 2022
+- No description (empty `div#ClubsWelcome`)
+
+These are clubs where someone clicked "create club" on the legacy site and never invested any effort. They are not imported into `legacy_club_candidates`.
+
+#### Storage
+
+Pre-populated clubs are created as live `clubs` rows at go-live. All other non-junk clubs remain in `legacy_club_candidates`. When a member confirms affiliation with an onboarding-visible or dormant club during registration, a new `clubs` row is created on demand using seed data from `clubs.csv` (name, city, region, country, contact_email, external_url, description). The `legacy_club_candidates` table must not be dropped until all onboarding-visible and dormant clubs are either created or abandoned.
+
+#### Pipeline ordering
+
+The active-players and contact-competed signals both query `historical_persons`. The club-only member extraction (section 10.2) must complete before classification runs, otherwise these signals will be artificially deflated for clubs whose members never competed in events.
+
+Required order within James's pipeline:
+1. Extract ~1,600 club-only members into `historical_persons` (section 10.2)
+2. Classify clubs per the rules above
+3. Set `bootstrap_eligible` and populate `club_bootstrap_leaders` for pre-populated clubs
+
+### 10.2 Expanding historical_persons for club members
 
 The historical_persons table currently contains ~4,861 persons drawn from event results. Approximately 1,600 additional people in the mirror appear only as club members (never competed in events). These must be extracted and added to historical_persons to support club affiliation linking at claim time.
 
-### Club visibility at onboarding
+### 10.3 Club onboarding flow during registration
 
-All 311 mirror clubs are visible during registration onboarding for affiliation questions. Only high-confidence clubs are pre-populated into the live `clubs` table at go-live. Bootstrapped clubs are publicly visible at go-live but cannot be managed until a leader confirms (see bootstrap rule above).
+Registration is the primary mechanism for resolving club data. Every registrant goes through a three-stage club flow after identity resolution (sections 7-8).
 
-### Club membership and contact cleanup at claim
+#### Stage 1: Direct matches
 
-At claim time, the member is shown mirror-derived club affiliation suggestions and may:
+The system checks if the registrant matches any club contact or affiliated member in the mirror data (via club contact member IDs and `legacy_person_club_affiliations`).
 
-- Confirm current affiliation (writes to `member_club_affiliations`)
-- Mark former-only affiliation
-- Reject bad suggestions
-- Confirm or reject contact-email assignment
-- Request admin review for unresolved cases
+**If the person is listed as contact of a club**, show: "We found you listed as the contact for [Club Name] in [City, Country]."
 
-At most one current club affiliation may exist per member. When confirming a current club, any existing current affiliation for that member is converted to former in the same transaction.
+Choices:
 
-### Dormant club leadership
+1. **"This is my club and it's still active"** -- person affiliates with the club. Follow-up questions: "Is the contact info still correct?", "Would you like to update the description?", "Is the website still active?" For pre-populated clubs with a bootstrap row, the bootstrap row is promoted to a live `club_leaders` row. For pre-populated clubs without a bootstrap row, leadership is offered (membership Tier 1+). For onboarding-visible or dormant clubs, the club is created on demand from seed data and the person becomes leader.
+2. **"I was involved but the club is no longer active"** -- mark as former affiliation, flag club as reported-inactive. Follow-up: "When did it become inactive?" (optional), "Do you know if any other clubs are active in [region]?"
+3. **"This club still exists but I'm no longer involved"** -- mark as former affiliation, club stays as-is.
+4. **"I don't recognize this club"** -- reject affiliation, flag club for admin review. This is a strong junk signal when the listed contact does not recognize the club.
 
-When a member picks a dormant club during onboarding:
+**If the person is an affiliated member (not contact)**, show: "Are you affiliated with [Club Name] in [City, Country]?"
 
-- If the member is Tier 1 or higher: offer club leadership
-- Otherwise: record the member's intent and defer the leadership offer
+Same four choices. Differences: for choice 1, leadership is offered only if no active leader exists AND person is membership Tier 1+ (added as co-leader, does not supersede existing leaders). For choice 4, the signal is weaker than a contact rejection (members may have forgotten a club they briefly joined).
+
+#### Stage 2: Regional suggestions
+
+After direct matches are resolved, the system checks for clubs near the registrant's location (same country/region).
+
+Show: "There are footbag clubs near you in [Region/Country]:" Pre-populated and onboarding-visible clubs are shown, prioritized by proximity. Dormant clubs are not shown. Junk clubs are never shown.
+
+Choices per club:
+
+1. **"I'm part of this club"** -- same affiliation flow as Stage 1 choice 1
+2. **"I know this club but I'm not a member"** -- no affiliation, positive existence signal for the club
+3. **"I've never heard of this club"** -- negative signal (especially strong if person is in the same city)
+4. **Skip** -- no action
+
+#### Stage 3: No clubs nearby
+
+If no direct matches and no regional suggestions (or person skipped all):
+
+Show: "Would you like to start a club in [City]?" or skip.
+
+#### Signals collected from registration
+
+Every registration interaction produces data that feeds back into club quality:
+
+| Signal | Source | Effect |
+|---|---|---|
+| Contact confirms club active | Stage 1, choice 1 | Club confirmed active. If not pre-populated, create on demand. |
+| Contact reports club inactive | Stage 1, choice 2 | Flag club as reported-inactive. Admin can demote or archive. |
+| Contact does not recognize club | Stage 1, choice 4 | Strong junk signal. Flag for admin review. |
+| Member confirms affiliation | Stage 1 or 2, choice 1 | Positive signal. Club is real. |
+| Member rejects affiliation | Stage 1, choice 4 | Weak negative signal (one data point). |
+| Regional: "I know this club" | Stage 2, choice 2 | Positive existence confirmation. |
+| Regional: "Never heard of it" | Stage 2, choice 3 | Negative signal, especially if same city. |
+| Multiple rejections on same club | Accumulated | Escalate to admin review. |
+| Updated contact info, description, or URL | Stage 1 follow-up | Direct data improvement on the club record. |
+
+#### Constraints
+
+- At most one current club affiliation per member. Confirming a new one converts any existing current to former in the same transaction.
+- Clubs may have multiple leaders.
+- Leadership is only offered to membership Tier 1+.
+- Onboarding-visible and dormant clubs are created on demand when a person confirms affiliation. The `clubs` row is populated from `clubs.csv` seed data.
+- Junk clubs are never shown in any stage.
+- Dormant clubs are not shown in Stage 2 regional suggestions but are findable if the person searches by name.
 
 ---
 
@@ -457,9 +602,9 @@ When a member picks a dormant club during onboarding:
 Registration is the primary mechanism for cleaning up legacy identity data. Every registrant, whether new or returning from the legacy site, goes through:
 
 1. **Legacy-link check:** Does the registrant's email match an imported placeholder? If so, prompt to link (auto-link for Tier 1/2; claim flow for others).
-2. **Club questions:** Mirror-derived club affiliation suggestions are presented for confirmation, rejection, or "not mine" responses.
+2. **Club onboarding flow:** Three-stage club resolution (direct matches, regional suggestions, start a club). See section 10.3 for the complete flow, choices, and feedback signals collected.
 
-This replaces the narrower `M_Review_Legacy_Club_Data_During_Claim` user story with a broader onboarding flow that applies to both legacy and new members. New members without any legacy match still see the club questions (relevant clubs in their region, or "find a club").
+This replaces the narrower `M_Review_Legacy_Club_Data_During_Claim` user story with a broader onboarding flow that applies to both legacy and new members. New members without any legacy match still see regional club suggestions and the option to start a club.
 
 ---
 
@@ -609,7 +754,7 @@ We do **not** need Steve to produce club data. That comes from the mirror pipeli
 
 James's historical pipeline work (running as a parallel sprint; see IMPLEMENTATION_PLAN.md for sprint goals):
 
-1. **Club extraction into pipeline**: move mirror club extraction scripts into the historical pipeline; club identity normalization, affiliation inference, leadership inference, bootstrap eligibility decisions
+1. **Club extraction into pipeline**: move mirror club extraction scripts into the historical pipeline; club identity normalization, affiliation inference, leadership inference. Classify clubs per the rules in section 10.1 (requires: `last_updated` and `created` from `clubs.csv`, most recent hosted event year from event HTML cross-reference, club contact member IDs matched to `historical_persons.last_year`, member counts, and description presence). Set `bootstrap_eligible` for pre-populated clubs with high-confidence leader candidates per section 3 bootstrap rule
 2. **Mirror member extraction** into `historical_persons`: ~1,600 club-only members from the mirror who never appeared in event results
 3. **Known name variants table**: seeded from mined data
 4. **World records CSV**: for the records page
@@ -660,9 +805,9 @@ Name model, slug lifecycle, person links, historical name display, `first_compet
 
 ### State 1: James's pipeline complete
 
-- `legacy_club_candidates` populated
+- `legacy_club_candidates` populated and classified per section 10.1 rules (pre-populate, onboarding-visible, dormant; junk excluded)
 - `legacy_person_club_affiliations` populated
-- Bootstrap eligibility decisions made
+- Bootstrap eligibility decisions made for pre-populated clubs
 - Review report reviewed; admin decisions logged for ambiguous cases
 - Known name variants table seeded
 
@@ -835,7 +980,7 @@ Note: At registration time, Tier 3 cases are handled by inline user prompt (no a
 
 | Table | Category | May be dropped |
 |---|---|---|
-| `legacy_club_candidates` | Migration-only staging | Yes, after all bootstrap decisions are finalized |
+| `legacy_club_candidates` | Migration-only staging | Yes, after all onboarding-visible and dormant clubs are either created or abandoned, and all bootstrap decisions are finalized |
 | `legacy_person_club_affiliations` | Migration-only staging | Yes, after all affiliation suggestions are resolved |
 | `club_bootstrap_leaders` | Operational, migration-origin | Yes, after all provisional rows reach a terminal state (`claimed`, `superseded`, or `rejected`) |
 | `member_club_affiliations` | Permanent operational | Never |

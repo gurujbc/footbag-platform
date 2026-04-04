@@ -475,7 +475,11 @@ Success Criteria:
 - Display names are constrained to prevent homograph attacks (for example: no mixed scripts or confusable characters, and reasonable length limits).
 - New members automatically assigned Tier 0 (free lifetime) status.
 - **Legacy-link check:** After account creation, the system checks whether the registrant’s verified email matches an imported placeholder row’s `legacy_email` or a historical person’s legacy email. If a match is found, the member is prompted inline to confirm the link ("We found a history record, is this you?"). For high-confidence matches (Tier 1 exact name match, Tier 2 known variant match), the prompt defaults to yes (pre-checked). For low-confidence matches (Tier 3 email match but name mismatch), the prompt defaults to no (member must actively opt in). The member’s decision is audit-logged. No admin involvement at registration time; the member is the authority on their own identity.
-- **Club questions:** During onboarding, the member is presented with club-related questions. For members with legacy matches, mirror-derived club affiliation suggestions are shown for confirmation, rejection, or "not mine" responses. For new members without legacy matches, relevant clubs in their region are suggested. When a member picks a club whose leader has not yet registered: offer leadership if Tier 1 or higher (acceptance is immediate, no admin confirmation), otherwise record intent and defer.
+- **Club onboarding flow:** During onboarding, the member goes through a three-stage club flow:
+  - **Stage 1 (direct matches):** If the registrant matches a club contact or affiliated member from the legacy mirror data, those clubs are shown first. For each club, the member chooses: "This is my club and it's still active" (affiliates, offered leadership if membership Tier 1+ and no active leader), "I was involved but the club is no longer active" (former affiliation, club flagged as reported-inactive), "This club still exists but I'm no longer involved" (former affiliation), or "I don't recognize this club" (rejected, club flagged for admin review). If the member confirms as contact of an active club, follow-up questions are shown: "Is the contact info still correct?", "Would you like to update the description?", "Is the website still active?"
+  - **Stage 2 (regional suggestions):** Clubs near the registrant's location are shown (pre-populated and onboarding-eligible clubs in the same country/region). For each, the member can: "I'm part of this club" (same affiliation flow as Stage 1), "I know this club but I'm not a member" (positive existence signal, no affiliation), "I've never heard of this club" (negative signal), or skip. Dormant and junk clubs are not shown in regional suggestions.
+  - **Stage 3 (no clubs nearby):** If no direct matches and no regional suggestions apply (or the member skipped all), the member is offered: "Would you like to start a club in [City]?" or skip.
+  - When a member confirms affiliation with a club that is not yet in the live `clubs` table, the club is created on demand from legacy seed data and the member is offered leadership (if membership Tier 1+). Clubs may have multiple leaders. Leadership acceptance is immediate with no admin confirmation.
 - **First competition year:** During onboarding, the member is asked to optionally confirm their first competition year. This field is editable later on the profile edit page (see M_Edit_Profile).
 - Member sees a clear success message after registration: "Registration successful! Please check your email to verify your account."
 - Member sees clear error messages for validation failures with hints about what to fix.
@@ -663,14 +667,16 @@ Story: As a member claiming my legacy account (or completing registration onboar
 Success Criteria:
 
 - When club affiliation or leadership suggestions exist for the claimant's legacy identity, the claim flow (or onboarding flow) presents them before the final merge confirmation.
-- Each suggestion shows the best available club identity and inferred role.
-- Member can mark each suggestion: current club, former-only, not mine, or needs admin review.
-- Member can confirm or reject contact-email assignment.
-- Member can confirm or reject leader or co-leader status.
-- When a member picks a club that has no registered leader: offer leadership if Tier 1 or higher (acceptance is immediate, no admin confirmation), otherwise record intent and defer.
-- Confirmed current affiliation writes to `member_club_affiliations`; if the member already has a current club affiliation, the previous one is converted to former in the same transaction.
-- Confirmed leadership promotes the bootstrap row (if any) into a live `club_leaders` row.
-- Former-only, not-mine, and needs-review outcomes are persisted so the member is not repeatedly prompted.
+- Each suggestion shows the club name, city, country, and the member's inferred role (contact, member).
+- For each suggestion, the member chooses one of:
+  - **"This is my club and it's still active"**: confirms current affiliation, writes to `member_club_affiliations`. If the member already has a current club affiliation, the previous one is converted to former in the same transaction. Leadership offered if membership Tier 1+ and no active leader exists (acceptance is immediate, no admin confirmation). If the member is the listed contact, follow-up questions: "Is the contact info still correct?", "Would you like to update the description?", "Is the website still active?" Updated data is written to the club record.
+  - **"I was involved but the club is no longer active"**: marks as former affiliation, flags club as reported-inactive. Optional follow-up: "When did it become inactive?" and "Do you know if any other clubs are active in [region]?"
+  - **"This club still exists but I'm no longer involved"**: marks as former affiliation, club stays as-is.
+  - **"I don't recognize this club"**: rejects affiliation, flags club for admin review. Strong signal when the listed contact does not recognize the club.
+- Confirmed leadership promotes the bootstrap row (if any) into a live `club_leaders` row. Clubs may have multiple leaders.
+- If the club is not yet in the live `clubs` table (onboarding-visible or dormant), confirming "still active" creates the club on demand from legacy seed data.
+- All outcomes (current, former, rejected, reported-inactive) are persisted so the member is not repeatedly prompted.
+- Multiple rejections or "never heard of it" signals on the same club across different registrants are accumulated and escalated to admin review.
 
 ## 3.2 Profile Management
 

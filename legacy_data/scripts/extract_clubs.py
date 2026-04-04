@@ -6,11 +6,13 @@ and writes a CSV. Idempotent: skips if the output CSV already exists and is
 newer than this script.
 
 Output columns:
-  legacy_club_key, name, city, region, country, contact_email, external_url, description
+  legacy_club_key, name, city, region, country, contact_email, external_url, description,
+  created, last_updated
 """
 
 import csv
 import os
+import re
 import sys
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -29,6 +31,8 @@ FIELDNAMES = [
     "contact_email",
     "external_url",
     "description",
+    "created",
+    "last_updated",
 ]
 
 
@@ -104,6 +108,20 @@ def extract_club(html_path, legacy_club_key):
     if welcome_div:
         description = welcome_div.get_text(separator=" ", strip=True)
 
+    # CMS timestamps from div#MainModified
+    # Format: "Created Sun Jan 15 10:16:52 2012; last update Sun Jan 15 10:16:52 2012."
+    created = ""
+    last_updated = ""
+    modified_div = soup.select_one("div#MainModified")
+    if modified_div:
+        text = modified_div.get_text(separator=" ", strip=True)
+        m = re.search(r"Created\s+(.+?);\s*last", text)
+        if m:
+            created = m.group(1).strip()
+        m = re.search(r"last\s+update\s+(.+?)\.", text)
+        if m:
+            last_updated = m.group(1).strip()
+
     return {
         "legacy_club_key": legacy_club_key,
         "name": name,
@@ -113,6 +131,8 @@ def extract_club(html_path, legacy_club_key):
         "contact_email": contact_email,
         "external_url": external_url,
         "description": description,
+        "created": created,
+        "last_updated": last_updated,
     }
 
 

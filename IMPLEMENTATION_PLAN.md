@@ -96,6 +96,39 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 
 ---
 
+## Next sprint: Infrastructure hardening + email activation
+
+**Goal:** Close the highest-impact temporary deviations that block future feature work. These three items can run in parallel and together unblock the entire Phase 4 cascade (email verification, password reset, legacy claim production rewrite, organizer write flows).
+
+### Tier 1 items (this sprint)
+
+| # | Task | Size | Unblocks | Dependencies |
+|---|------|------|----------|-------------|
+| 1-E | CloudFront pass 2: enable on staging, validate, enable on production | M | 1-F security hardening, production deploy, maintenance failover | None |
+| 4-A' | Auth hardening: JWT cookie, per-request DB state check, CSRF, password-version session invalidation | L | Organizer write flows, admin work queue, all state-changing routes | None |
+| 4-D | Email outbox worker: activate `worker.ts` for outbox_emails via SES | L | Email verification (4-E), password reset (4-G), legacy claim rewrite (4-F'), mailing lists | SES configured (already Terraformed) |
+
+### Sequencing notes
+
+- 1-E, 4-A', and 4-D have no dependencies on each other; all three can proceed in parallel.
+- 4-A' is the highest-risk deviation: all future state-changing routes depend on CSRF and session invalidation being in place.
+- 4-D activates the worker stub that is already scaffolded; SES domain verification is already Terraformed.
+- 1-E is the smallest item and the prerequisite for the rest of the Phase 1 infrastructure chain (1-F, 1-G).
+
+### Tier 2 items (queue after Tier 1, or in parallel where independent)
+
+- **1-G CloudWatch agent** (S): easy win, no dependency beyond Phase 0
+- **Backup/restore workflow** (M): S3 bucket scaffolded, no producer yet; must be in place before production data is at risk
+- **"Footbag Hacky" stub cleanup** (S): remove stub account once real auth flow is validated
+
+### Acceptance criteria
+
+- 1-E: CloudFront active on staging with valid HTTPS; origin still reachable for health checks; `npm test` and manual staging verification pass
+- 4-A': JWT-based session cookie with per-request DB state check; CSRF token on all state-changing forms; password change invalidates existing sessions; all existing integration tests pass plus new tests for session invalidation and CSRF rejection
+- 4-D: Worker processes outbox_emails rows; SES sends in staging (sandbox mode acceptable); dead-letter / retry semantics defined; integration test for outbox processing
+
+---
+
 ## James's sprint: Historical pipeline completion (parallel)
 
 James is merging his footbag-results repo (github.com/JamesLeberknight/footbag-results) into this repo. His pipeline already produces events, results, persons, world records, and has identity/name-variant mining tools. This sprint integrates that work and extends it to cover clubs.
@@ -213,27 +246,27 @@ These are known, intentional shortcuts. Each has an explicit unblock condition. 
 
 ### Feature deviations
 
-1. **Auth is DB-backed but not hardened.** HMAC-signed cookie with DB-backed argon2 credential verification. Env-var stub fallback remains for dev. No CSRF flow, no password-version or session-invalidation model, no JWT. Unblock: replace with real JWT/DB sessions, add CSRF, session invalidation before production member onboarding.
+1. **Auth is DB-backed but not hardened.** HMAC-signed cookie with DB-backed argon2 credential verification. Env-var stub fallback remains for dev. No CSRF flow, no password-version or session-invalidation model, no JWT. Unblock: replace with real JWT/DB sessions, add CSRF, session invalidation before production member onboarding. **Scheduled: next sprint, task 4-A'.**
 
 2. **Member profiles have conditional public visibility.** `/members/:memberKey` is publicly visible for HoF/BAP members (read-only profile with competitive results). All other member profiles require authentication. `/members` (landing) is auth-gated and redirects to own profile. Historical persons live at `/history/*` (separate from member profiles). Unblock: finalize the privacy-safe public member discovery/search design.
 
 3. **No public member directory or search.** `/members` redirects authenticated users to their own profile. Historical persons are browsable at `/history`. Unblock: design and implement a privacy-safe public member directory.
 
-4. **Worker has no real jobs.** `worker.ts` exits cleanly; the worker container is scaffolded only. No outbox, email, or background-job processing is active. Unblock: Phase 4 email outbox activation.
+4. **Worker has no real jobs.** `worker.ts` exits cleanly; the worker container is scaffolded only. No outbox, email, or background-job processing is active. Unblock: Phase 4 email outbox activation. **Scheduled: next sprint, task 4-D.**
 
 ### Infrastructure deviations
 
 5. **No closed backup/restore workflow.** S3 bucket is scaffolded; no backup producer exists; no restore drill run. `/health/ready` is a DB-probe only. Unblock: implement backup job in worker and run a restore rehearsal before any production data is at risk.
 
-6. **Maintenance mode is not production-grade.** CloudFront maintenance-origin/error behavior is omitted from Terraform; direct-origin failover not implemented. Unblock: Phase 1-E CloudFront pass 2.
+6. **Maintenance mode is not production-grade.** CloudFront maintenance-origin/error behavior is omitted from Terraform; direct-origin failover not implemented. Unblock: Phase 1-E CloudFront pass 2. **Partially addressed: next sprint, task 1-E enables CloudFront; maintenance page deferred to 1-F.**
 
 7. **CloudFront hardening incomplete.** X-Origin-Verify header absent from Nginx; OAC/ordered-cache controls deferred; direct-origin bypass unprotected. Unblock: Phase 1-F security hardening.
 
-8. **CI/CD pipeline is partial.** App CI is active (`.github/workflows/ci.yml` runs build + test + terraform fmt/validate). Three deploy scripts: `deploy-code.sh` (code-only), `deploy-rebuild.sh` (destructive DB rebuild), `deploy-migrate.sh` (stub, not yet implemented). Remaining: CloudFront (1-E), security hardening (1-F), CloudWatch agent (1-G).
+8. **CI/CD pipeline is partial.** App CI is active (`.github/workflows/ci.yml` runs build + test + terraform fmt/validate). Three deploy scripts: `deploy-code.sh` (code-only), `deploy-rebuild.sh` (destructive DB rebuild), `deploy-migrate.sh` (stub, not yet implemented). Remaining: CloudFront (1-E), security hardening (1-F), CloudWatch agent (1-G). **Partially addressed: next sprint, task 1-E.**
 
 9. **Monitoring is partial and intentionally gated.** CloudWatch log groups and alarms Terraformed; agent install TODO; monitoring gates default false; backup freshness metric has no producer. Unblock: Phase 1-G.
 
-10. **Runtime config is manually managed.** App reads local env vars from `/srv/footbag/env` only. SSM/IAM scaffolding exists but app runtime does not consume it. Unblock: when runtime AWS calls (SSM, S3, SES, KMS) are activated.
+10. **Runtime config is manually managed.** App reads local env vars from `/srv/footbag/env` only. SSM/IAM scaffolding exists but app runtime does not consume it. Unblock: when runtime AWS calls (SSM, S3, SES, KMS) are activated. **Partially addressed: next sprint, task 4-D activates first AWS runtime call (SES).**
 
 11. **Bootstrap security shortcuts remain.** Operator IAM and SSH access use bootstrap-era posture. Unblock: explicit security hardening pass before production launch.
 
