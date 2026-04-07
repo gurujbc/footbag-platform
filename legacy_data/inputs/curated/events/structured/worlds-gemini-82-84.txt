@@ -1,0 +1,99 @@
+event_name,year,division,place,player_1,player_2
+1982 NHSA National Championships,1982,Open Sgls Net,1,Kenny Shults,
+1982 NHSA National Championships,1982,Open Sgls Net,2,Billy Hayne,
+1982 NHSA National Championships,1982,Open Sgls Net,3,Brace Guettich,
+1982 NHSA National Championships,1982,Open Dbls Net,1,Mag Hughes,Billy Hayne
+1982 NHSA National Championships,1982,Open Dbls Net,2,Nancy Reynolds,
+1982 NHSA National Championships,1982,Open Dbls Net,3,Cheryl Hughes,
+1982 NHSA National Championships,1982,Women's Sgls Net,1,Lori Jean Tarr,
+1982 NHSA National Championships,1982,Women's Sgls Net,2,Nancy Reynolds,
+1982 NHSA National Championships,1982,Women's Sgls Net,3,Cheryl Hughes,
+1982 NHSA National Championships,1982,Women's Dbls Net,1,Cheryl Hughes,Lori Jean Tarr
+1982 NHSA National Championships,1982,Women's Dbls Net,2,Tricia George,Judy Grace
+1982 NHSA National Championships,1982,Women's Dbls Net,3,Nancy Reynolds,Constance Constable
+1982 NHSA National Championships,1982,Mixed Dbls Net,1,Lori Jean Tarr,Billy Hayne
+1982 NHSA National Championships,1982,Mixed Dbls Net,2,Cheryl Hughes,Mag Hughes
+1982 NHSA National Championships,1982,Mixed Dbls Net,3,Tricia George,Dave Robinson
+1982 NHSA National Championships,1982,Open Sgls Freestyle,1,Kenny Shults,
+1982 NHSA National Championships,1982,Open Team Freestyle,1,Gary Lautt,Mag Hughes
+1982 NHSA National Championships,1982,Open Team Freestyle,1,Jim Caveney,Greg Cortopassi
+1982 NHSA National Championships,1982,Open Team Freestyle,3,Jack Schoolcraft,Will Squire
+1982 NHSA National Championships,1982,Open Sgls Consecutive,1,Andy Linder,
+1982 NHSA National Championships,1982,Open Golf,1,Kenny Shults,
+1983 WFA National Championships,1983,Open Sgls Net,1,Kenny Shults,
+1983 WFA National Championships,1983,Open Sgls Net,2,Andy Linder,
+1983 WFA National Championships,1983,Open Sgls Net,3,Gary Lautt,
+1983 WFA National Championships,1983,Open Golf,1,Mike Harding,
+1983 WFA National Championships,1983,Open Golf,2,Kenny Shults,
+1983 WFA National Championships,1983,Open Golf,3,Greg Cortopassi,
+1983 NHSA National Championships,1983,Open Sgls Net,1,Mag Hughes,
+1983 NHSA National Championships,1983,Open Sgls Net,2,Kenny Shults,
+1983 NHSA National Championships,1983,Open Sgls Net,3,Steve Fennell,
+1983 NHSA National Championships,1983,Open Dbls Net,1,Kenny Shults,Mike Harding
+1983 NHSA National Championships,1983,Open Dbls Net,2,Dave Hill,Dave Robinson
+1983 NHSA National Championships,1983,Open Dbls Net,3,Bob Swerdlick,Mike Puderbaugh
+1983 NHSA National Championships,1983,Women's Sgls Net,1,Lori Jean Tarr,
+1983 NHSA National Championships,1983,Women's Sgls Net,2,Nancy Reynolds,
+1983 NHSA National Championships,1983,Women's Sgls Net,3,Tricia George,
+1983 NHSA National Championships,1983,Women's Dbls Net,1,Lori Jean Tarr,Rita Buckley
+1983 NHSA National Championships,1983,Mixed Dbls Net,1,Lori Jean Tarr,Bruce Guettich
+1983 NHSA National Championships,1983,Mixed Dbls Net,2,Shannon Aubin,Dave Robinson
+1983 NHSA National Championships,1983,Mixed Dbls Net,3,Tricia George,Jim Fitzgerald
+1983 NHSA National Championships,1983,Open Sgls Freestyle,1,Jack Schoolcraft,
+1983 NHSA National Championships,1983,Open Sgls Freestyle,2,Jim Caveney,
+1983 NHSA National Championships,1983,Open Sgls Freestyle,3,Bill Bethurum,
+1983 NHSA National Championships,1983,Open Team Freestyle,1,Kenny Shults,Gary Lautt
+1983 NHSA National Championships,1983,Open Team Freestyle,1,Jim Caveney,
+1983 NHSA National Championships,1983,Open Team Freestyle,2,Kevin Courtney,Dave Robinson
+1983 NHSA National Championships,1983,Open Team Freestyle,2,Reed Gray,
+1983 NHSA National Championships,1983,Open Team Freestyle,3,Robert Conover,Jim Fitzgerald
+1983 NHSA National Championships,1983,Open Sgls Consecutive,1,Jack Schoolcraft,
+1983 NHSA National Championships,1983,Open Golf,1,Mike Harding,
+1983 NHSA National Championships,1983,Open Golf,2,Tim Prater,
+1983 NHSA National Championships,1983,Open Golf,3,Kenny Shults,
+1984 WFA National Championships,1984,Men's Overall,1,Mag Hughes,
+1984 WFA National Championships,1984,Women's Overall,1,Tricia George,
+1984 WFA National Championships,1984,Open Sgls Net,1,Pat Castle,
+1984 WFA National Championships,1984,Open Sgls Net,1,Kenny Shults,
+1984 WFA National Championships,1984,Open Sgls Net,1,Mag Hughes,
+1984 WFA National Championships,1984,Open Sgls Net,2,Mag Hughes,
+1984 WFA National Championships,1984,Open Sgls Net,2,Dave Robinson,
+1984 WFA National Championships,1984,Open Sgls Net,2,Tim Mackey,
+1984 WFA National Championships,1984,Open Sgls Net,3,Dave Robinson,
+1984 WFA National Championships,1984,Open Sgls Net,3,Torbin Wigge,
+1984 WFA National Championships,1984,Open Sgls Net,3,Kenny Shults,
+1984 WFA National Championships,1984,Open Dbls Net,1,Mag Hughes,Billy Hayne
+1984 WFA National Championships,1984,Open Dbls Net,1,Mag Hughes,Billy Hayne
+1984 WFA National Championships,1984,Open Dbls Net,2,Kevin Coker,Steve Granzberg
+1984 WFA National Championships,1984,Open Dbls Net,2,Kenny Shults,Mike Harding
+1984 WFA National Championships,1984,Open Dbls Net,2,Greg Cortopassi,Bruce Guettich
+1984 WFA National Championships,1984,Open Dbls Net,3,Jim Caveney,Dave Robinson
+1984 WFA National Championships,1984,Open Dbls Net,3,Kevin Courtney,Dave Robinson
+1984 WFA National Championships,1984,Women's Sgls Net,1,Nancy Reynolds,
+1984 WFA National Championships,1984,Women's Sgls Net,1,Nancy Reynolds,
+1984 WFA National Championships,1984,Women's Sgls Net,2,Cheryl Hughes,
+1984 WFA National Championships,1984,Women's Sgls Net,2,Tricia George,
+1984 WFA National Championships,1984,Women's Sgls Net,3,Trudy Archdale,
+1984 WFA National Championships,1984,Women's Sgls Net,3,Trudy Archdale,
+1984 WFA National Championships,1984,Women's Dbls Net,1,Nancy Reynolds,Tricia George
+1984 WFA National Championships,1984,Women's Dbls Net,2,Constance Constable,Jenny Davidson
+1984 WFA National Championships,1984,Women's Dbls Net,2,Shannon Aubin,Tricia George
+1984 WFA National Championships,1984,Women's Dbls Net,3,Jodi Sebastien,Shannon Aubin
+1984 WFA National Championships,1984,Women's Dbls Net,3,Karen Atgopian,Constance Constable
+1984 WFA National Championships,1984,Mixed Dbls Net,1,Tricia George,Dave Robinson
+1984 WFA National Championships,1984,Mixed Dbls Net,2,Nancy Reynolds,Greg Cortopassi
+1984 WFA National Championships,1984,Mixed Dbls Net,3,Cheryl Hughes,Mag Hughes
+1984 WFA National Championships,1984,Open Sgls Freestyle,1,Andy Linder,
+1984 WFA National Championships,1984,Open Sgls Freestyle,2,Kenny Shults,
+1984 WFA National Championships,1984,Open Sgls Freestyle,3,Jack Schoolcraft,
+1984 WFA National Championships,1984,Open Team Freestyle,1,Jim Fitzgerald,Jack Schoolcraft
+1984 WFA National Championships,1984,Open Team Freestyle,2,Gary Lautt,Jim Caveney
+1984 WFA National Championships,1984,Open Team Freestyle,2,Mag Hughes,
+1984 WFA National Championships,1984,Open Team Freestyle,3,Scott Cleere,Bill Bethurum
+1984 WFA National Championships,1984,Women's Team Freestyle,1,Tricia George,Jodi Sebastien
+1984 WFA National Championships,1984,Women's Team Freestyle,2,Suzanne Beauchemin,Constance Constable
+1984 WFA National Championships,1984,Women's Team Freestyle,3,Jenny Davidson,Ruth Osterman
+1984 WFA National Championships,1984,Open Sgls Consecutive,1,Kenny Shults,
+1984 WFA National Championships,1984,Open Golf,1,Kenny Shults,
+1984 WFA National Championships,1984,Open Golf,2,Dave Robinson,
+1984 WFA National Championships,1984,Open Golf,3,Dave Robinson,

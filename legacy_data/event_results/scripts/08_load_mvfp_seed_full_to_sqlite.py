@@ -166,7 +166,7 @@ def main() -> None:
                 """,
                 (
                     row.get("person_id", "").strip() or None,
-                    row.get("person_canon", "").strip() or None,
+                    row.get("person_name", "").strip() or None,
                     row.get("ifpa_member_id", "").strip() or None,
                     row.get("country", "").strip() or None,
                     int(row["first_year"]) if row.get("first_year", "").strip() else None,

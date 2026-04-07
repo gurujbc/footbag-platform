@@ -1,0 +1,10 @@
+event_id,canonical_event_id,action,notes
+
+1980_worlds_oregon_city,1980_worlds_oregon_city_2,supersede,mirror stub replaced by magazine
+1980_worlds_oregon_city_2,1980_worlds_oregon_city,canonical,rename to base key
+
+1980_worlds_memphis,1980_worlds_memphis,merge,partial merge required
+1980_worlds_memphis_2,1980_worlds_memphis,merge,net divisions source
+
+1984_eurochamp,,hold,conflicting winners requires verification
+1984_eurochamp_2,,hold,conflicting winners requires verification

@@ -1,0 +1,46 @@
+person: Andy Linder
+
+corrections:
+
+  remove_participation:
+    - event: 1987_worlds
+    - event: 1988_worlds
+    - event: 1989_worlds
+    - event: 1990_worlds
+    - event: 1992_worlds
+    - event: 1993_worlds
+    - event: 1994_worlds
+    - event: 1995_worlds
+    - event: 1996_worlds_montreal
+    - event: 1980_western_states
+
+  remove_results:
+    - event: 1991_worlds
+      note: incorrect events listed
+    - event: 1986_worlds
+      division: singles_consecutives
+
+  add_or_confirm_results:
+    - event: 1991_worlds
+      division: singles_freestyle
+      place: 2
+    - event: 1986_worlds
+      division: singles_freestyle
+      place: 2
+
+  event_corrections:
+    - event: 1985_kansas_city
+      correct_name: Cabin Fever Classic
+      month: March
+    - event: 1985_chicago
+      correct_name: Oak Park - Chicago Open
+    - event: 1985_worlds
+      note: confirm WFA World Championships
+    - event: 1984_worlds
+      action: remove duplicate
+    - event: 1983_wfa
+      note: Andy did not attend
+    - event: 1983_nhsa
+      note: results valid
+    - event: 1982
+      note: duplicate consecutives entry remove top

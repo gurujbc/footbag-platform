@@ -145,3 +145,24 @@ tfplan
 
 # Generated cache files (never commit)
 legacy_data/robots_cache.json
+legacy_data/out/
+legacy_data/event_results/seed/
+database/footbag.db
+legacy_data/out/
+legacy_data/event_results/seed/
+database/footbag.db
+legacy_data/out/
+legacy_data/event_results/seed/
+legacy_data/Footbag_Results_Canonical.xlsx
+legacy_data/mirror_footbag_org
+database/footbag.db
+legacy_data/out/
+legacy_data/event_results/seed/
+legacy_data/Footbag_Results_Canonical.xlsx
+legacy_data/mirror_footbag_org
+database/footbag.db
+legacy_data/event_results/seed/
+*.zip
+*.lnk
+*BAK
+*.py1

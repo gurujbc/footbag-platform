@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "created": "2026-03-11",
+    "description": "Recurring structural patterns discovered during HIGH-queue adjudication. Each entry documents a known parser behaviour, the evidence it was found on, and the recommended fix.",
+    "investigation_note": "Investigation of 36 HIGH division-mismatch events showed the parser is NOT the primary issue. 12/36 are PBP staleness (parser already correct). 16/36 are RFO-mismatch (parser bypassed by design). Only ~7 events need actual parser work."
+  },
+  "patterns": [
+    {
+      "pattern_name": "PBP_STALENESS",
+      "description": "Stage2 parser correctly finds divisions that are absent from the identity-locked PBP. PBP was generated from an older stage2 parse before the parser was improved. No parser fix needed — requires PBP migration.",
+      "detection_rule": "division_count_stage2 > division_count_pbp AND event not in RESULTS_FILE_OVERRIDES",
+      "parser_fix": "NONE — parser is correct. Fix path: rebuild PBP from current stage2 for affected events, applying identity resolution to new player tokens.",
+      "events_seen": [
+        "1005667143", "1025084282", "1158263300", "1179679872", "1216058526",
+        "1678957450", "859923755", "876591529", "886044392", "892446131",
+        "910551956", "981560223"
+      ],
+      "fix_priority": "MEDIUM",
+      "status": "IDENTIFIED — no parser change needed"
+    },
+    {
+      "pattern_name": "RFO_CANONICAL_DIVERGENCE",
+      "description": "Event has RESULTS_FILE_OVERRIDE. Stage2 output (from mirror) differs from PBP (from override file). This is expected: the override IS the canonical source for these events. Stage2 division count is informational only.",
+      "detection_rule": "event_id in RESULTS_FILE_OVERRIDES AND division_count_stage2 != division_count_pbp",
+      "parser_fix": "NONE — override is the source of truth. Review queue should classify these as OVERRIDE_OK and lower their heat score.",
+      "events_seen": [
+        "1022992222", "1032602594", "1035817350", "1061453080", "1094201584",
+        "1102443443", "1102788509", "1103297805", "1134914723", "1189345008",
+        "1386623061", "1405875596", "1473932659", "859787898", "937854594",
+        "947196813"
+      ],
+      "fix_priority": "LOW",
+      "status": "IDENTIFIED — RFO events should be excluded from heat scoring or capped at MEDIUM"
+    },
+    {
+      "pattern_name": "NOISE_DIVISION_DETECTION",
+      "description": "Parser creates spurious division entries from non-result content: 'Unknown', score-embedded names like 'Open Golf Par = 62', header lines like '24 Novice Competitors', round labels like '* Advanced To Finals'.",
+      "detection_rule": "division_canon matches: 'Unknown' | contains 'Par =' | matches '^\\d+ \\w+ Competitors$' | starts with '*' or '**'",
+      "parser_fix": "Filter noise divisions post-parse. Already partially handled in stage2 QC. Consider adding to canonicalize_divisions() filter list.",
+      "events_seen": ["947026077", "990905420", "892446131", "981560223"],
+      "fix_priority": "LOW",
+      "status": "MINOR — these noise divisions do not propagate to PBP (identity lock filters them)"
+    },
+    {
+      "pattern_name": "ENCODING_APOSTROPHE_CORRUPTION",
+      "description": "Division names with apostrophes (Women's, Men's, Master's) sometimes appear in PBP as Women?S, Mens?S due to encoding corruption in the source HTML. Stage2 now has the correct form but PBP retains the corrupted form.",
+      "detection_rule": "division_canon contains '?S' or '?s' in letter context",
+      "parser_fix": "Already tracked in tools/33_schema_logic_qc.py (7 known divisions). Fix path: targeted PBP patch for corrupted division names. See event 1294262550 (Women?S Doubles Net vs Women's Doubles Net).",
+      "events_seen": ["1294262550"],
+      "fix_priority": "LOW",
+      "status": "KNOWN — documented in QC tool 33, 7 corrupted division names in PBP"
+    },
+    {
+      "pattern_name": "INLINE_RESULTS_NARRATIVE_MIXING",
+      "description": "Mirror page pre-block mixes event narrative text with results. Parser may extract narrative as placement entries or miss results entirely. Most common in older US events (1997-2008 Summer Classic style).",
+      "detection_rule": "pre block text length > 1000 AND placement-like lines < 20% of total lines AND contains tournament narrative keywords",
+      "parser_fix": "Already handled for most cases via RESULTS_FILE_OVERRIDE. For remaining events: use h2-structured extraction path when pre-block is narrative-heavy.",
+      "events_seen": ["1216058526"],
+      "fix_priority": "LOW",
+      "status": "PARTIALLY HANDLED via RESULTS_FILE_OVERRIDE for known cases"
+    },
+    {
+      "pattern_name": "SEEDING_PLUS_FINALS_DOUBLE_COUNT",
+      "description": "Events with prelim/seeding rounds + finals publish both rounds. Parser captures both, doubling placement counts and causing same player to appear twice in same division at different places.",
+      "detection_rule": "same person appears twice in same (event, division) with place spread > 5 in sub_round context",
+      "parser_fix": "Already handled: QC tool 32 check 3 detects sub_round duplicates and tags as expected. No parser change needed — these are correctly preserved as pool-play artifacts.",
+      "events_seen": ["937727262", "947026077", "1096318324"],
+      "fix_priority": "NONE",
+      "status": "KNOWN — documented in known_issues.csv, QC check 3 handles detection"
+    }
+  ]
+}

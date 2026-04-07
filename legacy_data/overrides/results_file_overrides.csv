@@ -1,0 +1,106 @@
+event_id,file,replace,notes
+910551956,legacy_data/event_results/910551956.txt,true,1999 Western Regional — name typos and multi-day Novice Doubles Net merge
+1000071985,legacy_data/event_results/1000071985.txt,true,2001 Frankfurt Open — ol/li format parser only captured p1 per division
+948943299,legacy_data/event_results/948943299.txt,true,2000 Arica Open — mixed old/new format team rows and spurious player rows
+915561090,legacy_data/event_results/915561090.txt,true,1999 Worlds — not in mirror; 19 divisions recovered via HTTP fetch
+1035277529,legacy_data/event_results/1035277529.txt,true,2003 Worlds — not in mirror; 15 divisions recovered via HTTP fetch
+980969461,legacy_data/event_results/980969461.txt,true,2001 Worlds — Manually Entered Results section has complete final standings
+1079444598,legacy_data/event_results/1079444598.txt,true,German Open 2004 — division headers lacked colons
+1036298726,legacy_data/event_results/1036298726.txt,true,Colorado Shred 4 2003 — ordinal+paren format not matched; BIG 3 Round 2 only
+1070954568,legacy_data/event_results/1070954568.txt,true,Colorado Shred 5 2004 — sub-division headers without colons
+1189345008,legacy_data/event_results/1189345008.txt,true,5th Wilanow 2007 — i doubles separator; backtick in header; missing colons
+1102443443,legacy_data/event_results/1102443443.txt,true,Footbag Fiesta 2005 — Open Sick3 header lacked colon; Open Big One truncated
+1032602594,legacy_data/event_results/1032602594.txt,true,Victorian Championships 2002 — Sic 3 wrong keyword; Shred 30 no place numbers
+1208408135,legacy_data/event_results/1208408135.txt,true,ShrEdmonton 2008 — Glow Square and animation challenge had no DIVISION_KEYWORDS
+1156283186,legacy_data/event_results/1156283186.txt,true,Hackrifice Open 2006 — bare Intermediate sub-sections caused dedup collapse
+1111735438,legacy_data/event_results/1111735438.txt,true,Rochester Shred 2005 — bare Intermediate/Open headers merged same-named divisions
+1061453080,legacy_data/event_results/1061453080.txt,true,Australian East Coast 2003 — tied = marker in Open Routines
+1094201584,legacy_data/event_results/1094201584.txt,true,Frankfurt 2004 — Open FIVES no keyword; encoding truncated Open Freestyle
+1405875596,legacy_data/event_results/1405875596.txt,true,East Coast Championships 2014 — tie N. placement format not captured
+1133888413,legacy_data/event_results/1133888413.txt,true,Valentines Day Massacre 2006 — 4-SQUARE parsed as placement not header
+1096695238,legacy_data/event_results/1096695238.txt,true,UMaine 2004 — LEVEL 1/2 RANKING sub-section headers not detected
+1092073845,legacy_data/event_results/1092073845.txt,true,Czech Championships 2004 — Big 1 not detected; Open Freestyle appeared twice
+1134914723,legacy_data/event_results/1134914723.txt,true,RNH Contest 2006 — Big 1 not detected as division
+909186885,legacy_data/event_results/909186885.txt,true,1999 Southern Regional — sport headers with bare sub-divisions
+1386623061,legacy_data/event_results/1386623061.txt,true,US Open 2014 — freestyle in h2-scoped sections; net results missed entirely
+1473932659,legacy_data/event_results/1473932659.txt,true,Austrian Championships 2016 — Overall Austria parenthetical not detected
+1624971880,legacy_data/event_results/1624971880.txt,true,21st IFPA Euro Net 2021 — flag emoji and country annotations caused failures
+1155788760,legacy_data/event_results/1155788760.txt,true,2006 Southeast Regionals — trick combos with > dropped names
+1044624680,legacy_data/event_results/1044624680.txt,true,2003 Southeastern Regional — Intermediate Big3 captured 2/3
+1080757998,legacy_data/event_results/1080757998.txt,true,Space City 2004 — Open Sick3/Sick Trick each missing 3rd place
+1035817350,legacy_data/event_results/1035817350.txt,true,NSW Championships 2002 — Sic 3 wrong keyword
+1167422711,legacy_data/event_results/1167422711.txt,true,07 Southeastern Net — no division header; entries 8-9 missing
+1046985067,legacy_data/event_results/1046985067.txt,true,Steel City 2003 — Intermediate Big3 captured 2/3
+1688144863,legacy_data/event_results/1688144863.txt,true,East Coast Championships 2023 — 5 (tie)- format not matched
+1447494731,legacy_data/event_results/1447494731.txt,true,Lake Erie 2016 — 2ndPlace: no space; split-line doubles
+1745686591,legacy_data/event_results/1745686591.txt,true,Finnish Open 2024 — 1st round Round Robin garbage row
+1022992222,legacy_data/event_results/1022992222.txt,true,Shred Zero 2002 — Big 3 division lacks keyword
+1645621833,legacy_data/event_results/1645621833.txt,true,IV Basque 2022 — seeding+partial+final sections parsed with duplicates
+1742511366,legacy_data/event_results/1742511366.txt,true,VII Basque 2025 — date/location lines parsed as placements
+1566500647,legacy_data/event_results/1566500647.txt,true,I Basque 2019 — date/registration line parsed as p23
+1102788509,legacy_data/event_results/1102788509.txt,true,Sunshred 2005 — trick combo > annotations dropped Rewind Combo p1 and p2
+1677285621,legacy_data/event_results/1677285621.txt,true,V Basque 2023 — 1. round section header parsed as placement
+1103297805,legacy_data/event_results/1103297805.txt,true,2e Championnat de France 2005 — Big 1 unrecognized; G* nickname fails check
+2001980001,legacy_data/event_results/2001980001.txt,true,1980 Worlds pre-mirror — inline multi-placement parsing errors
+2001981001,legacy_data/event_results/2001981001.txt,true,1981 Worlds pre-mirror — inline multi-placement parsing errors
+2001982001,legacy_data/event_results/2001982001.txt,true,1982 Worlds pre-mirror — inline multi-placement parsing errors
+2001983001,legacy_data/event_results/2001983001.txt,true,1983 Worlds pre-mirror — inline multi-placement parsing errors
+2001983002,legacy_data/event_results/2001983002.txt,true,1983 WFA — formerly in JUNK; now active with correct results
+2001984001,legacy_data/event_results/2001984001.txt,true,1984 Worlds pre-mirror — inline multi-placement parsing errors
+2001985001,legacy_data/event_results/2001985001.txt,true,1985 Worlds pre-mirror — inline multi-placement parsing errors
+9928572,legacy_data/event_results/9928572.txt,true,Magazine ingestion — mirror Worlds 1980 augmented with FBW-ARCHIVE
+9992129,legacy_data/event_results/9992129.txt,true,Magazine ingestion — mirror Worlds 1981 augmented with FBW-ARCHIVE
+9998504,legacy_data/event_results/9998504.txt,true,Magazine ingestion — mirror Worlds 1982 augmented with FBW-ARCHIVE
+9904297,legacy_data/event_results/9904297.txt,true,Magazine ingestion — mirror Worlds 1983 augmented with FBW-ARCHIVE
+9924417,legacy_data/event_results/9924417.txt,true,Magazine ingestion — mirror Worlds 1984 augmented with FBW-ARCHIVE
+2001985005,legacy_data/event_results/2001985005.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001986004,legacy_data/event_results/2001986004.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001987001,legacy_data/event_results/2001987001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001989001,legacy_data/event_results/2001989001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001990001,legacy_data/event_results/2001990001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001991001,legacy_data/event_results/2001991001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001992001,legacy_data/event_results/2001992001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001994001,legacy_data/event_results/2001994001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001995001,legacy_data/event_results/2001995001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+2001996001,legacy_data/event_results/2001996001.txt,true,Magazine ingestion — new pre-mirror synthetic event
+1408070192,legacy_data/event_results/1408070192.txt,true,Inline format collapsed all placements to 1 garbage row
+1664206719,legacy_data/event_results/1664206719.txt,true,2v2 consecutive-line format dropped doubles partners; p5 missing
+1069929277,legacy_data/event_results/1069929277.txt,true,2004 Worlds — pool+finals merged (6 divs 17 dup pairs)
+1096318324,legacy_data/event_results/1096318324.txt,true,2004 Seattle Juggling — pool+finals merged (2 divs 11 dup pairs)
+1102576153,legacy_data/event_results/1102576153.txt,true,2005 Worlds — pool+finals merged (3 divs 16 dup pairs)
+1163784775,legacy_data/event_results/1163784775.txt,true,2007 Worlds — pool+finals merged (9 divs 26 dup pairs)
+1183729267,legacy_data/event_results/1183729267.txt,true,9e Open de France 2007 — pool+finals merged (3 divs 14 dup pairs)
+1194517448,legacy_data/event_results/1194517448.txt,true,2008 Worlds — pool+finals merged (4 divs 16 dup pairs)
+1219405634,legacy_data/event_results/1219405634.txt,true,8th Polish Championships 2008 — pool+finals merged (4 divs 17 dup pairs)
+1265745512,legacy_data/event_results/1265745512.txt,true,2010 Worlds — pool+finals merged (4 divs 15 dup pairs)
+1269266785,legacy_data/event_results/1269266785.txt,true,Slovak-Czech 2009 — pool+finals merged (3 divs 12 dup pairs)
+1293877677,legacy_data/event_results/1293877677.txt,true,2011 Worlds — pool+finals merged (10 divs 34 dup pairs)
+1297811412,legacy_data/event_results/1297811412.txt,true,2012 Worlds — pool+finals merged (4 divs 21 dup pairs)
+1323272493,legacy_data/event_results/1323272493.txt,true,2013 Worlds — pool+finals merged; encoding artifacts U+FFFD in names
+1336988107,legacy_data/event_results/1336988107.txt,true,12th Polish 2012 — pool+finals merged (2 divs 13 dup pairs)
+1376036018,legacy_data/event_results/1376036018.txt,true,15th Polish 2015 — pool+finals merged (5 divs 16 dup pairs)
+1485863923,legacy_data/event_results/1485863923.txt,true,2019 Worlds — pool+finals merged (6 divs 16 dup pairs)
+1518200935,legacy_data/event_results/1518200935.txt,true,41st Polish 2021 — pool+finals merged (2 divs 12 dup pairs)
+1519215398,legacy_data/event_results/1519215398.txt,true,2021 Worlds — pool+finals merged (5 divs 19 dup pairs)
+1547415984,legacy_data/event_results/1547415984.txt,true,44th Worlds 2023 — pool+finals merged (4 divs 19 dup pairs)
+1694170899,legacy_data/event_results/1694170899.txt,true,Wroclaw 2019 — pool+finals merged (4 divs 17 dup pairs)
+1706036811,legacy_data/event_results/1706036811.txt,true,2022 Worlds — pool+finals merged (6 divs 15 dup pairs)
+1706536250,legacy_data/event_results/1706536250.txt,true,Bembel Cup 2024 — tab-separated two-column format mangled as singles
+1678957450,legacy_data/event_results/1678957450.txt,true,42nd Worlds 2023 — two Womens Singles Net blocks; second is Womens Doubles
+937854594,legacy_data/event_results/937854594.txt,true,Turku Tournee 1999 — Intermediate/Pro conflated into bare Singles/Doubles Net
+857874500,legacy_data/event_results/857874500.txt,true,Oregon 1997 — pool+finals merged (5 divs 17 dup pairs)
+876356874,legacy_data/event_results/876356874.txt,true,1998 WhoWhere Western Regionals — pool+finals merged (6 divs 15 dup pairs)
+1170456736,legacy_data/event_results/1170456736.txt,true,Windchill 2007 — bare dash separator fails on mononym Luka
+1262631137,legacy_data/event_results/1262631137.txt,true,Urban Komba 2010 — Bulgarian Name-Nickname(Club) parsed as doubles
+1267996189,legacy_data/event_results/1267996189.txt,true,Footbag Zara 2010 — same format as 1262631137 (same organizer)
+1267718326,legacy_data/event_results/1267718326.txt,true,Windy City Cup 2010 — Doubles p1 dropped by narrative filter
+1301837216,legacy_data/event_results/1301837216.txt,true,King of the Hill 2011 — seeding+finals merged in OSN (2 dup pairs)
+1331667371,legacy_data/event_results/1331667371.txt,true,Paris Net Battle 2 2012 — singles+doubles bracket entries merged
+1200725314,legacy_data/event_results/1200725314.txt,true,SoCali Jam 2008 — trick annotations parsed as player names
+1127155729,legacy_data/event_results/1127155729.txt,true,Zocha Jam 2005 — second Open double Freestyle is actually Open Doubles Net
+1158263300,legacy_data/event_results/1158263300.txt,true,Zocha Jam 2006 — Interdmediate typo not recognized as division header
+859923755,legacy_data/event_results/859923755.txt,true,California State 1997 — tabular RESULTS/SEED/PARTNERS format not recognized
+1001076315,legacy_data/event_results/1001076315.txt,true,5th Finnish 2001 — Name-City format caused city parsed as doubles partner
+984694623,legacy_data/event_results/984694623.txt,true,1st Montreal Summer 2001 — Name City Province format caused city as teammate
+972427576,legacy_data/event_results/972427576.txt,true,LHivernal 2001 — (City Province) format caused city as doubles partner
+991285803,legacy_data/event_results/991285803.txt,true,Montreal Net Championships 2001 — unlabeled section after Open Singles p19

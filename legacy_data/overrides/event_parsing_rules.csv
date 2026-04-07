@@ -1,0 +1,10 @@
+event_id,rule_name,rule_value,notes
+1293877677,split_merged_teams,true,2011 Worlds — merged team format: Emmanuel Bouchard [1] CAN Florian Goetze GER
+884112176,pre_parse_fixup,ordinal_inline_divisions,1998 Fighting Illini — division header includes 1st place inline
+1664206719,pre_parse_fixup,us_open_2023,2023 US Open — ordinals on separate lines before player names
+1706036811,pre_parse_fixup,worlds_2024_doubles,2024 Worlds — (CC)-Name format no space before dash
+857874500,pre_parse_fixup,two_column_oregon_1997,1997 U of Oregon — two-column tabular layout
+859787898,pre_parse_fixup,heart_of_footbag_1997,1997 Heart of Footbag — ALL-CAPS ordinals no separator
+947196813,pre_parse_fixup,nz_champs_2000,2000 NZ Championships — up to 3-column tabular layout
+1721817655,file,legacy_data/event_results/1721817655.txt,2024 VI Basque — narrative round-date headers misread as placements 9 and 11
+1721817655,replace,true,2024 VI Basque — replace entirely with clean Classification section

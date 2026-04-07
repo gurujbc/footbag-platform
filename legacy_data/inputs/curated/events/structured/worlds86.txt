@@ -1,0 +1,241 @@
+event_name,year,location,division,place,player_name,score,notes
+1986 World Footbag Championships,1986,Golden CO,Singles Ultra Footbag Net,1,Kenny Shults,,
+1986 World Footbag Championships,1986,Golden CO,Singles Ultra Footbag Net,2,Mag Hughes,,
+1986 World Footbag Championships,1986,Golden CO,Singles Ultra Footbag Net,3,David Robinson,,
+1986 World Footbag Championships,1986,Golden CO,Singles Ultra Footbag Net,4,John East,,
+1986 World Footbag Championships,1986,Golden CO,Singles Ultra Footbag Net,5,Scott Cleere,,
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,1,Garry Griggs,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,1,Mag Hughes,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,2,Mike Harding,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,2,Kenny Shults,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,3,Bill Bethurum,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,3,Scott Cleere,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,4,Jimmy Caveney,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,4,David Robinson,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,5,Bruce Guettich,,doubles
+1986 World Footbag Championships,1986,Golden CO,Doubles Ultra Footbag Net,5,Chris Ott,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Net,1,Tricia Sullivan,,
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Net,2,Marie Elsner,,
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Net,3,Trudy Archdale,,
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,1,Marie Elsner,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,1,Paula Elsner,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,2,Constance Reed,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,2,Kim Era,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,3,Tricia Sullivan,,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Net,3,Trudy Archdale,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,1,Tricia Sullivan,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,1,David Robinson,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,2,Trudy Archdale,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,2,Bruce Guettich,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,3,Colleen Minton,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,3,John East,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,4,Lisa McDaniels,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,4,Kenny Shults,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,5,Constance Reed,,doubles
+1986 World Footbag Championships,1986,Golden CO,Mixed Doubles Footbag Net,5,Jimmy Caveney,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Singles Footbag Net,1,Garry Griggs,,
+1986 World Footbag Championships,1986,Golden CO,Advanced Singles Footbag Net,2,Al Laverick,,
+1986 World Footbag Championships,1986,Golden CO,Advanced Singles Footbag Net,3,Al Petersen,,
+1986 World Footbag Championships,1986,Golden CO,Advanced Singles Footbag Net,4,Remi Kristensen,,
+1986 World Footbag Championships,1986,Golden CO,Advanced Singles Footbag Net,5,Chris Routh,,
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,1,Ken Hamric,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,1,Andrew Williams,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,2,Al Laverick,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,2,Al Petersen,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,3,Tom Akin,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,3,Jim Hunsaker,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,4,Jon Lind,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,4,Dennis Ross,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,5,Jim Fitzgerald,,doubles
+1986 World Footbag Championships,1986,Golden CO,Advanced Doubles Footbag Net,5,Jack Schoolcraft,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Freestyle,1,Jon Lind,,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Freestyle,2,Andy Linder,,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Freestyle,3,Kenny Shults,,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Freestyle,4,Jack Schoolcraft,,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Freestyle,5,Dennis Ross,,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Freestyle,1,Tricia Sullivan,,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Freestyle,2,Constance Reed,,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Freestyle,3,Kim Era,,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Freestyle,3,Janice Earl,,
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,1,Scott Cleere,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,1,Bill Bethurum,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,1,Randy Nelson,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,2,Jon Lind,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,2,Dennis Ross,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,3,Jim Fitzgerald,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,3,Jack Schoolcraft,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,4,David Robinson,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,4,Tricia Sullivan,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,5,Rick Reese,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Team Footbag Freestyle,5,Paul Garnaat,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Footbag Golf 3 Rounds,1,Charlie Hallowell,195,
+1986 World Footbag Championships,1986,Golden CO,Open Footbag Golf 3 Rounds,2,Jack Schoolcraft,197,
+1986 World Footbag Championships,1986,Golden CO,Open Footbag Golf 3 Rounds,3,Kenny Shults,197,
+1986 World Footbag Championships,1986,Golden CO,Open Footbag Golf 3 Rounds,4,Evan Bozett,197,
+1986 World Footbag Championships,1986,Golden CO,Open Footbag Golf 3 Rounds,5,Jimmy Caveney,199,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Golf 3 Rounds,1,Tricia Sullivan,252,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Golf 3 Rounds,2,Brenda Carman,254,
+1986 World Footbag Championships,1986,Golden CO,Women's Footbag Golf 3 Rounds,3,Lynn Swearingen,260,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Consecutive,1,Fred Barnum,21021,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Consecutive,2,Derrick Fogle,20004,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Consecutive,3,Jimmy Caveney,11111,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Consecutive,4,Andy Linder,11000,
+1986 World Footbag Championships,1986,Golden CO,Open Singles Footbag Consecutive,5,David Robinson,10361,
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Consecutive,1,Francine Beaudry,10327,
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Consecutive,2,Tricia Sullivan,7688,
+1986 World Footbag Championships,1986,Golden CO,Women's Singles Footbag Consecutive,3,Constance Reed,6977,
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,1,Jimmy Caveney,33333,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,1,Gary Lautt,33333,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,2,Andy Linder,20000,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,2,Tricia Sullivan,20000,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,3,Evan Bozett,18348,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,3,Samantha Conlon,18348,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,4,Bill Langbehn,16753,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,4,Brent Welch,16753,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,5,Jon Lind,13618,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Doubles Footbag Consecutive,5,Dennis Ross,13618,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,1,Constance Reed,21025,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,1,Marie Elsner,21025,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,2,Tricia Sullivan,6044,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,2,Francine Beaudry,6044,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,3,Samantha Conlon,1602,doubles
+1986 World Footbag Championships,1986,Golden CO,Women's Doubles Footbag Consecutive,3,Tina Lewis,1602,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Singles Footbag Net,1,Eric Thompson-Green,,
+1986 World Footbag Championships,1986,Golden CO,Intermediate Singles Footbag Net,2,Yves Archambault,,
+1986 World Footbag Championships,1986,Golden CO,Intermediate Singles Footbag Net,3,Martin Cote,,
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,1,Yves Archambault,,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,1,Martin Cote,,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,2,Normand Bellemare,,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,2,Jeff Wells,,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,3,Morton Lundsgaard,,doubles
+1986 World Footbag Championships,1986,Golden CO,Intermediate Doubles Footbag Net,3,Paul Dieter,,doubles
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,1,Jimmy Caveney,368.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,2,Jack Schoolcraft,347.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,3,Kenny Shults,344.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,4,David Robinson,329.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,5,Jeff Johnson,297.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,6,Bruce Guettich,295.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,7,Brent Welch,278.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,8,Chris Ott,267.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,9,Dennis Ross,266.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,10,Jon Lind,260.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,11,Peter Shunny,259.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,12,Fred Barnum,259.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,13,Bill Langbehn,257.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,14,Scott Cleere,245.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,15,Derrick Fogle,234.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,16,Mark Wendell,227.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,17,Dutch Holland,222.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,18,Andy Linder,221.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,19,Jim Fitzgerald,221.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,20,Al Petersen,218.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,21,Pat Bieber,213.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,22,Gary Lautt,200.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,23,Timothy Vozar,192.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,24,Evan Bozett,184.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,25,Al Laverick,182.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,26,Randy Nelson,180.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,27,Ken Hamric,174.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,27,Mag Hughes,174.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,29,Bill Bethurum,162.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,30,Mike Harding,159.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,31,Eric Wolff,157.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,32,Jim Elsner,154.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,33,Matt Clark,149.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,33,Bob Gosselin,149.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,35,Rick Reese,148.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,36,Reed Gray,147.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,37,Chris Staton,146.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,38,Mark Pollish,136.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,39,Brent Stewart,132.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,40,Torbin Wigger,128.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,41,Soren Ravnkilde,123.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,42,Mark Cicchetti,122.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,43,Remi Kristensen,121.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,44,Andrew Williams,119.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,45,Jim Hunsaker,116.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,46,Russell Willit,116.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,47,Tricia Sullivan,110.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,48,Garry G. Griggs,110.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,49,John East,107.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,49,Tony Nevara,107.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,51,Rob McCloskey,106.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,52,Normand Bellemare,103.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,52,Edward Orlando,103.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,54,Rich Bates,101.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,55,Paul Garnaat,100.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,56,Rick Benedetti,96.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,57,Peter Chandler,94.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,57,John Elsner,94.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,59,Brian A. McCarty,93.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,60,Ken Brady,93.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,60,Chris Routh,93.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,62,Curt Stranger,92.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,63,Tom Akin,89.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,64,Joe Muscolino,87.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,65,Scott Davidson,82.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,66,Ritz M'Goo,81.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,67,Yves Archambault,81.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,68,Greg Cortopassi,80.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,69,Etienne Constable,74.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,69,Raul O'Donnal,74.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,71,James Stallcup,73.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,72,Jack Lentz,72.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,73,Michael Peterson,68.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,73,Russell Thomas,68.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,75,David Hill,64.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,76,Bill Crosby,63.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,77,Morton Lundsgaard,61.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,78,Charlie Hallowell,60.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,79,Samantha Conlon,56.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,80,Phillip Francis,55.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,81,Joseph Solonoski,52.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,82,Rick Kaufman,51.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,83,Eric Cole,47.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,84,Erik Thompson-Green,41.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,85,Jay Claffey,41.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,86,Kevin McDermott,40.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,87,Greg James,38.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,88,Lee Langlois,31.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,89,Michael Alfred,30.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,90,Brian Beun,27.5,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,91,Douglas Beskin,27.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,92,Paula Elsner,24.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,93,Tom Sisneros,22.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,94,Paul Dieter,14.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,95,PJ Lareau,13.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,96,JD Thompson,6.0,
+1986 World Footbag Championships,1986,Golden CO,Open Overall Standings,97,Greg Baca,2.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,1,Tricia Sullivan,353.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,2,Constance Reed,347.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,3,Jody Badger,297.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,4,Suz Beauchemin,295.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,5,Lynn Swearingen,294.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,6,Tina Lewis,272.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,7,Samantha Conlon,270.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,8,Kim Era,223.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,9,Janice Earl,208.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,10,Lisa McDaniel,200.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,11,Carolyn Gerard,193.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,12,Marie Elsner,179.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,13,Lynnett Hunt,175.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,14,Francine Beaudry,168.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,15,Trudy Archdale,163.0,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,16,Robin Icard,156.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,17,Paula Elsner,151.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,18,Kathryn McCulloch,149.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,19,Colleen Minton,149.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,20,Brenda Carman,146.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,21,Annamarie Fillmore,142.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,22,Mary Barnett,137.5,
+1986 World Footbag Championships,1986,Golden CO,Women's Overall Standings,23,Roxann Benesch,88.5,
+1986 World Footbag Championships,1986,Golden CO,Footbag Net Score Keeper's Contest,1,Bud Meltsner,23,
+1986 World Footbag Championships,1986,Golden CO,Footbag Net Score Keeper's Contest,2,Barb Lareau,18,
+1986 World Footbag Championships,1986,Golden CO,Footbag Net Score Keeper's Contest,3,Bob Gosselin,17,
+1986 World Footbag Championships,1986,Golden CO,Footbag Net Score Keeper's Contest,4,Peter Chandler,10,
+1986 World Footbag Championships,1986,Golden CO,Footbag Net Score Keeper's Contest,5,Jody Badger,9,
+1986 World Footbag Championships,1986,Golden CO,Footbag Consecutive Counter's Contest,1,Walt Seger,35172,
+1986 World Footbag Championships,1986,Golden CO,Footbag Consecutive Counter's Contest,2,Adam Hutchinson,30739,
+1986 World Footbag Championships,1986,Golden CO,Footbag Consecutive Counter's Contest,3,Jeff Cajka,30050,
+1986 World Footbag Championships,1986,Golden CO,Footbag Consecutive Counter's Contest,4,Bill Crosby,21021,
+1986 World Footbag Championships,1986,Golden CO,Footbag Consecutive Counter's Contest,5,Martin Cote,14255,

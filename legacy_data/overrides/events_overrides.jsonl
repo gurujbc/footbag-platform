@@ -1,0 +1,96 @@
+{"broken_source": true, "confidence": "high", "date": "October 11 - 12", "event_id": "860082052", "location": "Austin, Texas, United States", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 1997}
+{"confidence": "high", "event_id": "937366766", "location": "Mt. Prospect, IL, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "May 29", "event_id": "941066992", "location": "San Francisco, California, United States", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 2000}
+{"confidence": "high", "event_id": "955642039", "event_type": "social", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "May 27", "event_id": "959094047", "location": "Zurich, Zurich, Switzerland", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 2000}
+{"confidence": "high", "event_id": "961029998", "event_type": "social", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "967123362", "event_type": "golf", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1008128589", "location": "Boulder, Colorado, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "August 31 - September 2", "event_id": "1023993464", "location": "Hershey, Pennsylvania, USA", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 2002}
+{"broken_source": true, "confidence": "high", "date": "November 15 - 17", "event_id": "1030642331", "location": "Seattle, Washington, USA", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 2002}
+{"confidence": "high", "event_id": "1031232420", "exclude": true, "reason": "JUNK_EVENTS_TO_EXCLUDE", "source": "stage2.JUNK_EVENTS_TO_EXCLUDE"}
+{"confidence": "high", "event_id": "1043428338", "exclude": true, "reason": "JUNK_EVENTS_TO_EXCLUDE", "source": "stage2.JUNK_EVENTS_TO_EXCLUDE"}
+{"confidence": "high", "event_id": "1044952105", "event_type": "net", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1068164371", "event_name": "Portland Footbag Jam 2003 (Oct 23)", "source": "stage2.EVENT_NAME_OVERRIDES"}
+{"confidence": "high", "event_id": "1068164424", "event_name": "Portland Footbag Jam 2003 (Oct 31)", "source": "stage2.EVENT_NAME_OVERRIDES"}
+{"confidence": "high", "event_id": "1072202155", "location": "Oakland, California, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1076748214", "location": "St. Louis, Missouri, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1079664495", "event_type": "social", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1093115479", "event_type": "social", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "January 21 - 23", "event_id": "1099545007", "location": "Auckland, Auckland, New Zealand", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS"}
+{"confidence": "high", "event_id": "1102227996", "location": "Oakland, California, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1109356644", "location": "Harrisburg, Pennsylvania, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1118129163", "exclude": true, "reason": "JUNK_EVENTS_TO_EXCLUDE", "source": "stage2.JUNK_EVENTS_TO_EXCLUDE"}
+{"confidence": "high", "event_id": "1143172220", "location": "Somerville, New Jersey, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1149881200", "location": "Harrisburg, Pennsylvania, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "July 21 - 23", "event_id": "1151949245", "location": "Edmonton, Alberta, Canada", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS"}
+{"confidence": "high", "event_id": "1180708622", "location": "Silver Spring, Maryland, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1200725314", "event_type": "social", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1252451527", "location": "Harrisburg, Pennsylvania, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1269111845", "event_type": "net", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "August 14 - 15", "event_id": "1278991986", "location": "Vancouver, British Columbia, Canada", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS", "year": 2010}
+{"confidence": "high", "event_id": "1295120951", "location": "Oakland, California, USA", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1297909685", "location": "Caracas, Capital District, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"broken_source": true, "confidence": "high", "date": "April 30 - May 1", "event_id": "1299244521", "location": "Warsaw, Masovian, Poland", "reason": "KNOWN_BROKEN_SOURCE_EVENTS", "source": "stage2.KNOWN_BROKEN_SOURCE_EVENTS"}
+{"confidence": "high", "event_id": "1301675662", "location": "Caracas, Capital District, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1326725476", "location": "Mérida, Mérida, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1330833781", "location": "Caracas, Capital District, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1347475695", "event_type": "net", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1361239920", "location": "San Cristóbal, Táchira, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1362598500", "location": "Montréal, Québec, Canada", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1378928859", "location": "San Cristóbal, Táchira, Venezuela", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1458170459", "location": "Paris, Île-de-France, France", "source": "stage2.LOCATION_OVERRIDES"}
+{"confidence": "high", "event_id": "1718928783", "event_type": "golf", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1733755410", "event_type": "net", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"confidence": "high", "event_id": "1745203963", "event_type": "golf", "source": "stage2.EVENT_TYPE_OVERRIDES"}
+{"event_id": "1118129163", "location": null, "reason": "Location listed as TBA in source", "source": "qc_review", "confidence": "high"}
+{"event_id": "1023993464", "location": null, "reason": "Location listed as TBA in source", "source": "qc_review", "confidence": "high"}
+{"event_id": "1030642331", "location": null, "reason": "Location listed as TBA in source", "source": "qc_review", "confidence": "high"}
+{"event_id": "1003959284", "location": null, "reason": "Location listed as TBA in source", "source": "qc_review", "confidence": "high"}
+{"event_id": "1003959284", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1118129163", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1012023341", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1079664495", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "955642039", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1093115479", "results_expected": true, "reason": "Results text present but placements extracted empty", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1200725314", "results_expected": false, "reason": "Event is social / activities-only; no competitive results expected", "source": "qc_review", "confidence": "high"}
+{"event_id": "1599981203", "results_expected": false, "reason": "Online showcase event; no formal placements", "source": "qc_review", "confidence": "high"}
+{"event_id": "1102227996", "location_note": "Multi-city event; venue spans Oakland and San Francisco", "reason": "Location is multi-venue, not a single address", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1109356644", "location_note": "Multiple parks used during event", "reason": "Location spans multiple venues", "source": "qc_review", "confidence": "medium"}
+{"event_id": "1023993464", "exclude": true, "note": "Known broken source: SQL error in HTML; location missing not recoverable"}
+{"event_id": "1030642331", "exclude": true, "note": "Known broken source: SQL error in HTML; location missing not recoverable"}
+{"event_id": "1091802943", "host_club": "Austin Style Footbag Club - Texas Footbag League", "source": "series_inference", "confidence": "very_high", "note": "2004 Texas State Footbag Championships; all other series events (2001,2003,2007-2012) have this club"}
+{"event_id": "879319107", "host_club": "Dallas Footbag Club", "source": "series_inference", "confidence": "high", "note": "1998 Southern Regional Championships; 2001 edition in same city already has this club"}
+{"event_id": "909186885", "host_club": "Dallas Footbag Club", "source": "series_inference", "confidence": "high", "note": "1999 Southern Regional Championships; 2001 edition in same city already has this club"}
+{"event_id": "2001980001", "host_club": "NHSA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001981001", "host_club": "NHSA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001982001", "host_club": "NHSA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001982002", "host_club": "NHSA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001983001", "host_club": "NHSA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001983002", "host_club": "WFA", "source": "manual_override", "confidence": "high"}
+{"event_id": "2001983003", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001983004", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001984001", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001984002", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001985001", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001985002", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "2001986001", "host_club": "WFA", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "857876517", "host_club": "Sole Purpose Footbag Club", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "876591529", "host_club": "Pro Kicker", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "980969461", "host_club": "Bay Area Footbag League", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1013283071", "host_club": "Bay Area Footbag League", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1134914723", "host_club": "Rien N'est Hacky - RNH Footbag", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1486654923", "host_club": "Rien N'est Hacky - RNH Footbag", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1516978874", "host_club": "Rien N'est Hacky - RNH Footbag", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1572864719", "host_club": "Hradec Kralove Footbag Club", "source": "research.2026-03", "confidence": "high"}
+{"event_id": "1695501837", "host_club": "Hradec Kralove Footbag Club", "source": "research.2026-03", "confidence": "high"}
+{"confidence": "high", "event_id": "886044392", "location": "Vancouver, B.C., Canada", "source": "manual"}
+{"event_id": "1245199707", "event_type": "mixed", "source": "manual", "reason": "golf+net tournament, not pure golf"}
+{"event_id": "1270518636", "event_type": "mixed", "source": "manual", "reason": "golf+net tournament, not pure golf"}
+{"event_id": "1310408325", "event_type": "mixed", "source": "manual", "reason": "golf+net tournament, not pure golf"}
+{"event_id": "892446131", "event_type": "mixed", "source": "manual", "reason": "golf event with sideline/consecutives discipline"}
+{"event_id": "990905420", "event_type": "mixed", "source": "manual", "reason": "golf+net tournament, not pure golf"}
+{"event_id": "933115858", "location": "Boulder, Colorado, USA", "source": "manual", "confidence": "high", "reason": "source HTML has mangled location string 'Campus) Boulder...'"}
+{"event_id": "980969461", "location": "San Francisco Bay Area, California, USA", "source": "manual", "confidence": "high"}
+{"event_id": "912467534", "location": "Portland, Oregon, USA", "source": "manual", "confidence": "high"}
+{"event_id": "1034985978", "location": "Vancouver, B.C., Canada", "source": "manual", "confidence": "high"}

@@ -1,0 +1,273 @@
+event_name,year,location,division,place,player_name,score,notes
+1990 WFA World Championships,1990,,Men's Overall,1,Kenny Shults,,
+1990 WFA World Championships,1990,,Women's Overall,1,Jody Welch,,
+1990 WFA World Championships,1990,,Open Sgls Net,1,Kenny Shults,,
+1990 WFA World Championships,1990,,Open Sgls Net,2,Dave Robinson,,
+1990 WFA World Championships,1990,,Open Sgls Net,3,Chris Routh,,
+1990 WFA World Championships,1990,,Open Dbls Net,1,Mag Hughes,,doubles
+1990 WFA World Championships,1990,,Open Dbls Net,1,Kenny Shults,,doubles
+1990 WFA World Championships,1990,,Open Dbls Net,2,Ken Hamric,,doubles
+1990 WFA World Championships,1990,,Open Dbls Net,2,Chris Routh,,doubles
+1990 WFA World Championships,1990,,Open Dbls Net,3,Peter Shunny,,doubles
+1990 WFA World Championships,1990,,Open Dbls Net,3,Bruce Guettich,,doubles
+1990 WFA World Championships,1990,,Women's Sgls Net,1,Jody Welch,,
+1990 WFA World Championships,1990,,Women's Sgls Net,2,Lisa McDaniel,,
+1990 WFA World Championships,1990,,Women's Sgls Net,3,Tricia George,,
+1990 WFA World Championships,1990,,Women's Dbls Net,1,Tricia George,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Net,1,Jody Welch,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Net,2,Julie Symons,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Net,2,Constance Constable,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Net,3,Tina Lewis,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Net,3,Heather Muggleton,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,1,Tricia George,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,1,Chris Routh,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,2,Jody Welch,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,2,Brent Welch,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,3,Kendall KIC,,doubles
+1990 WFA World Championships,1990,,Mixed Dbls Net,3,Kenny Shults,,doubles
+1990 WFA World Championships,1990,,Open Sgls Freestyle,1,Kenny Shults,,
+1990 WFA World Championships,1990,,Open Sgls Freestyle,2,Jack Schoolcraft,,
+1990 WFA World Championships,1990,,Open Sgls Freestyle,3,Brent Welch,,
+1990 WFA World Championships,1990,,Open Team Freestyle,1,Greg Nelson,,doubles
+1990 WFA World Championships,1990,,Open Team Freestyle,1,Tay Moldenhauser,,doubles
+1990 WFA World Championships,1990,,Open Team Freestyle,2,Rick Reese,,doubles
+1990 WFA World Championships,1990,,Open Team Freestyle,2,Dave Yevin,,doubles
+1990 WFA World Championships,1990,,Open Team Freestyle,3,Brent Welch,,doubles
+1990 WFA World Championships,1990,,Open Team Freestyle,3,Etienne Constable,,doubles
+1990 WFA World Championships,1990,,Women's Sgls Freestyle,1,Constance Constable,,
+1990 WFA World Championships,1990,,Women's Sgls Freestyle,2,Jody Welch,,
+1990 WFA World Championships,1990,,Women's Sgls Freestyle,3,Tricia George,,
+1990 WFA World Championships,1990,,Women's Team Freestyle,1,Lisa McDaniel,,doubles
+1990 WFA World Championships,1990,,Women's Team Freestyle,1,Sam Conlon,,doubles
+1990 WFA World Championships,1990,,Women's Team Freestyle,2,Constance Constable,,doubles
+1990 WFA World Championships,1990,,Women's Team Freestyle,2,Julie Symons,,doubles
+1990 WFA World Championships,1990,,Women's Team Freestyle,3,Jody Welch,,doubles
+1990 WFA World Championships,1990,,Women's Team Freestyle,3,Tricia George,,doubles
+1990 WFA World Championships,1990,,Open Sgls 5-minute Consecutive,1,Kenny Shults,,
+1990 WFA World Championships,1990,,Open Sgls 5-minute Consecutive,2,Derrick Fogle,,
+1990 WFA World Championships,1990,,Open Sgls 5-minute Consecutive,3,Gary Lautt,,
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,1,Peter Shunny,,doubles
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,1,Bruce Guettich,,doubles
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,2,Mag Hughes,,doubles
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,2,Kenny Shults,,doubles
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,3,Chris Donofrio,,doubles
+1990 WFA World Championships,1990,,Open Dbls Distance 1-pass Consecutive,3,Eric Bartholoman,,doubles
+1990 WFA World Championships,1990,,Women's Sgls 5-minute Consecutive,1,Jody Welch,,
+1990 WFA World Championships,1990,,Women's Sgls 5-minute Consecutive,2,Tricia George,,
+1990 WFA World Championships,1990,,Women's Sgls 5-minute Consecutive,3,Sam Conlon,,
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,2,Constance Constable,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,3,Lisa McDaniel,,doubles
+1990 WFA World Championships,1990,,Women's Dbls Distance 1-pass Consecutive,3,Sam Conlon,,doubles
+1990 WFA World Championships,1990,,Open Golf,1,Bruce Guettich,,
+1990 WFA World Championships,1990,,Open Golf,2,Jeff Johnson,,
+1990 WFA World Championships,1990,,Open Golf,3,Reed Gray,,
+1990 WFA World Championships,1990,,Women's Golf,1,Jody Welch,,
+1990 WFA World Championships,1990,,Women's Golf,2,Tricia George,,
+1990 WFA World Championships,1990,,Women's Golf,3,Lisa McDaniel,,
+1991 WFA World Championships,1991,,Men's Overall,1,Kenny Shults,,
+1991 WFA World Championships,1991,,Women's Overall,1,Jody Welch,,
+1991 WFA World Championships,1991,,Open Sgls Net,1,Randy Mulder,,
+1991 WFA World Championships,1991,,Open Sgls Net,2,Dave Robinson,,
+1991 WFA World Championships,1991,,Open Sgls Net,3,Remi Kristensen,,
+1991 WFA World Championships,1991,,Open Dbls Net,1,Chris Routh,,doubles
+1991 WFA World Championships,1991,,Open Dbls Net,1,Jim Caveney,,doubles
+1991 WFA World Championships,1991,,Open Dbls Net,2,Mag Hughes,,doubles
+1991 WFA World Championships,1991,,Open Dbls Net,2,Kenny Shults,,doubles
+1991 WFA World Championships,1991,,Open Dbls Net,3,Peter Shunny,,doubles
+1991 WFA World Championships,1991,,Open Dbls Net,3,Randy Mulder,,doubles
+1991 WFA World Championships,1991,,Women's Sgls Net,1,Jody Welch,,
+1991 WFA World Championships,1991,,Women's Sgls Net,2,Lisa McDaniel,,
+1991 WFA World Championships,1991,,Women's Sgls Net,3,Constance Constable,,
+1991 WFA World Championships,1991,,Women's Dbls Net,1,Tricia George,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Net,1,Jody Welch,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Net,2,Heather Muggleton,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Net,3,Constance Constable,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Net,3,Julie Symons,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,1,Jody Welch,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,1,Brent Welch,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,2,Tricia George,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,2,Chris Routh,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,3,Lisa McDaniel,,doubles
+1991 WFA World Championships,1991,,Mixed Dbls Net,3,Randy Mulder,,doubles
+1991 WFA World Championships,1991,,Open Sgls Freestyle,1,Kenny Shults,,
+1991 WFA World Championships,1991,,Open Sgls Freestyle,2,Andy Linder,,
+1991 WFA World Championships,1991,,Open Sgls Freestyle,3,Rick Reese,,
+1991 WFA World Championships,1991,,Open Team Freestyle,1,Dennis Ross,,doubles
+1991 WFA World Championships,1991,,Open Team Freestyle,1,Jon Lind,,doubles
+1991 WFA World Championships,1991,,Open Team Freestyle,2,Brent Welch,,doubles
+1991 WFA World Championships,1991,,Open Team Freestyle,2,Etienne Constable,,doubles
+1991 WFA World Championships,1991,,Open Team Freestyle,3,Kenny Shults,,doubles
+1991 WFA World Championships,1991,,Open Team Freestyle,3,Rick Reese,,doubles
+1991 WFA World Championships,1991,,Women's Sgls Freestyle,1,Sam Conlon,,
+1991 WFA World Championships,1991,,Women's Sgls Freestyle,2,Jody Welch,,
+1991 WFA World Championships,1991,,Women's Sgls Freestyle,3,Kendall KIC,,
+1991 WFA World Championships,1991,,Women's Team Freestyle,1,Lisa McDaniel,,doubles
+1991 WFA World Championships,1991,,Women's Team Freestyle,1,Sam Conlon,,doubles
+1991 WFA World Championships,1991,,Women's Team Freestyle,2,Jody Welch,,doubles
+1991 WFA World Championships,1991,,Women's Team Freestyle,2,Tricia George,,doubles
+1991 WFA World Championships,1991,,Women's Team Freestyle,3,Constance Constable,,doubles
+1991 WFA World Championships,1991,,Women's Team Freestyle,3,Julie Symons,,doubles
+1991 WFA World Championships,1991,,Open Sgls 5-minute Consecutive,1,Kenny Shults,,
+1991 WFA World Championships,1991,,Open Sgls 5-minute Consecutive,2,Sean Flynn,,
+1991 WFA World Championships,1991,,Open Sgls 5-minute Consecutive,3,Andy Linder,,
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,1,Allan Petersen,,doubles
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,1,Remi Kristensen,,doubles
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,2,Mag Hughes,,doubles
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,2,Kenny Shults,,doubles
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,3,Bill Langbehn,,doubles
+1991 WFA World Championships,1991,,Open Dbls Distance 1-pass Consecutive,3,Brent Welch,,doubles
+1991 WFA World Championships,1991,,Women's Sgls 5-minute Consecutive,1,Jody Welch,,
+1991 WFA World Championships,1991,,Women's Sgls 5-minute Consecutive,2,Tricia George,,
+1991 WFA World Championships,1991,,Women's Sgls 5-minute Consecutive,3,Kendall KIC,,
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,2,Constance Constable,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,3,Lisa Monti,,doubles
+1991 WFA World Championships,1991,,Women's Dbls Distance 1-pass Consecutive,3,Kendall KIC,,doubles
+1991 WFA World Championships,1991,,Open Golf,1,James Roberts,,
+1991 WFA World Championships,1991,,Open Golf,2,Jim Caveney,,
+1991 WFA World Championships,1991,,Open Golf,3,Dave Robinson,,
+1991 WFA World Championships,1991,,Women's Golf,1,Tricia George,,
+1991 WFA World Championships,1991,,Women's Golf,2,Julie Symons,,
+1991 WFA World Championships,1991,,Women's Golf,3,Lisa McDaniel,,
+1992 WFA World Championships,1992,,Men's Overall,1,Kenny Shults,,
+1992 WFA World Championships,1992,,Women's Overall,1,Tricia George,,
+1992 WFA World Championships,1992,,Open Sgls Net,1,Kenny Shults,,
+1992 WFA World Championships,1992,,Open Sgls Net,2,Randy Mulder,,
+1992 WFA World Championships,1992,,Open Sgls Net,3,Eric Bartholoman,,
+1992 WFA World Championships,1992,,Open Dbls Net,1,Kenny Shults,,doubles
+1992 WFA World Championships,1992,,Open Dbls Net,1,Randy Mulder,,doubles
+1992 WFA World Championships,1992,,Open Dbls Net,2,Brent Welch,,doubles
+1992 WFA World Championships,1992,,Open Dbls Net,2,Jim Caveney,,doubles
+1992 WFA World Championships,1992,,Open Dbls Net,3,Chris Routh,,doubles
+1992 WFA World Championships,1992,,Open Dbls Net,3,Dan Borsky,,doubles
+1992 WFA World Championships,1992,,Women's Sgls Net,1,Jody Welch,,
+1992 WFA World Championships,1992,,Women's Sgls Net,2,Tricia George,,
+1992 WFA World Championships,1992,,Women's Sgls Net,3,Lisa McDaniel,,
+1992 WFA World Championships,1992,,Women's Dbls Net,1,Tricia George,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Net,1,Jody Welch,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Net,2,Constance Constable,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Net,2,Julie Symons,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Net,3,Lisa Monti,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Net,3,Heather Muggleton,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,1,Jody Welch,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,1,Brent Welch,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,2,Lisa McDaniel,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,2,Dan Borsky,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,3,Tricia George,,doubles
+1992 WFA World Championships,1992,,Mixed Dbls Net,3,Chris Routh,,doubles
+1992 WFA World Championships,1992,,Open Sgls Freestyle,1,Peter Irish,,
+1992 WFA World Championships,1992,,Open Sgls Freestyle,2,Rick Reese,,
+1992 WFA World Championships,1992,,Open Sgls Freestyle,3,Kenny Shults,,
+1992 WFA World Championships,1992,,Open Team Freestyle,1,Jay Moldenhauser,,doubles
+1992 WFA World Championships,1992,,Open Team Freestyle,1,Greg Nelson,,doubles
+1992 WFA World Championships,1992,,Open Team Freestyle,2,Dennis Ross,,doubles
+1992 WFA World Championships,1992,,Open Team Freestyle,2,Jon Lind,,doubles
+1992 WFA World Championships,1992,,Open Team Freestyle,3,Brent Welch,,doubles
+1992 WFA World Championships,1992,,Open Team Freestyle,3,Etienne Constable,,doubles
+1992 WFA World Championships,1992,,Women's Sgls Freestyle,1,Tricia George,,
+1992 WFA World Championships,1992,,Women's Sgls Freestyle,2,Sam Conlon,,
+1992 WFA World Championships,1992,,Women's Sgls Freestyle,3,Jody Welch,,
+1992 WFA World Championships,1992,,Women's Team Freestyle,1,Lisa McDaniel,,doubles
+1992 WFA World Championships,1992,,Women's Team Freestyle,1,Sam Conlon,,doubles
+1992 WFA World Championships,1992,,Women's Team Freestyle,2,Jody Welch,,doubles
+1992 WFA World Championships,1992,,Women's Team Freestyle,2,Tricia George,,doubles
+1992 WFA World Championships,1992,,Women's Team Freestyle,3,Constance Constable,,doubles
+1992 WFA World Championships,1992,,Women's Team Freestyle,3,Julie Symons,,doubles
+1992 WFA World Championships,1992,,Open Sgls 5-minute Consecutive,1,Kenny Shults,,
+1992 WFA World Championships,1992,,Open Sgls 5-minute Consecutive,2,Sean Flynn,,
+1992 WFA World Championships,1992,,Open Sgls 5-minute Consecutive,3,Derrick Fogle,,
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,1,Bruce Guettich,,doubles
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,1,Peter Shunny,,doubles
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,2,Eric Bartholoman,,doubles
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,2,Chris Donofrio,,doubles
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,3,Jim Caveney,,doubles
+1992 WFA World Championships,1992,,Open Dbls Distance 1-pass Consecutive,3,Brent Welch,,doubles
+1992 WFA World Championships,1992,,Women's Sgls 5-minute Consecutive,1,Sam Conlon,,
+1992 WFA World Championships,1992,,Women's Sgls 5-minute Consecutive,2,Tricia George,,
+1992 WFA World Championships,1992,,Women's Sgls 5-minute Consecutive,3,Jody Welch,,
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,2,Sam Conlon,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,3,Becca English-Ross,,doubles
+1992 WFA World Championships,1992,,Women's Dbls Distance 1-pass Consecutive,3,Heather Thomas,,doubles
+1992 WFA World Championships,1992,,Open Golf,1,Reed Gray,,
+1992 WFA World Championships,1992,,Open Golf,2,Jim Caveney,,
+1992 WFA World Championships,1992,,Open Golf,3,Peter Shunny,,
+1992 WFA World Championships,1992,,Women's Golf,1,Tricia George,,
+1992 WFA World Championships,1992,,Women's Golf,2,Julie Symons,,
+1992 WFA World Championships,1992,,Women's Golf,3,Lisa McDaniel,,
+1993 WFA World Championships,1993,,Men's Overall,1,Allan Petersen,,
+1993 WFA World Championships,1993,,Women's Overall,1,Tricia George,,
+1993 WFA World Championships,1993,,Open Sgls Net,1,Danny Borsky,,
+1993 WFA World Championships,1993,,Open Sgls Net,2,Randy Mulder,,
+1993 WFA World Championships,1993,,Open Sgls Net,3,Eric Bartholoman,,
+1993 WFA World Championships,1993,,Open Dbls Net,1,Kenny Shults,,doubles
+1993 WFA World Championships,1993,,Open Dbls Net,1,Randy Mulder,,doubles
+1993 WFA World Championships,1993,,Open Dbls Net,2,Chris Routh,,doubles
+1993 WFA World Championships,1993,,Open Dbls Net,2,Dan Borsky,,doubles
+1993 WFA World Championships,1993,,Open Dbls Net,3,Allan Petersen,,doubles
+1993 WFA World Championships,1993,,Open Dbls Net,3,Remi Kristensen,,doubles
+1993 WFA World Championships,1993,,Women's Sgls Net,1,Jody Welch,,
+1993 WFA World Championships,1993,,Women's Sgls Net,2,Lisa McDaniel,,
+1993 WFA World Championships,1993,,Women's Sgls Net,3,Julie Symons,,
+1993 WFA World Championships,1993,,Women's Dbls Net,1,Tricia George,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Net,1,Jody Welch,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Net,2,Julie Symons,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Net,3,Constance Constable,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Net,3,Lisa Monti,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,1,Jody Welch,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,1,Brent Welch,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,2,Lisa McDaniel,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,2,Dan Borsky,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,3,Kendall KIC,,doubles
+1993 WFA World Championships,1993,,Mixed Dbls Net,3,Kenny Shults,,doubles
+1993 WFA World Championships,1993,,Open Sgls Freestyle,1,Peter Irish,,
+1993 WFA World Championships,1993,,Open Sgls Freestyle,2,Greg Nelson,,
+1993 WFA World Championships,1993,,Open Sgls Freestyle,3,Kenny Shults,,
+1993 WFA World Championships,1993,,Open Team Freestyle,1,Dennis Ross,,doubles
+1993 WFA World Championships,1993,,Open Team Freestyle,1,Jon Lind,,doubles
+1993 WFA World Championships,1993,,Open Team Freestyle,2,Jay Moldenhauser,,doubles
+1993 WFA World Championships,1993,,Open Team Freestyle,2,Greg Nelson,,doubles
+1993 WFA World Championships,1993,,Open Team Freestyle,3,Sam Conlon,,doubles
+1993 WFA World Championships,1993,,Open Team Freestyle,3,Eric Bartholoman,,doubles
+1993 WFA World Championships,1993,,Women's Sgls Freestyle,1,Sam Conlon,,
+1993 WFA World Championships,1993,,Women's Sgls Freestyle,2,Tricia George,,
+1993 WFA World Championships,1993,,Women's Sgls Freestyle,3,Julie Symons,,
+1993 WFA World Championships,1993,,Women's Team Freestyle,1,Lisa McDaniel,,doubles
+1993 WFA World Championships,1993,,Women's Team Freestyle,1,Sam Conlon,,doubles
+1993 WFA World Championships,1993,,Women's Team Freestyle,2,Jody Welch,,doubles
+1993 WFA World Championships,1993,,Women's Team Freestyle,2,Tricia George,,doubles
+1993 WFA World Championships,1993,,Women's Team Freestyle,3,Constance Constable,,doubles
+1993 WFA World Championships,1993,,Women's Team Freestyle,3,Lisa Monti,,doubles
+1993 WFA World Championships,1993,,Open Sgls 5-minute Consecutive,1,Sean Flynn,,
+1993 WFA World Championships,1993,,Open Sgls 5-minute Consecutive,2,Derrick Fogle,,
+1993 WFA World Championships,1993,,Open Sgls 5-minute Consecutive,3,Steve Smith,,
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,1,Yves Archambault,,doubles
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,1,Davie Piper,,doubles
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,2,Allan Petersen,,doubles
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,2,Remi Kristensen,,doubles
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,3,Jake Leong,,doubles
+1993 WFA World Championships,1993,,Open Dbls Distance 1-pass Consecutive,3,Scott Cleere,,doubles
+1993 WFA World Championships,1993,,Women's Sgls 5-minute Consecutive,1,Tricia George,,
+1993 WFA World Championships,1993,,Women's Sgls 5-minute Consecutive,2,Sam Conlon,,
+1993 WFA World Championships,1993,,Women's Sgls 5-minute Consecutive,3,Ida Fogle,,
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,3,Constance Constable,,doubles
+1993 WFA World Championships,1993,,Women's Dbls Distance 1-pass Consecutive,3,Lisa Monti,,doubles
+1993 WFA World Championships,1993,,Open Golf,1,Jeff Johnson,,
+1993 WFA World Championships,1993,,Open Golf,2,Reed Gray,,
+1993 WFA World Championships,1993,,Open Golf,3,Alf Marcussen,,
+1993 WFA World Championships,1993,,Women's Golf,1,Tricia George,,
+1993 WFA World Championships,1993,,Women's Golf,2,Julie Symons,,
+1993 WFA World Championships,1993,,Women's Golf,3,Becca English-Ross,,

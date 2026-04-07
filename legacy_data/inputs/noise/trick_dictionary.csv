@@ -1,0 +1,74 @@
+trick_canon,adds,base_trick,category,add_source,add_confidence
+clipper,2,clipper,base,footbag_notation_db,confirmed
+mirage,2,mirage,base,footbag_notation_db,confirmed
+legover,2,legover,base,footbag_notation_db,confirmed
+pickup,2,pickup,base,footbag_notation_db,confirmed
+guay,2,guay,base,footbag_notation_db,confirmed
+illusion,2,illusion,base,footbag_notation_db,confirmed
+pixie,2,pixie,set,footbag_notation_db,confirmed
+fairy,2,fairy,set,footbag_notation_db,confirmed
+around the world,2,atw,body,footbag_notation_db,confirmed
+reverse around the world,2,atw,body,footbag_notation_db,confirmed
+double around the world,3,atw,body,footbag_notation_db,confirmed
+whirl,3,whirl,base,footbag_notation_db,confirmed
+butterfly,3,butterfly,compound,footbag_notation_db,confirmed
+swirl,3,swirl,base,footbag_notation_db,confirmed
+osis,3,osis,compound,footbag_notation_db,confirmed
+eclipse,3,eclipse,compound,footbag_notation_db,confirmed
+eggbeater,3,legover,compound,footbag_notation_db,confirmed
+drifter,3,clipper,compound,footbag_notation_db,confirmed
+smear,3,mirage,compound,footbag_notation_db,confirmed
+flurry,3,legover,compound,footbag_notation_db,confirmed
+rev whirl,3,whirl,base,footbag_notation_db,confirmed
+ducking clipper,3,clipper,compound,footbag_notation_db,confirmed
+spinning clipper,3,clipper,compound,footbag_notation_db,confirmed
+ducking mirage,3,mirage,compound,footbag_notation_db,confirmed
+paradox mirage,3,mirage,compound,footbag_notation_db,confirmed
+torque,4,osis,compound,footbag_notation_db,confirmed
+ripwalk,4,butterfly,compound,footbag_notation_db,confirmed
+blur,4,mirage,compound,footbag_notation_db,confirmed
+atom smasher,4,mirage,compound,footbag_notation_db,confirmed
+blender,4,osis,compound,footbag_notation_db,confirmed
+dimwalk,4,butterfly,compound,footbag_notation_db,confirmed
+parkwalk,4,butterfly,compound,footbag_notation_db,confirmed
+barfly,4,infinity,compound,footbag_notation_db,confirmed
+ducking butterfly,4,butterfly,compound,footbag_notation_db,confirmed
+spinning butterfly,4,butterfly,compound,footbag_notation_db,confirmed
+spinning mirage,4,mirage,compound,footbag_notation_db,confirmed
+ducking osis,4,osis,compound,footbag_notation_db,confirmed
+spinning osis,4,osis,compound,footbag_notation_db,confirmed
+stepping osis,4,osis,compound,footbag_notation_db,confirmed
+stepping butterfly,4,butterfly,compound,footbag_notation_db,confirmed
+stepping drifter,4,drifter,compound,footbag_notation_db,confirmed
+atomic butterfly,4,butterfly,compound,footbag_notation_db,confirmed
+atomic osis,4,osis,compound,footbag_notation_db,confirmed
+gyro whirl,4,whirl,compound,footbag_notation_db,confirmed
+gyro butterfly,4,butterfly,compound,footbag_notation_db,confirmed
+symposium whirl,4,whirl,compound,footbag_notation_db,confirmed
+symposium dlo,4,legover,compound,footbag_notation_db,confirmed
+ducking whirl,4,whirl,compound,footbag_notation_db,confirmed
+stepping whirl,4,whirl,compound,footbag_notation_db,confirmed
+tapping whirl,4,whirl,compound,footbag_notation_db,confirmed
+paradox whirl,4,whirl,compound,footbag_notation_db,confirmed
+paradox drifter,4,drifter,compound,footbag_notation_db,confirmed
+paradox symposium mirage,4,mirage,compound,footbag_notation_db,confirmed
+blurry whirl,5,whirl,compound,footbag_notation_db,confirmed
+blurriest,5,barfly,compound,footbag_notation_db,confirmed
+fog,5,legover,compound,footbag_notation_db,confirmed
+mobius,5,torque,compound,footbag_notation_db,confirmed
+fusion,5,dod,compound,footbag_notation_db,confirmed
+tomahawk,5,whirl,compound,footbag_notation_db,confirmed
+superfly,5,barfly,compound,footbag_notation_db,confirmed
+spinning whirl,5,whirl,compound,footbag_notation_db,confirmed
+paradox torque,5,torque,compound,footbag_notation_db,confirmed
+paradox blender,5,blender,compound,footbag_notation_db,confirmed
+paradox symposium whirl,5,whirl,compound,footbag_notation_db,confirmed
+barraging osis,5,osis,compound,footbag_notation_db,confirmed
+food processor,6,blender,compound,footbag_notation_db,confirmed
+blurry torque,6,torque,compound,footbag_notation_db,confirmed
+atomic torque,6,torque,compound,footbag_notation_db,confirmed
+spinning torque,6,torque,compound,footbag_notation_db,confirmed
+spinning symposium whirl,6,whirl,compound,footbag_notation_db,confirmed
+blurry symposium whirl,6,whirl,compound,derivation_confirmed,confirmed
+rev up,3,whirl,base,derivation_confirmed,confirmed
+atomsmasher,4,mirage,compound,alias,confirmed

@@ -1,0 +1,85 @@
+trick_canon,base_trick,category,aliases,notes
+clipper,clipper,base,,cross-body inside delay; foundational 2-ADD dex
+mirage,mirage,base,,toe stall back to same toe; opposite leg circles underneath
+legover,legover,base,leg over,basic leg-over dexterity
+pickup,pickup,base,,pickup dex; bag caught from below
+guay,guay,base,,pickup inside delay
+illusion,illusion,base,,inside delay (cross-body)
+pixie,pixie,set,,leg passes under bag in opposite direction; also acts as +1 set modifier
+fairy,fairy,set,,opposite direction of pixie; also acts as +1 set modifier
+around the world,atw,body,atw|around-the-world,full leg circle body move
+reverse around the world,atw,body,reverse atw|ratw,reverse full leg circle
+double around the world,atw,body,double atw|datw,two full leg circles
+whirl,whirl,base,,core rotational dex; base of many compound tricks
+butterfly,butterfly,compound,,3-ADD compound; base of ripwalk / dimwalk / parkwalk
+swirl,swirl,base,reverse swirl,reverse swirl motion; also called reverse swirl
+osis,osis,compound,,advanced inside-to-outside delay combination
+eclipse,eclipse,compound,catwalk,3-ADD named compound
+eggbeater,legover,compound,illusioning legover|egg beater,miraging/illusioning legover = 3 ADD
+drifter,clipper,compound,miraging clipper,miraging clipper = 3 ADD
+smear,mirage,compound,pixie mirage,pixie mirage = 3 ADD
+flurry,legover,compound,barraging legover,barraging legover = 3 ADD
+rev whirl,whirl,base,reverse whirl|revwhirl,reverse whirl = 3 ADD
+rev up,whirl,base,revup|rev-up,reverse whirl variant; same ADD as rev whirl
+ducking clipper,clipper,compound,,ducking + clipper
+spinning clipper,clipper,compound,,spinning + clipper
+ducking mirage,mirage,compound,,ducking + mirage
+paradox mirage,mirage,compound,pdx mirage|p. mirage,paradox + mirage (confirmed 3 ADD in source)
+torque,osis,compound,,miraging osis = 4 ADD; base of many advanced tricks
+ripwalk,butterfly,compound,blurry butterfly,blurry butterfly = 4 ADD
+blur,mirage,compound,blurry mirage,blurry mirage = 4 ADD
+atom smasher,mirage,compound,atomsmasher|atomic mirage|atom-smasher,atomic mirage = 4 ADD
+blender,osis,compound,whirling osis,whirling osis = 4 ADD
+dimwalk,butterfly,compound,pixie butterfly|dim walk,pixie butterfly = 4 ADD
+parkwalk,butterfly,compound,pixie ss butterfly|park walk,pixie same-side butterfly = 4 ADD
+barfly,infinity,compound,double infinity|bar fly,double infinity = 4 ADD
+ducking butterfly,butterfly,compound,,ducking + butterfly
+spinning butterfly,butterfly,compound,,spinning + butterfly
+spinning mirage,mirage,compound,,spinning + mirage
+ducking osis,osis,compound,,ducking + osis
+spinning osis,osis,compound,,spinning + osis
+stepping osis,osis,compound,,stepping + osis
+stepping butterfly,butterfly,compound,sidewalk,stepping + butterfly; named Sidewalk
+stepping drifter,drifter,compound,tombstone,stepping + drifter; named Tombstone
+atomic butterfly,butterfly,compound,leg beater|legbeater,atomic butterfly = Leg Beater = 4 ADD
+atomic osis,osis,compound,,atomic + osis
+gyro whirl,whirl,compound,,gyro + whirl = 4 ADD (confirmed in source)
+gyro butterfly,butterfly,compound,,gyro + butterfly = 4 ADD (confirmed in source)
+symposium whirl,whirl,compound,symposium wirl,symposium + whirl
+symposium dlo,legover,compound,nova,symposium + DLO; named Nova
+ducking whirl,whirl,compound,,ducking + whirl
+stepping whirl,whirl,compound,,stepping + whirl
+tapping whirl,whirl,compound,,tapping + whirl
+paradox whirl,whirl,compound,pdx whirl|p-whirl|p. whirl,paradox + whirl
+paradox drifter,drifter,compound,pdx drifter|p. drifter,paradox + drifter
+paradox symposium mirage,mirage,compound,ps mirage|p.s. mirage,paradox + symposium + mirage = 4 ADD
+blurry whirl,whirl,compound,bw|blurry w,blurry + whirl = 5 ADD
+blurriest,barfly,compound,blurry barfly|blurr-iest,blurry barfly = 5 ADD
+fog,legover,compound,blurry dlo|blurry dim walk,blurry DLO = 5 ADD
+mobius,torque,compound,gyro torque|möbius|moebius,gyro torque = 5 ADD; named Mobius
+fusion,dod,compound,atomic dod,atomic DOD = 5 ADD
+tomahawk,whirl,compound,ducking paradox whirl,ducking + paradox + whirl = 5 ADD
+superfly,barfly,compound,super fly|symposium barfly,symposium barfly = 5 ADD
+spinning whirl,whirl,compound,,spinning + whirl = 5 ADD
+paradox torque,torque,compound,pdx torque|p torque|p. torque,paradox + torque = 5 ADD
+paradox blender,blender,compound,pdx blender|p. blender,paradox + blender = 5 ADD
+paradox symposium whirl,whirl,compound,ps whirl|pdx symposium whirl,paradox + symposium + whirl = 5 ADD
+barraging osis,osis,compound,baroque,barraging + osis; named Baroque = 5 ADD
+blurry symposium whirl,whirl,compound,bs whirl,blurry + symposium + whirl = 6 ADD
+food processor,blender,compound,blurry blender|foot processor,blurry blender = 6 ADD
+blurry torque,torque,compound,,blurry + torque = 6 ADD
+atomic torque,torque,compound,silo,atomic + torque = 6 ADD; named Silo
+spinning torque,torque,compound,marius,spinning + torque = 6 ADD; named Marius
+spinning symposium whirl,whirl,compound,whirlwind,spinning + symposium + whirl = 6 ADD; named Whirlwind
+ducking,ducking,modifier,,body modifier; +1 ADD (see trick_modifiers.csv)
+spinning,spinning,modifier,,body modifier; +1 standard / +2 rotational (see trick_modifiers.csv)
+paradox,paradox,modifier,,body modifier (hip pivot); +1 ADD universally
+symposium,symposium,modifier,,body modifier; +1 ADD universally
+atomic,atomic,modifier,,set modifier; +1 ADD universally
+stepping,stepping,modifier,,body modifier; +1 ADD universally
+gyro,gyro,modifier,,body modifier; +1 ADD universally
+tapping,tapping,modifier,,body modifier; +1 ADD universally
+blazing,blazing,modifier,,body modifier; +1 ADD
+barraging,barraging,modifier,,body modifier; +1 ADD
+blurry,blurry,modifier,,set modifier; +1 standard / +2 rotational (see trick_modifiers.csv)
+pixie mod,pixie,modifier,,use "pixie" as modifier entry; +1 ADD when prepended to base trick

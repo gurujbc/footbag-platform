@@ -1,0 +1,234 @@
+event_name,year,location,division,place,player_name,score,notes
+1985 World Footbag Championships,1985,Golden CO,Open 5-min. Speed Consecutives,1,Sean Flynn,799,
+1985 World Footbag Championships,1985,Golden CO,Open 5-min. Speed Consecutives,2,Derrick Fogle,794,
+1985 World Footbag Championships,1985,Golden CO,Open 5-min. Speed Consecutives,3,Eric M. Wulff,778,
+1985 World Footbag Championships,1985,Golden CO,Open 5-min. Speed Consecutives,4,Jay Wininger,678,
+1985 World Footbag Championships,1985,Golden CO,Women's 5-min. Speed Consecutives,1,Tricia George,761,
+1985 World Footbag Championships,1985,Golden CO,Women's 5-min. Speed Consecutives,2,Sam Conlon,760,
+1985 World Footbag Championships,1985,Golden CO,Women's 5-min. Speed Consecutives,3,Jody Welch,678,
+1985 World Footbag Championships,1985,Golden CO,Women's 5-min. Speed Consecutives,4,Julie Symons,581,
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,1,Remi Kristensen,355,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,1,Allan Petersen,355,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,2,Yves Archambault,176,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,2,Davie Piper,176,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,3,Bruce Guettich,165,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,3,Peter Shunny,165,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,4,Eric M. Wulff,158,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Distance One-Pass Consecutives,4,Scott Cleere,158,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,1,Jody Welch,81,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,1,Tricia George,81,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,2,Julie Symons,79,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,2,Lisa McDaniel,79,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,3,Sam Conlon,12,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,3,Lisa Monti,12,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,4,Kelly Kelley,11,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Distance One-Pass Consecutives,4,Tina Lewis,11,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,1,Randy Mulder,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,1,Kenny Shults,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,2,Alf Marcussen,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,2,Brent Welch,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,3,Remi Kristensen,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,3,Allan Petersen,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,4,Sebastian Verdy,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Doubles Footbag Net,4,Danny Borsky,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,1,Jody Welch,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,1,Tricia George,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,2,Julie Symons,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,2,Lisa McDaniel,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,3,Constance Reed,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,3,Tina Lewis,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,4,Becca English-Ross,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Doubles Footbag Net,4,Lisa Monti,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,1,Paul Lovern,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,1,Mark Voightmann,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,2,Doug Gannon,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,2,David Butcher,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,3,Michael McCarthy,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,3,Randy Dix,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,4,Dylan Cole,,doubles
+1985 World Footbag Championships,1985,Golden CO,Intermediate Doubles Footbag Net,4,Eric Cole,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,1,Randy Mulder,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,1,Julie Symons,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,2,Brent Welch,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,2,Jody Welch,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,3,Emmanuel Bouchard,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,3,Lisa McDaniel,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,4,Chris Routh,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Doubles Footbag Net,4,Tricia George,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Freestyle,1,Peter Irish,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Freestyle,2,Eric M. Wulff,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Freestyle,3,Greg Nelson,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Freestyle,4,Rippin' Rick Reese,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Freestyle,1,Sam Conlon,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Freestyle,2,Carol Wedemeyer,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Freestyle,3,Tricia George,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Freestyle,4,Lisa McDaniel,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Freestyle,1,Dave Wedertz,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Freestyle,2,Tu Vu,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Freestyle,3,Chris Bond,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Freestyle,4,Rex Stoler,,
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,1,Greg Nelson,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,1,Tuan Vu,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,2,Peter Irish,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,2,Eric M. Wulff,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,3,Rippin' Rick Reese,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,3,Kenny Shults,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,4,Rich Cook,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Team Footbag Freestyle,4,Scott Milne,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,1,Lisa Monti,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,1,Carol Wedemeyer,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,2,Julie Symons,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,2,Lisa McDaniel,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,3,Becca English-Ross,,doubles
+1985 World Footbag Championships,1985,Golden CO,Women's Team Footbag Freestyle,3,Tricia George,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,1,Greg Nelson,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,1,Lisa McDaniel,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,2,Etienne Constable,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,2,Constance Reed,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,3,Jeffrey Johnson,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,3,Tricia George,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,4,Scott Davidson,,doubles
+1985 World Footbag Championships,1985,Golden CO,Mixed Team Footbag Freestyle Demonstration Round,4,Valeria Davidson,,doubles
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Net,1,Randy Mulder,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Net,2,Danny Borsky,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Net,3,Alf Marcussen,,
+1985 World Footbag Championships,1985,Golden CO,Open Singles Footbag Net,4,Kenny Shults,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Net,1,Jody Welch,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Net,2,Lisa McDaniel,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Net,3,Julie Symons,,
+1985 World Footbag Championships,1985,Golden CO,Women's Singles Footbag Net,4,Tricia George,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Net,1,Curt Rund,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Net,2,Dan Botkin,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Net,3,Kerry Chun,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Singles Footbag Net,4,Dylan Cole,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Women's Singles Footbag Net,1,Ann Lasken,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Women's Singles Footbag Net,2,Jane Jones,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Women's Singles Footbag Net,3,Dea Evans,,
+1985 World Footbag Championships,1985,Golden CO,Intermediate Women's Singles Footbag Net,4,Darlene House,,
+1985 World Footbag Championships,1985,Golden CO,Open Footbag Golf,1,Davie Piper,173,3 round total 58 57 58
+1985 World Footbag Championships,1985,Golden CO,Open Footbag Golf,2,Steve Smith,178,3 round total 63 58 57
+1985 World Footbag Championships,1985,Golden CO,Open Footbag Golf,3,Allan Petersen,179,3 round total 62 60 57
+1985 World Footbag Championships,1985,Golden CO,Open Footbag Golf,4,Alf Marcussen,181,3 round total 63 62 56
+1985 World Footbag Championships,1985,Golden CO,Women's Footbag Golf,1,Julie Symons,198,3 round total 70 65 63
+1985 World Footbag Championships,1985,Golden CO,Women's Footbag Golf,2,Tricia George,199,3 round total 71 65 63
+1985 World Footbag Championships,1985,Golden CO,Women's Footbag Golf,3,Heather Muggleton,217,3 round total 72 78 67
+1985 World Footbag Championships,1985,Golden CO,Women's Footbag Golf,4,Becca English-Ross,218,3 round total 76 72 70
+1985 World Footbag Championships,1985,Golden CO,Intermediate Footbag Golf,1,Radhy Esposito,215,3 round total 71 73 71
+1985 World Footbag Championships,1985,Golden CO,Intermediate Footbag Golf,2,Greg Potts,224,3 round total 78 76 70
+1985 World Footbag Championships,1985,Golden CO,Intermediate Footbag Golf,3,Simon Hearsey,225,3 round total 78 74 73
+1985 World Footbag Championships,1985,Golden CO,Intermediate Footbag Golf,4,Wally Victory,230,3 round total 77 79 74
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,1,Tricia George,990,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,2,Julie Symons,985,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,3,Lisa McDaniel,974,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,4,Becca English-Ross,870,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,5,Lisa Monti,755,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,5,Valeria Davidson,755,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,7,Tina Lewis,674,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,8,Kelly Kelley,665,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,9,Jody Welch,598,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,10,Sam Conlon,395,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,11,Carol Wedemeyer,299,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,12,Heather Muggleton,290,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,13,Constance Constable,196,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,14,Anne Miller,192,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,15,Dea Evans,188,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,15,Lisa Waccolz,188,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,17,Emily Verdy,186,
+1985 World Footbag Championships,1985,Golden CO,Open Women's Overall,18,Wendy Curran,94,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,1,Allan Petersen,947,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,2,Eric M. Wulff,943,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,3,Remi Kristensen,938,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,4,Scott Milne,927,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,5,Peter Shunny,917,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,6,Bruce Guettich,899,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,7,Scott Cleere,891,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,8,Rich Cook,874,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,9,Tuan Vu,853,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,10,R. Vincent Bradley,850,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,11,Jay Wininger,848,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,12,Steve Baker,833,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,13,Jeffrey Johnson,830,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,14,Brent Welch,736,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,15,Derrick Fogle,684,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,16,Jimmy Evans,657,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,17,Rippin' Rick Reese,647,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,18,Davie Piper,645,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,19,Roger Stimson,635,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,20,Sean Flynn,629,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,21,Steve Smith,627,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,22,J. Patrick Kelly,627,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,23,Bill Langbehn,611,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,24,Kenny Shults,587,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,25,Alf Marcussen,585,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,26,Yossarian Kelley,553,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,27,David Bernard,524,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,28,Chris Ott,511,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,29,Rob Adams,489,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,30,Yves Archambault,486,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,31,Steve Dusablon,482,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,32,Greg Nelson,460,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,33,Emmanuel Bouchard,457,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,34,Jim Caveney,445,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,35,Etienne Constable,444,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,35,Andrew Morgan,444,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,37,Noah Dubreuil,440,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,38,Jake Leong,439,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,39,Steven Campbell,391,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,40,Andrew Ronald,367,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,41,James Harley,316,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,42,Randy Mulder,300,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,43,Peter Irish,298,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,44,Danny Borsky,293,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,45,Josh Casey,283,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,46,Martin Cote,282,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,47,Sebastien Verdy,279,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,48,Chris Routh,268,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,49,Daryl Genz,264,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,50,Eric "Bart" Bartholoman,259,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,51,Steve Kremer,254,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,52,Bob Nicholson,252,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,53,Paul Lovern,243,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,54,Mark Voightmann,241,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,54,Jesse Whitworth,241,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,55,Larry Doyle,240,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,55,Byron Proshold,240,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,55,Crass Eddicott,240,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,55,Simon Hearsey,240,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,60,Ollie Clampet,236,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,61,Matt Churney,235,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,62,Lance Levy,216,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,63,Steven L. Goldberg,190,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,63,Edmund Larnacchia,190,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,65,Brent Stewart,176,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,65,Patrick Keehan,176,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,65,Dennis Ross,176,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,65,Ahren Gehrman,176,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,65,Tu Vu,176,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,70,Michael Grueter,174,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,71,Scott Durfee,169,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,72,Jim Curtis,164,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,73,John Mulyk,158,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,74,Scott Davidson,96,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,75,Tim Kelly,95,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,76,Reed Gray,91,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,77,Edwin Veltman,85,
+1985 World Footbag Championships,1985,Golden CO,Open Overall,78,Chris Bond,82,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,1,Alpha Schwa Omega/MFA,7420,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,2,Wash Park,6788,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,3,POOF,5250,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,4,Kitsilano Kickers,3584,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,5,Quebec Footbag Ass.,2131,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,6,Sound Footwork,2084,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,7,OOPS,1577,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,8,FAKE,1479,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,9,Virginia Shaolin Foot Clan,1438,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,10,Texas Footbag League,1339,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,11,FEAT,1329,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,12,EFA,943,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,13,PA Coalition of Kickers,833,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,14,Utah Footbag Club,822,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,15,Albany Footbag Club,711,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,16,Footbag Peace Initiative,647,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,17,World Net Alliance,316,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,18,Big Add Posse,298,
+1985 World Footbag Championships,1985,Golden CO,Overall Club Standings,19,Aerial Zone,290,

@@ -1,0 +1,33 @@
+event_id,notes
+1118129163,Event Listing placeholder — June TBA 2005 no results
+1031232420,FootJam03 — stats not results (91 players registered etc)
+1043428338,Spring Footbag Jam — narrative recap not placements
+984874006,PST Obligatory Footbag Forum 2001 — informal gathering no formal placements
+2001982002,1982 NHSA FREESTYLE — subset of 2001982001 (Open Doubles Freestyle)
+2001983004,1983 WFA FREESTYLE — dup of 2001983003 (Singles/Team Freestyle)
+2001984002,1984 WFA FREESTYLE — dup of 2001984001 (Singles/Team Freestyle)
+2001985002,1985 WFA FREESTYLE — dup of 2001985001 (Singles/Team Freestyle)
+860944937,1997 Kansas Open — division listing only no placements
+1106561176,2005 Aachen Indoor — first names/nicknames only unresolvable
+1189657133,2007 New Years Jam — schedule text parsed as results
+1737312020,2025 Canadian Closed — future event no results posted
+1985_worlds,Superseded by 1985_worlds_golden (worlds85v2.txt — 186 placements vs 48 from authoritative txt)
+1996_worlds,Superseded by 1996_worlds_montreal (worlds96_canonical_consolidated.csv — 86 placements vs 47 from worlds94-97.txt)
+2001985005,Magazine placeholder — 0 placements; superseded by 1985_worlds_golden (curated, 186 placements)
+2001986004,Magazine placeholder — 0 placements; superseded by 1986_worlds_golden (curated, 196 placements)
+2001987001,Magazine placeholder — 0 placements; superseded by 1987_worlds_golden (curated, 38 placements)
+2001989001,Magazine placeholder — 0 placements; superseded by 1989_worlds_golden (curated, 47 placements)
+2001990001,Magazine placeholder — 0 placements; superseded by 1990_worlds (curated, 47 placements)
+2001991001,Magazine placeholder — 0 placements; superseded by 1991_worlds (curated, 47 placements)
+2001992001,Magazine placeholder — 0 placements; superseded by 1992_worlds (curated, 47 placements)
+2001994001,Magazine placeholder — 0 placements; superseded by 1994_worlds (curated, 47 placements)
+2001995001,Magazine placeholder — 0 placements; superseded by 1995_worlds (curated, 46 placements)
+2001996001,Magazine placeholder — 0 placements; superseded by 1996_worlds_montreal (curated, 86 placements)
+2001982005,Superseded by curated magazine_1982_world_footbag_championships_portland.csv — different event_name variant would survive stage2 dedup as 0-placement artifact
+9984533,FBW carrier superseded by fbw_1985_holiday_classic.csv — has location so survives dedup as city-suffixed duplicate
+9918278,FBW carrier superseded by fbw_1985_greatest_lakes_open.csv — has location so survives dedup as city-suffixed duplicate
+9958186,FBW carrier superseded by fbw_1985_st_valentines_day_massacre.csv — has location so survives dedup as city-suffixed duplicate
+9972848,FBW carrier superseded by fbw_1985_floodbag_finals.csv — has location so survives dedup as city-suffixed duplicate
+9934528,FBW carrier superseded by fbw_1983_secret_underground_jam.csv — naturally deduped but junked for explicitness
+9980521,FBW carrier superseded by fbw_1985_wfa_rocky_mountain_regionals.csv — series_only slug causes _2 collision; junked to free clean key
+9940469,FBW carrier superseded by fbw_1985_western_national_indoor.csv — has location so survives dedup as city-suffixed duplicate

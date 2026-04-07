@@ -1,0 +1,280 @@
+event_name,year,location,division,place,player_name,score,notes
+1994 WFA World Championships,1994,,Men's Overall,1,Allan Petersen,,
+1994 WFA World Championships,1994,,Women's Overall,1,Julie Symons,,
+1994 WFA World Championships,1994,,Open Sgls Net,1,Randy Mulder,,
+1994 WFA World Championships,1994,,Open Sgls Net,2,Jake Leong,,
+1994 WFA World Championships,1994,,Open Sgls Net,3,Alf Marcussen,,
+1994 WFA World Championships,1994,,Open Dbls Net,1,Kenny Shults,,doubles
+1994 WFA World Championships,1994,,Open Dbls Net,1,Randy Mulder,,doubles
+1994 WFA World Championships,1994,,Open Dbls Net,2,Allan Petersen,,doubles
+1994 WFA World Championships,1994,,Open Dbls Net,2,Remi Kristensen,,doubles
+1994 WFA World Championships,1994,,Open Dbls Net,3,Alf Marcussen,,doubles
+1994 WFA World Championships,1994,,Open Dbls Net,3,Brent Welch,,doubles
+1994 WFA World Championships,1994,,Women's Sgls Net,1,Lisa McDaniel,,
+1994 WFA World Championships,1994,,Women's Sgls Net,2,Julie Symons,,
+1994 WFA World Championships,1994,,Women's Sgls Net,3,Laura Cragh,,
+1994 WFA World Championships,1994,,Women's Dbls Net,1,Julie Symons,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Net,1,Lisa McDaniel,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Net,2,Constance Constable,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Net,2,Jody Welch,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Net,3,Heather Thomas,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Net,3,Laura Cragh,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,1,Jody Welch,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,1,Brent Welch,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,2,Lisa McDaniel,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,2,Scott Milne,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,3,Julie Symons,,doubles
+1994 WFA World Championships,1994,,Mixed Dbls Net,3,Jim Caveney,,doubles
+1994 WFA World Championships,1994,,Open Sgls Freestyle,1,Kenny Shults,,
+1994 WFA World Championships,1994,,Open Sgls Freestyle,2,Greg Nelson,,
+1994 WFA World Championships,1994,,Open Sgls Freestyle,3,Peter Irish,,
+1994 WFA World Championships,1994,,Open Team Freestyle,1,Jay Moldenhauser,,doubles
+1994 WFA World Championships,1994,,Open Team Freestyle,1,Greg Nelson,,doubles
+1994 WFA World Championships,1994,,Open Team Freestyle,2,Kenny Shults,,doubles
+1994 WFA World Championships,1994,,Open Team Freestyle,2,Rick Reese,,doubles
+1994 WFA World Championships,1994,,Open Team Freestyle,3,Eric Wulff,,doubles
+1994 WFA World Championships,1994,,Open Team Freestyle,3,Peter Irish,,doubles
+1994 WFA World Championships,1994,,Women's Sgls Freestyle,1,Sam Conlon,,
+1994 WFA World Championships,1994,,Women's Sgls Freestyle,2,Julie Symons,,
+1994 WFA World Championships,1994,,Women's Sgls Freestyle,3,Kendall KIC,,
+1994 WFA World Championships,1994,,Women's Team Freestyle,1,Julie Symons,,doubles
+1994 WFA World Championships,1994,,Women's Team Freestyle,1,Heather Thomas,,doubles
+1994 WFA World Championships,1994,,Women's Team Freestyle,2,Lisa Monti,,doubles
+1994 WFA World Championships,1994,,Women's Team Freestyle,2,Lynette Haat,,doubles
+1994 WFA World Championships,1994,,Women's Team Freestyle,3,Kendall KIC,,doubles
+1994 WFA World Championships,1994,,Women's Team Freestyle,3,Heather Muggleton,,doubles
+1994 WFA World Championships,1994,,Open Sgls 5-minute Consecutive,1,Sean Flynn,,
+1994 WFA World Championships,1994,,Open Sgls 5-minute Consecutive,2,Derrick Fogle,,
+1994 WFA World Championships,1994,,Open Sgls 5-minute Consecutive,3,Eric Wulff,,
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,1,Allan Petersen,,doubles
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,1,Remi Kristensen,,doubles
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,2,Davie Piper,,doubles
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,2,Yves Archambault,,doubles
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,3,Jake Leong,,doubles
+1994 WFA World Championships,1994,,Open Dbls Distance 1-pass Consecutive,3,Scott Milne,,doubles
+1994 WFA World Championships,1994,,Women's Sgls 5-minute Consecutive,1,Ida Fogle,,
+1994 WFA World Championships,1994,,Women's Sgls 5-minute Consecutive,2,Sam Conlon,,
+1994 WFA World Championships,1994,,Women's Sgls 5-minute Consecutive,3,Becca English-Ross,,
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,3,Anne Miller,,doubles
+1994 WFA World Championships,1994,,Women's Dbls Distance 1-pass Consecutive,3,Carol Wedemeyer,,doubles
+1994 WFA World Championships,1994,,Open Golf,1,Davie Piper,,
+1994 WFA World Championships,1994,,Open Golf,2,Steve Smith,,
+1994 WFA World Championships,1994,,Open Golf,3,Jack Schoolcraft,,
+1994 WFA World Championships,1994,,Women's Golf,1,Julie Symons,,
+1994 WFA World Championships,1994,,Women's Golf,2,Becca English-Ross,,
+1994 WFA World Championships,1994,,Women's Golf,3,Lisa McDaniel,,
+1995 WFA World Championships,1995,,Men's Overall,1,Allan Petersen,,
+1995 WFA World Championships,1995,,Women's Overall,1,Tricia George,,
+1995 WFA World Championships,1995,,Open Sgls Net,1,Randy Mulder,,
+1995 WFA World Championships,1995,,Open Sgls Net,2,Danny Borsky,,
+1995 WFA World Championships,1995,,Open Sgls Net,3,Alf Marcussen,,
+1995 WFA World Championships,1995,,Open Dbls Net,1,Kenny Shults,,doubles
+1995 WFA World Championships,1995,,Open Dbls Net,1,Randy Mulder,,doubles
+1995 WFA World Championships,1995,,Open Dbls Net,2,Alf Marcussen,,doubles
+1995 WFA World Championships,1995,,Open Dbls Net,2,Brent Welch,,doubles
+1995 WFA World Championships,1995,,Open Dbls Net,3,Remi Kristensen,,doubles
+1995 WFA World Championships,1995,,Open Dbls Net,3,Allan Petersen,,doubles
+1995 WFA World Championships,1995,,Women's Sgls Net,1,Jody Welch,,
+1995 WFA World Championships,1995,,Women's Sgls Net,2,Lisa McDaniel,,
+1995 WFA World Championships,1995,,Women's Sgls Net,3,Julie Symons,,
+1995 WFA World Championships,1995,,Women's Dbls Net,1,Tricia George,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Net,1,Jody Welch,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Net,2,Julie Symons,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Net,3,Constance Constable,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Net,3,Tina Lewis,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,1,Julie Symons,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,1,Randy Mulder,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,2,Jody Welch,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,2,Brent Welch,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,3,Lisa McDaniel,,doubles
+1995 WFA World Championships,1995,,Mixed Dbls Net,3,Emmanuel Bouchard,,doubles
+1995 WFA World Championships,1995,,Open Sgls Freestyle,1,Peter Irish,,
+1995 WFA World Championships,1995,,Open Sgls Freestyle,2,Eric Wulff,,
+1995 WFA World Championships,1995,,Open Sgls Freestyle,3,Greg Nelson,,
+1995 WFA World Championships,1995,,Open Team Freestyle,1,Greg Nelson,,doubles
+1995 WFA World Championships,1995,,Open Team Freestyle,1,Tuan Vu,,doubles
+1995 WFA World Championships,1995,,Open Team Freestyle,2,Peter Irish,,doubles
+1995 WFA World Championships,1995,,Open Team Freestyle,2,Eric Wulff,,doubles
+1995 WFA World Championships,1995,,Women's Sgls Freestyle,1,Sam Conlon,,
+1995 WFA World Championships,1995,,Women's Sgls Freestyle,2,Carol Wedemeyer,,
+1995 WFA World Championships,1995,,Women's Sgls Freestyle,3,Tricia George,,
+1995 WFA World Championships,1995,,Women's Team Freestyle,1,Lisa Monti,,doubles
+1995 WFA World Championships,1995,,Women's Team Freestyle,1,Carol Wedemeyer,,doubles
+1995 WFA World Championships,1995,,Women's Team Freestyle,2,Julie Symons,,doubles
+1995 WFA World Championships,1995,,Women's Team Freestyle,2,Lisa McDaniel,,doubles
+1995 WFA World Championships,1995,,Women's Team Freestyle,3,Becca English-Ross,,doubles
+1995 WFA World Championships,1995,,Women's Team Freestyle,3,Tricia George,,doubles
+1995 WFA World Championships,1995,,Open Sgls 5-minute Consecutive,1,Kenny Shults,,
+1995 WFA World Championships,1995,,Open Sgls 5-minute Consecutive,2,Sean Flynn,,
+1995 WFA World Championships,1995,,Open Sgls 5-minute Consecutive,3,Andy Linder,,
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,1,Allan Petersen,,doubles
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,1,Remi Kristensen,,doubles
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,2,Davie Piper,,doubles
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,2,Yves Archambault,,doubles
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,3,Bruce Guettich,,doubles
+1995 WFA World Championships,1995,,Open Dbls Distance 1-pass Consecutive,3,Peter Shunny,,doubles
+1995 WFA World Championships,1995,,Women's Sgls 5-minute Consecutive,1,Tricia George,,
+1995 WFA World Championships,1995,,Women's Sgls 5-minute Consecutive,2,Sam Conlon,,
+1995 WFA World Championships,1995,,Women's Sgls 5-minute Consecutive,3,Jody Welch,,
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,3,Sam Conlon,,doubles
+1995 WFA World Championships,1995,,Women's Dbls Distance 1-pass Consecutive,3,Lisa Monti,,doubles
+1995 WFA World Championships,1995,,Open Golf,1,Davie Piper,,
+1995 WFA World Championships,1995,,Open Golf,2,Steve Smith,,
+1995 WFA World Championships,1995,,Open Golf,3,Allan Petersen,,
+1995 WFA World Championships,1995,,Women's Golf,1,Julie Symons,,
+1995 WFA World Championships,1995,,Women's Golf,2,Tricia George,,
+1995 WFA World Championships,1995,,Women's Golf,3,Heather Muggleton,,
+1996 WFA World Championships,1996,,Men's Overall,1,Allan Petersen,,
+1996 WFA World Championships,1996,,Women's Overall,1,Becca English-Ross,,
+1996 WFA World Championships,1996,,Open Sgls Net,1,Sebastien Verdy,,
+1996 WFA World Championships,1996,,Open Sgls Net,2,Kenny Shults,,
+1996 WFA World Championships,1996,,Open Sgls Net,3,Randy Mulder,,
+1996 WFA World Championships,1996,,Open Dbls Net,1,Sebastien Verdy,,doubles
+1996 WFA World Championships,1996,,Open Dbls Net,1,Emmanuel Bouchard,,doubles
+1996 WFA World Championships,1996,,Open Dbls Net,2,Kenny Shults,,doubles
+1996 WFA World Championships,1996,,Open Dbls Net,2,Randy Mulder,,doubles
+1996 WFA World Championships,1996,,Open Dbls Net,3,Brent Welch,,doubles
+1996 WFA World Championships,1996,,Open Dbls Net,3,Alf Marcussen,,doubles
+1996 WFA World Championships,1996,,Women's Sgls Net,1,Lisa McDaniel,,
+1996 WFA World Championships,1996,,Women's Sgls Net,2,Julie Symons,,
+1996 WFA World Championships,1996,,Women's Sgls Net,3,Tina Lewis,,
+1996 WFA World Championships,1996,,Women's Dbls Net,1,Julie Symons,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Net,1,Jody Welch,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Net,2,Evanne LaMarche,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Net,3,Tina Lewis,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Net,3,Becca English-Ross,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,1,Jody Welch,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,1,Brent Welch,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,2,Julie Symons,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,2,Randy Mulder,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,3,Lisa McDaniel,,doubles
+1996 WFA World Championships,1996,,Mixed Dbls Net,3,Sebastien Verdy,,doubles
+1996 WFA World Championships,1996,,Open Sgls Freestyle,1,Rick Reese,,
+1996 WFA World Championships,1996,,Open Sgls Freestyle,2,Scott Davidson,,
+1996 WFA World Championships,1996,,Open Sgls Freestyle,3,Eric Wulff,,
+1996 WFA World Championships,1996,,Open Team Freestyle,1,Peter Irish,,doubles
+1996 WFA World Championships,1996,,Open Team Freestyle,1,Eric Wulff,,doubles
+1996 WFA World Championships,1996,,Open Team Freestyle,2,Greg Nelson,,doubles
+1996 WFA World Championships,1996,,Open Team Freestyle,2,Tuan Vu,,doubles
+1996 WFA World Championships,1996,,Open Team Freestyle,3,Rick Reese,,doubles
+1996 WFA World Championships,1996,,Open Team Freestyle,3,Daryl Genz,,doubles
+1996 WFA World Championships,1996,,Women's Sgls Freestyle,1,Sam Conlon,,
+1996 WFA World Championships,1996,,Women's Sgls Freestyle,2,Carol Wedemeyer,,
+1996 WFA World Championships,1996,,Women's Sgls Freestyle,3,Kendall KIC,,
+1996 WFA World Championships,1996,,Women's Sgls Freestyle,3,Becca English-Ross,,
+1996 WFA World Championships,1996,,Women's Team Freestyle,1,Lisa McDaniel,,doubles
+1996 WFA World Championships,1996,,Women's Team Freestyle,1,Sam Conlon,,doubles
+1996 WFA World Championships,1996,,Women's Team Freestyle,2,Carol Wedemeyer,,doubles
+1996 WFA World Championships,1996,,Women's Team Freestyle,2,Lisa Monti,,doubles
+1996 WFA World Championships,1996,,Women's Team Freestyle,3,Kendall KIC,,doubles
+1996 WFA World Championships,1996,,Women's Team Freestyle,3,Becca English-Ross,,doubles
+1996 WFA World Championships,1996,,Open Sgls 5-minute Consecutive,1,Sean Flynn,,
+1996 WFA World Championships,1996,,Open Sgls 5-minute Consecutive,2,Derrick Fogle,,
+1996 WFA World Championships,1996,,Open Sgls 5-minute Consecutive,3,Steve Smith,,
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,1,Alf Marcussen,,doubles
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,1,Brent Welch,,doubles
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,2,Allan Petersen,,doubles
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,2,Peter Shunny,,doubles
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,3,Sean Flynn,,doubles
+1996 WFA World Championships,1996,,Open Dbls Distance 1-pass Consecutive,3,Jim Caveney,,doubles
+1996 WFA World Championships,1996,,Women's Sgls 5-minute Consecutive,1,Ida Fogle,,
+1996 WFA World Championships,1996,,Women's Sgls 5-minute Consecutive,2,Sam Conlon,,
+1996 WFA World Championships,1996,,Women's Sgls 5-minute Consecutive,3,Jody Welch,,
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,1,Julie Symons,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,2,Sam Conlon,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,3,Becca English-Ross,,doubles
+1996 WFA World Championships,1996,,Women's Dbls Distance 1-pass Consecutive,3,Tina Lewis,,doubles
+1996 WFA World Championships,1996,,Open Golf,1,Steve Smith,,
+1996 WFA World Championships,1996,,Open Golf,2,Allan Petersen,,
+1996 WFA World Championships,1996,,Open Golf,3,Peter Shunny,,
+1996 WFA World Championships,1996,,Women's Golf,1,Becca English-Ross,,
+1996 WFA World Championships,1996,,Women's Golf,2,Julie Symons,,
+1996 WFA World Championships,1996,,Women's Golf,2,Evanne LaMarche,,
+1996 WFA World Championships,1996,,Women's Golf,3,Valeria Davidson,,
+1997 WFA World Championships,1997,,Men's Overall,1,Peter Shunny,,
+1997 WFA World Championships,1997,,Women's Overall,1,Tricia George,,
+1997 WFA World Championships,1997,,Open Sgls Net,1,Randy Mulder,,
+1997 WFA World Championships,1997,,Open Sgls Net,2,Kenny Shults,,
+1997 WFA World Championships,1997,,Open Sgls Net,3,Emmanuel Bouchard,,
+1997 WFA World Championships,1997,,Open Dbls Net,1,Kenny Shults,,doubles
+1997 WFA World Championships,1997,,Open Dbls Net,1,Randy Mulder,,doubles
+1997 WFA World Championships,1997,,Open Dbls Net,2,Allan Petersen,,doubles
+1997 WFA World Championships,1997,,Open Dbls Net,2,Peter Shunny,,doubles
+1997 WFA World Championships,1997,,Open Dbls Net,3,Alexi Deschenes,,doubles
+1997 WFA World Championships,1997,,Open Dbls Net,3,Yves Archambault,,doubles
+1997 WFA World Championships,1997,,Women's Sgls Net,1,Tricia George,,
+1997 WFA World Championships,1997,,Women's Sgls Net,2,Tina Lewis,,
+1997 WFA World Championships,1997,,Women's Sgls Net,3,Julie Symons,,
+1997 WFA World Championships,1997,,Women's Dbls Net,1,Julie Symons,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Net,1,Jody Welch,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Net,2,Evanne LaMarche,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Net,3,Tricia George,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Net,3,Becca English-Ross,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,1,Jody Welch,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,1,Brent Welch,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,2,Kenny Shults,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,2,Tricia George,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,3,Alexi Deschenes,,doubles
+1997 WFA World Championships,1997,,Mixed Dbls Net,3,Julie Symons,,doubles
+1997 WFA World Championships,1997,,Open Sgls Freestyle,1,Peter Irish,,
+1997 WFA World Championships,1997,,Open Sgls Freestyle,2,Scott Davidson,,
+1997 WFA World Championships,1997,,Open Sgls Freestyle,3,Eric Wulff,,
+1997 WFA World Championships,1997,,Open Team Freestyle,1,Greg Nelson,,doubles
+1997 WFA World Championships,1997,,Open Team Freestyle,1,Tuan Vu,,doubles
+1997 WFA World Championships,1997,,Open Team Freestyle,2,Rick Reese,,doubles
+1997 WFA World Championships,1997,,Open Team Freestyle,2,Daryl Genz,,doubles
+1997 WFA World Championships,1997,,Open Team Freestyle,3,Sam Conlon,,doubles
+1997 WFA World Championships,1997,,Open Team Freestyle,3,Lisa McDaniel,,doubles
+1997 WFA World Championships,1997,,Women's Sgls Freestyle,1,Sam Conlon,,
+1997 WFA World Championships,1997,,Women's Sgls Freestyle,2,Tricia George,,
+1997 WFA World Championships,1997,,Women's Sgls Freestyle,3,Evanne LaMarche,,
+1997 WFA World Championships,1997,,Women's Sgls Freestyle,3,Julie Symons,,
+1997 WFA World Championships,1997,,Women's Team Freestyle,1,Tricia George,,doubles
+1997 WFA World Championships,1997,,Women's Team Freestyle,1,Becca English-Ross,,doubles
+1997 WFA World Championships,1997,,Women's Team Freestyle,2,Evanne LaMarche,,doubles
+1997 WFA World Championships,1997,,Women's Team Freestyle,2,Ann Kaplan,,doubles
+1997 WFA World Championships,1997,,Women's Team Freestyle,3,Christy Rapp,,doubles
+1997 WFA World Championships,1997,,Women's Team Freestyle,3,Wendy Curran,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,1,Lisa McDaniel,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,1,Greg Nelson,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,2,Sam Conlon,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,2,Steve Goldberg,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,3,Tricia George,,doubles
+1997 WFA World Championships,1997,,Mixed Team Freestyle,3,Paul Vorvick,,doubles
+1997 WFA World Championships,1997,,Open Sgls 5-minute Consecutive,1,Andy Linder,,
+1997 WFA World Championships,1997,,Open Sgls 5-minute Consecutive,2,Sean Flynn,,
+1997 WFA World Championships,1997,,Open Sgls 5-minute Consecutive,3,Brian McKenzie,,
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,1,Andy Linder,,doubles
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,1,Bruce Guettich,,doubles
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,2,Scott Cleere,,doubles
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,2,Peter Shunny,,doubles
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,3,Alexi Deschenes,,doubles
+1997 WFA World Championships,1997,,Open Dbls Distance 1-pass Consecutive,3,Yves Archambault,,doubles
+1997 WFA World Championships,1997,,Women's Sgls 5-minute Consecutive,1,Ida Fogle,,
+1997 WFA World Championships,1997,,Women's Sgls 5-minute Consecutive,2,Tricia George,,
+1997 WFA World Championships,1997,,Women's Sgls 5-minute Consecutive,3,Sam Conlon,,
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,1,Tricia George,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,1,Becca English-Ross,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,2,Jody Welch,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,2,Julie Symons,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,3,Lisa Monti,,doubles
+1997 WFA World Championships,1997,,Women's Dbls Distance 1-pass Consecutive,3,Ann Lasken,,doubles
+1997 WFA World Championships,1997,,Open Golf,1,Jeff Johnson,,
+1997 WFA World Championships,1997,,Open Golf,2,Steve Smith,,
+1997 WFA World Championships,1997,,Open Golf,3,Allan Petersen,,
+1997 WFA World Championships,1997,,Women's Golf,1,Tricia George,,
+1997 WFA World Championships,1997,,Women's Golf,2,Becca English-Ross,,
+1997 WFA World Championships,1997,,Women's Golf,3,Evanne LaMarche,,

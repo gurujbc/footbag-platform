@@ -1,0 +1,827 @@
+event_id,city_canon,state_canon,country_canon,country_iso3
+857852604,Hermosa Beach,California,United States,USA
+857874500,Eugene,Oregon,United States,USA
+857875120,Palo Alto,California,United States,USA
+857876215,Gresham,Oregon,United States,USA
+857876517,Portland,Oregon,United States,USA
+857876870,Eugene,Oregon,United States,USA
+857880054,Perth,Western Australia,Australia,AUS
+857880964,Mt. Prospect,Illinois,United States,USA
+857881519,Vancouver,British Columbia,Canada,CAN
+857881898,Harrisburg,Pennsylvania,United States,USA
+859400929,Montreal,Quebec,Canada,CAN
+859657310,New York,New York,United States,USA
+859787898,Portland,Oregon,United States,USA
+859913311,Scottsdale,Arizona,United States,USA
+859923755,Santa Rosa,California,United States,USA
+860082052,Austin,Texas,United States,USA
+860356126,Seattle,Washington,United States,USA
+865043841,Carbondale,Illinois,United States,USA
+873922005,Helsinki,Uusimaa,Finland,FIN
+876331623,Hermosa Beach,California,United States,USA
+876336655,Scottsdale,Arizona,United States,USA
+876356874,Palo Alto,California,United States,USA
+876590022,Seattle,Washington,United States,USA
+876591529,Montreal,Quebec,Canada,CAN
+877061793,Portland,Oregon,United States,USA
+877848852,Auburn,Alabama,United States,USA
+879319107,Richardson,Texas,United States,USA
+881872990,Carbondale,Illinois,United States,USA
+883135865,Montreal,Quebec,Canada,CAN
+884112176,Champaign,Illinois,United States,USA
+886044392,Vancouver,British Columbia,Canada,CAN
+888294869,Mercer Island,Washington,United States,USA
+892446131,Wichita,Kansas,United States,USA
+899077904,Malta,Illinois,United States,USA
+899722892,Helsinki,Uusimaa,Finland,FIN
+901349509,Salem,Oregon,United States,USA
+901687367,Harrisburg,Pennsylvania,United States,USA
+903468009,Hermosa Beach,California ,United States,USA
+903632480,Field Tempe,Arizona,United States,USA
+909186885,Dallas,Texas,United States,USA
+910551956,Palo Alto,California,United States,USA
+912467534,Portland,Oregon,United States,USA
+913061034,Helsinki,Uusimaa,Finland,FIN
+915561090,Chicago,Illinois,United States,USA
+916193231,Montreal,Quebec,Canada,CAN
+916977484,Eugene,Oregon,United States,USA
+917278465,Berlin,Berlin,Germany,DEU
+917741782,Champaign,Illinois,United States,USA
+919703711,Vancouver,British Columbia,Canada,CAN
+919885513,Montreal,Quebec,Canada,CAN
+920579000,College Park,Maryland,United States,USA
+924977661,Seattle,Washington,United States,USA
+929217368,Harrisburg,Pennsylvania,United States,USA
+931840905,Park Bigfork,Montana,United States,USA
+933099911,Tempe,Arizona,United States,USA
+933115858,Campus) Boulder,Colorado,United States,USA
+933870505,Helsinki,Uusimaa,Finland,FIN
+937727262,San Francisco,California,United States,USA
+937854594,Turku,Southwest Finland,Finland,FIN
+941066992,Redwood City,California,United States,USA
+941418343,Vancouver,British Columbia,Canada,CAN
+942013549,Berlin,Berlin,Germany,DEU
+944242404,Prague,Prague,Czech Republic,CZE
+945548940,Portland,Oregon,United States,USA
+946940201,College Park,Maryland,United States,USA
+947026077,Phoenixville,Pennsylvania,United States,USA
+947196813,Wellington,Wellington,New Zealand,NZL
+948198763,Paris,Île-de-France,France,FRA
+948943299,Arica,Arica y Parinacota,Chile,CHL
+949991621,Hermosa Beach,California,United States,USA
+951771943,San Francisco,California,United States,USA
+952906680,Montreal,Quebec,Canada,CAN
+953918475,Harrisburg,Pennsylvania,United States,USA
+955745735,Wichita,Kansas,United States,USA
+955831740,Turku,Southwest Finland,Finland,FIN
+957240514,Seattle,Washington,United States,USA
+957778745,Bern,Bern,Switzerland,CHE
+959094047,Zurich,Zurich,Switzerland,CHE
+959353403,Pocatello,Idaho,United States,USA
+961053916,Oulu,North Ostrobothnia,Finland,FIN
+961626997,Quebec City,Quebec,Canada,CAN
+967817818,Austin,Texas,United States,USA
+972427576,Montreal,Quebec,Canada,CAN
+973573676,Auckland,Auckland,New Zealand,NZL
+974683678,Boulder,Colorado,United States,USA
+977260894,Arica,Arica y Parinacota,Chile,CHL
+978967004,Hermosa Beach,California,United States,USA
+979089216,Eugene,Oregon,United States,USA
+979334083,Palo Alto,California,United States,USA
+979816633,Budapest,Budapest,Hungary,HUN
+980253113,Zurich,Zurich,Switzerland,CHE
+980502839,Prague,Prague,Czech Republic,CZE
+980969461,Bay Area,California,United States,USA
+981129410,College Park,Maryland,United States,USA
+981560223,Zurich,Zurich,Switzerland,CHE
+984694623,Montreal,Quebec,Canada,CAN
+984874006,State College,Pennsylvania,United States,USA
+987985282,Townsville,Queensland,Australia,AUS
+988325277,Regina,Saskatchewan,Canada,CAN
+988434364,Richardson,Texas,United States,USA
+989875090,Chicago,Illinois,United States,USA
+990512631,Turku,Southwest Finland,Finland,FIN
+990626988,Wrocław,Lower Silesian,Poland,POL
+990905420,Vancouver,British Columbia,Canada,CAN
+991285803,Montreal,Quebec,Canada,CAN
+991757909,Harrisburg,Pennsylvania,United States,USA
+992517335,Keuruu,Central Finland,Finland,FIN
+994186570,Washington,Pennsylvania,United States,USA
+996293200,Sydney,New South Wales,Australia,AUS
+996678489,Vienna,Vienna,Austria,AUT
+999985344,Tallinn,Harju County,Estonia,EST
+1000071985,Frankfurt,Hesse,Germany,DEU
+1001076203,Montpellier,Occitanie,France,FRA
+1001076315,Turku,Southwest Finland,Finland,FIN
+1001905008,Manassas,Virginia,United States,USA
+1001942070,Austin,Texas,United States,USA
+1004370976,Basel,Basel-Stadt,Switzerland,CHE
+1005667143,Helsinki,Uusimaa,Finland,FIN
+1011291051,Quebec City,Quebec,Canada,CAN
+1011324897,State College,Pennsylvania,United States,USA
+1011556608,Basel,Basel-Stadt,Switzerland,CHE
+1012638214,Palo Alto,California,United States,USA
+1013283071,San Francisco,California,United States,USA
+1015198403,Manassas,Virginia,United States,USA
+1015303046,Luis Obispo,California,United States,USA
+1016457376,Augusta,Georgia,United States,USA
+1018812342,Prague,Prague,Czech Republic,CZE
+1018925821,Portersville,Pennsylvania,United States,USA
+1019193491,Helsinki,Uusimaa,Finland,FIN
+1020262608,Berlin,Berlin,Germany,DEU
+1021665982,Laurel,Maryland,United States,USA
+1022992222,Calgary,Alberta,Canada,CAN
+1023993464,Hershey,Pennsylvania,United States,USA
+1024091202,Kiskunfélegyháza,Bács-Kiskun,Hungary,HUN
+1025084282,Logan City,Queensland,Australia,AUS
+1027925383,Helsinki,Uusimaa,Finland,FIN
+1028218784,Houston,Texas,United States,USA
+1028233308,Chicago,Illinois,United States,USA
+1028800969,Frankfurt,Hesse,Germany,DEU
+1029347412,Lyon,Auvergne-Rhône-Alpes,France,FRA
+1030642331,Seattle,Washington,United States,USA
+1030830356,Montpellier,Occitanie,France,FRA
+1031334528,Harrisburg,Pennsylvania,United States,USA
+1032472601,Philadelphia,Pennsylvania,United States,USA
+1032602594,Melbourne,Victoria,Australia,AUS
+1034212755,Ocean City,Maryland,United States,USA
+1034985978,Vancouver,British Columbia,Canada,CAN
+1035277529,Prague,Prague,Czech Republic,CZE
+1035817350,Sydney,New South Wales,Australia,AUS
+1036298726,Fort Collins,Colorado,United States,USA
+1036653244,Calgary,Alberta,Canada,CAN
+1038895913,Wellington,Wellington,New Zealand,NZL
+1039550946,Montreal,Quebec,Canada,CAN
+1041241196,Győr,Győr-Moson-Sopron,Hungary,HUN
+1042566573,Philadelphia,Pennsylvania,United States,USA
+1042821772,Frankfurt,Hesse,Germany,DEU
+1043096425,Long Branch,New Jersey,United States,USA
+1043430155,Portersville,Pennsylvania,United States,USA
+1044624680,Augusta,Georgia,United States,USA
+1044952105,Montreal,Quebec,Canada,CAN
+1045628278,Montreal,Quebec,Canada,CAN
+1046985067,Ambridge,Pennsylvania,United States,USA
+1049457912,Laurel,Maryland,United States,USA
+1050067583,Turku,Southwest Finland,Finland,FIN
+1050140930,Zeil am Main,Bavaria,Germany,DEU
+1050745947,Paris,Île-de-France,France,FRA
+1052775366,Copenhagen,Capital Region,Denmark,DNK
+1054616435,Eugene,Oregon,United States,USA
+1057126024,Long Branch,New Jersey,United States,USA
+1057175925,Beachwood,New Jersey,United States,USA
+1057345914,Beachwood,New Jersey,United States,USA
+1057773472,Portland,Oregon,United States,USA
+1058378281,Austin,Texas,United States,USA
+1058877971,Newtown,Pennsylvania,United States,USA
+1061212821,Chicago,Illinois,United States,USA
+1061453080,Melbourne,Victoria,Australia,AUS
+1061921260,Paris,Île-de-France,France,FRA
+1063788560,Turku,Southwest Finland,Finland,FIN
+1064330873,Frankfurt,Hesse,Germany,DEU
+1064849293,Montpellier,Occitanie,France,FRA
+1065478531,Montreal,Quebec,Canada,CAN
+1068406344,Győr,Győr-Moson-Sopron,Hungary,HUN
+1068638122,Zurich,Zurich,Switzerland,CHE
+1069415266,Paris,Île-de-France,France,FRA
+1069791565,Lyon,Auvergne-Rhône-Alpes,France,FRA
+1069929277,Montreal,Quebec,Canada,CAN
+1070734498,Prague,Prague,Czech Republic,CZE
+1070954568,Center Denver,Colorado,United States,USA
+1071060801,Aachen,North Rhine-Westphalia,Germany,DEU
+1074511718,Wrocław,Lower Silesian,Poland,POL
+1075781798,Harrisburg,Pennsylvania,United States,USA
+1076876907,Saint Petersburg,Saint Petersburg,Russia,RUS
+1076952530,Atlanta,Georgia,United States,USA
+1077766197,New Paltz,New York,United States,USA
+1079024287,Tallinn,Harju County,Estonia,EST
+1079444598,Frankfurt,Hesse,Germany,DEU
+1079605499,Copenhagen,Capital Region,Denmark,DNK
+1079664495,Victoria,British Columbia,Canada,CAN
+1080138513,Paris,Île-de-France,France,FRA
+1080247856,Oval Missoula,Montana,United States,USA
+1080757998,Houston,Texas,United States,USA
+1080896073,Turku,Southwest Finland,Finland,FIN
+1081766954,Moscow,Moscow,Russia,RUS
+1083699966,Jyväskylä,Central Finland,Finland,FIN
+1089373321,Paris,Île-de-France,France,FRA
+1090437706,Wrocław,Lower Silesian,Poland,POL
+1090569022,Montpellier,Occitanie,France,FRA
+1091802943,Austin,Texas,United States,USA
+1092044099,Moscow,Moscow,Russia,RUS
+1092073845,Prague,Prague,Czech Republic,CZE
+1093955766,Moscow,Moscow,Russia,RUS
+1094071528,Berlin,Berlin,Germany,DEU
+1094123527,Helsinki,Uusimaa,Finland,FIN
+1094201584,Frankfurt,Hesse,Germany,DEU
+1095965765,Piliscsaba,Pest,Hungary,HUN
+1096318324,Seattle,Washington,United States,USA
+1096695238,Orono,Maine,United States,USA
+1097686137,Fribourg,Fribourg,Switzerland,CHE
+1097785506,Naantali,Southwest Finland,Finland,FIN
+1099545007,Wellington,Wellington,New Zealand,NZL
+1100728799,Berlin,Berlin,Germany,DEU
+1102227996,Oakland,California,United States,USA
+1102443443,Szczecin,West Pomeranian,Poland,POL
+1102447093,Frankfurt,Hesse,Germany,DEU
+1102576153,Helsinki,Uusimaa,Finland,FIN
+1102788509,Győr,Győr-Moson-Sopron,Hungary,HUN
+1103297805,Lyon,Auvergne-Rhône-Alpes,France,FRA
+1103724325,Paris,Île-de-France,France,FRA
+1104851808,Wrocław,Lower Silesian,Poland,POL
+1105087209,Zurich,Zurich,Switzerland,CHE
+1105353373,Frankfurt,Hesse,Germany,DEU
+1106561176,Aachen,North Rhine-Westphalia,Germany,DEU
+1107289556,Montreal,Quebec,Canada,CAN
+1107290435,Montreal,Quebec,Canada,CAN
+1109356644,Harrisburg,Pennsylvania,United States,USA
+1109682847,Tallinn,Harju County,Estonia,EST
+1109802420,Turku,Southwest Finland,Finland,FIN
+1110562712,Podersdorf am See,Burgenland,Austria,AUT
+1111735438,RIT Rochester,New York,United States,USA
+1113344236,Portland,Oregon,United States,USA
+1113922209,Paris,Île-de-France,France,FRA
+1114277529,Prague,Prague,Czech Republic,CZE
+1117746703,Frankfurt,Hesse,Germany,DEU
+1121753561,Melbourne,Victoria,Australia,AUS
+1124035486,Turku,Southwest Finland,Finland,FIN
+1124840254,Winnipeg,Manitoba,Canada,CAN
+1125004188,Murfreesboro,Tennessee,United States,USA
+1125936037,Paris,Île-de-France,France,FRA
+1126086921,Szczecin,West Pomeranian,Poland,POL
+1127155729,Wrocław,Lower Silesian,Poland,POL
+1131659634,Oakland/San Francisco,California,United States,USA
+1132511088,Kuopio,North Savo,Finland,FIN
+1133888413,Murfreesboro,Tennessee,United States,USA
+1134914723,Paris,Île-de-France,France,FRA
+1135116604,Frankfurt,Hesse,Germany,DEU
+1137347261,Denver,Colorado,United States,USA
+1137937282,Litoměřice,Ústí nad Labem,Czech Republic,CZE
+1137942486,Lausanne,Vaud,Switzerland,CHE
+1138601883,Santa Cruz,California,United States,USA
+1139778550,Stockholm,Stockholm County,Sweden,SWE
+1141576257,Turku,Southwest Finland,Finland,FIN
+1142360459,Jyväskylä,Central Finland,Finland,FIN
+1143027870,Paris,Île-de-France,France,FRA
+1143155263,Portland,Oregon,United States,USA
+1143172220,Somerville,New Jersey,United States,USA
+1143195910,Chambéry,Auvergne-Rhône-Alpes,France,FRA
+1146356760,Athens,Alabama,United States,USA
+1146789209,College Park,Maryland,United States,USA
+1146843672,Montreal,Quebec,Canada,CAN
+1148241486,Pittsburgh,Pennsylvania,United States,USA
+1148374547,Carnon-Plage,Occitanie,France,FRA
+1149763452,Paris,Île-de-France,France,FRA
+1149881200,Harrisburg,Pennsylvania,United States,USA
+1151949245,Calgary,Alberta,Canada,CAN
+1153345992,Memphis,Tennessee,United States,USA
+1154685554,Vienna,Vienna,Austria,AUT
+1155788760,Murfreesboro,Tennessee,United States,USA
+1156283186,Winnipeg,Manitoba,Canada,CAN
+1157398732,Copenhagen,Capital Region,Denmark,DNK
+1157942368,Chicago,Illinois,United States,USA
+1158263300,Wrocław,Lower Silesian,Poland,POL
+1160579826,Paris,Île-de-France,France,FRA
+1161167528,Berlin,Berlin,Germany,DEU
+1161871029,Naantali,Southwest Finland,Finland,FIN
+1161888703,Ithaca,New York,United States,USA
+1163624128,West Linn,Oregon,United States,USA
+1163784775,Buena Vista,Florida,United States,USA
+1164034575,Chattanooga,Tennessee,United States,USA
+1164845982,San Francisco,California,United States,USA
+1166622628,Paris,Île-de-France,France,FRA
+1167422711,Memphis,Tennessee,United States,USA
+1168634226,Prague,Prague,Czech Republic,CZE
+1170456736,Montreal,Quebec,Canada,CAN
+1172562114,Santa Cruz,California,United States,USA
+1172931308,Montreal,Quebec,Canada,CAN
+1173467292,Missoula,Montana,United States,USA
+1173606489,Jyväskylä,Central Finland,Finland,FIN
+1176318174,Portland,Oregon,United States,USA
+1176650845,Budd Lake,New Jersey,United States,USA
+1176844933,Austin,Texas,United States,USA
+1177512537,Carnon-Plage,Occitanie,France,FRA
+1177615498,Turku,Southwest Finland,Finland,FIN
+1179679872,Aachen,North Rhine-Westphalia,Germany,DEU
+1179874637,Montreal,Quebec,Canada,CAN
+1180373807,Jyväskylä,Central Finland,Finland,FIN
+1180496320,Vancouver,British Columbia,Canada,CAN
+1181021804,Edmonton,Alberta,Canada,CAN
+1182542776,Harrisburg,Pennsylvania,United States,USA
+1183654670,Medellín,Antioquia,Colombia,COL
+1183729267,Paris,Île-de-France,France,FRA
+1185458086,Kraków,Lesser Poland,Poland,POL
+1185556078,Linz,Upper Austria,Austria,AUT
+1188233129,Winnipeg,Manitoba,Canada,CAN
+1189345008,Warsaw,Masovian,Poland,POL
+1189467124,Phoenix,Arizona,United States,USA
+1189535136,Boise,Idaho,United States,USA
+1189977929,Houston,Texas,United States,USA
+1190256479,New York,New York,United States,USA
+1191627566,Ithaca,New York,United States,USA
+1192722292,Saint Petersburg,Saint Petersburg,Russia,RUS
+1193783964,Portland,Oregon,United States,USA
+1194517448,Prague,Prague,Czech Republic,CZE
+1195585401,San Francisco,California,United States,USA
+1195677906,Berlin,Berlin,Germany,DEU
+1195773772,Wrocław,Lower Silesian,Poland,POL
+1196344513,Prague,Prague,Czech Republic,CZE
+1199106237,Montpellier,Occitanie,France,FRA
+1200725314,San Diego,California,United States,USA
+1201396433,New York,New York,United States,USA
+1201811757,Memphis,Tennessee,United States,USA
+1202118857,Jyväskylä,Central Finland,Finland,FIN
+1203102773,Chicago,Illinois,United States,USA
+1203604560,Paris,Île-de-France,France,FRA
+1204006435,Montreal,Quebec,Canada,CAN
+1204009603,Montreal,Quebec,Canada,CAN
+1204904987,Paris,Île-de-France,France,FRA
+1205552627,Jyväskylä,Central Finland,Finland,FIN
+1206161350,Montreal,Quebec,Canada,CAN
+1208064566,Winnipeg,Manitoba,Canada,CAN
+1208345952,Turku,Southwest Finland,Finland,FIN
+1208408135,Edmonton,Alberta,Canada,CAN
+1209416688,Nashville,Tennessee,United States,USA
+1212406878,Marseille,Provence-Alpes-Côte d'Azur,France,FRA
+1212769063,Chicago,Illinois,United States,USA
+1216058526,Harrisburg,Pennsylvania,United States,USA
+1216742033,Chicago,Illinois,United States,USA
+1216849705,Austin,Texas,United States,USA
+1218721346,Salem,Illinois,United States,USA
+1219405634,Warsaw,Masovian,Poland,POL
+1220466807,Silver Spring,Maryland,United States,USA
+1220519679,Naantali,Southwest Finland,Finland,FIN
+1220533446,Salem,Illinois,United States,USA
+1221506867,Jyväskylä,Central Finland,Finland,FIN
+1222687523,Paris,Île-de-France,France,FRA
+1224962900,Wrocław,Lower Silesian,Poland,POL
+1225370942,Frankfurt,Hesse,Germany,DEU
+1226205667,San Cristóbal,Táchira,Venezuela,VEN
+1226378339,Chandler,Arizona,United States,USA
+1226549669,Memphis,Tennessee,United States,USA
+1226679678,Berlin,Berlin,Germany,DEU
+1226938152,Helsinki,Uusimaa,Finland,FIN
+1228946926,Prague,Prague,Czech Republic,CZE
+1229435305,Chicago,Illinois,United States,USA
+1230850031,Montreal,Quebec,Canada,CAN
+1231286017,Portland,Oregon,United States,USA
+1231432184,Prague,Prague,Czech Republic,CZE
+1232474501,San Francisco,California,United States,USA
+1233299407,Vancouver,Washington,United States,USA
+1233718528,Sydney,New South Wales,Australia,AUS
+1234761224,Montréal,Quebec,Canada,CAN
+1235149093,Paris,Île-de-France,France,FRA
+1235253768,Houston,Texas,United States,USA
+1235504528,Jyväskylä,Central Finland,Finland,FIN
+1235653935,Strzelin,Lower Silesian,Poland,POL
+1237771561,Montreal,Quebec,Canada,CAN
+1238728089,Sydney,New South Wales,Australia,AUS
+1239056543,Montreal,Quebec,Canada,CAN
+1239721441,Wrocław,Lower Silesian,Poland,POL
+1240469006,Turku,Southwest Finland,Finland,FIN
+1241011525,Nantes,Pays de la Loire,France,FRA
+1241031822,Moscow,Moscow,Russia,RUS
+1242210886,Jyväskylä,Central Finland,Finland,FIN
+1244553505,Helsinki,Uusimaa,Finland,FIN
+1245199707,Vancouver,British Columbia,Canada,CAN
+1245404642,Lausanne,Vaud,Switzerland,CHE
+1245432804,Wiener Neustadt,Lower Austria,Austria,AUT
+1245793403,Harrisburg,Pennsylvania,United States,USA
+1248033041,Austin,Texas,United States,USA
+1248864536,Białystok,Podlaskie,Poland,POL
+1250478677,Montreal,Quebec,Canada,CAN
+1251952403,Caracas,Capital District,Venezuela,VEN
+1251990500,Warsaw,Masovian,Poland,POL
+1252110023,College Park,Maryland,United States,USA
+1252451527,Harrisburg,Pennsylvania,United States,USA
+1254662073,Berlin,Berlin,Germany,DEU
+1254724022,Chandler,Arizona,United States,USA
+1254829577,Naantali,Southwest Finland,Finland,FIN
+1255269216,Chicago,Illinois,United States,USA
+1255335697,Prague,Prague,Czech Republic,CZE
+1255957016,Wrocław,Lower Silesian,Poland,POL
+1256202918,Paris,Île-de-France,France,FRA
+1257621700,Hamburg,Hamburg,Germany,DEU
+1258513500,Bogotá,Cundinamarca,Colombia,COL
+1260368810,Frankfurt,Hesse,Germany,DEU
+1260517364,Stara Zagora,Stara Zagora,Bulgaria,
+1262288759,Portland,Oregon,United States,USA
+1262631137,Stara Zagora,Stara Zagora,Bulgaria,
+1262691385,Prague,Prague,Czech Republic,CZE
+1263589392,Hamburg,Hamburg,Germany,DEU
+1264098849,Memphis,Tennessee,United States,USA
+1265745512,Oakland,California,United States,USA
+1265850138,Vancouver,Washington,United States,USA
+1267199851,Warsaw,Masovian,Poland,POL
+1267469140,San Cristóbal,Táchira,Venezuela,VEN
+1267718326,Chicago,Illinois,United States,USA
+1267920908,Montréal,Quebec,Canada,CAN
+1267996189,Stara Zagora,Stara Zagora,Bulgaria,
+1268191383,Houston,Texas,United States,USA
+1268407783,College Park,Maryland,United States,USA
+1268445253,Lake Tahoe,California,United States,USA
+1269111845,Montréal,Quebec,Canada,CAN
+1269266785,Brussels,Brussels Capital Region,Belgium,BEL
+1269860787,Jyväskylä,Central Finland,Finland,FIN
+1270518636,Austin,Texas,United States,USA
+1270631935,Paris,Île-de-France,France,FRA
+1271270281,Düsseldorf,North Rhine-Westphalia,Germany,DEU
+1271275118,Turku,Southwest Finland,Finland,FIN
+1272817638,Montréal,Quebec,Canada,CAN
+1273248665,New York,New York,United States,USA
+1277805979,Montpellier,Occitanie,France,FRA
+1278603677,Katowice,Silesian,Poland,POL
+1278991986,Vancouver,British Columbia,Canada,CAN
+1280002674,Jyväskylä,Central Finland,Finland,FIN
+1280907422,Lucerne,Lucerne,Switzerland,CHE
+1282224512,Berlin,Berlin,Germany,DEU
+1282647603,Kraków,Lesser Poland,Poland,POL
+1282912320,Warsaw,Masovian,Poland,POL
+1284182261,Caracas,Miranda,Venezuela,VEN
+1284588517,Vienna,Vienna,Austria,AUT
+1285506605,Chicago,Illinois,United States,USA
+1285989828,San Cristóbal,Táchira,Venezuela,VEN
+1286381206,Caracas,Capital District,Venezuela,VEN
+1286381599,Caracas,Capital District,Venezuela,VEN
+1286644859,Hradec Králové,Hradec Králové,Czech Republic,CZE
+1287439208,Naantali,Southwest Finland,Finland,FIN
+1287703732,Montréal,Quebec,Canada,CAN
+1288096032,Wrocław,Lower Silesian,Poland,POL
+1290861524,Frankfurt,Hesse,Germany,DEU
+1293877677,Helsinki,Uusimaa,Finland,FIN
+1293877917,Madrid,Community of Madrid,Spain,ESP
+1293878155,Prague,Prague,Czech Republic,CZE
+1294262550,Paris,Île-de-France,France,FRA
+1294779128,Memphis,Tennessee,United States,USA
+1295120951,Oakland,California,United States,USA
+1295262886,Prague,Prague,Czech Republic,CZE
+1295842442,Portland,Oregon,United States,USA
+1296449468,Barranquilla,Atlántico,Colombia,COL
+1297811412,Płońsk,Masovian,Poland,POL
+1297909685,Caracas,Capital District,Venezuela,VEN
+1298063977,Jyväskylä,Central Finland,Finland,FIN
+1298627369,Kiel,Schleswig-Holstein,Germany,DEU
+1299019355,Lausanne,Vaud,Switzerland,CHE
+1299244521,Warsaw,Masovian,Poland,POL
+1299532552,Chicago,Illinois,United States,USA
+1300316952,Paris,Île-de-France,France,FRA
+1301104070,San Cristóbal,Táchira,Venezuela,VEN
+1301243982,Düsseldorf,North Rhine-Westphalia,Germany,DEU
+1301675662,Caracas,Capital District,Venezuela,VEN
+1301837216,Montréal,Quebec,Canada,CAN
+1301837824,Montréal,Quebec,Canada,CAN
+1301958487,Boise,Idaho,United States,USA
+1302802291,Jyväskylä,Central Finland,Finland,FIN
+1302874713,Turku,Southwest Finland,Finland,FIN
+1305581560,Nantes,Loire-Atlantique,France,FRA
+1310408325,Vancouver,British Columbia,Canada,CAN
+1311699287,Caracas,Miranda,Venezuela,VEN
+1313351184,New Brunswick,New Jersey,United States,USA
+1314229545,Austin,Texas,United States,USA
+1314323534,San Cristóbal,Táchira,Venezuela,VEN
+1314328055,San Cristóbal,Táchira,Venezuela,VEN
+1315451053,Salem,Illinois,United States,USA
+1316280393,Warsaw,Masovian,Poland,POL
+1318673467,Vienna,Vienna,Austria,AUT
+1319622692,Berlin,Berlin,Germany,DEU
+1320232300,Paris,Île-de-France,France,FRA
+1320803601,Portland,Oregon,United States,USA
+1321368279,Helsinki,Uusimaa,Finland,FIN
+1321869570,Prague,Prague,Czech Republic,CZE
+1323272493,Warsaw,Masovian,Poland,POL
+1323980691,Memphis,Tennessee,United States,USA
+1325504349,Frankfurt,Hesse,Germany,DEU
+1326451143,Prague,Prague,Czech Republic,CZE
+1327693335,Montréal,Quebec,Canada,CAN
+1328094862,Düsseldorf,North Rhine-Westphalia,Germany,DEU
+1329044785,Jyväskylä,Central Finland,Finland,FIN
+1329132977,Zurich,Zurich,Switzerland,CHE
+1330833781,Caracas,Capital District,Venezuela,VEN
+1330902233,Oakland,California,United States,USA
+1331667371,Paris,Île-de-France,France,FRA
+1333483324,Helsinki,Uusimaa,Finland,FIN
+1335148163,Portland,Oregon,United States,USA
+1335381794,Nantes,Pays de la Loire,France,FRA
+1335761071,San Cristóbal,Táchira,Venezuela,VEN
+1335898356,Turku,Southwest Finland,Finland,FIN
+1336988107,Wrocław,Lower Silesian,Poland,POL
+1337309613,Vancouver,British Columbia,Canada,CAN
+1337327565,Montreal,Quebec,Canada,CAN
+1337617980,Dresden,Saxony,Germany,DEU
+1337623340,Brooklyn,New York,United States,USA
+1338821785,Warsaw,Masovian,Poland,POL
+1339389008,Caracas,Capital District,Venezuela,VEN
+1344519313,Chicago,Illinois,United States,USA
+1344593549,Linz,Upper Austria,Austria,AUT
+1344933824,Wrocław,Lower Silesian,Poland,POL
+1346947092,Medellín,Antioquia,Colombia,COL
+1346948712,Medellín,Antioquia,Colombia,COL
+1347475695,Nantes,Loire-Atlantique,France,FRA
+1348171585,Austin,Texas,United States,USA
+1348929718,San Cristóbal,Táchira,Venezuela,VEN
+1349043745,Berlin,Berlin,Germany,DEU
+1353085933,Paris,Île-de-France,France,FRA
+1353223688,Helsinki,Uusimaa,Finland,FIN
+1353380057,Caracas,Capital District,Venezuela,VEN
+1354752474,Paris,Île-de-France,France,FRA
+1357101984,Portland,Oregon,United States,USA
+1357206898,Prague,Prague,Czech Republic,CZE
+1357231609,Chicago,Illinois,United States,USA
+1357234775,Bartlett,Tennessee,United States,USA
+1357642226,Frankfurt,Hesse,Germany,DEU
+1358271250,San Francisco,California,United States,USA
+1358964427,Jyväskylä,Central Finland,Finland,FIN
+1361207019,Montreal,Quebec,Canada,CAN
+1361239371,San Cristóbal,Táchira,Venezuela,VEN
+1361239920,San Cristóbal,Táchira,Venezuela,VEN
+1362598500,Montreal,Quebec,Canada,CAN
+1362657553,Moscow,Moscow,Russia,RUS
+1362915311,Turku,Southwest Finland,Finland,FIN
+1363551565,Helsinki,Uusimaa,Finland,FIN
+1366240051,Caracas,Miranda,Venezuela,VEN
+1366375326,Warsaw,Masovian,Poland,POL
+1367327351,Brooklyn,New York,United States,USA
+1368559562,Caracas,Capital District,Venezuela,VEN
+1369141018,Burgas,Burgas,Bulgaria,
+1369864929,Paris,Île-de-France,France,FRA
+1370276202,Lausanne,Vaud,Switzerland,CHE
+1371821574,Zurich,Zurich,Switzerland,CHE
+1374570632,Helsinki,Uusimaa,Finland,FIN
+1376036018,Wrocław,Lower Silesian,Poland,POL
+1377192359,Berlin,Berlin,Germany,DEU
+1378666423,Copenhagen,Capital Region,Denmark,DNK
+1378821205,Nantes,Loire-Atlantique,France,FRA
+1378928859,San Cristóbal,Táchira,Venezuela,VEN
+1379414806,Brno,South Moravian,Czech Republic,CZE
+1382778441,Vienna,Vienna,Austria,AUT
+1383076667,Berlin,Berlin,Germany,DEU
+1386623061,West Linn,Oregon,United States,USA
+1389338303,Turku,Southwest Finland,Finland,FIN
+1389613723,Zurich,Zurich,Switzerland,CHE
+1389730147,Prague,Prague,Czech Republic,CZE
+1391176125,Memphis,Tennessee,United States,USA
+1391189882,Paris,Île-de-France,France,FRA
+1392497284,Ostrava,Moravian-Silesian,Czech Republic,CZE
+1393451254,Stara Zagora,Stara Zagora,Bulgaria,
+1393501611,Frankfurt,Hesse,Germany,DEU
+1394621886,Paris,Île-de-France,France,FRA
+1394742347,Chicago,Illinois,United States,USA
+1394773593,Oakland,California,United States,USA
+1399929003,Medellín,Antioquia,Colombia,COL
+1401113913,Freiburg,Baden-Württemberg,Germany,DEU
+1403287103,Montreal,Quebec,Canada,CAN
+1404123889,Burgas,Burgas,Bulgaria,
+1405875596,Brooklyn,New York,United States,USA
+1406219099,Lubaczów,Subcarpathian,Poland,POL
+1407335213,Lausanne,Vaud,Switzerland,CHE
+1408070192,Ann Arbor,Michigan,United States,USA
+1412859519,Paris,Île-de-France,France,FRA
+1413607134,Helsinki,Uusimaa,Finland,FIN
+1415986036,Prague,Prague,Czech Republic,CZE
+1417000778,Paris,Île-de-France,France,FRA
+1417735560,Copenhagen,Capital Region,Denmark,DNK
+1417958417,Sofia,Sofia-Grad,Bulgaria,
+1418127354,Frankfurt,Hesse,Germany,DEU
+1420195881,Berlin,Berlin,Germany,DEU
+1421069713,Stara Zagora,Stara Zagora,Bulgaria,
+1421271111,Chicago,Illinois,United States,USA
+1422386917,Memphis,Tennessee,United States,USA
+1423020874,Caracas,Capital District,Venezuela,VEN
+1425372477,West Linn,Oregon,United States,USA
+1427144456,Erie,Pennsylvania,United States,USA
+1430582557,Caracas,Capital District,Venezuela,VEN
+1430596760,Montreal,Quebec,Canada,CAN
+1431288258,Turku,Southwest Finland,Finland,FIN
+1432901754,Nantes,Pays de la Loire,France,FRA
+1435110091,Brooklyn,New York,United States,USA
+1435784719,Caracas,Capital District,Venezuela,VEN
+1436878168,Helsinki,Uusimaa,Finland,FIN
+1438626750,Lausanne,Vaud,Switzerland,CHE
+1439332196,Katowice,Silesian,Poland,POL
+1444911632,Frankfurt,Hesse,Germany,DEU
+1445178271,Vienna,Vienna,Austria,AUT
+1446571794,Berlin,Berlin,Germany,DEU
+1447494731,Erie,Pennsylvania,United States,USA
+1449217972,Turku,Southwest Finland,Finland,FIN
+1449259560,Trnava,Trnava,Slovakia,SVK
+1453384342,Frankfurt,Hesse,Germany,DEU
+1454371285,Memphis,Tennessee,United States,USA
+1455047000,Chicago,Illinois,United States,USA
+1458125752,Stara Zagora,Stara Zagora,Bulgaria,
+1458170459,Paris,Île-de-France,France,FRA
+1458772302,West Linn,Oregon,United States,USA
+1459426362,Nantes,Pays de la Loire,France,FRA
+1460640850,Frankfurt,Hesse,Germany,DEU
+1461077179,Wrocław,Lower Silesian,Poland,POL
+1463511970,Montreal,Quebec,Canada,CAN
+1464967908,Brooklyn,New York,United States,USA
+1466891959,Lausanne,Vaud,Switzerland,CHE
+1466942562,Bremen,Bremen,Germany,DEU
+1467142686,Katowice,Silesian,Poland,POL
+1471407009,Turku,Southwest Finland,Finland,FIN
+1471686537,Portland,Oregon,United States,USA
+1473853257,Kraków,Lesser Poland,Poland,POL
+1473932659,Vienna,Vienna,Austria,AUT
+1485520697,Frankfurt,Hesse,Germany,DEU
+1485863923,Lublin,Lublin,Poland,POL
+1485967222,Peninsula Cherokee,Alabama,United States,USA
+1485970612,Montreal,Quebec,Canada,CAN
+1486654923,Paris,Île-de-France,France,FRA
+1487797845,Aranjuez,Community of Madrid,Spain,ESP
+1487800738,Stara Zagora,Stara Zagora,Bulgaria,
+1488957997,Lausanne,Vaud,Switzerland,CHE
+1489248474,Erie,Pennsylvania,United States,USA
+1492354286,Chicago,Illinois,United States,USA
+1497678985,Nantes,Pays de la Loire,France,FRA
+1498568502,Vienna,Vienna,Austria,AUT
+1499025778,Berlin,Berlin,Germany,DEU
+1499168069,Stara Zagora,Stara Zagora,Bulgaria,
+1502929111,New York,New York,United States,USA
+1502997442,Erie,Pennsylvania,United States,USA
+1509295388,Turku,Southwest Finland,Finland,FIN
+1509295589,Helsinki,Uusimaa,Finland,FIN
+1515176008,Medellín,Antioquia,Colombia,COL
+1516978874,Paris,Île-de-France,France,FRA
+1518200935,Kranj,Upper Carniola,Slovenia,SVN
+1519215398,Sofia,Sofia-Grad,Bulgaria,
+1519233007,Stara Zagora,Stara Zagora,Bulgaria,
+1520348349,Memphis,Tennessee,United States,USA
+1520596747,Nantes,Pays de la Loire,France,FRA
+1524683077,New York,New York,United States,USA
+1526035381,Frankfurt,Hesse,Germany,DEU
+1526583313,Tábor,South Bohemian,Czech Republic,CZE
+1526588580,Montreal,Quebec,Canada,CAN
+1527557123,Medellín,Antioquia,Colombia,COL
+1529239199,Erie,Pennsylvania,United States,USA
+1531284609,Kraków,Lesser Poland,Poland,POL
+1531311472,Nantes,Pays de la Loire,France,FRA
+1533246739,Lausanne,Vaud,Switzerland,CHE
+1536221908,Vienna,Vienna,Austria,AUT
+1537521152,Turku,Southwest Finland,Finland,FIN
+1537994275,Medellín,Antioquia,Colombia,COL
+1539024211,Las Vegas,Nevada,United States,USA
+1547415984,Warsaw,Masovian,Poland,POL
+1547720079,Nantes,Pays de la Loire,France,
+1549597969,Medellín,Antioquia,Colombia,COL
+1551207285,Paris,Île-de-France,France,FRA
+1552865692,New York,New York,United States,USA
+1555631351,Boston,Massachusetts,United States,USA
+1556306551,Montréal,Quebec,Canada,CAN
+1556730450,Bilbao,Basque Country,Spain,
+1557144269,Frankfurt,Hesse,Germany,DEU
+1557331196,Memphis,Tennessee,United States,USA
+1562271704,Columbus,Ohio,United States,USA
+1564005204,Bilbao,Basque Country,Spain,
+1565425638,Lausanne,Vaud,Switzerland,CHE
+1566500647,Larrabetzu,Basque Country,Spain,ESP
+1566532030,Berlin,Berlin,Germany,DEU
+1567551985,Kraków,Lesser Poland,Poland,POL
+1568289502,Stara Zagora,Stara Zagora,Bulgaria,
+1568692191,Medellín,Antioquia,Colombia,COL
+1568961264,Paris,Île-de-France,France,FRA
+1572864719,Hradec Králové,Hradec Králové,Czech Republic,CZE
+1574365921,Bilbao,Basque Country,Spain,
+1575361225,Vienna,Vienna,Austria,AUT
+1576342966,Helsinki,Uusimaa,Finland,FIN
+1580328152,Stara Zagora,Stara Zagora,Bulgaria,
+1584223469,Bilbao,Basque Country,Spain,
+1587822289,Online,Global,Global,
+1593340253,Bilbao,Basque Country,Spain,
+1595872698,Hradec Králové,Hradec Králové,Czech Republic,CZE
+1596587110,Doylesburg,Pennsylvania,United States,USA
+1598616506,Bilbao,Basque Country,Spain,
+1600984774,Warsaw,Masovian,Poland,POL
+1614772897,Stara Zagora,Stara Zagora,Bulgaria,
+1617902706,Bilbao,Basque Country,Spain,
+1623054449,Online,Global,Global,
+1624971880,Kraków,Lesser Poland,Poland,POL
+1625854837,Doylesburg,Pennsylvania,United States,USA
+1628024472,Hradec Králové,Hradec Králové,Czech Republic,CZE
+1628025574,Montreal,Quebec,Canada,CAN
+1628025851,Montreal,Quebec,Canada,CAN
+1628596712,Bilbao,Basque Country,Spain,
+1634665636,Warsaw,Masovian,Poland,POL
+1634938934,Bilbao,Basque Country,Spain,
+1635599636,Tábor,South Bohemian,Czech Republic,CZE
+1643478787,Helsinki,Uusimaa,Finland,FIN
+1645025950,Kraków,Lesser Poland,Poland,POL
+1645621833,Bilbao,Basque Country,Spain,
+1646387871,Kraków,Lesser Poland,Poland,POL
+1646855336,Jaworzno,Silesian,Poland,POL
+1647508742,Nantes,Pays de la Loire,France,FRA
+1649177702,Camp Doylesburg,Pennsylvania,United States,USA
+1649326445,Hradec Králové,Hradec Králové,Czech Republic,CZE
+1653152207,Montreal,Quebec,Canada,CAN
+1653647467,Bilbao,Basque Country,Spain,
+1657486956,Bilbao,Basque Country,Spain,
+1664206719,Erie,Pennsylvania,United States,USA
+1667566506,Tábor,South Bohemian,Czech Republic,CZE
+1668541701,Warsaw,Masovian,Poland,POL
+1669556651,Bilbao,Basque Country,Spain,
+1673723574,Stara Zagora,Stara Zagora,Bulgaria,
+1677285621,Bilbao,Basque Country,Spain,
+1677937557,Frankfurt,Hesse,Germany,DEU
+1678957450,Medellín,Antioquia,Colombia,COL
+1686926080,Montreal,Quebec,Canada,CAN
+1688144863,Brooklyn,New York,United States,USA
+1690897570,Bilbao,Basque Country,Spain,
+1692508794,Stara Zagora,Stara Zagora,Bulgaria,
+1694170899,Warsaw,Masovian,Poland,POL
+1694868513,Berlin,Berlin,Germany,DEU
+1695501837,Nová Bystřice,South Bohemian,Czech Republic,CZE
+1697391704,Kraków,Lesser Poland,Poland,POL
+1699593640,Caracas,Miranda,Venezuela,VEN
+1699709080,Tábor,South Bohemian,Czech Republic,CZE
+1700920831,Helsinki,Uusimaa,Finland,FIN
+1706036811,Montreal,Quebec,Canada,CAN
+1706536250,Frankfurt,Hesse,Germany,DEU
+1709070838,Lausanne,Vaud,Switzerland,CHE
+1709496969,Nantes,Loire-Atlantique,France,FRA
+1711181388,Stara Zagora,Stara Zagora,Bulgaria,
+1711182054,Stara Zagora,Stara Zagora,Bulgaria,
+1713276656,Caracas,Miranda,Venezuela,VEN
+1719166875,Montreal,Quebec,Canada,CAN
+1721038326,Paris,Île-de-France,France,FRA
+1721320739,Brooklyn,New York,United States,USA
+1721817655,Bilbao,Basque Country,Spain,
+1721923932,Bilbao,Basque Country,Spain,
+1722339396,Nová Bystřice,South Bohemian,Czech Republic,CZE
+1727756195,Kraków,Lesser Poland,Poland,POL
+1728058298,Tábor,South Bohemian,Czech Republic,CZE
+1728384115,Bilbao,Basque Country,Spain,
+1730420667,Medellín,Antioquia,Colombia,COL
+1733755410,Caracas,Capital District,Venezuela,VEN
+1736265216,Helsinki,Uusimaa,Finland,FIN
+1738446800,West Linn,Oregon,United States,USA
+1739036206,Stara Zagora,Stara Zagora,Bulgaria,
+1740391168,Frankfurt,Hesse,Germany,DEU
+1740419380,Lausanne,Vaud,Switzerland,CHE
+1741024635,Nantes,Pays de la Loire,France,FRA
+1742511366,Bilbao,Basque Country,Spain,
+1745298933,Nová Bystřice,South Bohemian,Czech Republic,CZE
+1745686591,Helsinki,Uusimaa,Finland,FIN
+1746737817,Montreal,Quebec,Canada,CAN
+1749326277,Helsinki,Uusimaa,Finland,FIN
+1750356087,Brooklyn,New York,United States,USA
+1751568193,Jaworzno,Silesian,Poland,POL
+1752525121,Bilbao,Basque Country,Spain,
+1753997172,Paris,Île-de-France,France,FRA
+1756448770,Stara Zagora,Stara Zagora,Bulgaria,
+1759558836,Tábor,South Bohemian,Czech Republic,CZE
+1760495074,Medellín,Antioquia,Colombia,COL
+1764237004,Lausanne,Vaud,Switzerland,CHE
+1765581778,Bilbao,Basque Country,Spain,
+1766004796,Berlin,Berlin,Germany,DEU
+1768520954,Portland,Oregon,United States,USA
+1768623808,San Francisco,California,United States,USA
+1768955907,Ibaraki,Ibaraki Prefecture,Japan,JPN
+2001980001,Oregon City,Oregon,United States,USA
+2001981001,Oregon City,Oregon,United States,USA
+2001982001,Oregon City,Oregon,United States,USA
+2001982002,Oregon City,Oregon,United States,USA
+2001983001,Boulder,Colorado,United States,USA
+2001983002,Boulder,Colorado,United States,USA
+2001983003,Boulder,Colorado,United States,USA
+2001983004,Boulder,Colorado,United States,USA
+2001984001,Boulder,Colorado,United States,USA
+2001984002,Boulder,Colorado,United States,USA
+2001985001,Golden,Colorado,United States,USA
+2001985002,Golden,Colorado,United States,USA
+2001986001,Golden,Colorado,United States,USA
+857875468,Portland,Oregon,United States,USA
+857879540,College Park,Maryland,United States,USA
+987361779,Bushnell,Illinois,United States,USA
+1003802417,Hermosillo,Sonora,Mexico,MEX
+1043370312,San Francisco,California,United States,USA
+1063109533,Ambler,Pennsylvania,United States,USA
+1070400528,San Francisco,California,United States,USA
+1093115479,Claremont,California,United States,USA
+1189657133,Chicago,Illinois,United States,USA
+1200325415,Rochester,New York,United States,USA
+1202444182,College Park,Maryland,United States,USA
+1360305756,Seattle,Washington,United States,USA
+1401624489,Helsinki,Uusimaa,Finland,FIN
+1429205408,Palo Alto,California,United States,USA
+2001980002,Memphis,Tennessee,United States,USA
+2001980003,Corvallis,Oregon,United States,USA
+2001981003,San Dimas,California,United States,USA
+2001981004,,Texas,United States,USA
+2001982003,San Francisco,California,United States,USA
+2001982004,,Colorado,United States,USA
+2001982005,Portland,Oregon,United States,USA
+2001983005,Oregon City,Oregon,United States,USA
+2001984003,Oregon City,Oregon,United States,USA
+2001985004,Portland,Oregon,United States,USA
+2001985005,Golden,Colorado,United States,USA
+2001986003,,Florida,United States,USA
+2001986004,Golden,Colorado,United States,USA
+2001987001,Golden,Colorado,United States,USA
+2001987002,Munich,Bavaria,Germany,DEU
+2001987003,Atlanta,Georgia,United States,USA
+2001988001,,California,United States,USA
+2001989001,Golden,Colorado,United States,USA
+2001990001,Golden,Colorado,United States,USA
+2001991001,Vancouver,British Columbia,Canada,CAN
+2001992001,Montreal,Quebec,Canada,CAN
+2001994001,San Francisco,California,United States,USA
+2001995001,Menlo Park,California,United States,USA
+2001996001,Montreal,Quebec,Canada,CAN

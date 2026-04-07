@@ -1,0 +1,171 @@
+event_name,year,location,division,place,player_name,score,notes
+1987 WFA World Championships,1987,Golden CO,Men's Overall,1,Kenny Shults,,
+1987 WFA World Championships,1987,Golden CO,Women's Overall,1,Jody Welch,,
+1987 WFA World Championships,1987,Golden CO,Open Sgls Net,1,Garry Griggs,,
+1987 WFA World Championships,1987,Golden CO,Open Sgls Net,2,Scott Cleere,,
+1987 WFA World Championships,1987,Golden CO,Open Sgls Net,3,Dave Robinson,,
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,1,Mag Hughes,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,1,Kenny Shults,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,2,Jim Caveney,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,2,Bruce Guettich,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,3,Ken Hamric,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls Net,3,Chris Routh,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Net,1,Tricia George,,
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Net,2,Jody Welch,,
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Net,3,Tina Lewis,,
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,1,Constance Constable,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,1,Lisa McDaniel,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,2,Jody Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,2,Julie Symons,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,3,Tina Lewis,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls Net,3,Janice Earl,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,1,Tina Lewis,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,1,Scott Cleere,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,2,Jody Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,2,Brent Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,3,Constance Constable,,doubles
+1987 WFA World Championships,1987,Golden CO,Mixed Dbls Net,3,Jim Caveney,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Sgls Freestyle,1,Kenny Shults,,
+1987 WFA World Championships,1987,Golden CO,Open Sgls Freestyle,2,Jon Lind,,
+1987 WFA World Championships,1987,Golden CO,Open Sgls Freestyle,3,Rick Reese,,
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,1,Kenny Shults,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,1,Rick Reese,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,2,Bill Langbehn,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,2,Brent Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,3,Ed Orlando,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,3,Russ Williford,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Team Freestyle,3,Eric Wulff,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Freestyle,1,Sam Conlon,,
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Freestyle,2,Heather Muggleton,,
+1987 WFA World Championships,1987,Golden CO,Women's Sgls Freestyle,3,Constance Constable,,
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,1,Bill Langbehn,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,1,Brent Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,2,Chris Donofrio,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,2,Bill Wall,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,3,Dutch Holland,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Dbls 1-pass Consecutive,3,Rich Rausschmeier,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,1,Constance Constable,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,1,Tricia George,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,2,Lisa McDaniel,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,2,Sam Conlon,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,3,Jody Welch,,doubles
+1987 WFA World Championships,1987,Golden CO,Women's Dbls 1-pass Consecutive,3,Jodi Sebastien,,doubles
+1987 WFA World Championships,1987,Golden CO,Open Golf,1,Kim Brady,,
+1987 WFA World Championships,1987,Golden CO,Open Golf,2,Jim Caveney,,
+1987 WFA World Championships,1987,Golden CO,Open Golf,3,Bruce Guettich,,
+1987 WFA World Championships,1987,Golden CO,Women's Golf,1,Tricia George,,
+1987 WFA World Championships,1987,Golden CO,Women's Golf,2,Jody Welch,,
+1987 WFA World Championships,1987,Golden CO,Women's Golf,3,Heather Muggleton,,
+1988 WFA World Championships,1988,Golden CO,Men's Overall,1,Kenny Shults,,
+1988 WFA World Championships,1988,Golden CO,Women's Overall,1,Jody Welch,,
+1988 WFA World Championships,1988,Golden CO,Open Sgls Net,1,Kenny Shults,,
+1988 WFA World Championships,1988,Golden CO,Open Sgls Net,2,Allan Petersen,,
+1988 WFA World Championships,1988,Golden CO,Open Sgls Net,3,Scott Cleere,,
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,1,Mag Hughes,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,1,Kenny Shults,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,2,Ken Hamric,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,2,Chris Routh,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,3,Scott Cleere,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Net,3,Bill Bethurum,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Sgls Net,1,Jody Welch,,
+1988 WFA World Championships,1988,Golden CO,Women's Sgls Net,2,Lisa McDaniel,,
+1988 WFA World Championships,1988,Golden CO,Women's Sgls Net,3,Constance Constable,,
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,1,Constance Constable,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,1,Lisa McDaniel,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,2,Jody Welch,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,2,Julie Symons,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,3,Pauline Beichert,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Net,3,Deb Partridge,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Sgls 5-minute Consecutive,1,Derrick Fogle,,
+1988 WFA World Championships,1988,Golden CO,Open Sgls 5-minute Consecutive,2,Ed Larnacchia,,
+1988 WFA World Championships,1988,Golden CO,Open Sgls 5-minute Consecutive,3,Kenny Shults,,
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,1,Mag Hughes,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,1,Kenny Shults,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,2,Dave Yevin,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,2,Raul O'Donnal,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,3,Allan Petersen,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Dbls Distance 1-pass Consecutive,3,Remi Kristensen,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Sgls 5-minute Consecutive,1,Heather Muggleton,,
+1988 WFA World Championships,1988,Golden CO,Women's Sgls 5-minute Consecutive,2,Jody Welch,,
+1988 WFA World Championships,1988,Golden CO,Women's Sgls 5-minute Consecutive,3,Tina Lewis,,
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,1,Julie Symons,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,2,Trudy Archdale,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,2,Kendall KIC,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,3,Karla Reinke,,doubles
+1988 WFA World Championships,1988,Golden CO,Women's Dbls Distance 1-pass Consecutive,3,Colleen Minton,,doubles
+1988 WFA World Championships,1988,Golden CO,Open Golf,1,Rob McCloskey,,
+1988 WFA World Championships,1988,Golden CO,Open Golf,2,Bruce Guettich,,
+1988 WFA World Championships,1988,Golden CO,Open Golf,3,Jim Caveney,,
+1988 WFA World Championships,1988,Golden CO,Women's Golf,1,Karla Reinke,,
+1988 WFA World Championships,1988,Golden CO,Women's Golf,2,Heather Muggleton,,
+1988 WFA World Championships,1988,Golden CO,Women's Golf,3,Kathy Kristensen,,
+1989 WFA World Championships,1989,Golden CO,Men's Overall,1,Kenny Shults,,
+1989 WFA World Championships,1989,Golden CO,Women's Overall,1,Jody Welch,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls Net,1,Kenny Shults,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls Net,2,Dave Robinson,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls Net,3,Remi Kristensen,,
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,1,Ken Hamric,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,1,Chris Routh,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,2,Mag Hughes,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,2,Kenny Shults,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,3,Chris Ott,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Net,3,Jim Caveney,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Net,1,Tricia George,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Net,2,Jody Welch,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Net,3,Constance Constable,,
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,1,Tricia George,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,1,Jody Welch,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,2,Lisa McDaniel,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,2,Constance Constable,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,3,Tina Lewis,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Net,3,Heather Muggleton,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,1,Jody Welch,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,1,Brent Welch,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,2,Ken Hamric,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,2,Janice Earl,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,3,Kenny Shults,,doubles
+1989 WFA World Championships,1989,Golden CO,Mixed Dbls Net,3,Kendall KIC,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Sgls Freestyle,1,Kenny Shults,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls Freestyle,2,Dennis Ross,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls Freestyle,3,Jack Schoolcraft,,
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,1,Kenny Shults,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,1,Rick Reese,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,1,Dave Yevin,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,2,Jon Lind,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,2,Dennis Ross,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,3,Jack Schoolcraft,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Team Freestyle,3,Mag Hughes,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Freestyle,1,Heather Muggleton,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Freestyle,2,Jody Welch,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls Freestyle,3,Sam Conlon,,
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,1,Tricia George,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,1,Jody Welch,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,2,Heather Muggleton,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,2,Constance Constable,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,3,Sam Conlon,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Team Freestyle,3,Lisa McDaniel,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Sgls 5-minute Consecutive,1,Kenny Shults,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls 5-minute Consecutive,2,Gary Lautt,,
+1989 WFA World Championships,1989,Golden CO,Open Sgls 5-minute Consecutive,3,Jack Schoolcraft,,
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,1,Dave Robinson,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,1,Scott Cleere,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,2,Mag Hughes,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,2,Kenny Shults,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,3,Allan Petersen,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Dbls Distance 1-pass Consecutive,3,Tim Gertsen,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Sgls 5-minute Consecutive,1,Tricia George,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls 5-minute Consecutive,2,Jody Welch,,
+1989 WFA World Championships,1989,Golden CO,Women's Sgls 5-minute Consecutive,3,Sam Conlon,,
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,1,Lisa McDaniel,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,1,Jody Welch,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,2,Heather Thomas,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,2,Kendall KIC,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,3,Heather Muggleton,,doubles
+1989 WFA World Championships,1989,Golden CO,Women's Dbls Distance 1-pass Consecutive,3,Tina Lewis,,doubles
+1989 WFA World Championships,1989,Golden CO,Open Golf,1,Reed Gray,,
+1989 WFA World Championships,1989,Golden CO,Open Golf,2,Bruce Guettich,,
+1989 WFA World Championships,1989,Golden CO,Open Golf,3,Dave Robinson,,
+1989 WFA World Championships,1989,Golden CO,Women's Golf,1,Tricia George,,
+1989 WFA World Championships,1989,Golden CO,Women's Golf,2,Heather Muggleton,,
+1989 WFA World Championships,1989,Golden CO,Women's Golf,3,Lisa McDaniel,,
