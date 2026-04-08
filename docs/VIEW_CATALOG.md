@@ -486,10 +486,11 @@ This page consumes the generic public rendering standard's shared frame, shared 
   - optional `subheading`
   - optional `media`
     - `kind: 'image' | 'video' | 'youtube'`
-    - `src`
+    - `src` — for `image` or `video`, a site-relative or absolute URL; for `youtube`, the 11-character YouTube video ID (not a full URL)
     - optional `alt`
     - optional `posterSrc`
     - optional `caption`
+    - YouTube media must be rendered as a click-to-play facade that defers loading the third-party iframe until user activation, and must degrade to a plain link to the YouTube watch page when JavaScript is unavailable
 - `primaryLinks[]`
   - `label`
   - `href`
@@ -790,6 +791,8 @@ This page consumes the generic public rendering standard.
   - optional `region`
   - `country`
   - optional `external: boolean`
+  - optional `imageUrl` — site-relative path to a hero/poster graphic for the promo (service-owned, never hardcoded in templates)
+  - optional `imageAlt` — alt text for the hero graphic; falls back to `title` when omitted
 - `content.upcomingEvents[]`
   - `eventKey`
   - `title`

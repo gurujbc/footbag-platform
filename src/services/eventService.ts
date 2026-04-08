@@ -98,6 +98,8 @@ export interface FeaturedPromoCard {
   region?: string | null;
   country: string;
   external?: boolean;
+  imageUrl?: string;
+  imageAlt?: string;
 }
 
 export interface EventsLandingContent {
@@ -423,6 +425,8 @@ export class EventService {
       region: 'Ibaraki',
       country: 'Japan',
       external: true,
+      imageUrl: '/img/footbag-worlds-2026.jpg',
+      imageAlt: '45th IFPA World Footbag Championships 2026, Tsukuba, Japan official poster',
     };
   }
 

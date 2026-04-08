@@ -14,6 +14,18 @@ This file, not auto memory, is the source of truth for current slice status, acc
 
 ## Active slice now
 
+### Parallel tracks (current sprint)
+
+Three developers work the current sprint in parallel. **AI assistants: read only the track section matching the active developer; other tracks are out-of-scope context noise.** Identify the developer from the git user, the prompt, or by asking.
+
+| Dev | Handle | Track | Section to read |
+|---|---|---|---|
+| Dave | (this repo's primary maintainer) | Member Auth + Profile MVP (functional/back-end product work) | "Sprint: Member Auth + Profile MVP" below + "Active sprint decisions" |
+| James | JamesLeberknight | Historical pipeline completion (data import / legacy migration) | "James's sprint: Historical pipeline completion" |
+| John | guruJBC | Look-and-feel enhancements (visual / design polish) | "John's track: Look-and-feel enhancements" |
+
+Cross-track changes (anything that touches another track's owned files) require explicit human coordination. Do not silently broaden scope across tracks.
+
 ### Sprint: Member Auth + Profile MVP
 
 **Status:** Items A, B, D, E, F, G complete. Item C (legacy account claim) early-test shortcut is implemented; production rewrite deferred to Phase 4 (needs Steve's export). Identity sprint Phase 1 code (name model, slug lifecycle, person links, competition history fields) is complete.
@@ -34,6 +46,7 @@ This file, not auto memory, is the source of truth for current slice status, acc
 - Avatar: local photo storage only (Busboy streaming, 5 MB limit). No S3/media pipeline this sprint. Upload lives inline on profile-edit only (dedicated upload page removed). **Known deviation:** no server-side photo processing (resize, crop, optimization) yet; raw uploads are stored as-is. Photo processing pipeline deferred to media/S3 sprint.
 - Claim email deviation: in non-production, the claim link is shown on-screen (email outbox deferred).
 - `PageViewModel<TContent>` contract enforced across non-home public pages.
+- **Known deviation:** `/events` landing page intentionally omits the upcoming-events region required by `docs/VIEW_CATALOG.md` §6.8 while only one upcoming event exists (Footbag Worlds 2026), which is already showcased via the `featuredPromo` hero. The `eventService.listPublicUpcomingEvents` data path remains intact and the region will be reinstated when a second upcoming event is added or when the featured-promo treatment is replaced. Standard empty-state behavior also deferred.
 
 ### Item C — Legacy account claim (early-test shortcut implemented; production rewrite in Phase 4)
 
@@ -176,6 +189,43 @@ James is merging his footbag-results repo (github.com/JamesLeberknight/footbag-r
 - Club bootstrap at cutover (requires club pipeline output + leadership data)
 - Auto-link coverage for club-only members (requires expanded persons.csv)
 - Legacy account claim at registration (requires legacy member identity extraction)
+
+---
+
+## John's track: Look-and-feel enhancements (parallel)
+
+John (guruJBC) is working in parallel on visual / design polish: making the public site look and feel more cool, modern, and inviting. This is a design-quality track, not a feature track. It runs alongside Dave's and James's sprints and must not block either.
+
+### AI guidance for John's prompts
+
+**When the active developer is John, AI assistants must follow these rules:**
+
+1. **Catalogs are guides, not handcuffs.** `docs/VIEW_CATALOG.md` and `docs/SERVICE_CATALOG.md` define the page contracts and service boundaries any *new code* must integrate with. Honor those contracts when adding or wiring up code.
+2. **Look-and-feel is flexible.** John may freely experiment with templates, CSS, layout, typography, color, motion, imagery, hero treatments, card styling, spacing, and other purely visual aspects. Catalog descriptions of "look" are not binding for this track; descriptions of *contracts* (view-model field names, service method shapes, route paths, authz rules) are.
+3. **Prototype / design mode is allowed within narrow limits.** Acceptable: new partials, new CSS classes, new client-side progressive-enhancement JS files, image assets, swapping component visuals, restructuring section ordering on a public page, hero/media additions, alternate card treatments, animation. Not acceptable without explicit human approval: schema changes, service-method signature changes, new routes, new domain behavior, deletions of contract fields, anything that changes what data the page receives or what URLs exist.
+4. **When in doubt, ask before broadening scope.** If a visual change would force a service-shape change to look right, surface the trade-off to John before writing code instead of silently extending the contract.
+5. **Doc edits still require explicit human approval** (per root `CLAUDE.md`). Visual experiments do not need doc updates as long as they stay within existing contracts.
+6. **Per Dave's standing rule:** discuss significant visual / UI changes with John before writing code.
+
+### Track scope
+
+- Public-page polish: home, events landing, event detail, players, clubs, HoF, login/register
+- Reusable visual primitives in `src/public/css/style.css` and partials under `src/views/partials/`
+- Client-side progressive enhancements in `src/public/js/` (vanilla JS, no bundler)
+- Static assets in `src/public/img/`
+- Layout / shared chrome (`src/views/layouts/main.hbs`) — coordinate before changing site-wide chrome
+
+### Out of scope for John's track
+
+- Service-layer logic, DB schema, migrations, controllers (other than thin template wiring needed to render new view-model fields agreed with the owning service track)
+- Authentication, member profile CRUD, identity, payments
+- Legacy data pipeline
+- Infrastructure, deployment, CI
+
+### Coordination
+
+- Visual changes that need a new view-model field must be coordinated with the relevant service-track owner (Dave for member/event/club services, James for historical/legacy data) before implementation.
+- John's track may freely add `imageUrl`-style optional contract extensions through the proper service path (extend interface → populate in service → render in template → update VC), with human approval, but should not invent ad-hoc parallel data flows.
 
 ---
 

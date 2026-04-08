@@ -9,6 +9,33 @@
 
 <div class="wrapper">
 
+  {{! ── Featured promo hero ─────────────────────────────────────── }}
+  {{#if content.featuredPromo}}
+    <section class="event-hero">
+      {{#if content.featuredPromo.imageUrl}}
+        <a href="{{content.featuredPromo.href}}" {{#if content.featuredPromo.external}}target="_blank" rel="noopener noreferrer"{{/if}} class="event-hero-art-link">
+          <img src="{{content.featuredPromo.imageUrl}}" alt="{{#if content.featuredPromo.imageAlt}}{{content.featuredPromo.imageAlt}}{{else}}{{content.featuredPromo.title}}{{/if}}" class="event-hero-art-img" />
+        </a>
+      {{/if}}
+      <div class="event-hero-panel">
+        <div class="event-hero-eyebrow">Featured Event</div>
+        <h2 class="event-hero-title">
+          <a href="{{content.featuredPromo.href}}" {{#if content.featuredPromo.external}}target="_blank" rel="noopener noreferrer"{{/if}}>
+            {{content.featuredPromo.title}}
+          </a>
+        </h2>
+        <div class="event-hero-meta">
+          <span>{{formatDate content.featuredPromo.startDate}} – {{formatDate content.featuredPromo.endDate}}</span>
+          <span>{{formatLocation content.featuredPromo.city content.featuredPromo.region content.featuredPromo.country}}</span>
+        </div>
+        {{#if content.featuredPromo.description}}
+          <p class="event-hero-description">{{content.featuredPromo.description}}</p>
+        {{/if}}
+        <a href="{{content.featuredPromo.href}}" {{#if content.featuredPromo.external}}target="_blank" rel="noopener noreferrer"{{/if}} class="btn btn-white event-hero-cta">{{content.featuredPromo.ctaLabel}} →</a>
+      </div>
+    </section>
+  {{/if}}
+
   {{! ── Past events by year ─────────────────────────────────────── }}
   {{#if content.archiveYears.length}}
   <section>
@@ -25,37 +52,5 @@
   </section>
   {{/if}}
 
-  {{! ── Upcoming events ─────────────────────────────────────────── }}
-  <section>
-    <div class="section-heading">
-      <h2>Upcoming Events</h2>
-    </div>
-
-    <div class="card-grid">
-
-      {{#if content.featuredPromo}}
-        <div class="card card-featured">
-          <div class="card-title">
-            <a href="{{content.featuredPromo.href}}" {{#if content.featuredPromo.external}}target="_blank" rel="noopener noreferrer"{{/if}}>
-              {{content.featuredPromo.title}}
-            </a>
-          </div>
-          <div class="card-meta">
-            <span>{{formatDate content.featuredPromo.startDate}} – {{formatDate content.featuredPromo.endDate}}</span>
-            <span>{{formatLocation content.featuredPromo.city content.featuredPromo.region content.featuredPromo.country}}</span>
-          </div>
-          {{#if content.featuredPromo.description}}
-            <p class="card-description">{{content.featuredPromo.description}}</p>
-          {{/if}}
-          <a href="{{content.featuredPromo.href}}" {{#if content.featuredPromo.external}}target="_blank" rel="noopener noreferrer"{{/if}} class="btn btn-white" style="margin-top: 16px;">{{content.featuredPromo.ctaLabel}}</a>
-        </div>
-      {{/if}}
-
-      {{#each content.upcomingEvents}}
-        {{> event-card}}
-      {{/each}}
-
-    </div>
-  </section>
 
 </div>

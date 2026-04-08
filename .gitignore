@@ -124,6 +124,9 @@ deploy_to_aws.sh
 
 # Playwright MCP browser session artifacts (logs, screenshots)
 .playwright-mcp/
+# Defensive: stray screenshots / page snapshots that escape into the repo root
+/*.png
+/page-*.yml
 
 # =========================
 # Windows / WSL NTFS alternate data stream markers

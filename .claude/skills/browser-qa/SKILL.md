@@ -25,6 +25,15 @@ Use this skill only when the human explicitly asks to look at a page, check a la
 - Do not take multiple screenshots per page unless the human asks for it.
 - Close the browser when done (`mcp__playwright__browser_close`).
 
+## Screenshot file hygiene
+
+**Never let screenshots land in the repo root.** `mcp__playwright__browser_take_screenshot` writes its `filename` argument relative to the current working directory, which is the repo root by default. A bare `filename: "events.png"` will pollute the project tree.
+
+Rules:
+- Always pass an explicit `filename` that points into `.playwright-mcp/` (already gitignored), e.g. `filename: ".playwright-mcp/events-desktop.png"`.
+- After the requested check is reported, delete any screenshots created during the run unless the human explicitly asked to keep them.
+- The repo root has a defensive `/*.png` rule in `.gitignore`, but do not rely on it. Place files correctly the first time.
+
 ## MCP tooling
 
 Browser automation uses the **Playwright MCP server** via the `mcp__playwright__*` tools.

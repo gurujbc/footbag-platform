@@ -11,6 +11,9 @@
 <div class="wrapper">
 
   <section>
+    <div class="section-heading">
+      <h2>Explore the World of Footbag</h2>
+    </div>
     <div class="card-grid card-grid-3col">
       {{#each primaryLinks}}
         <div class="card">
@@ -19,20 +22,32 @@
           <a href="{{href}}" class="btn {{#if (eq variant 'primary')}}btn-primary{{else}}btn-outline{{/if}}">{{label}}</a>
         </div>
       {{/each}}
+      {{#each comingSoonSections}}
+        <div class="card card-coming-soon">
+          <div class="card-title">{{heading}}</div>
+          <p class="card-description">{{body}}</p>
+          <span class="badge badge-coming-soon">Coming soon</span>
+        </div>
+      {{/each}}
     </div>
   </section>
 
-  {{#if featuredUpcomingEvents.length}}
-    <section>
-      <div class="section-heading">
-        <h2>Featured Upcoming Events</h2>
-      </div>
-      <div class="card-grid">
-        {{#each featuredUpcomingEvents}}
-          {{> event-card}}
-        {{/each}}
-      </div>
-    </section>
+  {{#if hero.media}}
+    {{#if (eq hero.media.kind 'youtube')}}
+      <section class="home-media">
+        <div class="yt-facade-wrap">
+          <a class="yt-facade" href="https://www.youtube.com/watch?v={{hero.media.src}}" data-youtube-id="{{hero.media.src}}" target="_blank" rel="noopener noreferrer" aria-label="Play video: {{hero.media.alt}}">
+            <img class="yt-facade-thumb" src="https://i.ytimg.com/vi/{{hero.media.src}}/hqdefault.jpg" alt="{{hero.media.alt}}" loading="lazy" />
+            <span class="yt-facade-play" aria-hidden="true">
+              <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-2.9-3-5.2-5.9-6C55.4.5 34 .5 34 .5s-21.4 0-26.6 1.2C4.5 2.5 2.3 4.8 1.5 7.7 .3 12.9.3 24 .3 24s0 11.1 1.2 16.3c.8 2.9 3 5.2 5.9 6C12.6 47.5 34 47.5 34 47.5s21.4 0 26.6-1.2c2.9-.8 5.1-3.1 5.9-6 1.2-5.2 1.2-16.3 1.2-16.3s0-11.1-1.2-16.3z" fill="#f00"/><path d="M27 34l18-10-18-10z" fill="#fff"/></svg>
+            </span>
+          </a>
+        </div>
+        {{#if hero.media.caption}}
+          <p class="home-media-caption">{{hero.media.caption}}</p>
+        {{/if}}
+      </section>
+    {{/if}}
   {{/if}}
 
 </div>

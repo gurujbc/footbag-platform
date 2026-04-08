@@ -1,4 +1,4 @@
-import { eventService, PublicEventSummary } from './eventService';
+import { PublicEventSummary } from './eventService';
 import { SeoMeta } from '../types/page';
 
 interface HomeHeroMedia {
@@ -63,6 +63,12 @@ export const homeService = {
       hero: {
         heading: 'Footbag Worldwide',
         subheading: 'The home of footbag sports and recreational "Hacky Sack."',
+        media: {
+          kind: 'youtube',
+          src: 'euLrL1zCvVQ',
+          alt: '43rd IFPA World Footbag Championships, Montréal 2024, official video',
+          caption: '43rd IFPA World Footbag Championships, Montréal 2024 (official video).',
+        },
       },
       primaryLinks: [
         {
@@ -81,7 +87,11 @@ export const homeService = {
           description: 'Find clubs near you and around the world.',
         },
       ],
-      featuredUpcomingEvents: eventService.listPublicUpcomingEvents(nowIso).slice(0, 3),
+      comingSoonSections: [
+        { heading: 'Net', body: 'Footbag Net, fast-paced volleyball-style play over a 5-foot net.' },
+        { heading: 'Freestyle', body: 'Tricks, combos, and choreographed routines set to music.' },
+        { heading: 'Sideline Events', body: 'Golf, 2-Square, 4-Square, Consecutive Kicks, and Circle Kicking (old-school Hack).' },
+      ],
     };
   },
 };
