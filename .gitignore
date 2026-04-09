@@ -148,6 +148,13 @@ tfplan
 
 # Generated cache files (never commit)
 legacy_data/robots_cache.json
+legacy_data/event_results/canonical_input/
+
+# Identity lock: keep only the latest versioned snapshots
+legacy_data/inputs/identity_lock/Placements_ByPerson_v*.csv
+!legacy_data/inputs/identity_lock/Placements_ByPerson_v97.csv
+legacy_data/inputs/identity_lock/Persons_Truth_Final_v*.csv
+!legacy_data/inputs/identity_lock/Persons_Truth_Final_v52.csv
 legacy_data/out/
 legacy_data/event_results/seed/
 database/footbag.db
