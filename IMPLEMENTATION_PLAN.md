@@ -26,9 +26,9 @@ Three developers work the current sprint in parallel. **AI assistants: read only
 
 Cross-track changes (anything that touches another track's owned files) require explicit human coordination. Do not silently broaden scope across tracks.
 
-### Sprint: Member Auth + Profile MVP
+### Sprint: Auth + Profile MVP consolidation
 
-**Status:** Items A, B, D, E, F, G complete. Item C (legacy account claim) early-test shortcut is implemented; production rewrite deferred to Phase 4 (needs Steve's export). Identity sprint Phase 1 code (name model, slug lifecycle, person links, competition history fields) is complete.
+**Status:** MVP items A, B, D, E, F, G complete. Item C (legacy account claim) early-test shortcut is implemented; production rewrite deferred to Phase 4 (needs Steve's export). Identity sprint Phase 1 code (name model, slug lifecycle, person links, competition history fields) is complete. Sprint has shifted from MVP build-out to consolidation: fixing low-hanging shortcuts, known divergences, and visible deviations that do not depend on external blockers (James's data, Steve's export, 4-D outbox, 4-A' auth hardening).
 
 **Item C implementation note:** The current code is the early-test shortcut: direct lookup + confirm + merge. No email verification, no token round-trip, no rate limiting, no name reconciliation guard. The full production version requires email verification, name reconciliation (last-name mismatch blocks, first-name mismatch warns), and `first_competition_year` COALESCE. Current shortcut methods live in `identityAccessService` as `lookupLegacyClaim` and `completeClaim`; these will move to a dedicated `LegacyMigrationService` in the production rewrite. Routes are `POST /history/claim` (lookup) and `POST /history/claim/confirm` (merge), not the token-based `GET /history/claim/verify/:token` described in `SERVICE_CATALOG.md`.
 
@@ -41,12 +41,25 @@ Cross-track changes (anything that touches another track's owned files) require 
 ### Active sprint decisions (live constraints)
 
 - Auth is DB-backed via `identityAccessService.verifyMemberCredentials`. Env-var stub fallback remains for dev. Current session mechanism is the signed-cookie stub in `src/middleware/authStub.ts`.
-- **Known deviation:** "Footbag Hacky" is a seeded stub account with `login_email = 'footbag'` (not a real email). Preserves existing dev login path. Remove when no longer needed.
+- **Intentional:** "Footbag Hacky" is a seeded preview-user account using a non-email login identifier. Permanent special login for preview/demo users, not a deviation. The literal login identifier is not published in checked-in docs.
 - Seed password via `STUB_PASSWORD` env var (never in checked-in files).
 - Avatar: local photo storage only (Busboy streaming, 5 MB limit). No S3/media pipeline this sprint. Upload lives inline on profile-edit only (dedicated upload page removed). **Known deviation:** no server-side photo processing (resize, crop, optimization) yet; raw uploads are stored as-is. Photo processing pipeline deferred to media/S3 sprint.
 - Claim email deviation: in non-production, the claim link is shown on-screen (email outbox deferred).
 - `PageViewModel<TContent>` contract enforced across non-home public pages.
-- **Known deviation:** `/events` landing page intentionally omits the upcoming-events region required by `docs/VIEW_CATALOG.md` §6.8 while only one upcoming event exists (Footbag Worlds 2026), which is already showcased via the `featuredPromo` hero. The `eventService.listPublicUpcomingEvents` data path remains intact and the region will be reinstated when a second upcoming event is added or when the featured-promo treatment is replaced. Standard empty-state behavior also deferred.
+- **In scope this sprint (consolidation item H):** reinstate the `/events` upcoming-events region required by `docs/VIEW_CATALOG.md` §6.8 with proper empty-state behavior. Current state: region is omitted; DB has zero upcoming events (all 810 events are `completed`); the `featuredPromo` hero is hardcoded outside the service path. The `eventService.listPublicUpcomingEvents` data path remains intact. Fix path: reinstate the region with standard empty-state, leave `featuredPromo` alone for now, and keep the region ready to populate when real upcoming events land in the DB.
+
+### Consolidation items in scope this sprint
+
+Low-hanging fruit that does not depend on external blockers. Each closes a known divergence or shortcut without pulling in 4-A', 4-D, Steve's export, or James's work.
+
+- **H** — `/events` upcoming-events region reinstated with empty-state (`docs/VIEW_CATALOG.md` §6.8 alignment). See deviation note above.
+- **I** — Scrub literal preview-user login identifier from checked-in docs, test comments, and seed script strings. Move the literal value to an env-var-driven seed path so it exists only in local/environment config. Scope: `IMPLEMENTATION_PLAN.md` (done), `tests/integration/auth.routes.test.ts` (comments on lines 5, 65), `tests/integration/app.routes.test.ts` (comment on line 70), `legacy_data/scripts/seed_members.py` (comments on lines 90, 131 and hardcoded literal on line 93). Memory feedback rule saved.
+
+Candidates considered and deferred:
+- Avatar server-side processing (resize/crop/optimize): deferred to media/S3 sprint, not ripe now.
+- Stub pages for media / settings / password / download / delete: all blocked on external sprints (4-D outbox, media pipeline, GOVERNANCE review for export/deletion).
+- 4-A' auth hardening: L-sized, belongs in next sprint as scheduled.
+- Backup/restore workflow: no production deploys planned for a long time (testing-only posture); remains in next-sprint Tier 2.
 
 ### Item C — Legacy account claim (early-test shortcut implemented; production rewrite in Phase 4)
 
@@ -132,7 +145,6 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 
 - **1-G CloudWatch agent** (S): easy win, no dependency beyond Phase 0
 - **Backup/restore workflow** (M): S3 bucket scaffolded, no producer yet; must be in place before production data is at risk
-- **"Footbag Hacky" stub cleanup** (S): remove stub account once real auth flow is validated
 
 ### Acceptance criteria
 
@@ -144,51 +156,47 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 
 ## James's sprint: Historical pipeline completion (parallel)
 
-James is merging his footbag-results repo (github.com/JamesLeberknight/footbag-results) into this repo. His pipeline already produces events, results, persons, world records, and has identity/name-variant mining tools. This sprint integrates that work and extends it to cover clubs.
+James has merged his footbag-results pipeline into this repo under `legacy_data/`. Events, results, persons, and the club extract/load scripts are in place. This sprint completes the remaining goals: club classification, bootstrap leaders, club-only persons, world records, name variants, and the legacy identity columns that the claim flow depends on.
 
-### What James's pipeline already produces
+### What is already done
 
-- Canonical persons CSV (~4,861 competitors with identity resolution)
-- Events, results, disciplines CSVs (761+ published events, 1980-present)
-- World records data (166 tricks, in `early_data/out/records/`)
-- Platform export tools (`tools/export_platform_*.py`)
-- Identity suggestion and name alias mining tools
-- QC gate validation
+- **Pipeline merged**: `legacy_data/pipeline/`, `legacy_data/scripts/`, `legacy_data/event_results/` all in repo
+- **Events + results + persons soup-to-nuts**: `legacy_data/run_pipeline.sh complete` runs mirror + curated → canonical → QC → workbook → seed → DB
+- **Club extract/load scripts wired**: `extract_clubs.py`, `load_clubs_seed.py`, `extract_club_members.py`, `load_club_members_seed.py` run from `scripts/reset-local-db.sh`; produces `seed/clubs.csv` (1,035 raw rows) and `seed/club_members.csv` (2,399 rows); loads `clubs` and `legacy_person_club_affiliations`
+- **`legacy_data/CLAUDE.md`**: exists; currently scoped to events/results/persons pipeline only
+- **`legacy_data/skills/`**: directory exists
 
-### Sprint goals
+### What still needs to be done
 
-1. **Merge James's repo**: integrate the footbag-results pipeline into this repo under `legacy_data/`.
-2. **Unified persons truth**: expand the curated `persons.csv` to include ~1,600 club-only members from the mirror (people who appear only as club members, never competed in events). One CSV is the source of truth for all historical persons.
-3. **Club pipeline integration**: take over existing club scripts (`legacy_data/scripts/extract_clubs.py`, `load_clubs_seed.py`, `extract_club_members.py`, `load_club_members_seed.py`) and integrate them into the pipeline. Extend with: confidence scoring, leadership inference, and bootstrap eligibility decisions per club.
-4. **Leadership and bootstrap data**: populate `club_bootstrap_leaders` rows for bootstrap-eligible clubs. Each club needs at least one high-confidence leader candidate.
-5. **Known name variants**: seed the name variants table from mined data (~290 pairs). James's identity suggestion tools may already have this data.
-6. **World records CSV**: James's pipeline already has records data. Export in platform-loadable format.
-7. **Legacy member identity extraction**: extract `legacy_member_id`, `legacy_user_id`, and `legacy_email` from mirror data for every historical person where available. These columns on the `historical_persons` and seeded `members` (placeholder) rows are the key that lets new registrants find and claim their legacy profile. Coverage goal: every person who had a member account on the old site should have at least `legacy_member_id` populated; `legacy_user_id` and `legacy_email` where the mirror provides them.
-8. **Legacy data CLAUDE.md and skills**: create a `legacy_data/CLAUDE.md` with local rules for working in the legacy data directory (pipeline layout, script conventions, data flow, migration plan references). Create associated `.claude/skills/` skill(s) for legacy data pipeline tasks (running pipeline stages, validating seed output, extending extraction scripts). These must respect `docs/MIGRATION_PLAN.md` and the migration constraints documented there.
-9. **Soup-to-nuts master script**: one entry point that produces all seed data (persons, events, results, clubs, affiliations, leaders, name variants, records, legacy member identities) from curated CSV + mirror, then loads everything into the DB. `scripts/reset-local-db.sh` must run the complete pipeline end-to-end.
+1. **Club-only persons extraction** (~1,600): extract people who appear in the mirror only as club members (never competed) and add them to the canonical persons set. Prerequisite for classification — otherwise active-player signals are artificially deflated for club-only clubs (per `docs/MIGRATION_PLAN.md §10.1` ordering constraint).
+2. **Club classification** per `docs/MIGRATION_PLAN.md §10.1` rules R1-R9. Deterministic classifier that assigns every extracted club to pre-populate / onboarding-visible / dormant / junk. Must set `bootstrap_eligible` flag and populate `legacy_club_candidates`.
+3. **Leadership inference + confidence scoring**: populate `club_bootstrap_leaders` for pre-populated clubs with `confidence_score >= 0.70`. Rules in MIGRATION_PLAN §3 bootstrap rule.
+4. **Legacy identity columns** on persons: add `legacy_user_id` and `legacy_email` to the canonical persons CSV where the mirror provides them. Today the canonical `persons.csv` has only `member_id`; the claim flow needs all three keys to find placeholders by any of legacy_member_id / legacy_user_id / legacy_email.
+5. **Name variants table seed** (~290 pairs): mine from identity work; seed the new variants table (schema TBD per MIGRATION_PLAN §12.16).
+6. **World records CSV export**: James's pipeline has 166 tricks in its records data; export in platform-loadable format. No `out/records/` export exists in this repo yet. Unblocks the `/records` page.
+7. **Persons count reconciliation**: canonical `persons.csv` has 3,366 rows; MIGRATION_PLAN §19 and §2.1 say ~4,861. James must reconcile and update MIGRATION_PLAN (or expand the canonical set) so docs and data agree.
+8. **Extend `legacy_data/CLAUDE.md`**: current scope is events/results only. Add sections covering clubs, classification, bootstrap, records, variants, and `docs/MIGRATION_PLAN.md` references. Same for any associated `legacy_data/skills/`.
+9. **Integrate all of the above into `run_pipeline.sh complete`**: today the `complete` target stops at events/results/persons; it must be the one entry point that also produces clubs (classified), bootstrap leaders, club-only persons, variants, and records. `scripts/reset-local-db.sh` should then simply call it.
 10. **Data review sign-off**: confirm legacy data is complete and member-list presentation is reviewed.
 
-### Deliverables
+### Deliverables (remaining)
 
-- James's pipeline code merged into this repo
-- Expanded `persons.csv` with club-only persons (with `legacy_member_id` where known)
-- Legacy member identities (`legacy_member_id`, `legacy_user_id`, `legacy_email`) populated on historical persons and seeded placeholder members from mirror data
-- Club candidates in `legacy_club_candidates` with confidence scores and `bootstrap_eligible` flag
-- Person-to-club affiliations in `legacy_person_club_affiliations` with inferred roles and confidence scores
-- `club_bootstrap_leaders` rows for bootstrap-eligible clubs
-- Known name variants table seeded
+- Expanded canonical `persons.csv` with club-only persons and `legacy_user_id` / `legacy_email` columns populated where known
+- Club classifier output: `legacy_club_candidates` rows with `bootstrap_eligible` flag per §10.1
+- `club_bootstrap_leaders` rows for pre-populated clubs meeting the 0.70 confidence threshold
+- Name variants seed file and schema
 - World records CSV in platform format
-- `legacy_data/CLAUDE.md` and associated legacy data pipeline skill(s) under `.claude/skills/`
-- Unified master script that rebuilds everything from scratch
+- `run_pipeline.sh complete` as the single soup-to-nuts entry point (no extra steps required in `reset-local-db.sh` beyond calling it)
+- Extended `legacy_data/CLAUDE.md` covering clubs/records/variants
 - Data review sign-off
 
 ### Unblocks
 
 - Members ungating (requires data review sign-off)
 - World records page (requires records CSV)
-- Club bootstrap at cutover (requires club pipeline output + leadership data)
+- Club bootstrap at cutover (requires classification + leader population)
 - Auto-link coverage for club-only members (requires expanded persons.csv)
-- Legacy account claim at registration (requires legacy member identity extraction)
+- Legacy account claim at registration (requires `legacy_member_id` / `legacy_user_id` / `legacy_email` coverage)
 
 ---
 

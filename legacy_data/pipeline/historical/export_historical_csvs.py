@@ -293,15 +293,35 @@ def _norm_name(s: str) -> str:
     return re.sub(r"\s+", " ", s.lower().strip())
 
 # ── Load Persons_Truth — build resolution indexes ─────────────────────────────
+#
+# Source: inputs/identity_lock/Persons_Truth_Final_v*.csv (latest version).
+# The previous out/Persons_Truth.csv producer (04_build_analytics.py) is deprecated
+# and no longer runs in the rebuild stage; the identity-lock file is the same data
+# (04 historically just cp'd it on first run) and is the authoritative source in
+# the new pipeline. A single pass builds both pt_rows and the closure-check set
+# (_pt51_person_ids), which used to be loaded separately further below.
 
-print("Loading Persons_Truth.csv...")
+_pt51_lock_files = sorted(
+    (ROOT / "inputs" / "identity_lock").glob("Persons_Truth_Final_v*.csv")
+)
+if not _pt51_lock_files:
+    raise FileNotFoundError(
+        "No Persons_Truth_Final_v*.csv found in inputs/identity_lock/ — "
+        "cannot build person resolution indexes."
+    )
+_pt_source = _pt51_lock_files[-1]
+
+print(f"Loading Persons_Truth from {_pt_source.name}...")
 token_to_person: dict[str, str] = {}   # player_token_uuid → effective_person_id
 names_to_person: dict[str, str] = {}   # _norm_name(player_name_seen) → effective_person_id
 pt_rows: list[dict] = []
-with open(OUT / "Persons_Truth.csv", newline="", encoding="utf-8") as f:
+_pt51_person_ids: set[str] = set()
+with open(_pt_source, newline="", encoding="utf-8") as f:
     for row in csv.DictReader(f):
         pt_rows.append(row)
         pid = row["effective_person_id"]
+        if pid.strip():
+            _pt51_person_ids.add(pid.strip())
         for tok in row["player_ids_seen"].split(" | "):
             tok = tok.strip()
             if tok:
@@ -321,6 +341,7 @@ with open(OUT / "Persons_Truth.csv", newline="", encoding="utf-8") as f:
                 names_to_person.setdefault(_norm_name(alias), pid)
 
 print(f"  {len(pt_rows):,} persons, {len(token_to_person):,} tokens, {len(names_to_person):,} names indexed (pre-aliases)")
+print(f"  PT lock loaded: {len(_pt51_person_ids):,} person_ids ({_pt_source.name})")
 
 # player_ids_seen lookup (for persons.csv export)
 pt_player_ids: dict[str, str] = {}    # effective_person_id → pipe-sep player_ids_seen
@@ -329,27 +350,6 @@ for row in pt_rows:
 
 # Valid PT person_id set — used by _clean_pid to reject player-level UUIDs not in PT
 _pt_person_ids: set[str] = {r["effective_person_id"] for r in pt_rows}
-
-# PT v51 identity-lock set — catches persons that stage 04 dropped from
-# out/Persons_Truth.csv (their player_ids absent from Placements_Flat) but whose
-# effective_person_id still appears in PBP / stage2.  Loading here ensures
-# _clean_pid returns the UUID (not "") so participants_out carries it, which lets
-# the referential-closure backfill below detect and fill the gap in persons.csv.
-_pt51_lock_files = sorted(
-    (ROOT / "inputs" / "identity_lock").glob("Persons_Truth_Final_v*.csv")
-)
-if _pt51_lock_files:
-    with open(_pt51_lock_files[-1], newline="", encoding="utf-8") as _f51:
-        _pt51_person_ids: set[str] = {
-            r["effective_person_id"].strip()
-            for r in csv.DictReader(_f51)
-            if r.get("effective_person_id", "").strip()
-        }
-    print(f"  PT v51 lock loaded: {len(_pt51_person_ids):,} person_ids "
-          f"({_pt51_lock_files[-1].name})")
-else:
-    _pt51_person_ids: set[str] = set()
-    print("  WARNING: no Persons_Truth_Final_v*.csv found — PT v51 closure check disabled")
 
 # ── Load person_aliases.csv — extend resolution index ─────────────────────────
 # Stale IDs (pre-merge) are recovered by matching _norm_name(person_canon) against PT.
@@ -422,12 +422,22 @@ def resolve_person_id(player_id: str | None, player_name: str) -> str:
 
 
 # ── Load Coverage ─────────────────────────────────────────────────────────────
+#
+# Source: out/Placements_ByPerson.csv (produced by 02p5_player_token_cleanup.py,
+# which propagates the coverage_flag column unchanged from the identity-lock file
+# inputs/identity_lock/Placements_ByPerson_v*.csv). The previous standalone
+# Coverage_ByEventDivision.csv producer (04_build_analytics.py) is deprecated and
+# no longer runs in the rebuild stage.
 
-print("Loading Coverage_ByEventDivision.csv...")
+print("Loading coverage flags from Placements_ByPerson.csv...")
 coverage: dict[tuple[str, str], str] = {}  # (event_id, division_canon) → coverage_flag
-with open(OUT / "Coverage_ByEventDivision.csv", newline="", encoding="utf-8") as f:
+with open(OUT / "Placements_ByPerson.csv", newline="", encoding="utf-8") as f:
     for row in csv.DictReader(f):
-        coverage[(row["event_id"], row["division_canon"])] = row["coverage_flag"]
+        flag = (row.get("coverage_flag") or "").strip()
+        if not flag:
+            continue
+        key = (row.get("event_id", ""), row.get("division_canon", ""))
+        coverage[key] = flag
 print(f"  {len(coverage):,} (event, division) coverage flags")
 
 
@@ -844,9 +854,9 @@ for bucket in [
         print(f"      {eid} -> {ek}")
 
 # lightweight warnings
-bad_prefix = [ek for ek in event_key_map.values() if not re.fullmatch(r"event_\d{4}_[a-z0-9_]+", ek)]
+bad_prefix = [ek for ek in event_key_map.values() if not re.fullmatch(r"\d{4}_[a-z0-9_]+", ek)]
 if bad_prefix:
-    print(f"  WARN: {len(bad_prefix)} event_key values do not match expected pattern event_<year>_<slug>[_<place>]")
+    print(f"  WARN: {len(bad_prefix)} event_key values do not match expected pattern <year>_<slug>[_<place>]")
     for ek in bad_prefix[:10]:
         print(f"    bad pattern: {ek}")
 

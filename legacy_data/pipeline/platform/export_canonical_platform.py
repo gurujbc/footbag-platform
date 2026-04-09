@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+r"""
 pipeline/platform/export_canonical_platform.py
 
 Filter and transform out/canonical/*.csv → event_results/canonical_input/

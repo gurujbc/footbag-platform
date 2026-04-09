@@ -305,7 +305,7 @@ def check_event_results(event_results: pd.DataFrame, event_disciplines: pd.DataF
             gap_groups += 1
 
     if gap_groups:
-        collector.warn("placement_gap_groups", f"{gap_groups} event-discipline groups have placement gaps", table=table)
+        collector.info("placement_gap_groups", f"{gap_groups} event-discipline groups have placement gaps (typically tie semantics: 1,1,3,3,5...)", table=table)
 
 
 def check_event_result_participants(
@@ -398,25 +398,15 @@ def check_event_result_participants(
         .reset_index(name="_participant_count")
     )
 
+    singles_shared_place_count = 0
     for _, row in grouped.iterrows():
         key = (str(row["event_key"]).strip(), str(row["discipline_key"]).strip())
         team_type = discipline_meta.get(key, "")
         n = int(row["_participant_count"])
 
         if team_type == "singles" and n != 1:
-            # Shared-place in singles is a WARNING. Legitimate causes include:
-            #   - Tied scores in freestyle/golf: two players genuinely finish joint-Nth
-            #   - Pool-play / circle contest: heat-round shared places
-            # Contamination (e.g. OSR players leaking into a different singles division)
-            # must be fixed at the PBP data level. Downgraded from hard to warn so that
-            # pool-play and legitimate tie datasets are not incorrectly blocked.
-            collector.warn(
-                "team_row_in_singles_discipline",
-                f"Singles result has {n} participants at one placement slot "
-                f"(shared-place tie or pool-play)",
-                table=table,
-                context=f"event_key={row['event_key']} discipline_key={row['discipline_key']} placement={row['placement']}",
-            )
+            # Shared-place in singles: ties or pool-play. Aggregated to one INFO summary.
+            singles_shared_place_count += 1
         elif team_type == "doubles" and n != 2:
             collector.hard(
                 "invalid_doubles_participant_count",
@@ -424,6 +414,13 @@ def check_event_result_participants(
                 table=table,
                 context=f"event_key={row['event_key']} discipline_key={row['discipline_key']} placement={row['placement']}",
             )
+
+    if singles_shared_place_count:
+        collector.info(
+            "team_row_in_singles_discipline",
+            f"{singles_shared_place_count} singles result slots have multiple participants (shared-place ties or pool-play)",
+            table=table,
+        )
 
     bad_non_person = 0
     blank_display = 0

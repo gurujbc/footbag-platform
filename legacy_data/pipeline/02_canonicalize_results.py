@@ -4092,7 +4092,11 @@ def canonicalize_records(
         # Apply results file overrides (e.g. recovered external results not in mirror)
         if str(event_id) in RESULTS_FILE_OVERRIDES:
             _override = RESULTS_FILE_OVERRIDES[str(event_id)]
-            _override_path = REPO_ROOT / _override["file"]
+            # Strip leading "legacy_data/" — REPO_ROOT already points there.
+            _override_file = _override["file"]
+            if _override_file.startswith("legacy_data/"):
+                _override_file = _override_file[len("legacy_data/"):]
+            _override_path = REPO_ROOT / _override_file
             if _override_path.exists():
                 _override_text = _override_path.read_text(encoding="utf-8")
                 # Strip comment lines (# prefix)
