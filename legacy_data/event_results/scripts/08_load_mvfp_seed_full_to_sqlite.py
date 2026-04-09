@@ -29,6 +29,20 @@ def stable_id(prefix: str, *parts: str) -> str:
     return f"{prefix}_{digest}"
 
 
+def parse_bool_col(value: str) -> int:
+    """Parse a boolean-like CSV field to 0 or 1.
+
+    Accepts: Y/N, 1/0, True/False (case-insensitive), blank → 0.
+    Raises ValueError for unrecognised non-empty values.
+    """
+    v = value.strip().lower()
+    if v in ("", "n", "0", "false"):
+        return 0
+    if v in ("y", "1", "true"):
+        return 1
+    raise ValueError(f"Unrecognised boolean value: {value!r}")
+
+
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
@@ -167,16 +181,16 @@ def main() -> None:
                 (
                     row.get("person_id", "").strip() or None,
                     row.get("person_name", "").strip() or None,
-                    row.get("ifpa_member_id", "").strip() or None,
+                    (row.get("member_id") or row.get("ifpa_member_id", "")).strip() or None,
                     row.get("country", "").strip() or None,
                     int(row["first_year"]) if row.get("first_year", "").strip() else None,
                     int(row["last_year"]) if row.get("last_year", "").strip() else None,
                     int(row["event_count"]) if row.get("event_count", "").strip() else None,
                     int(row["placement_count"]) if row.get("placement_count", "").strip() else None,
-                    (1 if row.get("bap_member", "").strip().upper() == "Y" else int(row["bap_member"]) if row.get("bap_member", "").strip() not in ("", "N") else 0),
+                    parse_bool_col(row.get("bap_member", "")),
                     row.get("bap_nickname", "").strip() or None,
                     int(row["bap_induction_year"]) if row.get("bap_induction_year", "").strip() else None,
-                    (1 if row.get("hof_member", "").strip().upper() == "Y" else int(row["hof_member"]) if row.get("hof_member", "").strip() not in ("", "N") else 0),
+                    parse_bool_col(row.get("hof_member", "")),
                     int(row["hof_induction_year"]) if row.get("hof_induction_year", "").strip() else None,
                     int(row["freestyle_sequences"]) if row.get("freestyle_sequences", "").strip() else None,
                     float(row["freestyle_max_add"]) if row.get("freestyle_max_add", "").strip() else None,

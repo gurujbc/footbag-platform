@@ -1011,7 +1011,7 @@ for row in sorted_rows:
                 div_meta[div] = {
                     "div_cat":  s2p.get("division_category", "") or "",
                     "team_type": "singles",
-                    "cov_flag":  "sparse",   # pre-mirror: coverage unknown
+                    "cov_flag":  "partial",  # pre-mirror curated: real data, completeness not guaranteed
                 }
             ct = s2p.get("competitor_type", "") or "player"
             _div_type_counts[div][ct] += 1
@@ -1493,10 +1493,14 @@ if _missing_pids:
             _unresolved.append(_pid)
             continue
         _pt_row = _pt51_by_id[_pid]
+        _hof = _fbhof_by_pid.get(_pid, {})
         _backfill_rows.append({
-            "person_id":   _pid,
-            "person_name": _pt_row.get("person_canon", "").strip(),
-            **{k: "" for k in _persons_csv_fields if k not in ("person_id", "person_name")},
+            "person_id":            _pid,
+            "person_name":          _pt_row.get("person_canon", "").strip(),
+            "fbhof_member":         _hof.get("fbhof_member", 0),
+            "fbhof_induction_year": _hof.get("fbhof_induction_year", ""),
+            **{k: "" for k in _persons_csv_fields
+               if k not in ("person_id", "person_name", "fbhof_member", "fbhof_induction_year")},
         })
 
     if _unresolved:

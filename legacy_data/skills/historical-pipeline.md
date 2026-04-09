@@ -5,14 +5,15 @@ Invoke this skill when:
 - Rebuilding canonical outputs after a parser fix, override change, or curated CSV addition
 - Validating that a change to pipeline code, overrides, or identity lock did not break QC
 - Preparing a release-ready canonical dataset
+- Running the full soup-to-nuts pipeline (use `./run_pipeline.sh complete`)
 
 Do NOT invoke this skill for:
 - Adding a new pre-1997 source (use `promote-curated-source` instead)
 - Identity lock version upgrades (those have their own patch toolchain)
-- Workbook generation — use the `workbook-v22` skill; builder is
-  `pipeline/build_workbook_release.py` (v22-style) or `pipeline/build_workbook_community.py`
-- Platform/DB export — that is `./run_pipeline.sh release` followed by scripts 07 and 08;
-  see CLAUDE.md "Platform / DB Export" section; do not conflate with rebuild
+- Workbook generation alone — use the `workbook-v22` skill; but note that
+  `./run_pipeline.sh complete` builds the workbook as part of the full pipeline
+- Platform/DB export alone — scripts 07 and 08 run automatically inside
+  `./run_pipeline.sh complete`; see CLAUDE.md "Platform / DB Export" for manual invocation
 
 ---
 
@@ -25,6 +26,25 @@ Do NOT invoke this skill for:
 ---
 
 ## Safe Workflow
+
+### Full pipeline (preferred — one command)
+
+```bash
+cd ~/projects/footbag-platform/legacy_data
+
+# Baseline before running
+wc -l out/canonical/*.csv
+
+# Complete pipeline: rebuild → release → supplement → QC → workbook → seed → DB
+# Fails fast on QC hard failures (stages 5–7 never run if QC fails)
+./run_pipeline.sh complete
+
+# Diff canonical outputs to confirm expected delta
+wc -l out/canonical/*.csv
+git diff --stat out/canonical/
+```
+
+### Targeted rebuild (when you only need canonical outputs, not workbook/DB)
 
 ```bash
 # Step 1: Baseline current outputs
@@ -59,9 +79,11 @@ git diff --stat out/canonical/
 ## What Not To Do
 - Do not commit if QC returns any hard failure
 - Do not edit `out/canonical/*.csv` directly — rebuild instead
-- Do not run `./run_pipeline.sh all` if you need to inspect intermediate output
+- Do not run scripts 07 or 08 manually after a change unless QC has already passed
 - Do not modify `inputs/identity_lock/` files — they are versioned and frozen
 - Do not skip `./run_pipeline.sh rebuild` before `release` — stale stage2 + fresh release
   produces incorrect outputs
+- Do not run `02p5b_supplement_class_b.py` before `release` — it reads from `canonical_input/`
+  which is populated by the release step
 - If canonical row counts drop unexpectedly, stop and investigate before proceeding —
   do not commit

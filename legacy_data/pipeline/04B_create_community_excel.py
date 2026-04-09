@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """
-04B_create_community_excel.py
+04B_create_community_excel.py — DEPRECATED
+
+Predates build_workbook_community.py (v13 lineage). Reads from stage2_canonical_events.csv
+and Placements_Flat directly; superseded by the v13-based port with better name
+canonicalization and a more stable year-sheet layout.
+
+Superseded by:
+  pipeline/build_workbook_community.py — preferred community distribution workbook
+
+Kept for reference / audit traceability. Do not run in production.
+--- original docstring below ---
 
 Produces Footbag_Results_Community.xlsx — a reader-friendly Footbag Historical
 Almanac targeted at the footbag community.

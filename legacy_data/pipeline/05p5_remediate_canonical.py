@@ -20,11 +20,39 @@ Fixes (in order):
                             participants into sequential paired slots and ghost-partner
                             any remainder.  Singles ties (multiple participants at the
                             same placement number) are source-accurate and preserved as-is.
+  7. Duplicate person_id dedup — removes a second occurrence of the same person_id
+                            within a (event_key, discipline_key, placement) slot.
+                            Runs after all person_id resolution (Fix 7, Fix 8) so that
+                            stub rows resolved by name-lookup are also caught.  Caused
+                            by PBP emitting both a __NON_PERSON__ team-expansion row
+                            and a direct stub row for the same person.
 
 Keep-doubles override:
   Create inputs/keep_doubles_overrides.csv with columns event_key, discipline_key
   to prevent specific disciplines from being remapped to singles even at density 1.0.
   These will instead receive a ghost __UNKNOWN_PARTNER__ partner row.
+
+Coverage-flag override:
+  Create overrides/coverage_flag_overrides.csv with columns event_key, discipline_key,
+  coverage_flag_override to correct a misclassified coverage_flag on a specific discipline
+  before the canonical CSVs are consumed downstream.  Applied immediately after load,
+  before any other fix.
+
+Worlds normalization (year >= 1985):
+  All events identified as the official World Footbag Championships have their
+  event_name set to "{Nth} Annual World Footbag Championships" (N = year - 1979)
+  and event_type set to "worlds".  Detection: event_type already == "worlds", OR
+  "_worlds" in event_key AND event_name contains a championship-signal substring.
+
+Pre-1985 Worlds corrections (explicit event_key table):
+  1980–1984 had three competing organisations (NHSA, WFA, IFAB, FBW) each running
+  parallel "World Championships" — a formula cannot apply.  Instead an explicit
+  _PRE_1985_WORLDS_NAMES dict sets canonical names and event_type="worlds" for all
+  19 worlds-family event_keys.  Companion tables handle:
+    - Clearing org tags stored in the country field (NHSA/WFA events)
+    - Fixing location fields (city/region/country) for NHSA/WFA and early FBW events
+      (1980–1982 NHSA → Oregon City OR; 1983 NHSA/WFA → Boulder CO;
+       1984 WFA → Golden CO; FBW Golden track: country→region)
 
 Input/output: out/canonical/ (repo-relative)
 """
@@ -37,11 +65,7 @@ from pathlib import Path
 ROOT      = Path(__file__).resolve().parents[1]
 CANONICAL = ROOT / "out" / "canonical"
 OVERRIDES = ROOT / "inputs" / "keep_doubles_overrides.csv"
-
-# Platform canonical input — script 07 reads from here directly.
-# Set to None to skip the mirror write.
-_FB_BW = Path.home() / "projects" / "fb-bw" / "legacy_data" / "event_results" / "canonical_input"
-PLATFORM_OUT = _FB_BW if _FB_BW.parent.exists() else None
+COVERAGE_FLAG_OVERRIDES = ROOT / "overrides" / "coverage_flag_overrides.csv"
 
 csv.field_size_limit(10 * 1024 * 1024)
 
@@ -67,15 +91,52 @@ def load(name: str) -> tuple[list[dict], list[str]]:
 
 
 def save(name: str, rows: list[dict], fieldnames: list[str]) -> None:
-    for dest in [CANONICAL, PLATFORM_OUT]:
-        if dest is None:
-            continue
-        dest.mkdir(parents=True, exist_ok=True)
-        with open(dest / name, "w", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-            w.writeheader()
-            w.writerows(rows)
+    CANONICAL.mkdir(parents=True, exist_ok=True)
+    with open(CANONICAL / name, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows)
     print(f"  Saved {name} ({len(rows):,} rows)")
+
+
+# ── Worlds naming/type helpers ────────────────────────────────────────────────
+
+def _ordinal(n: int) -> str:
+    if 11 <= (n % 100) <= 13:
+        return f"{n}th"
+    suffix = ["th", "st", "nd", "rd"] + ["th"] * 6
+    return f"{n}{suffix[n % 10]}"
+
+
+def _worlds_canonical_name(year: int) -> str:
+    return f"{_ordinal(year - 1979)} Annual World Footbag Championships"
+
+
+# Signals that confirm the event is the official championships (not a warm-up,
+# record attempt, or other event that happens to carry "worlds" in the key).
+_WORLDS_NAME_SIGNALS = frozenset([
+    "world footbag", "world championship", "wfa world",
+    "ifab world", "nhsa world", "ifpa world",
+])
+
+
+def _is_worlds_event(ev: dict) -> bool:
+    """Return True for official World Footbag Championships events (year >= 1985)."""
+    try:
+        year = int(ev.get("year", "") or 0)
+    except ValueError:
+        return False
+    if year < 1985:
+        return False
+    # Already typed as worlds by a human-reviewed source — accept unconditionally.
+    if ev.get("event_type", "") == "worlds":
+        return True
+    # Must carry "_worlds" in the key and a championship signal in the name.
+    ek = ev.get("event_key", "").lower()
+    if "_worlds" not in ek:
+        return False
+    name_lower = ev.get("event_name", "").lower()
+    return any(sig in name_lower for sig in _WORLDS_NAME_SIGNALS)
 
 
 # ── Load ──────────────────────────────────────────────────────────────────────
@@ -102,6 +163,271 @@ if OVERRIDES.exists():
     print(f"  Keep-doubles overrides: {len(keep_doubles)} discipline(s)")
 else:
     print(f"  Keep-doubles overrides: none (create {OVERRIDES.name} to add)")
+
+# Load coverage_flag overrides (optional)
+# Matches on (event_key, discipline_key) and overwrites coverage_flag in event_disciplines.
+coverage_flag_overrides: dict[tuple[str, str], str] = {}
+if COVERAGE_FLAG_OVERRIDES.exists():
+    with open(COVERAGE_FLAG_OVERRIDES, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            k = (row["event_key"].strip(), row["discipline_key"].strip())
+            coverage_flag_overrides[k] = row["coverage_flag_override"].strip()
+    print(f"  Coverage-flag overrides: {len(coverage_flag_overrides)} discipline(s)")
+else:
+    print(f"  Coverage-flag overrides: none (create {COVERAGE_FLAG_OVERRIDES.name} to add)")
+
+_coverage_patched = 0
+for row in disciplines:
+    k = (row["event_key"], row["discipline_key"])
+    if k in coverage_flag_overrides:
+        old_flag = row.get("coverage_flag", "")
+        new_flag = coverage_flag_overrides[k]
+        row["coverage_flag"] = new_flag
+        print(f"  Coverage-flag override: {k[0]} / {k[1]}  {old_flag!r} → {new_flag!r}")
+        _coverage_patched += 1
+
+if _coverage_patched:
+    print(f"  Coverage-flag rows patched: {_coverage_patched}")
+
+# ── Worlds event name / type normalization ────────────────────────────────────
+# For all events year >= 1985 that are identified as the official World Footbag
+# Championships, enforce:
+#   event_name  → "{Nth} Annual World Footbag Championships"  (N = year - 1979)
+#   event_type  → "worlds"
+# 1980–1984 events are left untouched (fragmented / duplicate entries require
+# separate human-reviewed merge work).
+
+print("\n[Worlds normalization] Applying canonical name/type to Worlds events...")
+
+_worlds_changes: list[dict] = []
+for ev in events:
+    if not _is_worlds_event(ev):
+        continue
+    year = int(ev["year"])
+    new_name = _worlds_canonical_name(year)
+    old_name = ev["event_name"]
+    old_type = ev["event_type"]
+    name_changed = old_name != new_name
+    type_changed = old_type != "worlds"
+    if name_changed or type_changed:
+        _worlds_changes.append({
+            "year":      year,
+            "event_key": ev["event_key"],
+            "old_name":  old_name,
+            "new_name":  new_name,
+            "old_type":  old_type,
+            "new_type":  "worlds",
+        })
+        ev["event_name"] = new_name
+        ev["event_type"] = "worlds"
+
+if _worlds_changes:
+    _worlds_changes.sort(key=lambda r: (r["year"], r["event_key"]))
+    print(f"\n  {'year':>4}  {'event_key':<45}  {'old_type':<10}  {'new_type':<8}  old_name  →  new_name")
+    print(f"  {'-'*4}  {'-'*45}  {'-'*10}  {'-'*8}  {'-'*30}")
+    for ch in _worlds_changes:
+        print(f"  {ch['year']:>4}  {ch['event_key']:<45}  {ch['old_type']:<10}  {ch['new_type']:<8}  "
+              f"{ch['old_name']!r}  →  {ch['new_name']!r}")
+    print(f"\n  Total worlds events changed: {len(_worlds_changes)}")
+else:
+    print("  No changes — all worlds events already normalized.")
+
+# ── Pre-1985 Worlds: type / name / location corrections ──────────────────────
+# Explicit event_key–keyed corrections for the 1980–1984 Worlds-family era.
+# Post-1984 normalization uses a formula ("Nth Annual …").  Pre-1985 cannot —
+# three competing organisations (NHSA, WFA, IFAB, FBW) each ran parallel
+# "World Championships" in the same years.  All entries below are human-
+# reviewed; no heuristics.
+#
+# Naming convention applied:  {YYYY} World Footbag Championships ({ORG})
+# National-championship variants keep their existing style but receive
+# event_type = "worlds" so they are filterable as worlds-family events.
+#
+# Duplicate-merge candidates (e.g. 1982_worlds vs 1982_nhsa_national) are
+# intentionally left as separate keys — merging requires result-row
+# deduplication and is flagged for future review.
+
+_PRE_1985_WORLDS_NAMES: dict[str, str] = {
+    # ── NHSA track (de-facto world championships 1980–1983) ───────────────────
+    "1980_worlds":               "1980 World Footbag Championships (NHSA)",
+    "1981_worlds":               "1981 World Footbag Championships (NHSA)",
+    "1982_worlds":               "1982 World Footbag Championships (NHSA)",
+    "1983_worlds":               "1983 World Footbag Championships (NHSA)",
+    # NHSA national championships (worlds-family; possible dup of above pair)
+    "1982_nhsa_national":        "1982 NHSA National Championships",
+    "1983_nhsa_national":        "1983 NHSA National Championships",
+    # ── WFA track (NHSA successor, 1983–1984) ─────────────────────────────────
+    "1983_worlds_2":             "1983 World Footbag Championships (WFA)",
+    "1984_worlds":               "1984 World Footbag Championships (WFA)",
+    # WFA national championships (worlds-family; possible dup of above pair)
+    "1983_national":             "1983 WFA National Championships",
+    "1984_national":             "1984 WFA National Championships",
+    # ── IFAB track (parallel eastern championships) ────────────────────────────
+    "1980_worlds_memphis":       "1980 World Footbag Championships (IFAB)",
+    "1981_worlds_san_dimas":     "1981 World Footbag Championships (IFAB/FBW)",
+    "1982_worlds_portland":      "1982 World Footbag Championships (IFAB/FBW)",
+    "1982_worlds_san_francisco": "1982 World Footbag Championships (IFAB)",
+    "1983_worlds_oregon_city":   "1983 World Footbag Championships (IFAB)",
+    "1984_worlds_oregon_city":   "1984 World Footbag Championships (IFAB)",
+    # ── FBW/Golden freestyle track ────────────────────────────────────────────
+    "1982_worlds_golden":        "1982 World Footbag Championships (FBW)",
+    "1983_worlds_golden":        "1983 World Footbag Championships (FBW)",
+    "1984_worlds_golden":        "1984 World Footbag Championships (FBW)",
+}
+
+# country field holds an org tag instead of a real location for these events.
+# Clear it — the org is already visible in the event_name.
+_PRE_1985_CLEAR_ORG_FROM_COUNTRY: set[str] = {
+    "1980_worlds",
+    "1981_worlds",
+    "1982_worlds",
+    "1983_worlds",
+    "1983_worlds_2",
+}
+
+# Explicit location corrections keyed by event_key.
+# FBW Golden track: Colorado was stored in the country field instead of region.
+# 1983 NHSA/WFA events: source-backed Boulder, CO (2026-04 reconciliation).
+# 1984 WFA events: source-backed Golden, CO (same reconciliation; previously wrong Boulder).
+_PRE_1985_LOCATION_FIXES: dict[str, dict[str, str]] = {
+    # ── FBW Golden track ──────────────────────────────────────────────────────
+    "1982_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    "1983_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    "1984_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    # ── 1980–1982 NHSA events → Oregon City, OR (NHSA home base) ─────────────
+    "1980_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
+    "1981_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
+    "1982_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
+    "1982_nhsa_national": {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
+    # ── 1983 NHSA/WFA events → Boulder, CO ────────────────────────────────────
+    "1983_worlds":        {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    "1983_nhsa_national": {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    "1983_worlds_2":      {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    "1983_national":      {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    # ── 1984 WFA events → Golden, CO (not Boulder) ────────────────────────────
+    "1984_worlds":        {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    "1984_national":      {"city": "Golden",  "region": "Colorado", "country": "United States"},
+}
+
+print("\n[Pre-1985 Worlds] Applying event_type / name / location corrections...")
+
+_pre85_changes: list[dict] = []
+
+for ev in events:
+    ek = ev.get("event_key", "")
+    if ek not in _PRE_1985_WORLDS_NAMES:
+        continue
+
+    old_type = ev.get("event_type", "")
+    old_name = ev.get("event_name", "")
+    new_name = _PRE_1985_WORLDS_NAMES[ek]
+    detail: list[str] = []
+
+    # 1. Enforce event_type = "worlds"
+    if old_type != "worlds":
+        ev["event_type"] = "worlds"
+        detail.append(f"type  {old_type!r} → 'worlds'")
+
+    # 2. Apply canonical name
+    if old_name != new_name:
+        ev["event_name"] = new_name
+        detail.append(f"name  {old_name!r} → {new_name!r}")
+
+    # 3. Clear org-tag stored in country field
+    if ek in _PRE_1985_CLEAR_ORG_FROM_COUNTRY:
+        cur_country = ev.get("country", "")
+        if cur_country in ("NHSA", "WFA"):
+            ev["country"] = ""
+            detail.append(f"country cleared ({cur_country!r})")
+
+    # 4. Apply location fix
+    if ek in _PRE_1985_LOCATION_FIXES:
+        for field, new_val in _PRE_1985_LOCATION_FIXES[ek].items():
+            old_val = ev.get(field, "")
+            if old_val != new_val:
+                ev[field] = new_val
+                detail.append(f"{field}  {old_val!r} → {new_val!r}")
+
+    if detail:
+        _pre85_changes.append({"event_key": ek, "detail": detail})
+
+if _pre85_changes:
+    _pre85_changes.sort(key=lambda r: r["event_key"])
+    print(f"\n  {'event_key':<40}  detail")
+    print(f"  {'-'*40}  {'-'*55}")
+    for ch in _pre85_changes:
+        for i, line in enumerate(ch["detail"]):
+            label = ch["event_key"] if i == 0 else ""
+            print(f"  {label:<40}  {line}")
+    print(f"\n  Pre-1985 worlds events updated: {len(_pre85_changes)} of {len(_PRE_1985_WORLDS_NAMES)}")
+else:
+    print("  No changes — pre-1985 worlds events already normalized.")
+
+# ── Post-1984 standalone event fixes ──────────────────────────────────────────
+# Location and display-name corrections for events not in _PRE_1985_WORLDS_NAMES.
+# 1985–1990 Worlds were held in Golden, CO (FBW/WFA).
+# 1991 onwards the Worlds rotated to international host cities.
+# Source: events_normalized.csv (mirror-era records); "Golden CO" country-field
+# format is the same parsing artifact as 1985_worlds.
+# 1988 confirmed Golden by series pattern (1986–1990 all Golden, no contrary source).
+# 1993 confirmed Golden by user (source TXT blank; events_normalized has no entry).
+
+_1985_EVENT_FIXES: dict[str, dict[str, str]] = {
+    # ── 1985 ──────────────────────────────────────────────────────────────────
+    "1985_worlds": {
+        "city":    "Golden",
+        "region":  "Colorado",
+        "country": "United States",
+    },
+    "1985_western_national_indoor": {
+        "event_name": "Oak Park \u2014 Chicago Open",
+        "city":       "Chicago",
+        "region":     "Illinois",
+        "country":    "United States",
+    },
+    # ── 1986–1990 Worlds → Golden, CO ("Golden CO" stored in country field) ───
+    "1986_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    "1987_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    "1988_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    "1989_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    "1990_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    # ── 1991–1995 Worlds → rotating host cities ───────────────────────────────
+    "1991_worlds": {"city": "Vancouver",     "region": "British Columbia",  "country": "Canada"},
+    "1992_worlds": {"city": "Montreal",      "region": "Quebec",            "country": "Canada"},
+    "1993_worlds": {"city": "Golden",        "region": "Colorado",          "country": "United States"},
+    "1994_worlds": {"city": "San Francisco", "region": "California",        "country": "United States"},
+    "1995_worlds": {"city": "Menlo Park",    "region": "California",        "country": "United States"},
+}
+
+print("\n[1985 Standalone] Applying event name / location fixes...")
+
+_1985_changes: list[dict] = []
+
+for ev in events:
+    ek = ev.get("event_key", "")
+    if ek not in _1985_EVENT_FIXES:
+        continue
+    fix = _1985_EVENT_FIXES[ek]
+    detail: list[str] = []
+    for field, new_val in fix.items():
+        old_val = ev.get(field, "")
+        if old_val != new_val:
+            ev[field] = new_val
+            detail.append(f"{field}  {old_val!r} → {new_val!r}")
+    if detail:
+        _1985_changes.append({"event_key": ek, "detail": detail})
+
+if _1985_changes:
+    _1985_changes.sort(key=lambda r: r["event_key"])
+    print(f"\n  {'event_key':<40}  detail")
+    print(f"  {'-'*40}  {'-'*55}")
+    for ch in _1985_changes:
+        for i, line in enumerate(ch["detail"]):
+            label = ch["event_key"] if i == 0 else ""
+            print(f"  {label:<40}  {line}")
+    print(f"\n  1985 standalone events updated: {len(_1985_changes)}")
+else:
+    print("  No changes — 1985 standalone events already normalized.")
 
 # ── Fix 1 & 2: Identity Sync + Regex Deep-Clean ───────────────────────────────
 
@@ -1314,6 +1640,30 @@ if _05p5_missing:
 else:
     print("  OK — all participant person_ids present in persons.")
 
+# ── Dedup: same person_id in same result slot ─────────────────────────────────
+# Must run after all person_id resolution steps (Fix 7, Fix 8, alias remap) so
+# that stub rows resolved late (empty pid → resolved by name in Fix 7) are also
+# caught.  PBP occasionally emits a direct resolved row AND an __NON_PERSON__
+# team-expansion row for the same person at the same placement; both may resolve
+# to the same person_id through different paths.
+
+_dedup_seen: set[tuple[str, str, str, str]] = set()
+_dedup_removed = 0
+_deduped_participants = []
+for row in participants:
+    pid = row.get("person_id", "")
+    if pid:
+        slot_pid = (row["event_key"], row["discipline_key"], row["placement"], pid)
+        if slot_pid in _dedup_seen:
+            _dedup_removed += 1
+            continue
+        _dedup_seen.add(slot_pid)
+    _deduped_participants.append(row)
+
+if _dedup_removed:
+    participants = _deduped_participants
+    print(f"\n[Dedup] Removed {_dedup_removed} duplicate person_id row(s) within same result slot")
+
 # ── Save ──────────────────────────────────────────────────────────────────────
 
 print("\nSaving...")
@@ -1374,8 +1724,3 @@ print(f"""
 ╚══════════════════════════════════════════╝
 """)
 
-# Copy persons.csv (not modified by 05p5) to platform output
-if PLATFORM_OUT is not None:
-    import shutil
-    shutil.copy2(CANONICAL / "persons.csv", PLATFORM_OUT / "persons.csv")
-    print(f"  Copied persons.csv → {PLATFORM_OUT}")

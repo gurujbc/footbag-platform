@@ -436,13 +436,10 @@ export const publicPlayers = {
       ON erp.historical_person_id = hp.person_id
     LEFT JOIN event_result_entries AS ere
       ON ere.id = erp.result_entry_id
+    WHERE hp.source_scope = 'CANONICAL'
     GROUP BY
       hp.person_id, hp.person_name, hp.country,
       hp.bap_member, hp.hof_member
-    HAVING COUNT(DISTINCT erp.result_entry_id) > 0
-        OR hp.first_year IS NOT NULL
-        OR hp.country IS NOT NULL
-        OR hp.source_scope LIKE 'PRE1997%'
     ORDER BY hp.person_name COLLATE NOCASE
   `),
 

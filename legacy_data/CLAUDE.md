@@ -55,7 +55,40 @@ mirror.
 
 ---
 
-## Active Production Path
+## Complete Pipeline — One Command
+
+```bash
+cd ~/projects/footbag-platform/legacy_data
+./run_pipeline.sh complete
+```
+
+Runs every stage in order and **fails fast on QC hard failures** (stages 5–7 never run
+if QC returns a hard failure). This is the standard command after adding or changing any
+source data, override, or curated CSV.
+
+Stage order inside `complete`:
+
+| # | Stage | Key script |
+|---|-------|------------|
+| 1 | Rebuild | mirror + curated → stage2 |
+| 2 | Release | export canonical CSVs + platform export |
+| 3 | Supplement | `02p5b_supplement_class_b.py` (Placements_Flat workbook completeness) |
+| 4 | QC gate | `pipeline/qc/run_qc.py` — **exit 1 on any hard failure** |
+| 5 | Workbook | `pipeline/build_workbook_release.py` → `out/Footbag_Results_Release.xlsx` |
+| 6 | Seed | `event_results/scripts/07_build_mvfp_seed_full.py` → `event_results/seed/mvfp_full/` |
+| 7 | DB load | `event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py` → `database/footbag.db` |
+
+**Do NOT run stages 5–7 manually when QC is failing.** `./run_pipeline.sh complete`
+enforces this ordering automatically.
+
+Script 08 needs the repo root for `database/footbag.db`. `run_pipeline.sh` resolves this
+automatically — always run `./run_pipeline.sh complete` from `legacy_data/`.
+
+---
+
+## Active Production Path (individual stages)
+
+Use these when you need to re-run only part of the pipeline:
 
 ```
 ./run_pipeline.sh rebuild    # parse mirror + curated → stage2 canonical events
@@ -73,6 +106,8 @@ Stage 02p5 pipeline/02p5_player_token_cleanup.py           apply identity lock (
 Stage 02p6 pipeline/02p6_structural_cleanup.py             artifact removal + structural fixes
 Stage 05   pipeline/historical/export_historical_csvs.py   export out/canonical/*.csv  ← AUTHORITATIVE
 Stage 05p5 pipeline/05p5_remediate_canonical.py            final integrity + event merge pass
+Stage 05p5b pipeline/02p5b_supplement_class_b.py           Class B injection into Placements_Flat
+              (runs AFTER release — needs canonical_input/ to be populated first)
 QC         pipeline/qc/run_qc.py                           validate — must return QC STATUS: PASS
 ```
 
@@ -185,18 +220,19 @@ design them independently.
 
 ## Platform / DB Export
 
-`out/canonical/*.csv` → platform schema:
+Handled automatically by `./run_pipeline.sh complete` (stages 6–7).
+
+To run manually (e.g. after a release-only change):
 
 ```bash
-./run_pipeline.sh release   # exports canonical CSVs and runs export_canonical_platform.py
-```
+# From legacy_data/:
+python event_results/scripts/07_build_mvfp_seed_full.py
 
-Then:
-
-```bash
-# From footbag-platform/ root:
-python legacy_data/event_results/scripts/07_build_mvfp_seed_full.py  # canonical_input → seed
-python legacy_data/event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py --db database/footbag.db
+# Script 08 needs --db resolved to repo root; run_pipeline.sh handles this automatically.
+# If running by hand, pass the absolute path:
+python event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py \
+  --db ~/projects/footbag-platform/database/footbag.db \
+  --seed-dir event_results/seed/mvfp_full
 ```
 
 The platform path is separate from the workbook path — but person and event filtering
@@ -258,7 +294,55 @@ decisions in one should inform the other. Do not conflate the mechanics; do alig
 
 ---
 
-## Safe Rebuild Workflow
+## Adding New Images / Curated Sources
+
+Every new image or raw result source must be promoted to a structured curated CSV before
+entering the pipeline. No raw files enter the pipeline directly.
+
+**Standard workflow:**
+
+```
+1. Derive structured CSV from new image/raw source
+   → place in inputs/curated/events/structured/  (Variant A, B, or C — see Curated Intake Layer)
+
+2. If new persons appear: add display-name rows to
+   inputs/identity_lock/Person_Display_Names_v1.csv
+   (existing UUID variant, or new Class B UUID5 entry)
+
+3. Run the complete pipeline:
+   cd ~/projects/footbag-platform/legacy_data
+   ./run_pipeline.sh complete
+
+4. QC must return PASS — pipeline halts on hard failure before workbook/DB stages
+
+5. Inspect diffs:
+   git diff out/canonical/
+   git diff event_results/canonical_input/
+
+6. Only commit if:
+   - QC STATUS: PASS
+   - Row count changes are expected (new event added, not existing rows lost)
+   - No unintended identity regressions
+```
+
+**Do not commit if QC has hard failures.** Fix at the source — parser, override, or
+curated CSV — then re-run `./run_pipeline.sh complete`.
+
+**Where new files belong:**
+
+| New data type | Location |
+|---------------|----------|
+| Structured curated CSV (Variant A/B/C) | `inputs/curated/events/structured/` |
+| Image-derived structured CSV | same |
+| Coverage flag correction | `overrides/coverage_flag_overrides.csv` |
+| Event exclusion | `overrides/events_overrides.jsonl` |
+| Results file override | `overrides/results_file_overrides.csv` |
+| New person display-name variant | `inputs/identity_lock/Person_Display_Names_v1.csv` |
+| Supplemental member_id | `inputs/identity_lock/member_id_supplement.csv` |
+
+---
+
+## Safe Rebuild Workflow (individual stages)
 
 ```bash
 # 1. Full rebuild
@@ -279,6 +363,3 @@ For pre-1997 work (merged canonical_all):
 ./run_early_pipeline.sh finalize   # re-merge early data into canonical_all
 ./run_early_pipeline.sh merge      # produce merged platform export
 ```
-
-Do not run `./run_pipeline.sh all` without understanding each stage — it combines
-rebuild + release + qc in sequence and will fail fast on any QC error.

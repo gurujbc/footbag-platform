@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 """
-03_build_excel.py — Stage 3: Build final Excel workbook
+03_build_excel.py — DEPRECATED
 
-This script:
+This script is no longer the workbook deliverable.
+
+It produces a summary-column format (10 rows per event) that does not match
+the canonical per-placement year-sheet layout used in the release workbook.
+
+Superseded by:
+  pipeline/build_workbook_release.py   — v22-style canonical release workbook (forthcoming)
+  pipeline/build_workbook_community.py — community distribution format
+
+Kept for reference / audit traceability. Do not run in production.
+--- original docstring below ---
+
+Stage 3: Build final Excel workbook
 - Reads out/stage2_canonical_events.csv
 - Generates Excel workbook with one sheet per year
 - Outputs: Footbag_Results_Canonical.xlsx
-
-Input: out/stage2_canonical_events.csv
-Output: Footbag_Results_Canonical.xlsx
 """
 
 from __future__ import annotations

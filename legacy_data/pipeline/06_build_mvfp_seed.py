@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+"""
+06_build_mvfp_seed.py — DEPRECATED
+
+Superseded by event_results/scripts/07_build_mvfp_seed_full.py which reads from
+event_results/canonical_input/ (the platform-export schema) and writes to
+event_results/seed/mvfp_full/.
+
+Kept for reference / audit traceability. Do not run in production.
+"""
+
 from __future__ import annotations
 
 import argparse

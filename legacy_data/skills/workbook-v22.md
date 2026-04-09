@@ -16,10 +16,15 @@ Do NOT invoke this skill for:
 ## Builder
 
 **Primary script:** `pipeline/build_workbook_release.py`
-**Status:** Forthcoming — port of `build_workbook_v17.py` from the FOOTBAG_DATA repo
 **Output:** `out/Footbag_Results_Release.xlsx`
-**Run after:** `./run_pipeline.sh rebuild && ./run_pipeline.sh release && .venv/bin/python pipeline/qc/run_qc.py`
+**Run after:** rebuild + release + QC pass
 
+Preferred invocation — part of the complete pipeline:
+```bash
+./run_pipeline.sh complete   # workbook is stage 5 of 7; QC must pass first
+```
+
+Standalone invocation (only after a completed rebuild + release + QC pass):
 ```bash
 .venv/bin/python pipeline/build_workbook_release.py
 ```

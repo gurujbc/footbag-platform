@@ -2,69 +2,80 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 1980_mike_marshall_memorial,1980_mike_marshall_memorial_san_jose,1980,Mike Marshall Memorial,mike_marshall_memorial,,,San Jose,California,United States,,net,completed,,mirror
 1980_national,1980_national_footbag_championships_united_states,1980,National Footbag Championships,national_footbag_championships,,,,,United States,,net,completed,,mirror
 1980_western_states,1980_western_states_footbag_corvallis,1980,Western States Footbag Championships 1980,western_states_footbag_championships_1980,,,Corvallis,Oregon,United States,,mixed,completed,,mirror
-1980_worlds,1980_worlds_nhsa,1980,World Championships 1980 (NHSA),world_championships_1980_nhsa,,,,,NHSA,,net,completed,,mirror
-1980_worlds_memphis,1980_worlds_memphis,1980,World Footbag Championships 1980 (IFAB),world_footbag_championships_1980_ifab,,,Memphis,Tennessee,United States,,mixed,completed,,mirror
+1980_worlds,1980_worlds_nhsa,1980,1980 World Footbag Championships (NHSA),world_championships_1980_nhsa,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
+1980_worlds_memphis,1980_worlds_memphis,1980,1980 World Footbag Championships (IFAB),world_footbag_championships_1980_ifab,,,Memphis,Tennessee,United States,,worlds,completed,,mirror
 1981_mike_marshall_memorial,1981_mike_marshall_memorial_san_jose,1981,Mike Marshall Memorial,mike_marshall_memorial,,,San Jose,California,United States,,net,completed,,mirror
 1981_texas_state,1981_texas_state_footbag_texas,1981,Texas State Footbag Championships 1981,texas_state_footbag_championships_1981,,,Texas,,United States,,net,completed,,mirror
-1981_worlds,1981_worlds_nhsa,1981,World Championships 1981 (NHSA),world_championships_1981_nhsa,,,,,NHSA,,net,completed,,mirror
-1981_worlds_san_dimas,1981_worlds_san_dimas,1981,World Footbag Championships 1981 (IFAB/FBW),world_footbag_championships_1981_ifab_fbw,,,San Dimas,California,United States,,net,completed,,mirror
-1982_nhsa_national,1982_1982_nhsa_national,1982,1982 NHSA National Championships,1982_nhsa_national_championships,,,,,,,mixed,completed,,mirror
-1982_worlds_golden,1982_worlds_golden,1982,1982 World Footbag Championships,1982_world_footbag_championships,,,Golden,,Colorado,,freestyle,completed,,mirror
+1981_worlds,1981_worlds_nhsa,1981,1981 World Footbag Championships (NHSA),world_championships_1981_nhsa,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
+1981_worlds_san_dimas,1981_worlds_san_dimas,1981,1981 World Footbag Championships (IFAB/FBW),world_footbag_championships_1981_ifab_fbw,,,San Dimas,California,United States,,worlds,completed,,mirror
+1982_nhsa_national,1982_1982_nhsa_national,1982,1982 NHSA National Championships,1982_nhsa_national_championships,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
+1982_worlds_golden,1982_worlds_golden,1982,1982 World Footbag Championships (FBW),1982_world_footbag_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1982_rocky_mountain,1982_rocky_mountain_open_colorado,1982,Rocky Mountain Open 1982,rocky_mountain_open_1982,,,Colorado,,United States,,mixed,completed,,mirror
 1982_westregion,1982_western_regionals_united_states,1982,Western Regionals,western_regionals,,,,,United States,,net,completed,,mirror
-1982_worlds,1982_worlds_nhsa,1982,World Championships 1982 (NHSA),world_championships_1982_nhsa,,,,,NHSA,,mixed,completed,,mirror
-1982_worlds_portland,1982_worlds_portland,1982,World Footbag Championships,world_footbag_championships,,,Portland,Oregon,United States,,net,completed,,mirror
-1982_worlds_san_francisco,1982_worlds_san_francisco,1982,World Footbag Championships 1982 (IFAB),world_footbag_championships_1982_ifab,,,San Francisco,California,United States,,net,completed,,mirror
-1983_nhsa_national,1983_1983_nhsa_national,1983,1983 NHSA National Championships,1983_nhsa_national_championships,,,,,,,mixed,completed,,mirror
-1983_national,1983_1983_wfa_national,1983,1983 WFA National Championships,1983_wfa_national_championships,,,,,,,net,completed,,mirror
-1983_worlds_golden,1983_worlds_golden,1983,1983 World Footbag Championships,1983_world_footbag_championships,,,Golden,,Colorado,,freestyle,completed,,mirror
+1982_worlds,1982_worlds_nhsa,1982,1982 World Footbag Championships (NHSA),world_championships_1982_nhsa,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
+1982_worlds_portland,1982_worlds_portland,1982,1982 World Footbag Championships (IFAB/FBW),world_footbag_championships,,,Portland,Oregon,United States,,worlds,completed,,mirror
+1982_worlds_san_francisco,1982_worlds_san_francisco,1982,1982 World Footbag Championships (IFAB),world_footbag_championships_1982_ifab,,,San Francisco,California,United States,,worlds,completed,,mirror
+1983_nhsa_national,1983_1983_nhsa_national,1983,1983 NHSA National Championships,1983_nhsa_national_championships,,,Boulder,Colorado,United States,,worlds,completed,,mirror
+1983_national,1983_1983_wfa_national,1983,1983 WFA National Championships,1983_wfa_national_championships,,,Boulder,Colorado,United States,,worlds,completed,,mirror
+1983_worlds_golden,1983_worlds_golden,1983,1983 World Footbag Championships (FBW),1983_world_footbag_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1983_oregon_state,1983_oregon_state_footbag_oregon,1983,Oregon State Footbag Championships,oregon_state_footbag_championships,,,Oregon,,United States,,net,completed,,mirror
 1983_secret_underground,1983_secret_underground_jam,1983,Secret Underground Jam,secret_underground_jam,,,,,,,freestyle,completed,,mirror
-1983_worlds,1983_worlds_nhsa,1983,World Championships 1983 (NHSA),world_championships_1983_nhsa,,,,,NHSA,,mixed,completed,,mirror
-1983_worlds_2,1983_worlds_wfa,1983,World Championships 1983 (WFA),world_championships_1983_wfa,,,,,WFA,,mixed,completed,,mirror
-1983_worlds_oregon_city,1983_worlds_oregon_city,1983,World Footbag Championships 1983 (IFAB),world_footbag_championships_1983_ifab,,,Oregon City,Oregon,United States,,net,completed,,mirror
-1984_national,1984_1984_wfa_national,1984,1984 WFA National Championships,1984_wfa_national_championships,,,,,,,mixed,completed,,mirror
-1984_worlds_golden,1984_worlds_golden,1984,1984 World Footbag Championships,1984_world_footbag_championships,,,Golden,,Colorado,,freestyle,completed,,mirror
+1983_worlds,1983_worlds_nhsa,1983,1983 World Footbag Championships (NHSA),world_championships_1983_nhsa,,,Boulder,Colorado,United States,,worlds,completed,,mirror
+1983_worlds_2,1983_worlds_wfa,1983,1983 World Footbag Championships (WFA),world_championships_1983_wfa,,,Boulder,Colorado,United States,,worlds,completed,,mirror
+1983_worlds_oregon_city,1983_worlds_oregon_city,1983,1983 World Footbag Championships (IFAB),world_footbag_championships_1983_ifab,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
+1984_national,1984_1984_wfa_national,1984,1984 WFA National Championships,1984_wfa_national_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
+1984_worlds_golden,1984_worlds_golden,1984,1984 World Footbag Championships (FBW),1984_world_footbag_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1984_eurochamp,1984_european_footbag_championships_europe,1984,European Footbag Championships,european_footbag_championships,,,,,Europe,,net,completed,,mirror
 1984_eurochamp_2,1984_european_footbag_championships,1984,European Footbag Championships 1984,european_footbag_championships_1984,,,,,,,net,completed,,mirror
-1984_worlds,1984_worlds,1984,World Championships 1984,world_championships_1984,,,,,,,mixed,completed,,mirror
-1984_worlds_oregon_city,1984_worlds_oregon_city,1984,World Footbag Championships 1984 (IFAB),world_footbag_championships_1984_ifab,,,Oregon City,Oregon,United States,,net,completed,,mirror
+1984_worlds,1984_worlds,1984,1984 World Footbag Championships (WFA),world_championships_1984,,,Golden,Colorado,United States,,worlds,completed,,mirror
+1984_worlds_oregon_city,1984_worlds_oregon_city,1984,1984 World Footbag Championships (IFAB),world_footbag_championships_1984_ifab,,,Oregon City,Oregon,United States,,worlds,completed,,mirror
 1985_holiday,1985_1985_holiday_classic,1985,1985 Holiday Classic,1985_holiday_classic,,,,,,,freestyle,completed,,mirror
 1985_national,1985_1985_wfa_national,1985,1985 WFA National Championships,1985_wfa_national_championships,,,,,,,mixed,completed,,mirror
-1985_worlds,1985_worlds_golden,1985,1985 World Footbag Championships,1985_world_footbag_championships,,,,,Golden CO,,mixed,completed,,mirror
+1985_worlds,1985_worlds_golden,1985,6th Annual World Footbag Championships,1985_world_footbag_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1985_eastregion,1043096425,1985,East Coast Championships - 3rd Annual - 1985,east_coast_championships_3rd_annual_1985,1985-09-14,1985-09-15,Long Branch,New Jersey,United States,,mixed,completed,,mirror
 1985_floodbag_finals,1985_floodbag_finals,1985,Floodbag Finals,floodbag_finals,,,,,,,net,completed,,mirror
 1985_footbagjam,1985_greatest_lakes_footbag,1985,Greatest Lakes Footbag Open,greatest_lakes_footbag_open,,,,,,,net,completed,,mirror
 1985_st_valentines_day,1985_valentines_day_footbag,1985,St. Valentines Day Footbag Massacre,st_valentines_day_footbag_massacre,,,,,,,mixed,completed,,mirror
 1985_mountainregion,1985_wfa_rocky_mountain,1985,Cabin Fever Classic,wfa_rocky_mountain_regionals,,,,,,,freestyle,completed,,mirror
-1985_western_national_indoor,1985_western_national_indoor,1985,Oak Park - Chicago Open,western_national_indoor_footbag_freestyle_championship,,,,,,,net,completed,,mirror
+1985_western_national_indoor,1985_western_national_indoor,1985,Oak Park - Chicago Open,western_national_indoor_footbag_freestyle_championship,,,Chicago,Illinois,United States,,net,completed,,mirror
 1985_western_states,1985_western_states_footbag_portland,1985,Western States Footbag Championships 1985,western_states_footbag_championships_1985,,,Portland,Oregon,United States,,freestyle,completed,,mirror
-1986_worlds,1986_worlds_golden,1986,1986 World Footbag Championships,1986_world_footbag_championships,,,,,Golden CO,,mixed,completed,,mirror
+1986_worlds,1986_worlds_golden,1986,7th Annual World Footbag Championships,1986_world_footbag_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1986_eastregion,1057126024,1986,East Coast Footbag Championships - 4th Annual - 1986,east_coast_footbag_championships_4th_annual_1986,1986-09-30,1986-09-30,Long Branch,New Jersey,United States,,mixed,completed,,mirror
 1986_sunshine_state,1986_sunshine_state_open_florida,1986,Sunshine State Open 1986,sunshine_state_open_1986,,,Florida,,United States,,net,completed,,mirror
-1987_worlds,1987_worlds_golden,1987,1987 WFA World Championships,1987_wfa_world_championships,,,,,Golden CO,,mixed,completed,,mirror
+1987_worlds,1987_worlds_golden,1987,8th Annual World Footbag Championships,1987_wfa_world_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1987_eastregion,1987_eastern_regionals_1987_atlanta,1987,Eastern Regionals 1987,eastern_regionals_1987,,,Atlanta,Georgia,United States,,freestyle,completed,,mirror
 1987_eurochamp,1987_european_footbag_championships_europe,1987,European Footbag Championships,european_footbag_championships,,,,,Europe,,net,completed,,mirror
 1987_eurochamp_munich,1987_european_footbag_championships_munich,1987,European Footbag Championships 1987,european_footbag_championships_1987,,,Munich,Bavaria,Germany,,net,completed,,mirror
-1988_worlds,1988_worlds_golden,1988,1988 WFA World Championships,1988_wfa_world_championships,,,,,Golden CO,,net,completed,,mirror
+1988_worlds,1988_worlds_golden,1988,9th Annual World Footbag Championships,1988_wfa_world_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1988_california_state,1988_california_state_open_california,1988,California State Open 1988,california_state_open_1988,,,California,,United States,,net,completed,,mirror
 1988_u_s_national,1988_national_footbag_championships_united_states,1988,U.S. National Footbag Championships,u_s_national_footbag_championships,,,,,United States,,net,completed,,mirror
-1989_worlds,1989_worlds_golden,1989,1989 WFA World Championships,1989_wfa_world_championships,,,,,Golden CO,,mixed,completed,,mirror
-1990_worlds,1990_worlds,1990,1990 WFA World Championships,1990_wfa_world_championships,,,,,,,mixed,completed,,mirror
+1989_worlds,1989_worlds_golden,1989,10th Annual World Footbag Championships,1989_wfa_world_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
+1990_worlds,1990_worlds,1990,11th Annual World Footbag Championships,1990_wfa_world_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
 1990_eastregion,1057175925,1990,East Coast Footbag Championships - 8th Annual - 1990,east_coast_footbag_championships_8th_annual_1990,1990-08-31,1990-08-31,Beachwood,New Jersey,United States,,mixed,completed,,mirror
-1991_worlds,1991_worlds,1991,1991 WFA World Championships,1991_wfa_world_championships,,,,,,,mixed,completed,,mirror
+1991_worlds,1991_worlds,1991,12th Annual World Footbag Championships,1991_wfa_world_championships,,,Vancouver,British Columbia,Canada,,worlds,completed,,mirror
 1991_eastregion,1057345914,1991,East Coast Footbag Championships - 1991 - 9th Annual,east_coast_footbag_championships_1991_9th_annual,1991-10-05,1991-10-06,Beachwood,New Jersey,United States,,mixed,completed,,mirror
-1992_worlds,1992_worlds,1992,1992 WFA World Championships,1992_wfa_world_championships,,,,,,,mixed,completed,,mirror
-1993_worlds,1993_worlds,1993,1993 WFA World Championships,1993_wfa_world_championships,,,,,,,mixed,completed,,mirror
-1994_worlds,1994_worlds,1994,1994 WFA World Championships,1994_wfa_world_championships,,,,,,,mixed,completed,,mirror
-1995_worlds,1995_worlds,1995,1995 WFA World Championships,1995_wfa_world_championships,,,,,,,mixed,completed,,mirror
+1992_eurochamp,1992_1992_european_championships,1992,1992 European Championships,1992_european_championships,,,,,,,mixed,completed,,mirror
+1992_worlds,1992_worlds,1992,13th Annual World Footbag Championships,1992_wfa_world_championships,,,Montreal,Quebec,Canada,,worlds,completed,,mirror
+1993_worlds,1993_worlds,1993,14th Annual World Footbag Championships,1993_wfa_world_championships,,,Golden,Colorado,United States,,worlds,completed,,mirror
+1993_louisiana_state,1993_6th_annual_louisiana_louisiana,1993,6th Annual Louisiana State Footbag Championships,6th_annual_louisiana_state_footbag_championships,,,Louisiana,,United States,,net,completed,,mirror
+1993_california_state,1993_california_state_footbag_california,1993,California State Footbag Championships,california_state_footbag_championships,,,California,,United States,,mixed,completed,,mirror
+1993_westregion,1993_eighth_annual_western,1993,Eighth Annual Western Regional Footbag Championships,eighth_annual_western_regional_footbag_championships,,,,,,,mixed,completed,,mirror
+1993_heartland,1993_heartland_regional_footbag,1993,Heartland Regional Footbag Championships,heartland_regional_footbag_championships,,,,,,,mixed,completed,,mirror
+1993_midwest,1993_midwest_regional_footbag,1993,Midwest Regional Footbag Championships,midwest_regional_footbag_championships,,,,,,,mixed,completed,,mirror
+1993_footbagjam,1993_northern_illinois_footbag_illinois,1993,Northern Illinois Footbag Open,northern_illinois_footbag_open,,,Illinois,,United States,,mixed,completed,,mirror
+1993_southern,1993_southern_regional_footbag,1993,Southern Regional Footbag Championships,southern_regional_footbag_championships,,,,,,,mixed,completed,,mirror
+1993_usopen,1993_open_footbag_championships,1993,U.S. Open Footbag Championships,u_s_open_footbag_championships,,,,,,,mixed,completed,,mirror
+1994_westregion,1994_10th_annual_western,1994,10th Annual Western Regional Footbag Championships,10th_annual_western_regional_footbag_championships,,,,,,,mixed,completed,,mirror
+1994_eurochamp,1994_1994_european_championships,1994,1994 European Championships,1994_european_championships,,,,,,,mixed,completed,,mirror
+1994_worlds,1994_worlds,1994,15th Annual World Footbag Championships,1994_wfa_world_championships,,,San Francisco,California,United States,,worlds,completed,,mirror
+1995_worlds,1995_worlds,1995,16th Annual World Footbag Championships,1995_wfa_world_championships,,,Menlo Park,California,United States,,worlds,completed,,mirror
 1995_eurochamp,1995_european_open_1995,1995,European Open 1995,european_open_1995,,,,,,,net,completed,,mirror
-1996_worlds_montreal,1996_worlds_montreal,1996,1996 World Footbag Championships,1996_world_footbag_championships,,,Montreal,Quebec,Canada,,freestyle,completed,,mirror
+1996_worlds_montreal,1996_worlds_montreal,1996,17th Annual World Footbag Championships,1996_world_footbag_championships,,,Montreal,Quebec,Canada,,worlds,completed,,mirror
 1997_worlds_vancouver,857881519,1997,11th Annual Vancouver Open (and Worlds Warm-Up),11th_annual_vancouver_open_and_worlds_warm_up,1997-08-02,1997-08-03,Vancouver,British Columbia,Canada,,net,completed,,mirror
 1997_midwest,857880964,1997,13th Annual MIDWEST REGIONAL FOOTBAG CHAMPIONSHIPS,13th_annual_midwest_regional_footbag_championships,1997-06-13,1997-06-15,Mt. Prospect,Illinois,United States,,mixed,completed,,mirror
 1997_emeraldcity,860356126,1997,14th Annual Emerald City Open Footbag Championships,14th_annual_emerald_city_open_footbag_championships,1997-06-07,1997-06-08,Seattle,Washington,United States,,net,completed,,mirror
 1997_seattle_fall_indoor,876590022,1997,1997 Seattle Fall Indoor Tournament,1997_seattle_fall_indoor_tournament,1997-11-08,1997-11-09,Seattle,Washington,United States,,mixed,completed,,mirror
-1997_worlds,1997_worlds,1997,1997 WFA World Championships,1997_wfa_world_championships,,,,,,,mixed,completed,,mirror
+1997_worlds,1997_worlds,1997,18th Annual World Footbag Championships,1997_wfa_world_championships,,,,,,,worlds,completed,,mirror
 1997_air_a_zona,859913311,1997,Air-A-Zona State Footbag Championships,air_a_zona_state_footbag_championships,1997-01-18,1997-01-19,Scottsdale,Arizona,United States,,net,completed,,mirror
 1997_auburn_u_f,877848852,1997,Auburn U.F.O. Fall Festival,auburn_u_f_o_fall_festival,1997-11-08,1997-11-09,Auburn,Alabama,United States,,mixed,completed,,mirror
 1997_bedford_australia_indoor,857880054,1997,Bedford (Australia) Indoor Footbag Championships,bedford_australia_indoor_footbag_championships,1997-06-08,1997-06-08,Perth,Western Australia,Australia,,net,completed,,mirror
@@ -78,9 +89,8 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 1997_southern_california,857852604,1997,Southern California Footbag Championships,southern_california_footbag_championships,1997-04-05,1997-04-06,Hermosa Beach,California,United States,,freestyle,completed,,mirror
 1997_state_games_oregon,857876215,1997,State Games of Oregon Footbag Tournament,state_games_of_oregon_footbag_tournament,1997-07-12,1997-07-13,Gresham,Oregon,United States,,net,completed,,mirror
 1997_eastregion,857879540,1997,The 15th Annual EAST COAST FOOTBAG CHAMPIONSHIPS,the_15th_annual_east_coast_footbag_championships,1997-04-26,1997-04-27,College Park,Maryland,United States,,mixed,completed,,mirror
-1997_worlds_portland,857876517,1997,The 18th Annual WORLD FOOTBAG CHAMPIONSHIPS,the_18th_annual_world_footbag_championships,1997-08-11,1997-08-17,Portland,Oregon,United States,Sole Purpose Footbag Club,worlds,completed,,mirror
+1997_worlds_portland,857876517,1997,18th Annual World Footbag Championships,the_18th_annual_world_footbag_championships,1997-08-11,1997-08-17,Portland,Oregon,United States,Sole Purpose Footbag Club,worlds,completed,,mirror
 1997_ultimate_chaos_outdoor,865043841,1997,The Ultimate Chaos Outdoor Footbag Flying Disc Festival,the_ultimate_chaos_outdoor_footbag_flying_disc_festival,1997-09-27,1997-09-28,Carbondale,Illinois,United States,,mixed,completed,,mirror
-1997_usopen_portland,857875468,1997,U.S. OPEN FOOTBAG NET CHAMPIONSHIPS,u_s_open_footbag_net_championships,1997-06-21,1997-06-22,Portland,Oregon,United States,,mixed,no_results,,mirror
 1997_university_oregon,857874500,1997,University of Oregon Footbag Tournament,university_of_oregon_footbag_tournament,1997-04-19,1997-04-20,Eugene,Oregon,United States,,mixed,completed,,mirror
 1997_westregion,857875120,1997,Western Regional Footbag Championships,western_regional_footbag_championships,1997-05-24,1997-05-26,Palo Alto,California,United States,,mixed,completed,,mirror
 1998_vancouver,886044392,1998,12th Annual Vancouver Open Footbag Net Tournament,12th_annual_vancouver_open_footbag_net_tournament,1998-08-22,1998-08-23,Vancouver,British Columbia,Canada,,net,completed,,mirror
@@ -88,7 +98,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 1998_emeraldcity,888294869,1998,15th Annual Emerald City Open,15th_annual_emerald_city_open,1998-06-06,1998-06-07,Mercer Island,Washington,United States,,net,completed,,mirror
 1998_beaver_open,901349509,1998,18th Annual Beaver Open,18th_annual_beaver_open,1998-09-05,1998-09-07,Salem,Oregon,United States,,net,completed,,mirror
 1998_southern,879319107,1998,1998 Southern Regional Footbag Championships,1998_southern_regional_footbag_championships,1998-04-25,1998-04-26,Richardson,Texas,United States,Dallas Footbag Club,mixed,completed,,mirror
-1998_worlds_montreal,876591529,1998,1998 WORLD FOOTBAG CHAMPIONSHIPS,1998_world_footbag_championships,1998-07-13,1998-07-19,Montreal,Quebec,Canada,Pro Kicker,worlds,completed,,mirror
+1998_worlds_montreal,876591529,1998,19th Annual World Footbag Championships,1998_world_footbag_championships,1998-07-13,1998-07-19,Montreal,Quebec,Canada,Pro Kicker,worlds,completed,,mirror
 1998_winter_windchill_warm,883135865,1998,1998 Winter Windchill Warm-Up (l'Hivernal),1998_winter_windchill_warm_up_lhivernal,1998-03-28,1998-03-29,Montreal,Quebec,Canada,,net,completed,,mirror
 1998_air_a_zona,876336655,1998,Air-A-Zona 2nd Annual Footbag Net Championships,air_a_zona_2nd_annual_footbag_net_championships,1998-01-17,1998-01-18,Scottsdale,Arizona,United States,,net,completed,,mirror
 1998_footbagjam_helsinki,899722892,1998,Finnish Footbag Open 1998,finnish_footbag_open_1998,1998-09-26,1998-09-27,Helsinki,Uusimaa,Finland,,mixed,completed,,mirror
@@ -119,7 +129,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 1999_southern_california,903468009,1999,Southern California Footbag Championships,southern_california_footbag_championships,1999-04-10,1999-04-11,Hermosa Beach,California,United States,,mixed,completed,,mirror
 1999_state_games_oregon,916977484,1999,State Games of Oregon Footbag Tournament,state_games_of_oregon_footbag_tournament,1999-05-15,1999-05-16,Eugene,Oregon,United States,,net,completed,,mirror
 1999_turku_tournee,937854594,1999,Turku Tournee 1999,turku_tournee_1999,1999-09-25,1999-09-25,Turku,Southwest Finland,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
-1999_worlds_chicago,915561090,1999,WORLD FOOTBAG CHAMPIONSHIPS,world_footbag_championships,1999-07-12,1999-07-18,Chicago,Illinois,United States,,worlds,completed,,mirror
+1999_worlds_chicago,915561090,1999,20th Annual World Footbag Championships,world_footbag_championships,1999-07-12,1999-07-18,Chicago,Illinois,United States,,worlds,completed,,mirror
 2000_southeast_idaho,959353403,2000,2000 Southeast Idaho Footbag Championships,2000_southeast_idaho_footbag_championships,2000-07-15,2000-07-15,Pocatello,Idaho,United States,Idaho State University Footbag Club,freestyle,completed,,mirror
 2000_air_a_zona,933099911,2000,4th Annual Air-A-Zona Footbag Net Tournament,4th_annual_air_a_zona_footbag_net_tournament,2000-01-15,2000-01-17,Tempe,Arizona,United States,AIR-A-ZONA FOOTBAG NET CLUB,net,completed,,mirror
 2000_footbagjam,955745735,2000,4th Annual Kansas Footbag Open,4th_annual_kansas_footbag_open,2000-05-20,2000-05-21,Wichita,Kansas,United States,,mixed,completed,,mirror
@@ -140,7 +150,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2000_todexon,944242404,2000,Todexon Cup Freestyle Tournament,todexon_cup_freestyle_tournament,2000-02-05,2000-02-05,Prague,,Czech Republic,Czech Footbag Association,freestyle,completed,,mirror
 2000_turku,955831740,2000,Turku Open 2000,turku_open_2000,2000-06-10,2000-06-11,Turku,Southwest Finland,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),mixed,completed,,mirror
 2000_usopen_portland,945548940,2000,U.S. Open Footbag Net Championships,u_s_open_footbag_net_championships,2000-08-11,2000-08-13,Portland,Oregon,United States,,net,completed,,mirror
-2000_worlds_vancouver,941418343,2000,WORLD FOOTBAG CHAMPIONSHIPS,world_footbag_championships,2000-08-14,2000-08-20,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,worlds,completed,,mirror
+2000_worlds_vancouver,941418343,2000,21st Annual World Footbag Championships,world_footbag_championships,2000-08-14,2000-08-20,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,worlds,completed,,mirror
 2001_hungarian,979816633,2001,1st Hungarian Footbag Cup,1st_hungarian_footbag_cup,2001-02-03,2001-02-03,Budapest,,Hungary,FreeStall,net,completed,,mirror
 2001_montreal_summer_challenge,984694623,2001,1st Montreal Summer Freestyle Challenge,1st_montreal_summer_freestyle_challenge,2001-07-20,2001-07-22,Montreal,Quebec,Canada,,freestyle,completed,,mirror
 2001_footbagjam_frankfurt,1000071985,2001,2001 Frankfurt Footbag Open,2001_frankfurt_footbag_open,2001-09-29,2001-09-29,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,freestyle,completed,,mirror
@@ -153,16 +163,12 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2001_bootf_gers_shred,1004370976,2001,Bootfägers Shred,bootf_gers_shred,2001-11-10,2001-11-10,Basel,Basel-Stadt,Switzerland,Bootfägers Basel,freestyle,completed,,mirror
 2001_colorado_shred_symposium,974683678,2001,COLORADO SHRED SYMPOSIUM 2,colorado_shred_symposium_2,2001-02-25,2001-02-25,Boulder,Colorado,United States,,freestyle,completed,,mirror
 2001_chicago_inner_circle,989875090,2001,Chicago Inner Circle Museum of Science and Industry Jam,chicago_inner_circle_museum_of_science_and_industry_jam,2001-07-20,2001-07-21,Chicago,Illinois,United States,Chicago Inner Circle,freestyle,completed,,mirror
-2001_worlds_bushnell,987361779,2001,Cornerstone Festival 2001 Largest Footbag Circle World Record Attempt,cornerstone_festival_2001_largest_footbag_circle_world_record_attempt,2001-07-06,2001-07-06,Bushnell,Illinois,United States,,freestyle,no_results,,mirror
 2001_eastregion,981129410,2001,East Coast Footbag Championships,east_coast_footbag_championships,2001-04-28,2001-04-29,College Park,Maryland,United States,,mixed,completed,,mirror
 2001_estonian,999985344,2001,Estonian Footbag Championships,estonian_footbag_championships,2001-10-07,2001-10-07,Tallinn,Harju County,Estonia,Tallinn Footbag Club,mixed,completed,,mirror
 2001_eurochamp_prague,980502839,2001,European Footbag Championships,european_footbag_championships,2001-07-19,2001-07-22,Prague,,Czech Republic,Czech Footbag Association,mixed,completed,,mirror
-2001_faith_forum,994186570,2001,Faith Footbag Forum,faith_footbag_forum,2001-07-14,2001-07-14,Washington,Pennsylvania,United States,,freestyle,no_results,,mirror
-2001_fallparty,1001905008,2001,Fall Footbag Party,fall_footbag_party,2001-10-20,2001-10-21,Manassas,Virginia,United States,D.C. All-Stars,mixed,no_results,,mirror
 2001_footbagjam_helsinki,1005667143,2001,Finnstyle Footbag JAM,finnstyle_footbag_jam,2001-11-24,2001-11-24,Helsinki,Uusimaa,Finland,,freestyle,completed,,mirror
 2001_first_eugene_freekout,979089216,2001,First Annual Eugene Freestyle Freekout!!!,first_annual_eugene_freestyle_freekout,2001-03-24,2001-03-25,Eugene,Oregon,United States,,freestyle,completed,,mirror
 2001_funtastik_summer,991757909,2001,Funtastik Summer Classic Footbag Tournament,funtastik_summer_classic_footbag_tournament,2001-09-01,2001-09-03,Harrisburg,Pennsylvania,United States,,mixed,completed,,mirror
-2001_torneo_hacky_sack,1003802417,2001,II Torneo Hacky Sack,ii_torneo_hacky_sack,2001-11-09,2001-11-09,Hermosillo,Sonora,Mexico,,net,no_results,,mirror
 2001_footbagjam_keuruu,992517335,2001,Keuruu Footbag Jam 2001,keuruu_footbag_jam_2001,2001-06-16,2001-06-16,Keuruu,Central Finland,Finland,,freestyle,completed,,mirror
 2001_lhivernal_windchill,972427576,2001,L'Hivernal (The Windchill) Footbag Tournament,lhivernal_the_windchill_footbag_tournament,2001-02-10,2001-02-11,Montreal,Quebec,Canada,Association Québécoise de Footbag,mixed,completed,,mirror
 2001_montreal,991285803,2001,Montreal International Footbag Net Championships 2001,montreal_international_footbag_net_championships_2001,2001-07-14,2001-07-15,Montreal,Quebec,Canada,Association Québécoise de Footbag,net,completed,,mirror
@@ -171,79 +177,65 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2001_second_arica,977260894,2001,Second Annual Arica Open,second_annual_arica_open,2001-01-10,2001-01-10,Arica,Arica y Parinacota,Chile,,net,completed,,mirror
 2001_southern_california,978967004,2001,Southern California Footbag Championships,southern_california_footbag_championships,2001-04-28,2001-04-29,Hermosa Beach,California,United States,OOPS,mixed,completed,,mirror
 2001_swiss_footjam,981560223,2001,Swiss Footbag Championships (FootJam),swiss_footbag_championships_footjam,2001-05-26,2001-05-27,Zurich,,Switzerland,Sole Rebels Zürich,mixed,completed,,mirror
-2001_footbagjam_zurich,980253113,2001,Swiss Footbag Jam,swiss_footbag_jam,2001-01-27,2001-01-28,Zurich,,Switzerland,Sole Rebels Zürich,freestyle,no_results,,mirror
 2001_texas_state,1001942070,2001,Texas State Footbag Championships,texas_state_footbag_championships,2001-11-17,2001-11-18,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,mixed,completed,,mirror
 2001_vancouver,990905420,2001,Vancouver Open Footbag Tournament,vancouver_open_footbag_tournament,2001-08-25,2001-08-26,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,mixed,completed,,mirror
 2001_vienna,996678489,2001,Vienna Footbag Festival,vienna_footbag_festival,2001-08-19,2001-08-19,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
 2001_westregion,979334083,2001,WESTERN REGIONAL FOOTBAG CHAMPIONSHIPS,western_regional_footbag_championships,2001-05-26,2001-05-28,Palo Alto,California,United States,Stanford University Footbag Club,mixed,completed,,mirror
-2001_worlds_san_francisco_bay_area,980969461,2001,WORLD FOOTBAG CHAMPIONSHIPS,world_footbag_championships,2001-08-06,2001-08-12,San Francisco Bay Area,California,United States,,worlds,completed,,mirror
+2001_worlds_san_francisco_bay_area,980969461,2001,22nd Annual World Footbag Championships,world_footbag_championships,2001-08-06,2001-08-12,San Francisco Bay Area,California,United States,,worlds,completed,,mirror
 2002_queensland_challenge,1025084282,2002,1st Queensland Footbag Challenge,1st_queensland_footbag_challenge,2002-08-18,2002-08-18,Logan City,Queensland,Australia,,freestyle,completed,,mirror
 2002_eastregion,1021665982,2002,2002 East Coast Footbag Championships,2002_east_coast_footbag_championships,2002-06-15,2002-06-16,Laurel,Maryland,United States,D.C. All-Stars,freestyle,completed,,mirror
 2002_texas_state,1028218784,2002,2002 Texas State Footbag Championships,2002_texas_state_footbag_championships,2002-10-19,2002-10-20,Houston,Texas,United States,Houston Skyliners Footbag Club,mixed,completed,,mirror
 2002_westregion,1012638214,2002,2002 WESTERN REGIONAL FOOTBAG CHAMPIONSHIPS,2002_western_regional_footbag_championships,2002-05-25,2002-05-27,Palo Alto,California,United States,Stanford University Footbag Club,mixed,completed,,mirror
-2002_worlds_san_francisco,1013283071,2002,23rd Annual WORLD FOOTBAG CHAMPIONSHIPS,23rd_annual_world_footbag_championships,2002-08-05,2002-08-11,San Francisco,California,United States,Bay Area Footbag League,worlds,completed,,mirror
+2002_worlds_san_francisco,1013283071,2002,23rd Annual World Footbag Championships,23rd_annual_world_footbag_championships,2002-08-05,2002-08-11,San Francisco,California,United States,Bay Area Footbag League,worlds,completed,,mirror
 2002_footbagjam_frankfurt,1028800969,2002,3. Frankfurt Footbag Open,3_frankfurt_footbag_open,2002-08-24,2002-08-25,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,mixed,completed,,mirror
 2002_de_france_de,1030830356,2002,4e Open de France de Footbag,4e_open_de_france_de_footbag,2002-11-09,2002-11-11,Montpellier,Occitanie,France,Icarus Footbag,mixed,completed,,mirror
 2002_cinco_de_mayo,1016457376,2002,Cinco de Mayo Footbag Fest,cinco_de_mayo_footbag_fest,2002-05-05,2002-05-05,Augusta,Georgia,United States,,freestyle,completed,,mirror
 2002_czech,1018812342,2002,Czech Footbag Championships,czech_footbag_championships,2002-08-31,2002-09-01,Prague,,Czech Republic,Czech Footbag Association,freestyle,completed,,mirror
 2002_footjam_meets_3borderscup,1011556608,2002,FOOTJAM meets 3BORDERSCUP,footjam_meets_3borderscup,2002-06-01,2002-06-02,Basel,Basel-Stadt,Switzerland,Bootfägers Basel,mixed,completed,,mirror
-2002_fallparty,1034212755,2002,Fall Footbag Party 2002,fall_footbag_party_2002,2002-10-26,2002-10-27,Ocean City,Maryland,United States,D.C. All-Stars,mixed,no_results,,mirror
 2002_finnish,1027925383,2002,Finnish Footbag Championships 2002,finnish_footbag_championships_2002,2002-09-28,2002-09-29,Helsinki,Uusimaa,Finland,Finnsta,mixed,completed,,mirror
 2002_finnsta_city,1019193491,2002,Finnsta City Jam,finnsta_city_jam,2002-06-15,2002-06-16,Helsinki,Uusimaa,Finland,Finnsta,freestyle,completed,,mirror
-2002_barbarian_training_camp,1015198403,2002,Footbag Barbarian Training Camp,footbag_barbarian_training_camp,2002-06-22,2002-06-23,Manassas,Virginia,United States,D.C. All-Stars,social,no_results,,mirror
 2002_hungarian,1024091202,2002,III. Hungarian Footbag Festival,iii_hungarian_footbag_festival,2002-07-13,2002-07-13,Kiskunfélegyháza,Bács-Kiskun,Hungary,Sunshred Footbag Crew,freestyle,completed,,mirror
 2002_new_south_wales,1035817350,2002,New South Wales Footbag Championships,new_south_wales_footbag_championships,2002-12-07,2002-12-07,Sydney,New South Wales,Australia,,freestyle,completed,,mirror
 2002_pennstatetrios_o_f,1011324897,2002,PennStateTrio's O.F.F. 2,pennstatetrios_o_f_f_2,2002-03-02,2002-03-03,State College,Pennsylvania,United States,,freestyle,completed,,mirror
 2002_quebec_city,1011291051,2002,Quebec City Footbag Net Championships 2002,quebec_city_footbag_net_championships_2002,2002-07-12,2002-07-14,Quebec City,Quebec,Canada,,net,completed,,mirror
 2002_s_l_o,1015303046,2002,S.L.O. Kickin's 1st annual footbag net tournament,s_l_o_kickins_1st_annual_footbag_net_tournament,2002-06-22,2002-06-22,Luis Obispo,California,United States,,net,completed,,mirror
 2002_shred_zero_summer,1022992222,2002,Shred Zero Summer Open 2002,shred_zero_summer_open_2002,2002-07-05,2002-07-07,Calgary,Alberta,Canada,,freestyle,completed,,mirror
-2002_swissjam_no_6,1035042753,2002,SwissJam No. 6 1/2 (Bootfägers Shred #2),swissjam_no_6_1_2_bootf_gers_shred_2,2002-10-26,2002-10-26,Hochwald,Solothurn,Switzerland,Bootfägers Basel,mixed,no_results,,mirror
 2002_footbagjam_portersville,1018925821,2002,Tri-State Area Footbag Jam,tri_state_area_footbag_jam,2002-05-18,2002-05-18,Portersville,Pennsylvania,United States,,freestyle,completed,,mirror
 2002_usopen_chicago,1028233308,2002,US Open Freestyle Championships,us_open_freestyle_championships,2002-12-27,2002-12-29,Chicago,Illinois,United States,MIDWEST FOOTBAG ASSOCIATION,freestyle,completed,,mirror
 2002_victorian,1032602594,2002,Victorian Footbag Championships,victorian_footbag_championships,2002-10-05,2002-10-05,Melbourne,Victoria,Australia,,freestyle,completed,,mirror
 2002_woodstower_french_opening,1029347412,2002,Woodstower: French Opening,woodstower_french_opening,2002-09-07,2002-09-08,Lyon,Auvergne-Rhône-Alpes,France,,freestyle,completed,,mirror
 2003_kick_til_youre,1058877971,2003,"""Kick Til You're Sick"" Fall Freestyle Fest",kick_til_youre_sick_fall_freestyle_fest,2003-10-17,2003-10-18,Newtown,Pennsylvania,United States,Philly Footworks,freestyle,completed,,mirror
 2003_midwest_exhibition,1061212821,2003,19th Annual Midwest Regional Championships and Exhibition,19th_annual_midwest_regional_championships_and_exhibition,2003-12-27,2003-12-29,Chicago,Illinois,United States,MIDWEST FOOTBAG ASSOCIATION,freestyle,completed,,mirror
-2003_eugene,1054616435,2003,1st Annual Eugene Freestyle Festival,1st_annual_eugene_freestyle_festival,2003-10-18,2003-10-19,Eugene,Oregon,United States,,freestyle,no_results,,mirror
 2003_french,1064849293,2003,1st French Footbag Championships,1st_french_footbag_championships,2003-11-08,2003-11-11,Montpellier,Occitanie,France,Icarus Footbag,mixed,completed,,mirror
 2003_canadian,1034985978,2003,2003 Canadian Open Footbag Championships,2003_canadian_open_footbag_championships,2003-07-19,2003-07-20,Vancouver,British Columbia,Canada,Canadian Footbag Alliance,mixed,completed,,mirror
 2003_eastregion,1049457912,2003,2003 East Coast Championships - The BIG 2-0,2003_east_coast_championships_the_big_2_0,2003-06-28,2003-06-29,Laurel,Maryland,United States,D.C. All-Stars,freestyle,completed,,mirror
 2003_montreal,1039550946,2003,2003 Montreal International Footbag Championships,2003_montreal_international_footbag_championships,2003-07-11,2003-07-13,Montreal,Quebec,Canada,Association Québécoise de Footbag,net,completed,,mirror
-2003_philly_area_oktoberfest,1063109533,2003,2003 Philly Area Oktoberfest Freestyle Jam,2003_philly_area_oktoberfest_freestyle_jam,2003-09-21,2003-09-21,Ambler,Pennsylvania,United States,Philly Footworks,freestyle,no_results,,mirror
 2003_shred_zero_summer,1036653244,2003,2003 Shred Zero Summer Open,2003_shred_zero_summer_open,2003-06-28,2003-06-29,Calgary,Alberta,Canada,,freestyle,completed,,mirror
 2003_southeastern,1044624680,2003,2003 Southeastern Regional Championships,2003_southeastern_regional_championships,2003-04-26,2003-04-26,Augusta,Georgia,United States,,freestyle,completed,,mirror
 2003_footbagjam_ambridge,1046985067,2003,2003 Steel City Footbag Open,2003_steel_city_footbag_open,2003-05-16,2003-05-18,Ambridge,Pennsylvania,United States,,freestyle,completed,,mirror
 2003_beaver_open,1057773472,2003,23rd Annual Moonin' & Noonin' Beaver Open,23rd_annual_moonin_noonin_beaver_open,2003-08-30,2003-09-01,Portland,Oregon,United States,,net,completed,,mirror
-2003_worlds_prague,1035277529,2003,24th Annual WORLD FOOTBAG CHAMPIONSHIPS,24th_annual_world_footbag_championships,2003-07-28,2003-08-03,Prague,,Czech Republic,Czech Footbag Association,worlds,completed,,mirror
+2003_worlds_prague,1035277529,2003,24th Annual World Footbag Championships,24th_annual_world_footbag_championships,2003-07-28,2003-08-03,Prague,,Czech Republic,Czech Footbag Association,worlds,completed,,mirror
 2003_footbagjam_frankfurt,1064330873,2003,4. Frankfurt Footbag Open,4_frankfurt_footbag_open,2003-09-27,2003-09-28,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,net,completed,,mirror
-2003_footbagjam_san_francisco,1043370312,2003,4th Annual UCSF Footbag Jam,4th_annual_ucsf_footbag_jam,2003-03-29,2003-03-30,San Francisco,California,United States,,mixed,no_results,,mirror
 2003_eastregion_australia,1061453080,2003,Australian East Coast Regionals,australian_east_coast_regionals,2003-09-27,2003-09-28,Melbourne,Victoria,Australia,,freestyle,completed,,mirror
 2003_colorado_shred_symposium,1036298726,2003,Colorado Shred Symposium 4,colorado_shred_symposium_4,2003-03-01,2003-03-02,Fort Collins,Colorado,United States,,freestyle,completed,,mirror
 2003_footbagjam_copenhagen,1052775366,2003,Danish Footbag Open 03,danish_footbag_open_03,2003-08-29,2003-08-31,Copenhagen,Capital Region,Denmark,FootbagDenmark,mixed,completed,,mirror
 2003_eurochamp_frankfurt,1042821772,2003,European Footbag Championships 2003,european_footbag_championships_2003,2003-07-18,2003-07-20,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,mixed,completed,,mirror
 2003_finnish,1063788560,2003,Finnish Footbag Championships 2003,finnish_footbag_championships_2003,2003-09-19,2003-09-21,Turku,Southwest Finland,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),mixed,completed,,mirror
-2003_hall_fame_east,1059060870,2003,Footbag Hall of Fame East/West Celebration,footbag_hall_of_fame_east_west_celebration,2003-08-30,2003-08-30,Salem,Oregon,United States,,social,no_results,,mirror
 2003_funtastik_summer,1031334528,2003,Funtastik Summer Classic Footbag Tournament,funtastik_summer_classic_footbag_tournament,2003-08-30,2003-09-01,Harrisburg,Pennsylvania,United States,,mixed,completed,,mirror
 2003_footbagjam_zeil_am_main,1050140930,2003,German Footbag Open 2003,german_footbag_open_2003,2003-07-04,2003-07-05,Zeil am Main,Bavaria,Germany,FC Footstar Berlin e.V.,mixed,completed,,mirror
 2003_lhivernal_windchill,1044952105,2003,"L'Hivernal, The Windchill",lhivernal_the_windchill,2003-03-15,2003-03-15,Montreal,Quebec,Canada,Association Québécoise de Footbag,net,completed,,mirror
 2003_mecca,1041241196,2003,MECCA Footbag Cup,mecca_footbag_cup,2003-02-28,2003-03-01,Győr,Győr-Moson-Sopron,Hungary,Sunshred Footbag Crew,freestyle,completed,,mirror
 2003_montreal_challenge,1045628278,2003,Montreal Footbag Challenge 2003,montreal_footbag_challenge_2003,2003-05-31,2003-05-31,Montreal,Quebec,Canada,,freestyle,completed,,mirror
-2003_party_golf_salon,1069415266,2003,"Party Golf @ ""Salon de l'Education""",party_golf_salon_de_leducation,2003-11-21,2003-11-23,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,golf,no_results,,mirror
-2003_pre_season_golf,1061921260,2003,Pre Season Footbag Golf Open,pre_season_footbag_golf_open,2003-08-26,2003-08-26,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,golf,no_results,,mirror
 2003_rnh_contest,1050745947,2003,RNH Contest 2003,rnh_contest_2003,2003-05-10,2003-05-11,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,mixed,completed,,mirror
 2003_seapa_nz,1038895913,2003,Seapa NZ Freestyle Footbag Championships,seapa_nz_freestyle_footbag_championships,2003-02-21,2003-02-23,Wellington,,New Zealand,,freestyle,completed,,mirror
-2003_swissjam,1064245646,2003,Swissjam,swissjam,2003-11-29,2003-11-29,Fribourg,,Switzerland,,social,no_results,,mirror
 2003_texas_state,1058378281,2003,Texas State Footbag Championships,texas_state_footbag_championships,2003-10-18,2003-10-19,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,mixed,completed,,mirror
 2003_chilly_philly,1032472601,2003,The 3rd Annual Chilly Philly Freestyle Jam,the_3rd_annual_chilly_philly_freestyle_jam,2003-01-04,2003-01-05,Philadelphia,Pennsylvania,United States,Philly Footworks,freestyle,completed,,mirror
 2003_turku,1050067583,2003,Turku Open,turku_open,2003-06-06,2003-06-07,Turku,Southwest Finland,Finland,Footcraft,freestyle,completed,,mirror
-2003_west_coast_xmas,1070400528,2003,West Coast Xmas Shred,west_coast_xmas_shred,2003-12-28,2003-12-28,San Francisco,California,United States,,freestyle,no_results,,mirror
 2004_berlin_04,1094071528,2004,1. Footbag- Net- Jam Berlin 04,1_footbag_net_jam_berlin_04,2004-10-30,2004-10-31,Berlin,,Germany,FC Footstar Berlin e.V.,net,completed,,mirror
 2004_footbagjam_new_paltz,1077766197,2004,2004 New Paltz Footbag Jam,2004_new_paltz_footbag_jam,2004-04-24,2004-04-25,New Paltz,New York,United States,,mixed,completed,,mirror
-2004_texas_state,1091802943,2004,2004 Texas State Footbag Championships,2004_texas_state_footbag_championships,2004-11-13,2004-11-13,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,freestyle,no_results,,mirror
-2004_worlds_montreal,1069929277,2004,25th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS,25th_annual_ifpa_world_footbag_championships,2004-07-26,2004-08-01,Montreal,Quebec,Canada,Association Québécoise de Footbag,worlds,completed,,mirror
+2004_worlds_montreal,1069929277,2004,25th Annual World Footbag Championships,25th_annual_ifpa_world_footbag_championships,2004-07-26,2004-08-01,Montreal,Quebec,Canada,Association Québécoise de Footbag,worlds,completed,,mirror
 2004_mecca,1068406344,2004,2nd Annual MECCA Footbag Cup,2nd_annual_mecca_footbag_cup,2004-02-28,2004-02-29,Győr,Győr-Moson-Sopron,Hungary,Sunshred Footbag Crew,freestyle,completed,,mirror
 2004_footbagjam_piliscsaba,1095965765,2004,2nd Annual Piliscsaba Footbag Open,2nd_annual_piliscsaba_footbag_open,2004-11-06,2004-11-06,Piliscsaba,Pest,Hungary,Sunshred Footbag Crew,freestyle,completed,,mirror
-2004_socal_labor_day,1093115479,2004,2nd Annual SoCal Labor Day Jam,2nd_annual_socal_labor_day_jam,2004-09-05,2004-09-05,Claremont,California,United States,,social,no_results,,mirror
 2004_umaine_hacky_sack,1096695238,2004,2nd Annual UMaine Hacky Sack Club Tournament,2nd_annual_umaine_hacky_sack_club_tournament,2004-10-16,2004-10-16,Orono,Maine,United States,,freestyle,completed,,mirror
 2004_seattle_juggling,1096318324,2004,3rd Annual Seattle Juggling and Footbag Festival,3rd_annual_seattle_juggling_and_footbag_festival,2004-11-12,2004-11-14,Seattle,Washington,United States,Rain City Shred,freestyle,completed,,mirror
 2004_colorado_shred_symposium,1070954568,2004,5th Annual Colorado Shred Symposium,5th_annual_colorado_shred_symposium,2004-02-28,2004-02-29,Center Denver,Colorado,United States,,freestyle,completed,,mirror
@@ -258,7 +250,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2004_funtastik_summer,1075781798,2004,Funtastik Summer Classic Footbag Tournament,funtastik_summer_classic_footbag_tournament,2004-09-04,2004-09-06,Harrisburg,Pennsylvania,United States,,mixed,completed,,mirror
 2004_footbagjam_frankfurt,1079444598,2004,German Footbag Open 2004,german_footbag_open_2004,2004-06-10,2004-06-12,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,mixed,completed,,mirror
 2004_jfk,1083699966,2004,JFK Net Battle,jfk_net_battle,2004-05-16,2004-05-16,Jyväskylä,Central Finland,Finland,"Jyväskylän Footbag-klubi, JFK",net,completed,,mirror
-2004_may_day_04,1079664495,2004,May Day '04,may_day_04,2004-05-01,2004-05-02,Victoria,British Columbia,Canada,Victoria Footbag,social,no_results,,mirror
 2004_montpellier_sunny,1090569022,2004,Montpellier Sunny Jam Open,montpellier_sunny_jam_open,2004-09-04,2004-09-05,Montpellier,Occitanie,France,Icarus Footbag,net,completed,,mirror
 2004_rnh_contest,1080138513,2004,RNH Contest 2004,rnh_contest_2004,2004-04-24,2004-04-25,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,mixed,completed,,mirror
 2004_russian_1,1076876907,2004,Russian Open Footbag Series/ Stage 1,russian_open_footbag_series_stage_1,2004-03-19,2004-03-21,Saint Petersburg,,Russia,,freestyle,completed,,mirror
@@ -275,7 +266,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2004_zocha,1090437706,2004,Zocha Jam 2004,zocha_jam_2004,2004-10-22,2004-10-23,Wrocław,Lower Silesian,Poland,PSF Polish Footbag Association,mixed,completed,,mirror
 2005_austrian_disc,1110562712,2005,2005 Austrian Footbag & Disc Open,2005_austrian_footbag_disc_open,2005-04-29,2005-05-01,Podersdorf am See,Burgenland,Austria,Footbag-Vienna,mixed,completed,,mirror
 2005_usopen_portland,1113344236,2005,2005 IFPA U.S. OPEN FOOTBAG NET CHAMPIONSHIPS,2005_ifpa_u_s_open_footbag_net_championships,2005-06-18,2005-06-19,Portland,Oregon,United States,NPR,net,completed,,mirror
-2005_worlds_helsinki,1102576153,2005,26th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS,26th_annual_ifpa_world_footbag_championships,2005-07-23,2005-07-30,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),worlds,completed,,mirror
+2005_worlds_helsinki,1102576153,2005,26th Annual World Footbag Championships,26th_annual_ifpa_world_footbag_championships,2005-07-23,2005-07-30,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),worlds,completed,,mirror
 2005_championnat_de_france,1103297805,2005,2e Championnat de France de Footbag,2e_championnat_de_france_de_footbag,2005-03-26,2005-03-28,Lyon,Auvergne-Rhône-Alpes,France,,mixed,completed,,mirror
 2005_footbagjam_gyor,1102788509,2005,3rd Annual Sunshred Footbag Open (LIVE),3rd_annual_sunshred_footbag_open_live,2005-02-26,2005-02-26,Győr,Győr-Moson-Sopron,Hungary,Sunshred Footbag Crew,freestyle,completed,,mirror
 2005_years_frankfurt_e,1105353373,2005,5 years Frankfurt Footbag e.V.,5_years_frankfurt_footbag_e_v,2005-02-26,2005-02-26,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,mixed,completed,,mirror
@@ -286,7 +277,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2005_czech,1114277529,2005,Czech Footbag Championships,czech_footbag_championships,2005-08-26,2005-08-28,Prague,,Czech Republic,Czech Footbag Association,freestyle,completed,,mirror
 2005_fc_footstars_anniversary,1100728799,2005,FC Footstar's 7th Anniversary,fc_footstars_7th_anniversary,2005-01-15,2005-01-16,Berlin,,Germany,FC Footstar Berlin e.V.,net,completed,,mirror
 2005_finnish,1132511088,2005,Finnish Footbag Championships 2005,finnish_footbag_championships_2005,2005-12-02,2005-12-04,Kuopio,North Savo,Finland,Jyväskylän Footbag-klubi,mixed,completed,,mirror
-2005_camp_croatia,1113844078,2005,Footbag Camp Croatia 2005,footbag_camp_croatia_2005,2005-08-05,2005-08-14,Baška Voda,Split-Dalmatia,Croatia,Czech Footbag Association,golf,no_results,,mirror
 2005_fiesta,1102443443,2005,Footbag Fiesta,footbag_fiesta,2005-01-28,2005-01-29,Szczecin,West Pomeranian,Poland,ToMiStyKa Footbag Club,freestyle,completed,,mirror
 2005_funtastik_summer,1109356644,2005,Funtastik Summer Classic,funtastik_summer_classic,2005-09-03,2005-09-05,Harrisburg,Pennsylvania,United States,,mixed,completed,,mirror
 2005_greater_rochester_area,1111735438,2005,Greater Rochester Area Shred Symposium and RIT Juggle-IN,greater_rochester_area_shred_symposium_and_rit_juggle_in,2005-05-06,2005-05-08,Rochester,New York,United States,The Rochester Footbag Association,freestyle,completed,,mirror
@@ -309,7 +299,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2006_jersey_spike_shred,1143172220,2006,2006 Jersey Spike & Shred,2006_jersey_spike_shred,2006-05-27,2006-05-29,Somerville,New Jersey,United States,Ministry of Silly Walks,mixed,completed,,mirror
 2006_southeast,1155788760,2006,2006 Southeast Regionals,2006_southeast_regionals,2006-10-14,2006-10-15,Murfreesboro,Tennessee,United States,Nashville Kicks,mixed,completed,,mirror
 2006_steel_city_shred,1148241486,2006,2006 Steel City Shred Off,2006_steel_city_shred_off,2006-06-24,2006-06-25,Pittsburgh,Pennsylvania,United States,Steel City Freestyle,freestyle,completed,,mirror
-2006_worlds_frankfurt,1135116604,2006,27th IFPA WORLD FOOTBAG CHAMPIONSHIPS,27th_ifpa_world_footbag_championships,2006-07-16,2006-07-22,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,worlds,completed,,mirror
+2006_worlds_frankfurt,1135116604,2006,27th Annual World Footbag Championships,27th_ifpa_world_footbag_championships,2006-07-16,2006-07-22,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,worlds,completed,,mirror
 2006_jfk,1142360459,2006,3rd Annual JFK Net Battle,3rd_annual_jfk_net_battle,2006-05-19,2006-05-20,Jyväskylä,Central Finland,Finland,"Jyväskylän Footbag-klubi, JFK",net,completed,,mirror
 2006_colorado_shred_symposium,1137347261,2006,7th Annual Colorado Shred Symposium,7th_annual_colorado_shred_symposium,2006-02-24,2006-02-26,Denver,Colorado,United States,,freestyle,completed,,mirror
 2006_turku,1141576257,2006,7th Annual Turku Open,7th_annual_turku_open,2006-07-01,2006-07-02,Turku,Southwest Finland,Finland,Footcraft,net,completed,,mirror
@@ -340,7 +330,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2007_07_southeastern,1167422711,2007,'07 Southeastern Net Championships,07_southeastern_net_championships,2007-04-14,2007-04-15,Memphis,Tennessee,United States,Memphis Footworks,net,completed,,mirror
 2007_nyfa_symposium,1190256479,2007,1st Annual NYFA Freestyle Symposium,1st_annual_nyfa_freestyle_symposium,2007-11-10,2007-11-11,New York,,United States,New York Footbag Association,freestyle,completed,,mirror
 2007_south_american,1183654670,2007,1st South American IFPA Footbag Championships,1st_south_american_ifpa_footbag_championships,2007-10-12,2007-10-15,Medellín,Antioquia,Colombia,Footbag Medellin,freestyle,completed,,mirror
-2007_worlds_buena_vista,1163784775,2007,2007 IFPA WORLD FOOTBAG CHAMPIONSHIPS,2007_ifpa_world_footbag_championships,2007-08-11,2007-08-18,Buena Vista,Florida,United States,,worlds,completed,,mirror
+2007_worlds_buena_vista,1163784775,2007,28th Annual World Footbag Championships,2007_ifpa_world_footbag_championships,2007-08-11,2007-08-18,Buena Vista,Florida,United States,,worlds,completed,,mirror
 2007_montreal,1179874637,2007,2007 Montreal Footbag Championships,2007_montreal_footbag_championships,2007-07-21,2007-07-22,Montreal,Quebec,Canada,Association Québécoise de Footbag,net,completed,,mirror
 2007_usopen_portland,1176318174,2007,2007 U.S. Open Footbag Championships,2007_u_s_open_footbag_championships,2007-07-06,2007-07-08,Portland,Oregon,United States,Sole Purpose,mixed,completed,,mirror
 2007_vancouver,1180496320,2007,20th Annual Vancouver Open Net Footbag Tournament,20th_annual_vancouver_open_net_footbag_tournament,2007-07-28,2007-07-29,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,net,completed,,mirror
@@ -349,7 +339,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2007_jfk,1173606489,2007,4th Annual JFK Net Battle,4th_annual_jfk_net_battle,2007-05-26,2007-05-27,Jyväskylä,Central Finland,Finland,"Jyväskylän Footbag-klubi, JFK",net,completed,,mirror
 2007_montana,1173467292,2007,4th annual Montana Freestyle Jam,4th_annual_montana_freestyle_jam,2007-04-28,2007-04-29,Missoula,Montana,United States,Missoula Footbag Alliance,freestyle,completed,,mirror
 2007_footbagjam_warsaw,1189345008,2007,5th Annual Wilanow Footbag Open 2007,5th_annual_wilanow_footbag_open_2007,2007-09-29,2007-09-30,Warsaw,Masovian,Poland,,freestyle,completed,,mirror
-2007_swiss_national,1186079315,2007,7th Swiss National Footbag Championship,7th_swiss_national_footbag_championship,2007-09-15,2007-09-16,Aarau,Aargau,Switzerland,unBAGrenzt Aarau,mixed,no_results,,mirror
 2007_turku,1177615498,2007,8th Annual Turku Open,8th_annual_turku_open,2007-07-07,2007-07-08,Turku,Southwest Finland,Finland,Footcraft,net,completed,,mirror
 2007_de_france_de,1183729267,2007,9e Open de France de Footbag,9e_open_de_france_de_footbag,2007-11-01,2007-11-04,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,mixed,completed,,mirror
 2007_eurochamp_vienna,1154685554,2007,9th Annual IFPA European Footbag Championships,9th_annual_ifpa_european_footbag_championships,2007-07-19,2007-07-22,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
@@ -365,7 +354,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2007_rnh_contest,1166622628,2007,RNH Contest 2007,rnh_contest_2007,2007-01-20,2007-01-21,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,freestyle,completed,,mirror
 2007_russian,1192722292,2007,Russian Footbag Freestyle Jam,russian_footbag_freestyle_jam,2007-10-27,2007-10-28,Saint Petersburg,,Russia,RFA (Russian Footbag Association),freestyle,completed,,mirror
 2007_santa_cruz_soul,1172562114,2007,Santa Cruz Soul Jam,santa_cruz_soul_jam,2007-05-05,2007-05-06,Santa Cruz,California,United States,Santa Cruz Footbag Club,net,completed,,mirror
-2007_shercle_session_3,1172329753,2007,Shercle Session #3 - Estonian Footbag Camp,shercle_session_3_estonian_footbag_camp,2007-02-24,2007-02-24,Vinni,Harjumaa,Estonia,Tallinn Footbag Club,social,no_results,,mirror
 2007_shredmonton_assembly,1181021804,2007,ShrEdmonton Freestyle Assembly 2007,shredmonton_freestyle_assembly_2007,2007-06-22,2007-06-24,Edmonton,Alberta,Canada,Edmonton Footbag Club,freestyle,completed,,mirror
 2007_texas_statewide,1176844933,2007,Texas Statewide Footbag Tournament 2007,texas_statewide_footbag_tournament_2007,2007-10-13,2007-10-14,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,net,completed,,mirror
 2007_hackrifice,1188233129,2007,The 9th Hackrifice Open 2007,the_9th_hackrifice_open_2007,2007-09-29,2007-09-30,Winnipeg,Manitoba,Canada,Hackrifice,mixed,completed,,mirror
@@ -374,7 +362,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2007_zocha,1195773772,2007,Zocha Jam 2007,zocha_jam_2007,2007-12-08,2007-12-09,Wrocław,Lower Silesian,Poland,PSF Polish Footbag Association,mixed,completed,,mirror
 2008_de_france_de,1222687523,2008,10e Open de France de Footbag,10e_open_de_france_de_footbag,2008-10-31,2008-11-02,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,mixed,completed,,mirror
 2008_eurochamp_montpellier,1199106237,2008,10th Annual IFPA European Footbag Championships,10th_annual_ifpa_european_footbag_championships,2008-07-03,2008-07-06,Montpellier,Occitanie,France,Icarus Footbag,mixed,completed,,mirror
-2008_worlds_prague,1194517448,2008,2008 IFPA WORLD FOOTBAG CHAMPIONSHIPS,2008_ifpa_world_footbag_championships,2008-08-10,2008-08-17,Prague,,Czech Republic,Czech Footbag Association,worlds,completed,,mirror
+2008_worlds_prague,1194517448,2008,29th Annual World Footbag Championships,2008_ifpa_world_footbag_championships,2008-08-10,2008-08-17,Prague,,Czech Republic,Czech Footbag Association,worlds,completed,,mirror
 2008_southern,1189977929,2008,2008 Southern Regional Footbag Championships,2008_southern_regional_footbag_championships,2008-05-17,2008-05-17,Houston,Texas,United States,Houston Skyliners Footbag Club,net,completed,,mirror
 2008_midwest,1212769063,2008,24th Annual Midwest Regional Footbag Championships,24th_annual_midwest_regional_footbag_championships,2008-07-05,2008-07-06,Chicago,Illinois,United States,MIDWEST FOOTBAG ASSOCIATION,freestyle,completed,,mirror
 2008_south_american,1226205667,2008,2nd IFPA South American Footbag Championships,2nd_ifpa_south_american_footbag_championships,2008-12-18,2008-12-21,San Cristóbal,Táchira,Venezuela,Footbag Táchira Venezuela,freestyle,completed,,mirror
@@ -398,7 +386,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2008_rnh_contest,1204904987,2008,RNH Contest 2008,rnh_contest_2008,2008-04-26,2008-04-27,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,mixed,completed,,mirror
 2008_second_nyfa_symposium,1201396433,2008,Second Annual NYFA Freestyle Symposium,second_annual_nyfa_freestyle_symposium,2008-07-25,2008-07-27,New York,,United States,New York Footbag Association,freestyle,completed,,mirror
 2008_shredmonton_assembly,1208408135,2008,ShrEdmonton Freestyle Assembly 2008,shredmonton_freestyle_assembly_2008,2008-06-27,2008-06-29,Edmonton,Alberta,Canada,Edmonton Footbag Club,freestyle,completed,,mirror
-2008_shred_for_savvy,1202444182,2008,Shred for Savvy,shred_for_savvy,2008-03-22,2008-03-22,College Park,Maryland,United States,D.C. All-Stars,mixed,no_results,,mirror
 2008_socali_08,1200725314,2008,SoCali Jam 08,socali_jam_08,2008-02-15,2008-02-18,San Diego,California,United States,,social,completed,,mirror
 2008_southeastern,1201811757,2008,Southeastern Net Championships,southeastern_net_championships,2008-04-05,2008-04-06,Memphis,Tennessee,United States,Memphis Footworks,net,completed,,mirror
 2008_texas_statewide,1216849705,2008,Texas Statewide Tournament 2008,texas_statewide_tournament_2008,2008-10-18,2008-10-19,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,mixed,completed,,mirror
@@ -420,10 +407,9 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2009_usopen_portland,1231286017,2009,2009 U.S. Open Footbag Net Championships,2009_u_s_open_footbag_net_championships,2009-06-20,2009-06-21,Portland,Oregon,United States,NPR,net,completed,,mirror
 2009_usopen_vancouver,1233299407,2009,2009 U.S. Open Freestyle Footbag Championships,2009_u_s_open_freestyle_footbag_championships,2009-07-11,2009-07-12,Vancouver,Washington,United States,Sole Purpose,freestyle,completed,,mirror
 2009_windy_city_clck,1229435305,2009,2009 Windy City Cup presented by CLCK,2009_windy_city_cup_presented_by_clck,2009-06-12,2009-06-14,Chicago,Illinois,United States,Chicago Lake Coast Kickers,freestyle,completed,,mirror
-2009_winter_buce_league,1238728089,2009,2009 Winter Buce League,2009_winter_buce_league,2009-05-03,2009-05-03,Sydney,New South Wales,Australia,,social,no_results,,mirror
 2009_vancouver,1245199707,2009,22nd Annual Vancouver Open Footbag Tournament,22nd_annual_vancouver_open_footbag_tournament,2009-08-15,2009-08-16,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,mixed,completed,,mirror
 2009_midwest_new_years,1255269216,2009,25th Midwest Regionals Tournament & New Year's Jam,25th_midwest_regionals_tournament_new_years_jam,2009-12-27,2009-12-28,Chicago,Illinois,United States,MIDWEST FOOTBAG ASSOCIATION,freestyle,completed,,mirror
-2009_worlds_berlin,1226679678,2009,30th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS,30th_annual_ifpa_world_footbag_championships,2009-07-19,2009-07-26,Berlin,,Germany,FC Footstar Berlin e.V.,worlds,completed,,mirror
+2009_worlds_berlin,1226679678,2009,30th Annual World Footbag Championships,30th_annual_ifpa_world_footbag_championships,2009-07-19,2009-07-26,Berlin,,Germany,FC Footstar Berlin e.V.,worlds,completed,,mirror
 2009_footbagjam_lausanne,1245404642,2009,6# Swiss Footbag Open,6_swiss_footbag_open,2009-09-18,2009-09-20,Lausanne,Vaud,Switzerland,Les Pieds à Gilles,freestyle,completed,,mirror
 2009_footbagjam_warsaw,1251990500,2009,6th Annual Wilanow Footbag Open 2009,6th_annual_wilanow_footbag_open_2009,2009-10-10,2009-10-11,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,freestyle,completed,,mirror
 2009_austrian,1245432804,2009,Austrian Footbag Championships 2009,austrian_footbag_championships_2009,2009-08-07,2009-08-09,Wiener Neustadt,Lower Austria,Austria,AUTsiders,mixed,completed,,mirror
@@ -467,14 +453,13 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2010_southern,1268191383,2010,2010 Southern Regional Footbag Championships,2010_southern_regional_footbag_championships,2010-05-01,2010-05-02,Houston,Texas,United States,Houston Skyliners Footbag Club,mixed,completed,,mirror
 2010_usopen_portland,1262288759,2010,2010 U.S. Open Footbag Net Championships,2010_u_s_open_footbag_net_championships,2010-06-26,2010-06-27,Portland,Oregon,United States,NPR,net,completed,,mirror
 2010_copa_pro,1286381206,2010,2da. Copa X-PRO,2da_copa_x_pro,2010-11-20,2010-11-21,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
-2010_worlds_oakland,1265745512,2010,31st IFPA WORLD FOOTBAG CHAMPIONSHIPS,31st_ifpa_world_footbag_championships,2010-08-01,2010-08-07,Oakland,California,United States,,worlds,completed,,mirror
+2010_worlds_oakland,1265745512,2010,31st Annual World Footbag Championships,31st_ifpa_world_footbag_championships,2010-08-01,2010-08-07,Oakland,California,United States,,worlds,completed,,mirror
 2010_windy_city,1267718326,2010,3rd Annual Windy City Cup,3rd_annual_windy_city_cup,2010-06-19,2010-06-20,Chicago,Illinois,United States,Chicago Lake Coast Kickers,net,completed,,mirror
 2010_nyfa_symposium,1273248665,2010,4th Annual NYFA Freestyle and Net Symposium,4th_annual_nyfa_freestyle_and_net_symposium,2010-05-29,2010-05-31,New York,,United States,New York Footbag Association,mixed,completed,,mirror
 2010_campeonato_suramericano_de,1286381599,2010,4to Campeonato Suramericano de Footbag,4to_campeonato_suramericano_de_footbag,2010-12-18,2010-12-21,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2010_footbagjam_warsaw,1282912320,2010,7th Annual Wilanow Footbag Open 2010,7th_annual_wilanow_footbag_open_2010,2010-10-09,2010-10-10,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,mixed,completed,,mirror
 2010_austrian,1284588517,2010,Austrian Footbag Championships 2010,austrian_footbag_championships_2010,2010-12-10,2010-12-12,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
 2010_czech,1286644859,2010,Czech Footbag Championship 2010,czech_footbag_championship_2010,2010-11-06,2010-11-06,Hradec Králové,,Czech Republic,,mixed,completed,,mirror
-2010_fb_golf_hamburg,1263589392,2010,FB-Golf-Hamburg,fb_golf_hamburg,2010-01-30,2010-01-30,Hamburg,,Germany,Tu Wat,golf,no_results,,mirror
 2010_fc_footstar_berlin,1254662073,2010,FC Footstar Berlin 12th Birthday Jam,fc_footstar_berlin_12th_birthday_jam,2010-01-16,2010-01-17,Berlin,,Germany,FC Footstar Berlin e.V.,mixed,completed,,mirror
 2010_finnish,1280002674,2010,Finnish Footbag Championships,finnish_footbag_championships,2010-09-17,2010-09-19,Jyväskylä,Central Finland,Finland,"Jyväskylän Footbag-klubi, JFK",mixed,completed,,mirror
 2010_t_chira_copa,1285989828,2010,Footbag Táchira Cup (Copa Tachira),footbag_t_chira_cup_copa_tachira,2010-10-23,2010-10-24,San Cristóbal,Táchira,Venezuela,Footbag Táchira Venezuela,net,completed,,mirror
@@ -483,12 +468,10 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2010_frankfurt_anniversary,1260368810,2010,Frankfurt Footbag 10th Anniversary Jam,frankfurt_footbag_10th_anniversary_jam,2010-03-05,2010-03-07,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,net,completed,,mirror
 2010_french,1277805979,2010,French Footbag Championships 2010,french_footbag_championships_2010,2010-07-03,2010-07-04,Montpellier,Occitanie,France,Icarus Footbag,mixed,completed,,mirror
 2010_funtastik_summer,1252451527,2010,Funtastik Summer Classic,funtastik_summer_classic,2010-09-04,2010-09-06,Harrisburg,Pennsylvania,United States,,mixed,completed,,mirror
-2010_spanish,1268338685,2010,II Spanish OPEN,ii_spanish_open,2010-05-01,2010-05-02,Rivas-Vaciamadrid,Madrid,Spain,Madrid Footbag Club,mixed,no_results,,mirror
 2010_kick_volley_02,1267920908,2010,KICK VOLLEY 02,kick_volley_02,2010-04-17,2010-04-18,Montréal,Quebec,Canada,Association Québécoise de Footbag,net,completed,,mirror
 2010_march_mayhem,1269860787,2010,March Mayhem 2010,march_mayhem_2010,2010-03-27,2010-03-28,Jyväskylä,Central Finland,Finland,"Jyväskylän Footbag-klubi, JFK",net,completed,,mirror
 2010_naantalin_seudun_mestaruuskilpailut,1287439208,2010,Naantalin Seudun Mestaruuskilpailut,naantalin_seudun_mestaruuskilpailut,2010-12-11,2010-12-11,Naantali,Southwest Finland,Finland,Footcraft,net,completed,,mirror
 2010_orange_d_em,1282647603,2010,Net Orange Jam II (Net D¿em),net_orange_jam_ii_net_d_em,2010-09-04,2010-09-05,Kraków,Lesser Poland,Poland,Maniac Footbag Team,net,completed,,mirror
-2010_phoenix,1254724022,2010,Phoenix Open 2010,phoenix_open_2010,2010-01-16,2010-01-18,Chandler,Arizona,United States,AIR-A-ZONA FOOTBAG NET CLUB,social,no_results,,mirror
 2010_rnh_contest,1270631935,2010,RNH Contest 2010,rnh_contest_2010,2010-06-05,2010-06-06,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,net,completed,,mirror
 2010_texas_state,1270518636,2010,Texas State Footbag Championships 2010,texas_state_footbag_championships_2010,2010-10-16,2010-10-17,Austin,Texas,United States,Austin Style Footbag Club - Texas Footbag League,mixed,completed,,mirror
 2010_akisphere,1272817638,2010,"The AkiSphere 2010, presented by AKIQ",the_akisphere_2010_presented_by_akiq,2010-07-02,2010-07-04,Montréal,Quebec,Canada,Aki Québec,net,completed,,mirror
@@ -511,7 +494,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2011_vancouver_golf,1310408325,2011,24th Annual Vancouver Open & Golf Tournament,24th_annual_vancouver_open_golf_tournament,2011-08-20,2011-08-21,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,mixed,completed,,mirror
 2011_copa_ciencias,1297909685,2011,2da Copa Ciencias,2da_copa_ciencias,2011-03-12,2011-03-13,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2011_copa_venezuela,1301675662,2011,2da Copa Venezuela,2da_copa_venezuela,2011-06-24,2011-06-26,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
-2011_worlds_helsinki,1293877677,2011,32nd IFPA WORLD FOOTBAG CHAMPIONSHIPS,32nd_ifpa_world_footbag_championships,2011-07-31,2011-08-06,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),worlds,completed,,mirror
+2011_worlds_helsinki,1293877677,2011,32nd Annual World Footbag Championships,32nd_ifpa_world_footbag_championships,2011-07-31,2011-08-06,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),worlds,completed,,mirror
 2011_copa_t_chira,1314328055,2011,3ra Copa Táchira de Footbag,3ra_copa_t_chira_de_footbag,2011-10-01,2011-10-02,San Cristóbal,Táchira,Venezuela,Footbag Táchira Venezuela,net,completed,,mirror
 2011_copa_pro,1311699287,2011,3ra Copa X-PRO,3ra_copa_x_pro,2011-11-05,2011-11-06,Caracas,Miranda,Venezuela,X-PRO,net,completed,,mirror
 2011_windy_city,1299532552,2011,4th Annual Windy City Cup Footbag Net Championships,4th_annual_windy_city_cup_footbag_net_championships,2011-06-17,2011-06-19,Chicago,Illinois,United States,Chicago Lake Coast Kickers,net,completed,,mirror
@@ -544,7 +527,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2012_usopen_freestyle_portland,1335148163,2012,2012 US Open Freestyle Footbag Championships,2012_us_open_freestyle_footbag_championships,2012-08-25,2012-08-25,Portland,Oregon,United States,Sole Purpose,freestyle,completed,,mirror
 2012_vancouver,1337309613,2012,25th Annual Vancouver Open Footbag Championships,25th_annual_vancouver_open_footbag_championships,2012-08-18,2012-08-19,Vancouver,British Columbia,Canada,Kitsilano Footbag Association,net,completed,,mirror
 2012_eastregion,1337623340,2012,30th Annual East Coast Footbag Championships,30th_annual_east_coast_footbag_championships,2012-09-28,2012-09-30,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2012_worlds_warsaw,1323272493,2012,33rd IFPA WORLD FOOTBAG CHAMPIONSHIPS,33rd_ifpa_world_footbag_championships,2012-07-29,2012-08-04,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,worlds,completed,,mirror
+2012_worlds_warsaw,1323272493,2012,33rd Annual World Footbag Championships,33rd_ifpa_world_footbag_championships,2012-07-29,2012-08-04,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,worlds,completed,,mirror
 2012_copa_ciencias_ucv,1330833781,2012,3ra Copa Ciencias-UCV.,3ra_copa_ciencias_ucv,2012-03-24,2012-03-25,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2012_copa_venezuela,1339389008,2012,3ra Copa Venezuela,3ra_copa_venezuela,2012-06-30,2012-07-01,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2012_biennial_helsinki,1333483324,2012,3rd biennial Helsinki Open Footbag Tournament,3rd_biennial_helsinki_open_footbag_tournament,2012-05-19,2012-05-20,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
@@ -582,7 +565,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2013_mud_island_belt,1357234775,2013,2013 Mud Island Belt presented by Memphis Footworks,2013_mud_island_belt_presented_by_memphis_footworks,2013-04-13,2013-04-14,Bartlett,Tennessee,United States,Memphis Footworks,net,completed,,mirror
 2013_usopen_seattle,1360305756,2013,2013 U.S. Open Freestyle Footbag Championships,2013_u_s_open_freestyle_footbag_championships,2013-06-29,2013-06-30,Seattle,Washington,United States,Rain City Shred,freestyle,completed,,mirror
 2013_eastregion,1367327351,2013,31 Annual East Coast Footbag Championships,31_annual_east_coast_footbag_championships,2013-09-27,2013-09-29,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2013_worlds_montreal,1361207019,2013,34th IFPA WORLD FOOTBAG CHAMPIONSHIPS,34th_ifpa_world_footbag_championships,2013-07-28,2013-08-03,Montreal,Quebec,Canada,Aki Québec,worlds,completed,,mirror
+2013_worlds_montreal,1361207019,2013,34th Annual World Footbag Championships,34th_ifpa_world_footbag_championships,2013-07-28,2013-08-03,Montreal,Quebec,Canada,Aki Québec,worlds,completed,,mirror
 2013_copa_venezuela,1368559562,2013,4ta Copa Venezuela,4ta_copa_venezuela,2013-06-22,2013-06-23,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2013_copa_ciencias,1366240051,2013,4ta. Copa Ciencias,4ta_copa_ciencias,2013-05-04,2013-05-05,Caracas,Miranda,Venezuela,X-PRO,net,completed,,mirror
 2013_helsinki,1363551565,2013,4th annual Helsinki Open Footbag Tournament,4th_annual_helsinki_open_footbag_tournament,2013-05-25,2013-05-26,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
@@ -614,7 +597,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2014_green_chaos,1394773593,2014,2014 Green Cup Presented by Chaos,2014_green_cup_presented_by_chaos,2014-05-24,2014-05-25,Oakland,California,United States,Chaos Footbag Club,mixed,completed,,mirror
 2014_copa_bobston_de,1399929003,2014,2da Copa Bobston de Footbag Net individual,2da_copa_bobston_de_footbag_net_individual,2014-06-22,2014-06-22,Medellín,Antioquia,Colombia,Club Footbag Medellín,net,completed,,mirror
 2014_eastregion,1405875596,2014,32nd Annual East Coast Footbag Championships,32nd_annual_east_coast_footbag_championships,2014-09-27,2014-09-28,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2014_worlds_paris,1391189882,2014,35th IFPA WORLD FOOTBAG CHAMPIONSHIPS,35th_ifpa_world_footbag_championships,2014-07-27,2014-08-02,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,worlds,completed,,mirror
+2014_worlds_paris,1391189882,2014,35th Annual World Footbag Championships,35th_ifpa_world_footbag_championships,2014-07-27,2014-08-02,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,worlds,completed,,mirror
 2014_czech_meeting,1392497284,2014,3rd Czech Footbag Freestyle Meeting,3rd_czech_footbag_freestyle_meeting,2014-03-01,2014-03-02,Ostrava,Moravian-Silesian,Czech Republic,Footbag Ostrava,freestyle,completed,,mirror
 2014_helsinki,1401624489,2014,5th annual Helsinki Open Footbag Tournament,5th_annual_helsinki_open_footbag_tournament,2014-06-28,2014-06-29,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
 2014_akisphere,1403287103,2014,Akisphere,akisphere,2014-07-04,2014-07-06,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
@@ -637,7 +620,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2015_finnish,1449217972,2015,2015 Finnish Footbag Championships in Singles Net,2015_finnish_footbag_championships_in_singles_net,2015-12-19,2015-12-19,Turku,Southwest Finland,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
 2015_mud_island_belt,1422386917,2015,2015 Mud Island Belt presented by Memphis Footworks,2015_mud_island_belt_presented_by_memphis_footworks,2015-05-23,2015-05-25,Memphis,Tennessee,United States,,net,completed,,mirror
 2015_eastregion,1435110091,2015,33rd Annual East Coast Footbag Championships,33rd_annual_east_coast_footbag_championships,2015-09-12,2015-09-13,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2015_worlds_copenhagen,1417735560,2015,36th IFPA WORLD FOOTBAG CHAMPIONSHIPS,36th_ifpa_world_footbag_championships,2015-07-26,2015-08-01,Copenhagen,Capital Region,Denmark,FootbagDenmark,worlds,completed,,mirror
+2015_worlds_copenhagen,1417735560,2015,36th Annual World Footbag Championships,36th_ifpa_world_footbag_championships,2015-07-26,2015-08-01,Copenhagen,Capital Region,Denmark,FootbagDenmark,worlds,completed,,mirror
 2015_copa_venezuela,1430582557,2015,5ta Copa Venezuela,5ta_copa_venezuela,2015-06-27,2015-06-28,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2015_copa_pro,1423020874,2015,7ma Copa X-PRO,7ma_copa_x_pro,2015-02-28,2015-02-28,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2015_windy_city,1421271111,2015,8th Annual Windy City Cup Footbag Net Championships,8th_annual_windy_city_cup_footbag_net_championships,2015-06-19,2015-06-21,Chicago,Illinois,United States,Chicago Lake Coast Kickers,net,completed,,mirror
@@ -648,7 +631,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2015_championnat_de_france,1432901754,2015,Championnat de France de Footbag 2015,championnat_de_france_de_footbag_2015,2015-07-11,2015-07-12,Nantes,Pays de la Loire,France,Carnabal Footbag,net,completed,,mirror
 2015_lakeerie,1427144456,2015,Lake Erie Footbag Tournament,lake_erie_footbag_tournament,2015-07-18,2015-07-19,Erie,Pennsylvania,United States,FOOTBAG ERIE,net,completed,,mirror
 2015_footbagjam_ann_arbor,1408070192,2015,New Year's Footbag Jam,new_years_footbag_jam,2015-01-03,2015-01-04,Ann Arbor,Michigan,United States,\m/ichigan footbag,freestyle,completed,,mirror
-2015_stanford_presents_cardinal,1429205408,2015,"Stanford Footbag presents: ""Cardinal Cup"" Freestyle",stanford_footbag_presents_cardinal_cup_freestyle,2015-05-23,2015-05-23,Palo Alto,California,United States,Stanford University Footbag Club,freestyle,no_results,,mirror
 2015_footbagjam_lausanne,1438626750,2015,Swiss Footbag Open,swiss_footbag_open,2015-10-23,2015-10-25,Lausanne,Vaud,Switzerland,Les Pieds à Gilles,mixed,completed,,mirror
 2015_perpetual_flame_challenge,1435784719,2015,The Perpetual Flame Footbag Net Challenge,the_perpetual_flame_footbag_net_challenge,2015-09-05,2015-09-06,Caracas,Capital District,Venezuela,X-PRO,net,completed,,mirror
 2015_todexon_16,1415986036,2015,Todexon 16,todexon_16,2015-04-11,2015-04-11,Prague,,Czech Republic,Czech Footbag Association,freestyle,completed,,mirror
@@ -661,7 +643,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2016_mud_island_belt,1454371285,2016,2016 Mud Island Belt presented by Memphis Footworks,2016_mud_island_belt_presented_by_memphis_footworks,2016-05-28,2016-05-29,Memphis,Tennessee,United States,Memphis Footworks,net,completed,,mirror
 2016_footbagjam_turku,1471407009,2016,20th Annual Finnish Footbag Open,20th_annual_finnish_footbag_open,2016-11-19,2016-11-20,Turku,Southwest Finland,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
 2016_eastregion,1464967908,2016,34th Annual East Coast Footbag Championships,34th_annual_east_coast_footbag_championships,2016-09-09,2016-09-11,Brooklyn,New York,United States,New York Footbag Association,freestyle,completed,,mirror
-2016_worlds_trnava,1449259560,2016,37th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2016,37th_annual_ifpa_world_footbag_championships_2016,2016-07-31,2016-08-06,Trnava,,Slovakia,Czech Footbag Association,worlds,completed,,mirror
+2016_worlds_trnava,1449259560,2016,37th Annual World Footbag Championships,37th_annual_ifpa_world_footbag_championships_2016,2016-07-31,2016-08-06,Trnava,,Slovakia,Czech Footbag Association,worlds,completed,,mirror
 2016_windy_city,1455047000,2016,9th Annual Windy City Cup Footbag Net Championships,9th_annual_windy_city_cup_footbag_net_championships,2016-07-15,2016-07-17,Chicago,Illinois,United States,Chicago Lake Coast Kickers,net,completed,,mirror
 2016_akisphere,1463511970,2016,Akisphere 2016,akisphere_2016,2016-07-08,2016-07-10,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2016_austrian,1473932659,2016,Austrian Footbag Championships 2016,austrian_footbag_championships_2016,2016-10-21,2016-10-22,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
@@ -680,7 +662,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2017_eurochamp_aranjuez,1487797845,2017,19th Annual IFPA European Footbag Championships,19th_annual_ifpa_european_footbag_championships,2017-05-25,2017-05-28,Aranjuez,Community of Madrid,Spain,,mixed,completed,,mirror
 2017_mud_belt_memphis,1485967222,2017,2017 Mud Belt Presented by Memphis Footworks,2017_mud_belt_presented_by_memphis_footworks,2017-05-20,2017-05-21,Peninsula Cherokee,Alabama,United States,Memphis Footworks,net,completed,,mirror
 2017_eastregion,1502929111,2017,35th Annual East Coast Footbag Championships,35th_annual_east_coast_footbag_championships,2017-09-16,2017-09-17,New York,,United States,New York Footbag Association,mixed,completed,,mirror
-2017_worlds_portland,1471686537,2017,38th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2017,38th_annual_ifpa_world_footbag_championships_2017,2017-08-06,2017-08-12,Portland,Oregon,United States,Sole Purpose,worlds,completed,,mirror
+2017_worlds_portland,1471686537,2017,38th Annual World Footbag Championships,38th_annual_ifpa_world_footbag_championships_2017,2017-08-06,2017-08-12,Portland,Oregon,United States,Sole Purpose,worlds,completed,,mirror
 2017_akisphere,1485970612,2017,Akisphere 2017,akisphere_2017,2017-07-28,2017-07-30,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2017_austrian,1498568502,2017,Austrian Footbag Championships 2017,austrian_footbag_championships_2017,2017-10-06,2017-10-08,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
 2017_bembel,1485520697,2017,Bembel Cup 2017,bembel_cup_2017,2017-05-06,2017-05-07,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,net,completed,,mirror
@@ -698,7 +680,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2018_eurochamp_kranj,1518200935,2018,20th Annual IFPA European Footbag Championships,20th_annual_ifpa_european_footbag_championships,2018-06-21,2018-06-23,Kranj,Upper Carniola,Slovenia,Footbag Kranj,freestyle,completed,,mirror
 2018_torneo_nacional_de,1537994275,2018,2o Torneo Nacional de Footbag,2o_torneo_nacional_de_footbag,2018-10-27,2018-10-28,Medellín,Antioquia,Colombia,Footbag Medellin,freestyle,completed,,mirror
 2018_eastregion,1524683077,2018,36th Annual East Coast Footbag Championships,36th_annual_east_coast_footbag_championships,2018-06-23,2018-06-24,New York,,United States,New York Footbag Association,freestyle,completed,,mirror
-2018_worlds_sofia,1519215398,2018,39th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2018,39th_annual_ifpa_world_footbag_championships_2018,2018-07-22,2018-07-28,Sofia,Sofia-Grad,Bulgaria,Urban Komba,worlds,completed,,mirror
+2018_worlds_sofia,1519215398,2018,39th Annual World Footbag Championships,39th_annual_ifpa_world_footbag_championships_2018,2018-07-22,2018-07-28,Sofia,Sofia-Grad,Bulgaria,Urban Komba,worlds,completed,,mirror
 2018_akisphere,1526588580,2018,Akisphere 2018,akisphere_2018,2018-07-06,2018-07-08,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2018_austrian,1536221908,2018,Austrian Footbag Championships 2018,austrian_footbag_championships_2018,2018-10-12,2018-10-13,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
 2018_bembel_anniversary,1526035381,2018,Bembel Cup 2018 - 10th Anniversary,bembel_cup_2018_10th_anniversary,2018-08-11,2018-08-12,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,net,completed,,mirror
@@ -716,7 +698,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2019_bembel_a_with,1557144269,2019,11th Bembel Cup 2019 - a jam with friends,11th_bembel_cup_2019_a_jam_with_friends,2019-08-17,2019-08-18,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,net,completed,,mirror
 2019_czech,1572864719,2019,19th Czech Footbag Net Championships,19th_czech_footbag_net_championships,2019-11-30,2019-11-30,Hradec Králové,,Czech Republic,Hradec Kralove Footbag Club,net,completed,,mirror
 2019_eastregion,1552865692,2019,37th Annual East Coast Footbag Championships,37th_annual_east_coast_footbag_championships,2019-09-14,2019-09-15,New York,,United States,New York Footbag Association,mixed,completed,,mirror
-2019_worlds_warsaw,1547415984,2019,40th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2019,40th_annual_ifpa_world_footbag_championships_2019,2019-07-29,2019-08-03,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,worlds,completed,,mirror
+2019_worlds_warsaw,1547415984,2019,40th Annual World Footbag Championships,40th_annual_ifpa_world_footbag_championships_2019,2019-07-29,2019-08-03,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,worlds,completed,,mirror
 2019_copa_bobston_de,1549597969,2019,4ta Copa BoBston de Footbag 2019,4ta_copa_bobston_de_footbag_2019,2019-03-30,2019-03-31,Medellín,Antioquia,Colombia,Footbag Medellin,freestyle,completed,,mirror
 2019_akisphere,1556306551,2019,Akisphere 2019,akisphere_2019,2019-07-05,2019-07-07,Montréal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2019_austrian_xmas,1575361225,2019,Austrian Footbag Championships + XMAS Jam 2019,austrian_footbag_championships_xmas_jam_2019,2019-12-20,2019-12-20,Vienna,,Austria,Footbag-Vienna,freestyle,completed,,mirror
@@ -730,7 +712,6 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2019_lakeerie,1529239199,2019,Lake Erie Footbag Tournament,lake_erie_footbag_tournament,2019-06-08,2019-06-09,Erie,Pennsylvania,United States,FOOTBAG ERIE,mixed,completed,,mirror
 2019_medejam_de,1568692191,2019,MedeJam de Footbag 2019,medejam_de_footbag_2019,2019-12-28,2019-12-29,Medellín,Antioquia,Colombia,,mixed,completed,,mirror
 2019_mud_belt_memphis,1557331196,2019,Mud Belt Presented by Memphis Footworks,mud_belt_presented_by_memphis_footworks,2019-06-22,2019-06-23,Memphis,Tennessee,United States,Memphis Footworks,net,completed,,mirror
-2019_footbagjam_columbus,1562271704,2019,Ohio Footbag Jam,ohio_footbag_jam,2019-07-27,2019-07-28,Columbus,Ohio,United States,,freestyle,no_results,,mirror
 2019_de_france,1547720079,2019,Open de France 2019,open_de_france_2019,2019-05-25,2019-05-26,Nantes,Pays de la Loire,France,Carnabal Footbag,net,completed,,mirror
 2019_rnh_contest,1551207285,2019,RNH Contest 2019,rnh_contest_2019,2019-03-24,2019-03-24,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,net,completed,,mirror
 2019_rnh_anniversary,1568961264,2019,RNH Footbag 20th Anniversary,rnh_footbag_20th_anniversary,2019-11-16,2019-11-17,Paris,Île-de-France,France,Rien N'est Hacky - RNH Footbag,net,completed,,mirror
@@ -744,7 +725,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2020_basque_bilbao,1598616506,2020,II. Basque Tournament of Footbag Net (Individual),ii_basque_tournament_of_footbag_net_individual,2020-08-30,2020-08-30,Bilbao,Bizkaia,Spain,Bilbao Footbag Club,net,completed,,mirror
 2020_basque_bilbao_2,1584223469,2020,II.Basque Tournament of Footbag (Net - Individual),ii_basque_tournament_of_footbag_net_individual,2020-03-15,2020-03-15,Bilbao,Bizkaia,Spain,Bilbao Footbag Club,net,completed,,mirror
 2020_xx_polish_warsaw,1600984774,2020,XX Polish Footbag Championships - Warsaw 2020,xx_polish_footbag_championships_warsaw_2020,2020-11-14,2020-11-15,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,mixed,completed,,mirror
-2021_worlds_online,1623054449,2021,2021 IFPA Online World Footbag Freestyle Championships,2021_ifpa_online_world_footbag_freestyle_championships,2021-08-01,2021-08-25,Online,Global,Global,Madrid Footbag Club,freestyle,completed,,mirror
+2021_worlds_online,1623054449,2021,42nd Annual World Footbag Championships,2021_ifpa_online_world_footbag_freestyle_championships,2021-08-01,2021-08-25,Online,Global,Global,Madrid Footbag Club,worlds,completed,,mirror
 2021_eurochamp_krakow,1624971880,2021,21st IFPA European Footbag Net Championships,21st_ifpa_european_footbag_net_championships,2021-08-20,2021-08-22,Kraków,Lesser Poland,Poland,Maniac Footbag Team,net,completed,,mirror
 2021_finnish,1643478787,2021,24th Annual Footbag Finnish Open,24th_annual_footbag_finnish_open,2021-12-11,2021-12-11,Helsinki,Uusimaa,Finland,Suomen Footbag Liitto ry. (Finnish Footbag Association),net,completed,,mirror
 2021_eastregion,1625854837,2021,39th Annual East Coast Footbag Championships,39th_annual_east_coast_footbag_championships,2021-08-28,2021-08-29,Doylesburg,Pennsylvania,United States,New York Footbag Association,freestyle,completed,,mirror
@@ -758,7 +739,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2021_xxi_polish_warsaw,1634665636,2021,XXI Polish Footbag Championships - Warsaw 2021,xxi_polish_footbag_championships_warsaw_2021,2021-11-27,2021-11-28,Warsaw,Masovian,Poland,WSF Warsaw Footbag Association,mixed,completed,,mirror
 2022_eurochamp_jaworzno,1646855336,2022,22nd Annual IFPA European Footbag Championships,22nd_annual_ifpa_european_footbag_championships,2022-07-22,2022-07-24,Jaworzno,Silesian,Poland,Jaworzno Footbag Club,net,completed,,mirror
 2022_eastregion,1649177702,2022,40th Annual East Coast Footbag Championships,40th_annual_east_coast_footbag_championships,2022-09-24,2022-09-25,Camp Doylesburg,Pennsylvania,United States,New York Footbag Association,mixed,completed,,mirror
-2022_worlds_krakow,1646387871,2022,41st IFPA WORLD FOOTBAG CHAMPIONSHIPS 2022,41st_ifpa_world_footbag_championships_2022,2022-07-27,2022-07-31,Kraków,Lesser Poland,Poland,Maniac Footbag Team,worlds,completed,,mirror
+2022_worlds_krakow,1646387871,2022,43rd Annual World Footbag Championships,41st_ifpa_world_footbag_championships_2022,2022-07-27,2022-07-31,Kraków,Lesser Poland,Poland,Maniac Footbag Team,worlds,completed,,mirror
 2022_akisphere,1653152207,2022,Akisphere 2022,akisphere_2022,2022-07-08,2022-07-10,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2022_cracow_3,1645025950,2022,Cracow Net Jam 3,cracow_net_jam_3,2022-02-26,2022-02-27,Kraków,Lesser Poland,Poland,Maniac Footbag Team,net,completed,,mirror
 2022_czech,1649326445,2022,Czech Footbag Championships 2022,czech_footbag_championships_2022,2022-05-21,2022-05-21,Hradec Králové,,Czech Republic,Hradec Králové Footbag Club,net,completed,,mirror
@@ -774,7 +755,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2023_usopen_erie,1664206719,2023,2023 US Open,2023_us_open,2023-06-09,2023-06-11,Erie,Pennsylvania,United States,FOOTBAG ERIE,mixed,completed,,mirror
 2023_eurochamp_krakow,1697391704,2023,23rd IFPA European Footbag Championships 2023,23rd_ifpa_european_footbag_championships_2023,2023-12-15,2023-12-17,Kraków,Lesser Poland,Poland,Maniac Footbag Team,freestyle,completed,,mirror
 2023_eastregion,1688144863,2023,41st Annual East Coast Footbag Championships,41st_annual_east_coast_footbag_championships,2023-08-26,2023-08-27,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2023_worlds_medellin,1678957450,2023,42nd Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2023,42nd_annual_ifpa_world_footbag_championships_2023,2023-07-26,2023-07-30,Medellín,Antioquia,Colombia,Footbag Medellin,worlds,completed,,mirror
+2023_worlds_medellin,1678957450,2023,44th Annual World Footbag Championships,42nd_annual_ifpa_world_footbag_championships_2023,2023-07-26,2023-07-30,Medellín,Antioquia,Colombia,Footbag Medellin,worlds,completed,,mirror
 2023_suramericano,1699593640,2023,8vo Suramericano Footbag Net 2023,8vo_suramericano_footbag_net_2023,2023-12-08,2023-12-10,Caracas,Miranda,Venezuela,sole push,net,completed,,mirror
 2023_akisphere,1686926080,2023,Akisphere,akisphere,2023-07-07,2023-07-09,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2023_bulgarian,1692508794,2023,Bulgarian Footbag Championships,bulgarian_footbag_championships,2023-09-22,2023-09-24,Stara Zagora,,Bulgaria,Urban Komba,net,completed,,mirror
@@ -791,7 +772,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2024_eurochamp_stara_zagora,1711182054,2024,24th IFPA European Footbag Championships,24th_ifpa_european_footbag_championships,2024-06-27,2024-06-30,Stara Zagora,,Bulgaria,Urban Komba,net,completed,,mirror
 2024_polish_krakow,1727756195,2024,24th Polish Footbag Championships - Krakow 2024,24th_polish_footbag_championships_krakow_2024,2024-10-19,2024-10-20,Kraków,Lesser Poland,Poland,Maniac Footbag Team,freestyle,completed,,mirror
 2024_eastregion,1721320739,2024,42nd Annual East Coast Footbag Championships,42nd_annual_east_coast_footbag_championships,2024-08-24,2024-08-25,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2024_worlds_montreal,1706036811,2024,43rd Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2024,43rd_annual_ifpa_world_footbag_championships_2024,2024-07-29,2024-08-03,Montreal,Quebec,Canada,Aki Québec,worlds,completed,,mirror
+2024_worlds_montreal,1706036811,2024,45th Annual World Footbag Championships,43rd_annual_ifpa_world_footbag_championships_2024,2024-07-29,2024-08-03,Montreal,Quebec,Canada,Aki Québec,worlds,completed,,mirror
 2024_copa_bobston_de,1730420667,2024,5ta Copa Bobston de Footbag Net,5ta_copa_bobston_de_footbag_net,2024-11-30,2024-12-01,Medellín,Antioquia,Colombia,Footbag Medellin,net,completed,,mirror
 2024_akisphere,1719166875,2024,Akisphere 2024,akisphere_2024,2024-07-12,2024-07-14,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2024_footbagjam_stara_zagora,1711181388,2024,Bulgarian Footbag Open 2024,bulgarian_footbag_open_2024,2024-05-10,2024-05-12,Stara Zagora,,Bulgaria,Urban Komba,net,completed,,mirror
@@ -807,7 +788,7 @@ event_key,legacy_event_id,year,event_name,event_slug,start_date,end_date,city,re
 2025_eurochamp_frankfurt,1740391168,2025,25th IFPA European Footbag Championships 2025,25th_ifpa_european_footbag_championships_2025,2025-06-06,2025-06-08,Frankfurt,Hesse,Germany,SG Frankfurt Footbag e.V.,freestyle,completed,,mirror
 2025_polish_jaworzno,1751568193,2025,25th Polish Footbag Championships - Jaworzno 2025,25th_polish_footbag_championships_jaworzno_2025,2025-09-13,2025-09-14,Jaworzno,Silesian,Poland,Jaworzno Footbag Club,mixed,completed,,mirror
 2025_eastregion,1750356087,2025,43rd Annual East Coast Footbag Championships,43rd_annual_east_coast_footbag_championships,2025-08-23,2025-08-24,Brooklyn,New York,United States,New York Footbag Association,mixed,completed,,mirror
-2025_worlds_nantes,1741024635,2025,44th Annual IFPA WORLD FOOTBAG CHAMPIONSHIPS 2025,44th_annual_ifpa_world_footbag_championships_2025,2025-08-04,2025-08-09,Nantes,Pays de la Loire,France,Carnabal Footbag,worlds,completed,,mirror
+2025_worlds_nantes,1741024635,2025,46th Annual World Footbag Championships,44th_annual_ifpa_world_footbag_championships_2025,2025-08-04,2025-08-09,Nantes,Pays de la Loire,France,Carnabal Footbag,worlds,completed,,mirror
 2025_copa_bobston_de,1760495074,2025,6a Copa Bobston de Footbag,6a_copa_bobston_de_footbag,2025-11-29,2025-11-30,Medellín,Antioquia,Colombia,Footbag Medellin,net,completed,,mirror
 2025_akisphere,1746737817,2025,Akisphere 2025,akisphere_2025,2025-07-04,2025-07-06,Montreal,Quebec,Canada,Aki Québec,net,completed,,mirror
 2025_bulgarian,1756448770,2025,Bulgarian Footbag Championships 2025,bulgarian_footbag_championships_2025,2025-09-20,2025-09-21,Stara Zagora,,Bulgaria,Urban Komba,net,completed,,mirror

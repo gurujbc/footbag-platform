@@ -80,7 +80,7 @@ def main() -> None:
     )
     ap.add_argument(
         "--output-dir",
-        default="legacy_data/event_results/seed/mvfp_full",
+        default=str(repo_root / "legacy_data/event_results/seed/mvfp_full"),
         help="Directory to write full seed CSVs",
     )
     ap.add_argument(
@@ -152,6 +152,7 @@ def main() -> None:
             persons,
             [
                 "aliases",
+                "member_id",
                 "legacy_member_id",
                 "country",
                 "first_year",
@@ -287,6 +288,30 @@ def main() -> None:
                     event_result_participants.at[idx, "display_name"] = key_to_name[key]
 
     # ------------------------------------------------------------------
+    # Mark canonical persons (loaded from canonical_input/persons.csv)
+    # Auto-assigned minimal records created below get no source_scope.
+    # ------------------------------------------------------------------
+    persons = persons.copy()
+    persons["source_scope"] = "CANONICAL"
+
+    # ------------------------------------------------------------------
+    # Normalise display_name to canonical person_name for resolved persons
+    # ------------------------------------------------------------------
+    pid_to_canonical = dict(
+        zip(persons["person_id"].str.strip(), persons["person_name"].str.strip())
+    )
+    has_pid = event_result_participants["person_id"].str.strip().ne("")
+    n_name_fixed = 0
+    for idx in event_result_participants[has_pid].index:
+        pid = event_result_participants.at[idx, "person_id"].strip()
+        canon = pid_to_canonical.get(pid)
+        if canon and event_result_participants.at[idx, "display_name"] != canon:
+            event_result_participants.at[idx, "display_name"] = canon
+            n_name_fixed += 1
+    if n_name_fixed:
+        print(f"  Canonical name override: {n_name_fixed} participant display_name(s) corrected")
+
+    # ------------------------------------------------------------------
     # Assign stable person_ids to participants that are missing one
     # ------------------------------------------------------------------
     missing_mask = event_result_participants["person_id"].str.strip().eq("")
@@ -396,6 +421,7 @@ def main() -> None:
         [
             "person_id",
             "person_name",
+            "member_id",
             "country",
             "first_year",
             "last_year",
@@ -413,6 +439,7 @@ def main() -> None:
             "signature_trick_1",
             "signature_trick_2",
             "signature_trick_3",
+            "source_scope",
         ]
     ].copy()
 

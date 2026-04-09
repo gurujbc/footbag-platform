@@ -31,21 +31,26 @@ Do NOT invoke this skill for:
 # Step 2: Create the structured CSV (Variant B schema)
 # Columns: event_name,year,location,category,division,place,player_1,player_2,score,notes
 
-# Step 3: Verify the file before rebuild (see validation checklist below)
+# Step 3: If new persons appear, add display-name rows to:
+#   inputs/identity_lock/Person_Display_Names_v1.csv
+#   (existing UUID variant, or new Class B UUID5 entry)
 
-# Step 4: If replacing a legacy stub, remove it from stage1_raw_events_magazine.csv
+# Step 4: Verify the file before rebuild (see validation checklist below)
+
+# Step 5: If replacing a legacy stub, remove it from stage1_raw_events_magazine.csv
 # and from overrides/results_file_overrides.csv
 
-# Step 5: Rebuild and validate
-./run_pipeline.sh rebuild
-./run_pipeline.sh release
-.venv/bin/python pipeline/qc/run_qc.py
+# Step 6: Run the complete pipeline (fails fast on QC hard failures)
+cd ~/projects/footbag-platform/legacy_data
+./run_pipeline.sh complete
 
-# Step 6: Confirm new event appears in canonical
+# Step 7: Confirm new event appears in canonical
 grep "<event_key>" out/canonical/events.csv
 
-# Step 7: Confirm participant count matches source
+# Step 8: Confirm participant count matches source
 grep "<event_key>" out/canonical/event_result_participants.csv | wc -l
+
+# Step 9: Only commit if QC STATUS: PASS and row counts are expected
 ```
 
 ---

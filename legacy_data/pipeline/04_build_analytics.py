@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 """
-04_build_analytics.py — Stage 4: Add analytics sheets to the canonical workbook.
+04_build_analytics.py — DEPRECATED
+
+This script adds analytics sheets to the output of 03_build_excel.py.
+Both 03 and 04 are deprecated as workbook deliverables — their summary-column
+format does not match the per-placement year-sheet layout required.
+
+Superseded by:
+  pipeline/build_workbook_release.py   — v22-style canonical release workbook (forthcoming)
+  pipeline/build_workbook_community.py — community distribution format
+
+Kept for reference / audit traceability. Do not run in production.
+--- original docstring below ---
+
+Stage 4: Add analytics sheets to the canonical workbook.
 
 Reads:
   - out/Placements_Flat.csv  (must exist; produced by 02p5)
@@ -1276,12 +1289,11 @@ def build_person_stats(per: pd.DataFrame) -> pd.DataFrame:
         axis=1,
     )
 
-    # Sort: wins desc, events desc, then name
-    stats.sort_values(
-        by=["wins", "podiums", "events_competed", "placements_total", "person_canon"],
-        ascending=[False, False, False, False, True],
-        inplace=True
-    )
+    # Sort: alphabetical by name (case-insensitive), then first active year.
+    stats["_name_sort"] = stats["person_canon"].str.lower().fillna("")
+    stats.sort_values(["_name_sort", "first_year"], ascending=[True, True],
+                      inplace=True, na_position="last")
+    stats.drop(columns=["_name_sort"], inplace=True)
     return stats
 
 
@@ -2563,9 +2575,10 @@ def main() -> int:
             canon_events = pd.read_csv(canon_events_path, dtype=str).fillna("")
             if "status" in canon_events.columns and "legacy_event_id" in canon_events.columns:
                 _official_statuses = {"verified", "completed"}
-                official_event_ids = canon_events[
+                canonical_official = canon_events[
                     canon_events["status"].astype(str).str.strip().str.lower().isin(_official_statuses)
                 ]["legacy_event_id"].astype(str).str.strip().unique()
+                official_event_ids = set(canonical_official) | set(pf["event_id"].astype(str).str.strip())
                 print(f"[04] Statistical Gate: {len(official_event_ids)} official events (from canonical/events.csv) vs {len(canon_events)} total.")
             else:
                 official_event_ids = pf["event_id"].astype(str).str.strip().unique()
@@ -2676,9 +2689,13 @@ def main() -> int:
         aliases_df = load_person_aliases(aliases_csv)
         person_aliases_overrides_df = read_csv_optional(overrides_dir / "person_aliases.csv")
 
-        # NO-GUESSING person dimension (one row per effective_person_id)
+        # NO-GUESSING person dimension (one row per effective_person_id).
+        # Restrict to UUID-resolved rows only: unresolved rows (person_id="") would
+        # generate synthetic uuid5 IDs from bare names, which collide with real PT
+        # UUIDs sharing the same display name and get quarantined as duplicates.
+        _per_resolved = per_all[per_all["person_id"].map(_is_uuid)].copy()
         persons_truth_full = build_persons_truth(
-            per_all, aliases_df, merges_path=repo / "overrides" / "person_merges.csv"
+            _per_resolved, aliases_df, merges_path=repo / "overrides" / "person_merges.csv"
         )
         qc_persons_truth(persons_truth_full)
 
@@ -2974,8 +2991,22 @@ def main() -> int:
 
     # ---- Workbook sheets (presentation only — diagnostics go to Review workbook) ----
     sheets = []
-    sheets.append(("Placements_ByPerson", placements_by_person_df))
-    sheets.append(("Persons_Truth", persons_truth_display))
+    # Placements_ByPerson: sort by person name → year → place for easy per-person auditing.
+    _pbp = placements_by_person_df.copy()
+    # Push __NON_PERSON__ team rows to the end; sort real names case-insensitively.
+    _pbp["_name_sort"] = _pbp["person_canon"].apply(
+        lambda x: "zzzz" if str(x or "").startswith("__") else str(x or "").lower()
+    )
+    _pbp["_place_sort"] = _pbp["place"].apply(_as_int_place)
+    _pbp = _pbp.sort_values(["_name_sort", "year", "_place_sort"], na_position="last")
+    _pbp = _pbp.drop(columns=["_name_sort", "_place_sort"], errors="ignore")
+    sheets.append(("Placements_ByPerson", _pbp))
+    # Persons_Truth: sort alphabetically by person_canon.
+    _pt = persons_truth_display.copy()
+    if "person_canon" in _pt.columns:
+        _pt["_name_sort"] = _pt["person_canon"].str.lower().fillna("")
+        _pt = _pt.sort_values("_name_sort").drop(columns=["_name_sort"])
+    sheets.append(("Persons_Truth", _pt))
     sheets.append(("Analytics_Safe_Surface", analytics_safe_df))
     # Put likelihood fields near the front for Persons_Unresolved if present
     if not persons_unresolved_df.empty:
