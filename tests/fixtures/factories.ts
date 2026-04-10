@@ -440,3 +440,60 @@ export function insertHistoricalPerson(db: BetterSqlite3.Database, o: Historical
   );
   return id;
 }
+
+// ── Freestyle record ──────────────────────────────────────────────────────────
+
+export interface FreestyleRecordOverrides {
+  id?: string;
+  record_type?: string;
+  person_id?: string | null;
+  display_name?: string | null;
+  trick_name?: string | null;
+  sort_name?: string | null;
+  adds_count?: number | null;
+  value_numeric?: number;
+  achieved_date?: string | null;
+  date_precision?: string;
+  source?: string;
+  confidence?: string;
+  video_url?: string | null;
+  video_timecode?: string | null;
+  notes?: string | null;
+  superseded_by?: string | null;
+}
+
+export function insertFreestyleRecord(
+  db: BetterSqlite3.Database,
+  o: FreestyleRecordOverrides = {},
+): string {
+  const id = o.id ?? `fr-test-${uid()}`;
+  db.prepare(`
+    INSERT INTO freestyle_records (
+      id, record_type, person_id, display_name,
+      trick_name, sort_name, adds_count,
+      value_numeric, achieved_date, date_precision,
+      source, confidence,
+      video_url, video_timecode, notes,
+      superseded_by, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id,
+    o.record_type    ?? 'trick_consecutive',
+    o.person_id      ?? null,
+    o.display_name   ?? 'Test Player',
+    o.trick_name     ?? 'Test Trick',
+    o.sort_name      ?? null,
+    o.adds_count     ?? null,
+    o.value_numeric  ?? 10,
+    o.achieved_date  ?? '2024-01-01',
+    o.date_precision ?? 'day',
+    o.source         ?? 'passback',
+    o.confidence     ?? 'probable',
+    o.video_url      ?? null,
+    o.video_timecode ?? null,
+    o.notes          ?? null,
+    o.superseded_by  ?? null,
+    TS, TS,
+  );
+  return id;
+}

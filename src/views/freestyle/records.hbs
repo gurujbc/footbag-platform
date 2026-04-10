@@ -1,0 +1,98 @@
+{{! /freestyle/records — per-trick consecutive records }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
+    {{#if content.totalRecords}}
+    <div class="hero-stats">
+      <span>{{content.totalRecords}} records</span>
+      <span>{{content.totalHolders}} holders</span>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{#if navigation.breadcrumbs}}
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    {{#each navigation.breadcrumbs}}
+      {{#if href}}<a href="{{href}}">{{label}}</a> <span class="breadcrumb-sep">/</span> {{else}}<span>{{label}}</span>{{/if}}
+    {{/each}}
+  </nav>
+  {{/if}}
+
+  <p class="source-note">
+    Records sourced from the freestyle passback video archive.
+    Dates marked <em>approx.</em> are confirmed only to the month or year.
+    Records shown with a disclaimer are probable but not independently verified.
+  </p>
+
+  {{#if content.groups}}
+    {{#each content.groups}}
+    <section class="records-group">
+      <h2 class="section-heading">{{label}}</h2>
+
+      <div class="records-table-wrap">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th>Trick</th>
+              <th>Adds</th>
+              <th class="col-num">Count</th>
+              <th>Holder</th>
+              <th>Date</th>
+              <th>Video</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each records}}
+            <tr class="record-row{{#if isProbable}} record-probable{{/if}}">
+              <td class="col-trick">
+                <span class="trick-name">{{trickName}}</span>
+                {{#if sortName}}
+                <span class="trick-sort-name">{{sortName}}</span>
+                {{/if}}
+              </td>
+              <td class="col-adds">
+                {{#if addsCount}}{{addsCount}}{{else}}&mdash;{{/if}}
+              </td>
+              <td class="col-num">{{valueNumeric}}</td>
+              <td class="col-holder">
+                {{#if holderHref}}
+                  <a href="{{holderHref}}">{{holderName}}</a>
+                {{else}}
+                  {{holderName}}
+                {{/if}}
+              </td>
+              <td class="col-date">
+                {{#if achievedDate}}
+                  {{achievedDate}}{{#if dateApproximate}} <em>(approx.)</em>{{/if}}
+                {{else}}
+                  &mdash;
+                {{/if}}
+              </td>
+              <td class="col-video">
+                {{#if videoUrl}}
+                  <a href="{{videoUrl}}" class="video-link" target="_blank" rel="noopener noreferrer"
+                     aria-label="Watch {{holderName}} {{trickName}} record video">
+                    ▶{{#if videoTimecode}} {{videoTimecode}}{{/if}}
+                  </a>
+                {{else}}
+                  &mdash;
+                {{/if}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+    {{/each}}
+  {{else}}
+  <div class="empty-state">No records found.</div>
+  {{/if}}
+
+</div>

@@ -1419,3 +1419,92 @@ section.home-media { padding-top: 0; }
   /* Tables: scroll horizontally rather than blowing out the page */
   .results-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
+
+/* ==========================================================================
+   Freestyle records
+   ========================================================================== */
+
+/* ── Section nav (landing page CTA row) ────────────────────────────────── */
+.section-nav {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+/* ── Content sections (landing page prose blocks) ───────────────────────── */
+.content-section {
+  margin: 32px 0;
+}
+.content-section p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  color: var(--text-secondary, #555);
+}
+.content-section p:last-child { margin-bottom: 0; }
+
+/* ── Source note (records page provenance disclaimer) ───────────────────── */
+.source-note {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+  margin: 16px 0 24px;
+  line-height: 1.5;
+}
+
+/* ── Records group ─────────────────────────────────────────────────────── */
+.records-group {
+  margin: 40px 0;
+}
+
+/* ── Records table ─────────────────────────────────────────────────────── */
+.records-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.records-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 600;
+  color: var(--text-secondary, #555);
+  white-space: nowrap;
+}
+.records-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+.records-table tr:last-child td { border-bottom: none; }
+.records-table .col-num { text-align: right; font-variant-numeric: tabular-nums; }
+.records-table .col-adds { text-align: center; }
+
+/* Trick name: two-line display — common name bold, sort name muted below */
+.trick-name {
+  display: block;
+  font-weight: 500;
+}
+.trick-sort-name {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #888);
+  margin-top: 2px;
+}
+
+/* Rows backed by probable (not fully verified) records */
+.record-probable td { color: #444; }
+
+/* Video link */
+.video-link {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .records-table .col-adds,
+  .records-table th:nth-child(2) { display: none; }
+}

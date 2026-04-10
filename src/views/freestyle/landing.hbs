@@ -1,0 +1,45 @@
+{{! /freestyle landing page }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p>{{page.intro}}</p>{{/if}}
+    {{#if content.totalRecords}}
+    <div class="hero-stats">
+      <span>{{content.totalRecords}} records</span>
+      <span>{{content.recordTypes}} disciplines</span>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <nav class="section-nav" aria-label="Freestyle sections">
+    <a href="/freestyle/records" class="btn btn-primary">View Records</a>
+  </nav>
+
+  <section class="content-section">
+    <h2 class="section-heading">About Freestyle Footbag</h2>
+    <p>
+      Freestyle footbag is a discipline built on creativity, technical difficulty, and
+      individual style. Unlike net footbag — which is scored on rallies and placement —
+      freestyle rewards trick diversity, add difficulty, and sequence length.
+    </p>
+    <p>
+      The records on this site track the best known per-trick consecutive completions
+      from the freestyle passback community, sourced from video documentation.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2 class="section-heading">Records</h2>
+    <p>
+      Per-trick consecutive records for <strong>{{content.totalRecords}}</strong> tricks
+      across {{content.recordTypes}} disciplines.
+      Records marked "approximate" have dates confirmed only to the month or year.
+    </p>
+    <a href="/freestyle/records" class="btn btn-outline">Browse All Records</a>
+  </section>
+
+</div>
