@@ -2757,5 +2757,61 @@ CREATE INDEX idx_club_bootstrap_leaders_member ON club_bootstrap_leaders(importe
 CREATE INDEX idx_club_bootstrap_leaders_status ON club_bootstrap_leaders(status);
 
 -- =============================================================================
+-- FREESTYLE DOMAIN LAYER
+-- Additive tables. No existing tables are modified.
+-- Canonical results remain authoritative for placements.
+-- =============================================================================
+
+-- ---------------------------------------------------------------------------
+-- freestyle_records
+--
+-- Verified or probable per-trick best performances, sourced from the passback
+-- records pipeline. Each row is a current record for a specific trick.
+--
+-- record_type values (passback source):
+--   trick_consecutive       — best consecutive completions of the trick
+--   trick_consecutive_dex   — best consecutive completions, dex variant
+--   trick_consecutive_juggle — best consecutive juggle variant
+--
+-- confidence → public visibility:
+--   verified    — fully public
+--   probable    — visible with disclaimer (passback 'medium' maps here)
+--   provisional — not surfaced publicly (passback 'low' maps here)
+--   disputed    — not surfaced publicly
+--
+-- person_id is nullable: unresolved players use display_name only.
+-- CHECK enforces at least one of person_id or display_name is present.
+-- ---------------------------------------------------------------------------
+CREATE TABLE freestyle_records (
+  id              TEXT PRIMARY KEY,
+  record_type     TEXT NOT NULL,
+  person_id       TEXT REFERENCES historical_persons(person_id),
+  display_name    TEXT,
+  trick_name      TEXT,    -- common trick name (e.g. "Alpine Blurry Whirl")
+  sort_name       TEXT,    -- canonical structured name (e.g. "Stepping Whirl (op) (ducking)")
+  adds_count      INTEGER, -- number of adds on the trick; NULL if not applicable
+  value_numeric   REAL,
+  value_text      TEXT,
+  achieved_date   TEXT,    -- ISO date YYYY-MM-DD (may be approximate; see date_precision)
+  date_precision  TEXT NOT NULL DEFAULT 'day'
+    CHECK (date_precision IN ('day', 'month', 'year', 'approximate')),
+  source          TEXT NOT NULL,
+  confidence      TEXT NOT NULL
+    CHECK (confidence IN ('verified', 'probable', 'provisional', 'disputed')),
+  video_url       TEXT,
+  video_timecode  TEXT,    -- e.g. "1:43" timestamp within the video
+  notes           TEXT,
+  superseded_by   TEXT REFERENCES freestyle_records(id),
+  created_at      TEXT NOT NULL,
+  updated_at      TEXT NOT NULL,
+  CHECK (person_id IS NOT NULL OR display_name IS NOT NULL)
+);
+
+CREATE INDEX idx_freestyle_records_person
+  ON freestyle_records(person_id);
+CREATE INDEX idx_freestyle_records_type_confidence
+  ON freestyle_records(record_type, confidence);
+
+-- =============================================================================
 -- END OF SCHEMA v0.1
 -- =============================================================================
