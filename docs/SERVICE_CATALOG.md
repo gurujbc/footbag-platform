@@ -294,13 +294,12 @@ Future detail (retain explicitly): auth hardening to the long-term JWT/session d
 
 ### 3.3 `HistoryService`
 
-**Purpose/Boundary:** Owns the current-slice historical-person read models for the `/history` surfaces documented in `docs/VIEW_CATALOG.md`. This includes the auth-gated historical index, the historical-person detail page, the historical-results grouping used on those pages, and the service-layer distinction between imported historical people and current member accounts. It does NOT own current member-account lifecycle, profile CRUD, login/registration, member search, or account-claim flow.
+**Purpose/Boundary:** Owns the historical-person read models for the `/history` surfaces documented in `docs/VIEW_CATALOG.md`. This includes the historical-person detail page, the historical-results grouping used on those pages, and the service-layer distinction between imported historical people and current member accounts. It does NOT own current member-account lifecycle, profile CRUD, login/registration, member search, or account-claim flow.
 
 **Consumers:** History controller, event-result participant linking flows
 
 **Key Methods:**
-- `getHistoryLandingPage() -> { page, seo, content: { players, playerCount } }` — shapes the historical-person index page
-- `getHistoricalPlayerPage(personId) -> { page, seo, navigation: { contextLinks }, content: { personId, displayName, honorificNickname?, eventGroups } }` — resolves one imported historical person into the detail page model; unknown/non-public IDs resolve as not-found; `eventGroups` carries typed event result history with service-computed `eventHref`; `navigation.contextLinks` carries the typed back link to the history index
+- `getHistoricalPlayerPage(personId) -> { page, seo, navigation: { contextLinks }, content: { personId, displayName, honorificNickname?, eventGroups } }` — resolves one imported historical person into the detail page model; unknown/non-public IDs resolve as not-found; `eventGroups` carries typed event result history with service-computed `eventHref`; `navigation.contextLinks` carries the typed back link to `/members`
 
 **Key Rules:**
 - historical imported people remain distinct from current member accounts
@@ -312,11 +311,13 @@ Future detail (retain explicitly): auth hardening to the long-term JWT/session d
 
 ### 3.4 `MemberService`
 
-**Purpose/Boundary:** Owns the current-slice member-account read/write page shaping for the `/members/*` surfaces documented in `docs/VIEW_CATALOG.md`. This includes the member landing redirect target, own-profile read, limited public HoF/BAP member profile read, profile edit page shaping (includes inline avatar upload), and supported account stub pages. It does NOT own login/registration credential verification, broader member search, legacy claim flow, or tier ledger calculation.
+**Purpose/Boundary:** Owns the member-account read/write page shaping for the `/members/*` surfaces documented in `docs/VIEW_CATALOG.md`. This includes the members landing page with member search, own-profile read, limited public HoF/BAP member profile read, profile edit page shaping (includes inline avatar upload), and supported account stub pages. It does NOT own login/registration credential verification, legacy claim flow, or tier ledger calculation.
 
 **Consumers:** Member controller
 
 **Key Methods:**
+- `getMembersLandingPage(slug, displayName, query?) -> PageViewModel<MembersLandingContent>` — member dashboard page model with optional search; content includes `profileSlug`, `displayName`, and `search`
+- `searchMembers(query) -> MemberSearchResult` — prefix-match search on `members_searchable` view; returns shaped results with honor badges; 20-result cap with `hasMore` flag
 - `getOwnProfile(slug) -> PageViewModel<OwnProfileContent>` — own-profile page model
 - `getPublicProfile(slug) -> PageViewModel<PublicProfileContent> | null` — limited public HoF/BAP profile; returns null for non-HoF/BAP members
 - `getProfileEditPage(slug, error?) -> PageViewModel<ProfileEditContent>` — edit form page model

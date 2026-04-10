@@ -74,21 +74,27 @@ afterAll(() => {
 
 // ── GET /members ───────────────────────────────────────────────────────────────
 
-describe('GET /members — landing redirect', () => {
-  it('unauthenticated → 302 to /login with returnTo', async () => {
+describe('GET /members — landing page', () => {
+  it('unauthenticated → 200 with welcome page', async () => {
     const app = createApp();
     const res = await request(app).get('/members');
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/login?returnTo=%2Fmembers');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Sign Up');
+    expect(res.text).toContain('/register');
   });
 
-  it('authenticated → 302 to own profile', async () => {
+  it('authenticated → 200 with landing page', async () => {
     const app = createApp();
     const res = await request(app)
       .get('/members')
       .set('Cookie', ownCookie());
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toBe(`/members/${OWN_SLUG}`);
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Welcome,');
+    expect(res.text).toContain('My Profile');
+    expect(res.text).toContain(`/members/${OWN_SLUG}`);
+    expect(res.text).toContain('Search for Members and Historical Players');
+    expect(res.text).toContain('Member Features');
+    expect(res.text).toContain('card-coming-soon');
   });
 });
 

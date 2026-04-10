@@ -32,7 +32,7 @@ Cross-track changes (anything that touches another track's owned files) require 
 
 **Item C implementation note:** The current code is the early-test shortcut: direct lookup + confirm + merge. No email verification, no token round-trip, no rate limiting, no name reconciliation guard. The full production version requires email verification, name reconciliation (last-name mismatch blocks, first-name mismatch warns), and `first_competition_year` COALESCE. Current shortcut methods live in `identityAccessService` as `lookupLegacyClaim` and `completeClaim`; these will move to a dedicated `LegacyMigrationService` in the production rewrite. Routes are `POST /history/claim` (lookup) and `POST /history/claim/confirm` (merge), not the token-based `GET /history/claim/verify/:token` described in `SERVICE_CATALOG.md`.
 
-**Routing (implemented):** Member profiles at `/members/:memberKey/*`. Historical persons at `/history/*` (primary nav "Players" link and event-result participant links). Registration at `/register`.
+**Routing (implemented):** `/members` member dashboard (auth) or welcome page (public). `/members/:memberKey/*` profiles. `/history/:personId` historical detail; `/history` redirects to `/members`. `/register` registration. Nav "Members" points to `/members`. Home Media Gallery is coming-soon (no `/media` route).
 
 **Blocked items from prior sprints:** Members ungating and world records page both blocked on James. See "Blocked / deferred" section below.
 
@@ -190,6 +190,19 @@ James has merged his footbag-results pipeline into this repo under `legacy_data/
 - Extended `legacy_data/CLAUDE.md` covering clubs/records/variants
 - Data review sign-off
 
+### Low-priority: score_text pass-through from legacy HTML
+
+The UI now renders `score_text` per result row when present (player profile detail column). The schema field exists (`event_result_entries.score_text`) but the pipeline currently drops it; only 1 of 26,210 entries has a value. Legacy HTML contains extractable data worth passing through for specific disciplines where the data is interesting, good quality, and consistent:
+
+- **Consecutives / DDOP**: kick counts in parentheses after player names, e.g. "(826)". Clean, consistent format across years. Extract as display-ready strings like "826 kicks". Present in post-1996 mirror HTML (e.g. `worlds96/results.html`). Pre-1997 sources (`authoritative-results-1980-1985.txt`, curated CSVs) have placements only, no kick counts.
+- **Specific freestyle categories** (Sick 3, routine trick lists where structured per-entry): trick names or short descriptions. Include only where source HTML has consistent, structured per-entry data.
+
+Skip generic point totals, judge scores, and net rankings. These just restate placement and add noise.
+
+The canonical CSV schema already has `score_text` and `notes` columns (`event_results.csv`), but both are empty for all result rows today. The pipeline adapters (mirror adapter, curated adapter) would need to extract and populate `score_text` from the source HTML/text where available. The DB seed scripts (`07_build_mvfp_seed_full.py`, `08_load_mvfp_seed_full_to_sqlite.py`) already carry the field through to `event_result_entries.score_text`.
+
+Not blocking anything. UI is ready to render whatever lands in the field.
+
 ### Unblocks
 
 - Members ungating (requires data review sign-off)
@@ -239,9 +252,9 @@ John (guruJBC) is working in parallel on visual / design polish: making the publ
 
 ## Blocked / deferred
 
-### Members ungating — blocked on James
+### Members ungating — work in progress
 
-James must confirm legacy data is complete and member-list presentation is reviewed before `requireAuth` is removed.
+The historical players full-list page at `/history` has been removed (301 redirects to `/members`). Member search at `/members` uses the `members_searchable` view which excludes unverified placeholder rows. Historical person detail pages at `/history/:personId` still require auth for non-HoF/BAP persons. Ungating those detail pages for public access is a work in progress.
 
 Current route split (implemented): `/history` and `/history/:personId` are historical-person surfaces; `/members/:memberKey/*` is the member-account area. No historical-person ungating change is active beyond the HoF/BAP honor-surface exceptions already implemented.
 
@@ -306,9 +319,9 @@ These are known, intentional shortcuts. Each has an explicit unblock condition. 
 
 1. **Auth is DB-backed but not hardened.** HMAC-signed cookie with DB-backed argon2 credential verification. Env-var stub fallback remains for dev. No CSRF flow, no password-version or session-invalidation model, no JWT. Unblock: replace with real JWT/DB sessions, add CSRF, session invalidation before production member onboarding. **Scheduled: next sprint, task 4-A'.**
 
-2. **Member profiles have conditional public visibility.** `/members/:memberKey` is publicly visible for HoF/BAP members (read-only profile with competitive results). All other member profiles require authentication. `/members` (landing) is auth-gated and redirects to own profile. Historical persons live at `/history/*` (separate from member profiles). Unblock: finalize the privacy-safe public member discovery/search design.
+2. **Member profiles have conditional public visibility.** `/members/:memberKey` public for HoF/BAP (read-only), auth-required otherwise. `/members` dashboard (auth) or welcome page (public).
 
-3. **No public member directory or search.** `/members` redirects authenticated users to their own profile. Historical persons are browsable at `/history`. Unblock: design and implement a privacy-safe public member directory.
+3. **Member search is authenticated only.** Search at `/members` covers members and historical persons with dedup. No public directory.
 
 4. **Worker has no real jobs.** `worker.ts` exits cleanly; the worker container is scaffolded only. No outbox, email, or background-job processing is active. Unblock: Phase 4 email outbox activation. **Scheduled: next sprint, task 4-D.**
 

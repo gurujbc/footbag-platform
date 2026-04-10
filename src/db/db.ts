@@ -413,16 +413,23 @@ export const publicEvents = {
   `),
 } as const;
 
+export interface HistoricalPersonSearchRow {
+  person_id: string;
+  person_name: string;
+  country: string | null;
+  hof_member: number;
+  bap_member: number;
+  linked_member_slug: string | null;
+}
+
 export const publicPlayers = {
-  listAll: db.prepare(`
+  searchByName: db.prepare(`
     SELECT
       hp.person_id,
       hp.person_name,
       hp.country,
-      COUNT(DISTINCT ere.event_id)       AS event_count,
-      COUNT(DISTINCT erp.result_entry_id) AS placement_count,
-      hp.bap_member,
       hp.hof_member,
+      hp.bap_member,
       (SELECT m.slug
        FROM members AS m
        WHERE m.deleted_at IS NULL
@@ -432,15 +439,10 @@ export const publicPlayers = {
        LIMIT 1
       ) AS linked_member_slug
     FROM historical_persons AS hp
-    LEFT JOIN event_result_entry_participants AS erp
-      ON erp.historical_person_id = hp.person_id
-    LEFT JOIN event_result_entries AS ere
-      ON ere.id = erp.result_entry_id
     WHERE hp.source_scope = 'CANONICAL'
-    GROUP BY
-      hp.person_id, hp.person_name, hp.country,
-      hp.bap_member, hp.hof_member
+      AND hp.person_name LIKE '%' || ? || '%' ESCAPE '\\'
     ORDER BY hp.person_name COLLATE NOCASE
+    LIMIT ?
   `),
 
   getById: db.prepare(`
@@ -534,6 +536,14 @@ export const publicPlayers = {
     FROM event_result_entry_participants AS erp
     WHERE erp.member_id = ?
       AND erp.historical_person_id IS NOT NULL
+    LIMIT 1
+  `),
+
+  findLinkedPersonByLegacyId: db.prepare(`
+    SELECT person_id
+    FROM historical_persons
+    WHERE legacy_member_id = ?
+      AND source_scope = 'CANONICAL'
     LIMIT 1
   `),
 } as const;
@@ -657,6 +667,15 @@ export interface MemberResultRow {
   participant_person_id: string | null;
   participant_member_slug: string | null;
   participant_member_id: string | null;
+}
+
+export interface MemberSearchRow {
+  slug: string;
+  display_name: string;
+  country: string | null;
+  is_hof: number;
+  is_bap: number;
+  is_board: number;
 }
 
 export const account = {
@@ -810,6 +829,14 @@ export const account = {
       COALESCE(ed.name, '') COLLATE NOCASE ASC,
       ere.placement ASC,
       erp_co.participant_order ASC
+  `),
+
+  searchMembers: db.prepare(`
+    SELECT slug, display_name, country, is_hof, is_bap, is_board
+    FROM members_searchable
+    WHERE display_name_normalized LIKE '%' || ? || '%' ESCAPE '\\'
+    ORDER BY display_name_normalized
+    LIMIT ?
   `),
 
   updateMemberProfile: db.prepare(`

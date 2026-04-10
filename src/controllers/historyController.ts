@@ -8,23 +8,6 @@ function redirectToLogin(req: Request, res: Response): void {
 }
 
 export const historyController = {
-  /** GET /history -- full player index; requires auth. */
-  index(req: Request, res: Response, next: NextFunction): void {
-    if (!req.isAuthenticated) {
-      redirectToLogin(req, res);
-      return;
-    }
-    try {
-      const vm = historyService.getHistoryLandingPage();
-      res.render('history/index', vm);
-    } catch (err) {
-      logger.error('history index error', {
-        error: err instanceof Error ? err.message : String(err),
-      });
-      next(err);
-    }
-  },
-
   /** GET /history/:personId -- service decides: redirect, require auth, or render. */
   detail(req: Request, res: Response, next: NextFunction): void {
     try {

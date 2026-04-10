@@ -39,6 +39,7 @@ export interface MemberOverrides {
   legacy_member_id?: string | null;
   first_competition_year?: number | null;
   bio?: string;
+  searchable?: 0 | 1;
 }
 
 export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}): string {
@@ -63,10 +64,11 @@ export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}
       real_name, display_name, display_name_normalized,
       bio, city, country,
       is_hof, is_bap, is_deceased,
+      searchable,
       deleted_at, personal_data_purged_at,
       show_competitive_results, legacy_member_id, first_competition_year,
       created_at, created_by, updated_at, updated_by, version
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
   `).run(
     id, slug,
     email, emailNormalized, emailVerifiedAt,
@@ -74,6 +76,7 @@ export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}
     name, display, display.toLowerCase(),
     o.bio ?? '', o.city ?? 'Testville', o.country ?? 'US',
     o.is_hof ?? 0, o.is_bap ?? 0, o.is_deceased ?? 0,
+    o.searchable ?? 1,
     o.deleted_at ?? null, purged,
     o.show_competitive_results ?? 1, o.legacy_member_id ?? null, o.first_competition_year ?? null,
     TS, SYS, TS, SYS,

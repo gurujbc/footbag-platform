@@ -25,7 +25,7 @@ publicRouter.get('/events',              eventController.landing);
 publicRouter.get('/events/year/:year',   eventController.year);
 publicRouter.get('/events/:eventKey',    eventController.event);
 
-publicRouter.get('/history',             historyController.index);
+publicRouter.get('/history', (_req, res) => { res.redirect(301, '/members'); });
 // IMPORTANT: /history/claim routes MUST be registered before /history/:personId.
 // Without this ordering, "claim" would be captured as the :personId param.
 publicRouter.get('/history/claim',                requireAuth, claimController.getClaim);
@@ -36,7 +36,7 @@ publicRouter.get('/history/:personId',   historyController.detail);
 // IMPORTANT: /members/:memberKey/edit and /members/:memberKey/avatar must be
 // registered before /members/:memberKey/:section so literal segments are not
 // captured as :section.
-publicRouter.get('/members',                       requireAuth, memberController.landing);
+publicRouter.get('/members',                       memberController.landing);
 publicRouter.get('/members/:memberKey',             memberController.getProfile);
 publicRouter.get('/members/:memberKey/edit',        requireAuth, memberController.getProfileEdit);
 publicRouter.post('/members/:memberKey/edit',       requireAuth, memberController.postProfileEdit);

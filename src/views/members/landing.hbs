@@ -1,0 +1,107 @@
+{{! Authenticated members landing page }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p>Welcome, {{content.displayName}}.</p>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <section>
+    <div class="dashboard-profile-link">
+      <a href="/members/{{content.profileSlug}}/edit" class="btn btn-primary">My Profile</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>Search for Members and Historical Players</h2>
+    </div>
+    <div class="member-search-section">
+      <form method="GET" action="/members" class="member-search-form">
+        <input type="text" name="q" minlength="2" maxlength="100"
+               placeholder="Search by name..."
+               value="{{content.search.query}}"
+               aria-label="Search members by name"
+               class="member-search-input" />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+  </section>
+
+  {{#if content.search}}
+  <section>
+    {{#if content.search.tooShort}}
+      <p class="text-muted">Please enter at least 2 characters.</p>
+    {{else if content.search.results.length}}
+      <div class="section-heading">
+        <h2>Results</h2>
+        <span class="section-count">{{content.search.results.length}}{{#if content.search.hasMore}}+{{/if}}</span>
+      </div>
+      {{#if content.search.hasMore}}
+        <p class="text-muted">Too many results. Please refine your search.</p>
+      {{/if}}
+      <div class="member-search-results">
+        {{#each content.search.results}}
+          <div class="member-search-result">
+            <a href="{{href}}">{{displayName}}</a>
+            {{#if country}}<span class="text-muted">{{country}}</span>{{/if}}
+            {{#if isHistorical}}<span class="badge badge-historical">Historical</span>{{else}}<span class="badge badge-member">Member</span>{{/if}}
+            {{#if isHof}}<span class="badge badge-honor">HoF</span>{{/if}}
+            {{#if isBap}}<span class="badge badge-honor">BAP</span>{{/if}}
+            {{#if isBoard}}<span class="badge badge-honor">Board</span>{{/if}}
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <p class="text-muted">No members found matching "{{content.search.query}}".</p>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  <section>
+    <div class="section-heading">
+      <h2>Member Features</h2>
+    </div>
+    <div class="card-grid card-grid-3col">
+      <div class="card card-coming-soon">
+        <div class="card-title">My Club</div>
+        <p class="card-description">See your club affiliation, roster, and leadership role.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">My Events</div>
+        <p class="card-description">View your upcoming registrations and past event history.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">My Media</div>
+        <p class="card-description">Manage your photo and video uploads and galleries.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Membership &amp; Tier</div>
+        <p class="card-description">View your membership tier, benefits, and renewal options.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Payments &amp; Donations</div>
+        <p class="card-description">View your payment history and donation receipts.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Voting &amp; Hall of Fame</div>
+        <p class="card-description">Participate in active IFPA votes and Hall of Fame nominations.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Account Settings</div>
+        <p class="card-description">Manage your password, email preferences, data export, and account.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+    </div>
+  </section>
+
+</div>

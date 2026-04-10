@@ -21,21 +21,6 @@ interface HistoricalPlayer {
   eventGroups: PlayerEventGroup[];
 }
 
-export interface HistoricalPlayerListEntry {
-  personId: string;
-  personName: string;
-  country: string | null;
-  eventCount: number | null;
-  placementCount: number | null;
-  bapMember: boolean;
-  hofMember: boolean;
-}
-
-export interface HistoryLandingContent {
-  playerCount: number;
-  players: Array<HistoricalPlayerListEntry & { playerHref: string }>;
-}
-
 export interface HistoryDetailContent {
   personId: string;
   displayName: string;
@@ -52,43 +37,6 @@ export type HistoryDetailResult =
   | { action: 'render'; vm: PageViewModel<HistoryDetailContent> };
 
 export const historyService = {
-  getHistoryLandingPage(): PageViewModel<HistoryLandingContent> {
-    const rows = runSqliteRead('listAllHistoricalPlayers', () =>
-      publicPlayers.listAll.all(),
-    ) as Array<{
-      person_id: string;
-      person_name: string;
-      country: string | null;
-      event_count: number | null;
-      placement_count: number | null;
-      bap_member: number;
-      hof_member: number;
-      linked_member_slug: string | null;
-    }>;
-
-    const players = rows.map(r => ({
-      personId:       r.person_id,
-      personName:     r.person_name,
-      country:        r.country ?? null,
-      eventCount:     r.event_count ?? null,
-      placementCount: r.placement_count ?? null,
-      bapMember:      Boolean(r.bap_member),
-      hofMember:      Boolean(r.hof_member),
-      playerHref:     personHref(r.linked_member_slug, r.person_id)!,
-    }));
-
-    return {
-      seo: { title: 'Historical Players' },
-      page: {
-        sectionKey: 'history',
-        pageKey:    'history_index',
-        title:      'Historical Players',
-        intro:      'Competitive footbag players from our legacy event results database.',
-      },
-      content: { playerCount: players.length, players },
-    };
-  },
-
   getHistoricalPlayerPage(personId: string, isAuthenticated: boolean): HistoryDetailResult {
     const row = runSqliteRead('getHistoricalPlayerById', () =>
       publicPlayers.getById.get(personId),
@@ -168,7 +116,7 @@ export const historyService = {
           title:      player.personName,
         },
         navigation: {
-          contextLinks: [{ label: 'Historical Players', href: '/history' }],
+          contextLinks: [{ label: 'Members', href: '/members' }],
         },
         content: {
           personId:      player.personId,

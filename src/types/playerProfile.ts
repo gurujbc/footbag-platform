@@ -11,6 +11,8 @@ export interface PlayerResultEntry {
   scoreText: string | null;
   teammates: { name: string; playerHref?: string }[];
   isTie: boolean;
+  /** Per-row prefix: "Tied with ", "Tied with " before partners, or "" */
+  detailPrefix: string;
 }
 
 export interface PlayerEventGroup {
@@ -22,7 +24,8 @@ export interface PlayerEventGroup {
   eventRegion: string | null;
   eventCountry: string;
   results: PlayerResultEntry[];
-  withHeader: string;
+  /** True when at least one row has teammates or scoreText to display */
+  hasDetailColumn: boolean;
 }
 
 export interface PlayerHeroData {

@@ -55,7 +55,7 @@ export function groupPlayerResults(rows: PlayerResultRow[], opts: GroupResultsOp
         eventRegion:  row.event_region,
         eventCountry: row.event_country,
         results:      [],
-        withHeader:   '',
+        hasDetailColumn: false,
       });
     }
 
@@ -75,6 +75,7 @@ export function groupPlayerResults(rows: PlayerResultRow[], opts: GroupResultsOp
         scoreText:          row.score_text,
         teammates:          [],
         isTie:              row.team_type === 'singles',
+        detailPrefix:       '',
       };
       group.results.push(entry);
     }
@@ -93,14 +94,20 @@ export function groupPlayerResults(rows: PlayerResultRow[], opts: GroupResultsOp
 
   const groups = Array.from(eventMap.values());
   for (const g of groups) {
-    const labels = new Set<string>();
+    let hasDetail = false;
     for (const r of g.results) {
-      if (r.teammates.length === 0) continue;
-      if (r.isTie) labels.add('Tied with');
-      else if (r.teammates.length > 1) labels.add('With partners');
-      else labels.add('With partner');
+      const hasTeammates = r.teammates.length > 0;
+      if (hasTeammates || r.scoreText) hasDetail = true;
+      if (!hasTeammates) continue;
+      if (r.isTie) {
+        r.detailPrefix = 'Tied with: ';
+      } else if (r.teammates.length > 1) {
+        r.detailPrefix = 'With partners: ';
+      } else {
+        r.detailPrefix = 'With partner: ';
+      }
     }
-    g.withHeader = labels.size === 1 ? [...labels][0] : '';
+    g.hasDetailColumn = hasDetail;
   }
   return groups;
 }

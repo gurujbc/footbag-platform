@@ -502,12 +502,20 @@ describe('GET /', () => {
     expect(res.status).toBe(200);
   });
 
-  it('includes section cards for Events, Players, and Clubs', async () => {
+  it('includes section cards for Events, Clubs, and Members', async () => {
     const app = createApp();
     const res = await request(app).get('/');
     expect(res.text).toContain('href="/events"');
-    expect(res.text).toContain('href="/history"');
     expect(res.text).toContain('href="/clubs"');
+    expect(res.text).toContain('href="/members"');
+  });
+
+  it('shows Media Gallery as coming soon', async () => {
+    const app = createApp();
+    const res = await request(app).get('/');
+    expect(res.text).toContain('Media Gallery');
+    expect(res.text).toContain('card-coming-soon');
+    expect(res.text).not.toContain('href="/media"');
   });
 
   it('does not expose draft events', async () => {
@@ -820,31 +828,11 @@ describe('POST /logout', () => {
 // ── History: index ─────────────────────────────────────────────────────────────
 
 describe('GET /history', () => {
-  it('redirects unauthenticated visitor to login', async () => {
+  it('redirects to /members with 301', async () => {
     const app = createApp();
     const res = await request(app).get('/history');
-    expect(res.status).toBe(302);
-    expect(res.headers.location).toContain('/login');
-  });
-
-  it('returns 200 for authenticated visitor', async () => {
-    const app = createApp();
-    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
-    expect(res.status).toBe(200);
-  });
-
-  it('lists all historical players by name', async () => {
-    const app = createApp();
-    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
-    expect(res.text).toContain('Alice Footbag');
-    expect(res.text).toContain('Bob Hackysack');
-  });
-
-  it('includes links to individual player detail pages', async () => {
-    const app = createApp();
-    const res = await request(app).get('/history').set('Cookie', validAuthCookie());
-    expect(res.text).toContain(`href="/history/${ALICE_ID}"`);
-    expect(res.text).toContain(`href="/history/${BOB_ID}"`);
+    expect(res.status).toBe(301);
+    expect(res.headers.location).toBe('/members');
   });
 });
 

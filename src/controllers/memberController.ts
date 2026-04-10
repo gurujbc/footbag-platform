@@ -33,9 +33,27 @@ function renderNotFound(res: Response): void {
 }
 
 export const memberController = {
-  /** GET /members — redirect to own profile when authenticated. */
-  landing(req: Request, res: Response): void {
-    res.redirect(`/members/${req.user!.slug}`);
+  /** GET /members — members landing; public welcome or authenticated search. */
+  landing(req: Request, res: Response, next: NextFunction): void {
+    if (!req.isAuthenticated) {
+      res.render('members/welcome', {
+        seo: { title: 'Members' },
+        page: { sectionKey: 'members', pageKey: 'member_welcome', title: 'Members' },
+      });
+      return;
+    }
+    try {
+      const query = typeof req.query.q === 'string' ? req.query.q : undefined;
+      const vm = memberService.getMembersLandingPage(
+        req.user!.slug,
+        req.user!.displayName ?? 'Member',
+        query,
+      );
+      res.render('members/landing', vm);
+    } catch (err) {
+      logger.error('members landing error', { error: err instanceof Error ? err.message : String(err) });
+      next(err);
+    }
   },
 
   /** GET /members/:memberKey — own profile or public read-only for HoF/BAP. */

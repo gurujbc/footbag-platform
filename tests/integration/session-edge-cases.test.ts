@@ -27,7 +27,7 @@ beforeAll(async () => {
 afterAll(() => cleanupTestDb(dbPath));
 
 /** Helper: protected route that requires auth (redirects 302 if unauthenticated). */
-const PROTECTED_ROUTE = '/members';
+const PROTECTED_ROUTE = '/history/claim';
 
 function expectUnauthenticated(res: { status: number; headers: Record<string, string> }): void {
   expect(res.status).toBe(302);

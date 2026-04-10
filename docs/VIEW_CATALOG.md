@@ -23,11 +23,11 @@
 - [5. Public Route Catalog](#5-public-route-catalog)
 - [6. Page Specifications](#6-page-specifications)
   - [6.1 Home](#61-home)
-  - [6.2 Member account landing redirect](#62-member-account-landing-redirect)
+  - [6.2 Member dashboard](#62-member-dashboard)
   - [6.3 Member profile](#63-member-profile)
   - [6.4 Member profile edit](#64-member-profile-edit)
   - [6.5 Member account stub pages](#65-member-account-stub-pages)
-  - [6.6 Historical players index](#66-historical-players-index)
+  - [6.6 Historical players redirect](#66-historical-players-redirect)
   - [6.7 Historical player detail](#67-historical-player-detail)
   - [6.8 Events index](#68-events-index)
   - [6.9 Events year archive](#69-events-year-archive)
@@ -80,9 +80,9 @@ This document covers:
   - Event detail
   - Clubs index
   - Clubs country pages and club detail pages
-  - Historical players index (`/history`)
+  - Historical players redirect (`/history` -> `/members`)
   - Historical player detail (`/history/:personId`)
-  - Member account landing redirect (`/members`)
+  - Member dashboard (`/members`)
   - Member profile (`/members/:memberKey`)
   - Member profile edit (`/members/:memberKey/edit`)
   - Member avatar upload (`POST /members/:memberKey/avatar` — multipart upload endpoint, inline on edit page)
@@ -197,7 +197,7 @@ The HTML `<title>` tag follows the pattern `Footbag {seo.title}` for most pages.
 | Events year archive | `{year} Events` | | `Footbag 2024 Events` |
 | Event detail | `event.standardTagDisplay` | | `Footbag #event_{year}_{slug}` |
 | Historical person detail | `Player {name}` | | `Footbag Player {name}` |
-| Members index | `Members` | | `Footbag Members` |
+| Member dashboard | `Member Dashboard` | | `Footbag Member Dashboard` |
 | Member profile (own) | `{displayName}` | `IFPA Member {displayName}` | `IFPA Member {name}` |
 | Member profile (public) | `{displayName}` | `IFPA Member {displayName}` | `IFPA Member {name}` |
 | Clubs index | `Clubs` | | `Footbag Clubs` |
@@ -395,12 +395,12 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /events` | Events index | Browse upcoming events and archive entry points | Current |
 | `GET /events/year/:year` | Events year archive | Browse completed events for one year | Current |
 | `GET /events/:eventKey` | Event detail | Canonical public event page | Current |
-| `GET /members` | Member account landing | Auth-gated redirect into member-account area | Current |
+| `GET /members` | Member dashboard | Auth-gated member dashboard with search and feature cards | Current |
 | `GET /members/:memberKey` | Member profile | Own profile or public HoF/BAP read-only view | Current |
 | `GET /members/:memberKey/edit` | Member profile edit | Own-profile edit form | Current |
 | `POST /members/:memberKey/avatar` | Member avatar upload | Multipart upload endpoint (inline on edit page, no GET route) | Current |
 | `GET /members/:memberKey/:section` | Member account stub | Placeholder pages for future account subsections | Current |
-| `GET /history` | Historical players index | Auth-gated imported historical-person index | Current |
+| `GET /history` | Historical players redirect | 301 redirect to `/members` | Current |
 | `GET /history/:personId` | Historical player detail | Historical person competitive record detail | Current |
 | `GET /history/claim` | Claim initiation | Legacy account claim form | Current (early-test shortcut) |
 | `POST /history/claim` | Claim lookup | Legacy account lookup handler | Current (early-test shortcut) |
@@ -418,12 +418,12 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /` is the canonical public home route.
 - `GET /events` is the canonical events section entry route.
 - `GET /events/:eventKey` is the canonical public event detail route.
-- `GET /members` is the auth-gated member-account entry route. It does not render a standalone page in the current slice; it redirects authenticated users to their own profile and redirects unauthenticated visitors to `/login?returnTo=%2Fmembers`.
+- `GET /members` is the auth-gated member dashboard with search and coming-soon feature cards. Unauthenticated visitors see a public welcome page with sign-up/login links.
 - `GET /members/:memberKey` is the canonical current-slice member profile route. It serves the owner's profile when authenticated as that member, and it may serve a limited public read-only profile for HoF/BAP members.
 - `GET /members/:memberKey/edit` is the current-slice member profile edit page.
 - `POST /members/:memberKey/avatar` is the multipart avatar upload endpoint; there is no GET route (upload is inline on the edit page).
 - `GET /members/:memberKey/:section` is the current-slice account stub-page route for explicitly supported account sections.
-- `GET /history` is the historical players index route.
+- `GET /history` permanently redirects to `/members`.
 - `GET /history/:personId` is the historical person detail route.
 - `GET /history/claim` is the legacy account claim initiation route. Current implementation is the early-test shortcut (direct lookup + confirm + merge); the production token-based flow is deferred to Phase 4.
 - `POST /history/claim` is the claim lookup form-action handler.
@@ -516,11 +516,11 @@ Home still renders normally when optional featured/media regions are absent.
 
 ---
 
-### 6.2 Member account landing redirect
+### 6.2 Member dashboard
 
 ### Purpose
 
-Provide the authenticated entry point for the member-account area without introducing a duplicate landing page.
+Provide the authenticated member dashboard with profile quick link, member search, and coming-soon feature cards.
 
 ### Route
 
@@ -528,16 +528,46 @@ Provide the authenticated entry point for the member-account area without introd
 
 ### Audience
 
-Authenticated member primarily; unauthenticated visitor is redirected through the standard auth gate.
+Authenticated member. Unauthenticated visitor is redirected through the standard auth gate.
 
 ### Standard relationship
 
-This route is part of the account-area contract but does not render a standalone page in the current slice.
+This page consumes the generic public rendering standard and the §4.2 page contract.
+
+### Required content
+
+- hero with section title and personalized welcome subtitle
+- own-profile quick link ("My Profile" button, links to edit page)
+- member search form with section heading (GET with query parameter `q`)
+- search results section (conditional on query presence)
+- coming-soon feature cards section ("Member Features")
+
+### Required view-model fields
+
+- `seo.title = Member Dashboard`
+- `page.sectionKey = members`
+- `page.pageKey = member_landing`
+- `page.title = Member Dashboard`
+- `content.profileSlug`
+- `content.displayName`
+- `content.search` (null when no query)
+  - `query`
+  - `results[]` -- `{ displayName, country, slug, isHof, isBap, isBoard }`
+  - `hasMore: boolean`
+  - `tooShort: boolean`
 
 ### Behavior
 
-- authenticated visitor -> redirect to `/members/{memberKey}`
-- unauthenticated visitor -> redirect to `/login?returnTo=%2Fmembers`
+- authenticated visitor -> 200 with member dashboard; search via `?q=` query parameter
+- unauthenticated visitor -> 200 with public welcome page (sign-up and login links)
+
+### Search rules
+
+- substring match on `display_name_normalized`
+- minimum 2-character query
+- maximum 20 results; `hasMore` signals the user should refine
+- queries the `members_searchable` view (excludes deleted, deceased, opted-out, purged, unverified)
+- results show display name, country, and honor badges only
 
 ---
 
@@ -618,67 +648,9 @@ Provide explicit placeholder pages for currently implemented but not-yet-built a
 
 ---
 
-### 6.6 Historical players index
+### 6.6 Historical players redirect
 
-### Purpose
-
-Provide the historical-person index for competitive footbag players. Lists all imported historical persons with competitive records.
-
-### Route
-
-`GET /history`
-
-### Audience
-
-Authenticated member. Auth enforced at controller level (not route middleware). Unauthenticated visitors are redirected to `/login?returnTo=/history`.
-
-### Standard relationship
-
-This page consumes the generic public rendering standard and the §4.2 page contract.
-
-### Page intent
-
-- present the public historical competitive record index for footbag players
-- make clear this is the Members section and that member accounts and login are part of this section
-- avoid implying historical imported people are current-member accounts or publicly searchable/contactable members
-
-### Required content
-
-- hero for the Members section
-- public historical-record listing (players with imported event data)
-- optional explanatory text clarifying that historical records and current member accounts are distinct
-
-### Required view-model fields
-
-- `seo.title = Historical Players`
-- `page.sectionKey = history`
-- `page.pageKey = history_index`
-- `page.title`
-- optional `page.eyebrow`
-- `page.intro`
-- optional `page.notice`
-- `content.playerCount` — total count of listed players
-- `content.players[]`
-  - `personId`
-  - `personName`
-  - `playerHref` — service-computed; `'/members/{slug}'` when a linked member account exists, otherwise `'/history/{personId}'`; templates must not construct this URL
-  - optional `country`
-  - optional `eventCount`
-  - optional `placementCount`
-  - `bapMember: boolean`
-  - `hofMember: boolean`
-
-### Navigation outputs
-
-No service-provided navigation outputs. Member detail links are part of `content.members[].memberHref`, not the `navigation` object. Global nav (`currentSection`) is set by middleware.
-
-### Empty state
-
-This page does not require data-backed list content and should still render normally when no additional member functionality is available yet.
-
-### Implementation notes
-
-- The page currently includes an authenticated full historical-record table with client-side filter/sort. This is a review and bootstrapping surface, not the final public design.
+`GET /history` permanently redirects (301) to `/members`. The historical players index page has been removed. Individual historical player detail pages remain at `/history/:personId` (see §6.7).
 
 ---
 
@@ -726,7 +698,7 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - `content.personId`
 - `content.displayName` — the person's display name
 - optional `content.honorificNickname` — BAP nickname when present; rendered in a styled span alongside `displayName` in the h1
-- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/history/{personId}"` when a historical person link exists
+- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, hasDetailColumn, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; `hasDetailColumn` is true when any result row has teammates or `scoreText`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, `detailPrefix`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/history/{personId}"` when a historical person link exists; `detailPrefix` is a per-row label: `"With partner: "`, `"With partners: "`, `"Tied with: "`, or empty; the detail column is suppressed entirely when `hasDetailColumn` is false
 
 ### Navigation outputs
 
@@ -1481,7 +1453,7 @@ Most pages in this catalog are public visitor pages. The following routes requir
 - `GET /history/claim` — auth required (route middleware)
 - `POST /history/claim` — auth required (route middleware)
 - `POST /history/claim/confirm` — auth required (route middleware)
-- `GET /members` — auth-gated redirect into the member-account area
+- `GET /members` — auth-gated member dashboard with search
 - `GET /members/:memberKey` — own profile when authenticated as that member; limited public read-only HoF/BAP view otherwise; non-HoF/BAP public access fails closed
 - `GET /members/:memberKey/edit`, `POST /members/:memberKey/edit` — auth required, own-profile only
 - `POST /members/:memberKey/avatar` — auth required, own-profile only

@@ -74,23 +74,25 @@ export const homeService = {
         {
           label: 'Events',
           href: '/events',
-          description: 'Browse competitive results from tournaments around the world.',
-        },
-        {
-          label: 'Players',
-          href: '/history',
-          description: 'Historical players and competitive results from footbag events worldwide.',
+          description: 'Find upcoming events, or browse competitive results from tournaments.',
         },
         {
           label: 'Clubs',
           href: '/clubs',
           description: 'Find clubs near you and around the world.',
         },
+        {
+          label: 'Members',
+          href: '/members',
+          description: 'Manage your profile and participate in the footbag community.',
+        },
       ],
       comingSoonSections: [
-        { heading: 'Net', body: 'Footbag Net, fast-paced volleyball-style play over a 5-foot net.' },
+        { heading: 'Media Gallery', body: 'Browse photos and videos by hashtag, member, event, and club galleries.' },
+        { heading: 'Net', body: 'Fast-paced volleyball-style play over a 5-foot net.' },
         { heading: 'Freestyle', body: 'Tricks, combos, and choreographed routines set to music.' },
         { heading: 'Sideline Events', body: 'Golf, 2-Square, 4-Square, Consecutive Kicks, and Circle Kicking (old-school Hack).' },
+        { heading: 'Tutorials', body: 'Rules, how-to guides, and reference material for all levels.' },
       ],
     };
   },
