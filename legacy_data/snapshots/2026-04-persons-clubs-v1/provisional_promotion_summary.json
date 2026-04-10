@@ -1,0 +1,19 @@
+{
+  "match_status_counts": {
+    "EXACT_HISTORICAL_MATCH": 17,
+    "HISTORICAL_CONFLICT": 7,
+    "NO_HISTORICAL_MATCH": 1905,
+    "VARIANT_HISTORICAL_MATCH": 20,
+    "WEAK_HISTORICAL_MATCH": 214
+  },
+  "matched_to_historical_count": 37,
+  "promoted_link_count": 37,
+  "promotion_status_counts": {
+    "MATCHED_TO_HISTORICAL": 37,
+    "REVIEW_REQUIRED": 221,
+    "STAGED": 1905
+  },
+  "review_required_count": 221,
+  "staged_count": 1905,
+  "total_provisional_identities": 2163
+}

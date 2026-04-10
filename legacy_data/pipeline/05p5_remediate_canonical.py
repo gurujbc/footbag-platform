@@ -1664,6 +1664,105 @@ if _dedup_removed:
     participants = _deduped_participants
     print(f"\n[Dedup] Removed {_dedup_removed} duplicate person_id row(s) within same result slot")
 
+# ── Fix 9: Disambiguate bare division labels in multi-category events ─────────
+# When an event contains disciplines with explicit non-net tokens (Routines,
+# Golf, Consecutives, Distance, etc.) alongside bare labels (Open Singles,
+# Mixed Doubles, etc.), the bare labels are unambiguously Net.  Upgrade them to
+# "... Net", correct discipline_category to "net", and rename discipline_key to
+# match.  Cascade the key rename to results and participants.
+#
+# Trigger: event has ≥1 discipline whose name contains an explicit non-net token.
+# Guard:   discipline whose name already contains ANY explicit token is left alone.
+# Safety:  skip rename if new_key would collide with an existing discipline_key
+#          in the same event.
+
+print("\n[Fix 9] Disambiguating bare division labels in multi-category events...")
+
+_EXPLICIT_NONNET_TOKENS = frozenset([
+    # Freestyle
+    "routine", "routines", "freestyle", "shred", "circle", "sick",
+    "request", "battle", "ironman", "combo", "trick",
+    # Golf
+    "golf",
+    # Sideline
+    "consecutive", "consec", "distance", "one pass", "one-pass",
+    "2-square", "2 square", "two square", "four square", "4-square", "4 square",
+    # Overall (aggregate discipline — explicit, not ambiguous)
+    "overall",
+])
+_EXPLICIT_NET_TOKENS = frozenset(["net", "volley", "side-out", "side out", "rallye"])
+_ALL_EXPLICIT_TOKENS = _EXPLICIT_NONNET_TOKENS | _EXPLICIT_NET_TOKENS
+
+# Sentinel/placeholder names that must never be upgraded
+_FIX9_SKIP_SENTINELS = frozenset(["unknown", ""])
+
+
+def _has_nonnet_explicit(name: str) -> bool:
+    low = name.lower()
+    return any(tok in low for tok in _EXPLICIT_NONNET_TOKENS)
+
+
+def _has_any_explicit(name: str) -> bool:
+    low = name.lower()
+    return any(tok in low for tok in _ALL_EXPLICIT_TOKENS)
+
+
+# Events that contain ≥1 explicit non-net discipline → bare labels are Net
+_multi_cat_events: set[str] = {
+    d["event_key"] for d in disciplines
+    if _has_nonnet_explicit(d["discipline_name"])
+}
+
+# Build (event_key, discipline_key) → discipline_key index for collision check
+_existing_disc_keys: dict[str, set[str]] = {}
+for d in disciplines:
+    _existing_disc_keys.setdefault(d["event_key"], set()).add(d["discipline_key"])
+
+# Collect renames: (event_key, old_key) → new_key
+_f9_renames: dict[tuple[str, str], str] = {}
+_f9_upgraded = 0
+
+for d in disciplines:
+    ek = d["event_key"]
+    if ek not in _multi_cat_events:
+        continue
+    name = d["discipline_name"]
+    if name.strip().lower() in _FIX9_SKIP_SENTINELS:
+        continue  # sentinel/placeholder — never upgrade
+    if _has_any_explicit(name):
+        continue  # already has explicit token — leave as-is
+    # Bare label in a multi-category event → upgrade to Net
+    old_dk = d["discipline_key"]
+    new_dk = old_dk + "_net"
+    if new_dk in _existing_disc_keys.get(ek, set()):
+        print(f"    SKIP collision: {ek}: {old_dk!r} → {new_dk!r} already exists")
+        continue
+    _f9_renames[(ek, old_dk)] = new_dk
+    d["discipline_key"]      = new_dk
+    d["discipline_name"]     = name + " Net"
+    d["discipline_category"] = "net"
+    _f9_upgraded += 1
+    print(f"    {ek}: {name!r} → {name + ' Net'!r}")
+
+# Cascade key renames to results and participants
+_f9_results_updated = 0
+for r in results:
+    new_dk = _f9_renames.get((r["event_key"], r["discipline_key"]))
+    if new_dk:
+        r["discipline_key"] = new_dk
+        _f9_results_updated += 1
+
+_f9_parts_updated = 0
+for p in participants:
+    new_dk = _f9_renames.get((p["event_key"], p["discipline_key"]))
+    if new_dk:
+        p["discipline_key"] = new_dk
+        _f9_parts_updated += 1
+
+print(f"  Bare labels upgraded to Net: {_f9_upgraded}")
+print(f"  Results rows updated:        {_f9_results_updated}")
+print(f"  Participant rows updated:    {_f9_parts_updated}")
+
 # ── Save ──────────────────────────────────────────────────────────────────────
 
 print("\nSaving...")
@@ -1711,6 +1810,7 @@ print(f"""
 ║ Fix 6  Participants renumbered (seq)     {seq_normalized:>6,} ║
 ║ Fix 7  Resolved by exact name match      {_f7_name_match:>6,} ║
 ║        Left unresolved (empty pid)       {_f7_left_empty:>6,} ║
+║ Fix 9  Bare labels → Net                 {_f9_upgraded:>6,} ║
 ║ Pre97  Parse failures repaired           {_pA_fixed:>6,} ║
 ║        Missing placements added          {_pB_results_added:>6,} ║
 ╠══════════════════════════════════════════╣

@@ -176,3 +176,11 @@ legacy_data/event_results/seed/
 *.lnk
 *BAK
 *.py1
+# Working outputs (do not commit)
+legacy_data/membership/out/
+legacy_data/clubs/out/
+legacy_data/persons/out/
+legacy_data/persons/provisional/out/
+
+# Keep snapshots (these ARE committed)
+!legacy_data/clubs/snapshots/

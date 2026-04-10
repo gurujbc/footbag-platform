@@ -1,0 +1,12 @@
+{
+  "linked_persons": 619,
+  "match_status_counts": {
+    "MATCHED_STRONG": 612,
+    "MATCHED_VARIANT": 7,
+    "MATCHED_WEAK": 15,
+    "NO_MATCH": 375
+  },
+  "membership_only_persons": 375,
+  "raw_membership_rows": 2009,
+  "unique_membership_identities": 1009
+}

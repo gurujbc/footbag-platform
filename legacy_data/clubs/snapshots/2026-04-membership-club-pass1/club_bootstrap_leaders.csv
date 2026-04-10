@@ -1,0 +1,177 @@
+club_key,club_name,person_id,person_name,mirror_member_id,role,status,affiliation_confidence_score,club_confidence_score,selection_rank,selection_reason
+1005960946,FootbagDenmark,816ccebb-84e4-551e-b7bb-d6517dd88e83,Asmus Helms,69571,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1005960946,FootbagDenmark,d7070195-f1d4-50ec-b00a-e13088399b00,Benny Leick,14744,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1014117242,Finnsta,998c87dc-4197-5f4d-97aa-f54b82f96a13,Aleksi Öhman,37326,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1018615368,Fundación Footbag Colombia - IFC,6fd37375-f36d-5615-a5b4-698d49e2c31d,Camilo Moreno,70188,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1019075457,Riverside Kicks,5fb5dad9-fea9-5d00-b248-0c99eded7fa6,Jonathan Felix,45621,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1021384954,Freestyle Fanatics,85d475d3-73ed-5d1b-acfc-682ee32b8965,Benjamin Schmidtke,82326,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1021384954,Freestyle Fanatics,7a495ac2-7771-5070-a3ef-6cd2d465daa4,Björn Stenzel,75740,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+1021573277,Sole Purpose,ece72308-6a72-551f-866a-e348728ee455,Kendall KIC,13397,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1025613544,ToMiStyKa Footbag Club,fc0e50ee-c392-5d00-a7f1-be70b324c749,Adam Cieszkiel,66198,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1027195555,Naurava Ampiainen,23f60613-fbe8-5442-9981-114fd3cf4c14,Jussi Lahtinen,43909,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1030716331,Asociacion Argentina de Footbag,edc74680-06cd-5651-8fd3-6881c9af20ce,Jan Konietzko,81124,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1041981808,"United Flyers of Sonoma, UFOS",8959d778-41d3-554e-a831-6e1f73534b0f,Chris Ott,40543,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1042652245,Les Pieds à Gilles,a42cf921-c464-5ab4-b1ff-f7ce4c0bf8ed,Alain Custovic,77993,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1042652245,Les Pieds à Gilles,67249857-b2ef-52b9-972f-6d43915f17fc,David Garcia,64078,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1045423024,Nashville Kicks,e369e282-1618-545f-8baa-b12ee76814aa,Alex Grammer,62690,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1049582357,FOOTBAG ERIE,37561288-5ce0-5b8b-b297-0181cdd489fc,Cory Carr,64864,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1053476560,Victoria Footbag,be733240-4c4d-553c-9df4-4c47b38a19e4,Allan Haggett,12181,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1056107923,Footbag Kranj,9872302c-81c0-5679-8be2-a2deb87c71f4,Ervin Pahulje,79035,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1056107923,Footbag Kranj,cd054fc0-0dbe-582f-9e04-7b4b1d16cf23,Grega Morel,66098,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1060260331,Brussels Footbag Club,ad56005f-3da3-5f45-99c3-a691e7e6773c,Julien Romiti,73787,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1060296406,Chaos Footbag Club,4fdf61d1-f78d-5cc3-bcea-abf614182e0e,Bradley Williams,79929,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1060296406,Chaos Footbag Club,8959d778-41d3-554e-a831-6e1f73534b0f,Chris Ott,40543,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1061147667,TSK Aachen e.V.,486c9db6-e1e7-5324-b092-8f4158ddb923,Adrian Pohl,66527,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1061147667,TSK Aachen e.V.,6e1b0db3-cea0-598f-a6a4-b099fe5c8161,Amaya Straeten,66530,co_leader,provisional,0.9,0.85,2,tied_top_score_with_sufficient_depth
+1061571426,Floripa Footbag Club,e2b56394-d34c-578b-b3be-6f86c02f532e,Dan Baron,80966,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1062120239,Footbag Association of Toronto,6c8fe6d9-14cf-5e48-ae8f-e94b6fb9ef72,Andrew Weglarz,63357,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1062120239,Footbag Association of Toronto,d5ed0487-904c-5d5b-b324-655bb3f4886a,Cassandra Taylor,76957,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1067016491,gravityfighters Linz,250908c9-0b71-5e07-b85e-8ef077d4fb50,Markus Meisinger,72809,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1068291442,DST Footbag Club Strzelin,6640fdb5-ce0a-551f-ac7e-b5673e17e9a5,Arek Hutnik,78536,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1068291442,DST Footbag Club Strzelin,f07b9590-cb35-55ba-8277-3e9c15e177d0,Krystian Bubula,82578,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1071043472,FOOTFORCE Moscow,3a60355a-4445-5325-93a6-909b553787d9,Mikhail Mukhortykh,82315,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1082105271,"Jyväskylän Footbag-klubi, JFK",63b42121-63a4-5b68-a8b3-cceb8d6d4420,Henrik Martikainen,72274,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1082105271,"Jyväskylän Footbag-klubi, JFK",e0ff5af1-8b97-5b29-af49-1792c3746c0f,Iisak Liukko,12571,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+1083737064,Edmonton Footbag Club,8980806b-fdc4-5705-84cd-a9f4480dbcfe,Katryna Yasinski,80893,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1084884122,Pasikonik BFT,ac609395-74de-5986-ace2-80b11fdb9c50,Adrian Bartoszuk,79045,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1086285717,team Twist,eddfd46f-0832-5ae5-88fb-295807d3d337,Masaaki Shigeoka,51346,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1093025280,Footbag Táchira Venezuela,0c53bbd7-973a-53aa-b791-0d43e8c5ac97,Daniel Mantilla,82428,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1101954095,footbag in Quebec city,6c8af5f6-b753-50f1-96ba-cea18b196cef,Julien Cote,53096,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1102560391,Northwest Footbag Alliance,bd97ebe2-5ecd-5854-9d2e-b877a27ac527,Daryl Genz,12199,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1103295019,Le Tri-Flux,5d187fce-0ade-59a6-8ec3-e2ebae0c259c,Kavin Thiffault,12871,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1108092962,NPR,7e5f195b-fb1f-5b3c-9ecf-1ed93e1e2ebf,David Bernard,12112,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1108814159,Prague Footbag Club,bf058f46-4c2d-53cc-8caa-041c92a8f9fb,Petr Stejskal,71318,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1118253981,RFA (Russian Footbag Association),b11235fe-33e4-5395-b044-70ee15f80a34,Sergey Kaplin,77905,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1119355049,Roztyly Footbag Club,f2e73bec-d859-51b9-8312-edb5a473e83e,Ales Zelinka,20996,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1137003407,Horse Head Hog'nshire's Footbag Guild of the Mountains,a8bdea1b-b579-5980-9ea4-16c1a62b8171,Sean Nyman,82269,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1138120998,Maniac Footbag Team,b980fe51-dd4b-54fd-bb60-21cbb482f674,Michal Klimczak,79168,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1139097300,Steel City Freestyle,ea4b97b8-2ee0-516b-94ce-ccdf349463da,Caleb Abraham,32342,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1139639026,Footbag Chile,256ba155-76d2-5920-b2d6-04d6ff39fab6,Daniel Boyle,40096,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1142872957,Mañana Footbag Club,1a1b1397-a4b8-5826-b51d-ff5391eba110,Hakan Hellberg,67042,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1154637329,Aintno Footbag Club,71ae4086-3d7f-5fdb-812b-778eda4da0cf,Anthony Intemann,12277,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1158465815,Góra Footbag Klub,24212ff4-d4e3-5864-9e14-c3326e306cdb,Daniel Cuze,72518,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1159970273,Grazer Footbag Club,e9a6e667-edc0-5a6d-afd0-22596cc18858,Dian Fedl,80032,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1161873598,Boston Shred Crew,373368d9-e65b-5a50-89b7-653ff4dc3a11,Doug Tank,75660,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1167509121,WRC Wroclaw Footbag Club,c84f68fb-16c1-5231-83fa-46eaa2ef955d,Agata Piesiewicz,77578,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1171927920,Footbag Medellin,bccd6d14-b132-5b0c-83bd-8eb8299409a2,Esteban Restrepo,76698,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1173308481,Nordlicht Footbag Club e.V.,5699217a-362f-5827-976c-dadeb013996a,Chris Haut,81643,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1173308481,Nordlicht Footbag Club e.V.,d9a0ca35-b8b0-5904-96fd-9a13bc4a38be,Christian Bruhn,77444,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+1182859864,Red Trousers Footbag Club,0e5b3e44-9bcc-57e4-bdf0-e2c23269ec2a,Markus Neuweg,77362,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1183473386,UCV Footbag Club,d763068b-f92e-5f62-8bcc-4e6704259b4a,Jairo Lagos,80306,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1188205770,against Gravity,b6e28eb4-9de6-52a6-bde7-4ffaaa488933,Christoph Alexander,72651,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1189464324,AUTsiders,38c0f384-29fa-5cd9-b3e7-707e76e7aa9a,Andreas Hoffmann,77499,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1190109627,Melbourne University Footbag Club,7e3e841a-89da-528c-b6d4-55f9a7e8a2cd,Janis Lesinskis,73903,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1190112890,Footbag Empire,49907040-6c5c-54f3-b204-61a054f34d51,Alexey Antipov,77870,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1191142197,Häck-the-Bock,699cb803-0a95-5dbd-b528-ac561d1866f3,Bettina Knobel,82301,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1215634681,Urban Komba,c1ff0f32-2d9d-56d5-8287-66eb1527ace0,Bogdan Roussev,83581,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1215634681,Urban Komba,0ddda303-66ea-5985-9294-3882e7fe5845,Kristiyan Dimitrov,83239,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+1218538884,Carnabal Footbag,f5204064-f32c-562e-9cfe-9820060fc8e3,Antony Arnaud,82445,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1218538884,Carnabal Footbag,9dd1729e-cd7f-5412-93ee-f08166e75fc7,David Rambaud,80616,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1230848919,Aki Québec,27d1fe0b-354c-541d-984a-61ef8c92f96f,Christophe Spooner,69403,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1230848919,Aki Québec,fea99a91-ae13-5cb1-b87f-3c352783dc2e,Geneviève Bousquet,40480,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1235601924,WSF Warsaw Footbag Association,3568ce18-bf1b-55b6-aefd-61f65f55b08c,Jakub Grabarczyk,71236,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1235601924,WSF Warsaw Footbag Association,ddf2f704-a4d2-5653-a82a-45987d37645c,Krzysztof Sobótka,74062,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1235935564,Aki Freestyle Montréal,bd9edb36-ddd6-5fa8-b46f-aad4e708716d,Alexander Faber,12720,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1236990799,San Diego Fury,87ee7c32-97af-5c43-a6c6-eab001bb5bbe,Pam Kile,13914,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1238083918,Tu  Wat,016c2ac1-b2ed-5676-b356-e0f9c2af0a9c,André Volksdorf,81269,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1240323964,X-PRO,1ff2698f-6676-56d0-9425-d02bc4a12d94,Angel Hernandez,80326,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1240323964,X-PRO,6afee6ee-e27c-5442-9ec5-01cdb1dbafce,Anthony Di Benedetto,63779,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1248906214,Madrid Footbag Club,0f60f82c-75c9-552f-b962-5832d5cda779,Sergio Garcia,78940,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1256393558,Liberty Park,e8aa88b0-f630-555a-ac0c-60d033607464,Chris Balch,69445,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1256856154,Footbag Ostrava,2ad84903-ac37-5f07-9487-acc01cd28f9a,Jiøí Pavlas,82832,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1258057063,Hamburg Footkings e.V.,6f69628f-6e43-53b9-91a6-0bff36dc6ee7,Christian Bock,68780,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1261141376,Freiburg Footbag Fanatics,531ec95f-021b-55bd-ba97-071caac25dfd,Tim Heun,78490,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1274160674,PAAAFA (Pennsylvania Amish Area Footbag Association),9f4a6136-047f-5cea-905d-17e66f4ca97b,Mike Toolan,74099,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1289943006,Footbag Dresden e.V.,1ce47efc-9d7a-594c-b5d9-d17c7dc26dce,Anne Schmidt,81218,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+1289943006,Footbag Dresden e.V.,fa9be285-7a85-5ffa-a4dd-5561ae4c5c62,Benjamin Kanske,81925,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+1296237919,Club Footbag Medellín,ef2c88aa-ab9e-58d1-b4c9-1374e77859eb,Sebastian Ceballos,80716,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1319552551,FootGangers,5cc6eae3-a8b7-5054-99e6-cc2f441321ad,Gabriel Salgado,81942,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1320083231,Penn State Footbag Club,f06b66e5-bc34-5a71-9eec-1a176fec790e,Khoa Nguyen,82641,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1328291225,Hradec Králové Footbag Club,511f8154-a9df-5bbd-8375-1164c1e266e2,Tomas Tucek,66058,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1328392220,Net Bandits,62c1dce2-7afb-5dbe-94ad-9cd07fb7633b,Brett Armstrong,81006,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1340408418,We Kick,cd035f70-1e6d-5620-b8eb-bf5809c756ab,Scott Durfee,33788,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1351784329,\m/ichigan footbag,5153f93f-1e75-5497-82c6-bf804faf6476,Anton Britting,82454,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1367809200,IUJO Footbag Club,22ccea51-7ede-5848-b549-d7ab2d1f1dbe,Carlos Medina,82631,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1379698765,Penn State Footbag Club,97dc8652-bf81-51cc-8f79-d92647a989f7,April Tou,82852,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1379706860,Turku Footbag,34f17114-99b7-5320-b4ed-10a6813859ac,Jay Boychuk,75689,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1406214484,Lubaczów Footbag Club,8a15006e-bc85-5621-bbe6-66090397b7d2,Przemyslaw Pietrzycki,79990,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1415044864,Fort Worth Footbag Club,06eb1264-0514-5ba6-80f4-a26ab9c0cec7,Mike Wilson,83152,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1466041249,Springfield Footbag Club,8578cf41-f2fa-58b3-a9cc-972be1e3cc24,Jon Herbert,81596,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1472671462,Vancouver Footbag Freestyle,70f7b4f9-e8e3-5a08-b540-0924c68a4b20,Olaf Piwowar,73637,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1473687943,Vienna Footbag Squad,7ed2abb4-f9f2-5432-9511-b62ce1a09957,Julian Sinnl,77231,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+1488489195,Les Pieds à Gilles,d1436b55-96f6-57a5-92f9-5493ce25a81b,Camilo Rodriguez,83069,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1500439365,Wellington Hack Crew,63cda333-9780-5bb4-a4f1-7618bf7fe937,Dave Leberknight,11985,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1503364311,Butler Footbag Club,9dea6e25-e6ab-5aeb-9f47-1f36fcf88d94,Josh Gayhart,65860,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1520847784,SK FOOTBAG TÁBOR,fb09d2be-a773-5bc1-9da3-60cbabff4338,Pavel Hejra,72641,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1523801660,Footbag Venezuela Club,6b35607b-6d93-50d0-bdfa-6b6d83115efc,Ivan Funes,81730,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1545320064,Warszawa Footbag Club,c917c04b-83fa-5c1a-8f2c-292f24db5616,Wiktor Debski,65247,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1565439454,YijianSunshine Footbag Club,f4f5b8d0-c503-5ae5-8ce5-c5ff07d630c4,Bruce Li,81448,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1698840698,Bellas Artes Footbag Club,d05edd33-4666-571b-966a-13d729f1a32a,Jessica Cedeño,71959,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1711660466,San Antonio Footbag Club,af293a83-b430-5db9-aca1-a1bb64aa904d,Luis Colina,84076,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1721169686,Cortes Island Footbag Club,037a987a-d6b4-5573-81be-6b41e6d161e1,Dominic Allard,84130,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1725434563,Rebel Footbag,dfae1717-3276-5c1d-acb5-a5ea12d5708e,Happy Om,84146,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+1728989660,Net Break Crew,f5dd5936-3028-5cde-82b7-493a38f4c775,Mihaela Tsvetkova,84153,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1751979051,Caracas Footbag Club,719e635e-65c0-5f2b-bbae-a483b0a2a6c2,Wladiuska Pacheco Castro,84016,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+1768623634,North Bay Flyers,50375647-fb1f-51ac-88cd-e7b182667b68,Sarah Femmel,81769,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+932271763,Hackrifice,3fe1801a-4c0a-5aa3-beda-9d56dd820ee3,Erik Chan,12487,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+932271763,Hackrifice,c2b71e3c-4ffb-5b75-b92f-cfbb4f0c9bb4,Joel Dion,12304,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+932895424,BC Soramäki Indians,58cca5c0-0120-5bf1-a40e-ae4f46712dc1,Jaakko Inkinen,12308,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+937589938,FC Footstar Berlin e.V.,f83826ed-30c2-5608-9dad-50453e899eff,Alex Michelewski,16167,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+937589938,FC Footstar Berlin e.V.,34055beb-ed72-59a5-9b38-c5ffbac4d70e,Antonio Fritsch,58917,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+941371717,Sole Rebels Zürich,1df65a5e-fdb5-5385-a31e-4ac28b916b28,Andreas Peier,68942,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+941371717,Sole Rebels Zürich,7ca5220d-9756-5d12-85cc-a1a14f550aae,Dominik Rutz,66399,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+944090321,1. Rien N'est Hacky - RNH Footbag,698fd3e8-a756-5c8e-bfdc-127a68fb6a58,Arnaud Saniez,69528,leader,provisional,0.9,1.0,1,top_matched_linkable_affiliation
+944090321,1. Rien N'est Hacky - RNH Footbag,e528ca88-e462-5870-bd7f-45fb49bfbcfc,Arthur Ledain,70161,co_leader,provisional,0.9,1.0,2,tied_top_score_with_sufficient_depth
+945062220,OOPS! Freestyle,2daa07f5-d830-521e-af6e-4a39cd094e92,Chad Devlahovich,13153,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+945727621,Tallinn Footbag Club,0c3a857f-fe99-5fba-8a8b-2596b08435b0,Enzy Tamme,12176,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+945727621,Tallinn Footbag Club,d5fbfc63-af6e-52e4-99e7-db80ff8bc743,Henri Raska,39601,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+948778762,Idaho State University Footbag Club,e5139527-a150-5834-820e-53a7eeadae86,Bob Green,12460,leader,provisional,0.9,0.8,1,top_matched_linkable_affiliation
+954433125,SG Frankfurt Footbag e.V.,45b40a79-0205-5653-b18d-237dc54e3692,Alex Bartsch,68943,leader,provisional,0.9,1.0,1,top_matched_linkable_affiliation
+954433125,SG Frankfurt Footbag e.V.,44324a43-a589-59bc-8988-02ca47c7f0cf,Andreas Beimel,82853,co_leader,provisional,0.9,1.0,2,tied_top_score_with_sufficient_depth
+954608153,Santa Cruz Footbag Club,646452e8-7ede-58d9-aa7d-f82c092800ad,Chris Young,12437,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+954608153,Santa Cruz Footbag Club,3c825079-6a02-59d8-ad17-b1c8a5c99538,Darlene House,13158,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+959505527,Chicago Inner Circle,be0d9849-db58-5aa2-90cc-df475a8c43bd,Alex Ibardaloza,13150,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+959505527,Chicago Inner Circle,2425d614-d376-5d98-b7fb-cb445d10792c,Dan Klokow,12411,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+964980858,Houston Skyliners Footbag Club,aea29c23-9cfe-5025-8ff4-ad3341304468,Tim Vozar,41803,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+979109326,Christchurch Footbag Club,a14941cc-db4f-5c2f-8c0f-55db2c0ba7e1,Philip Morrison,59541,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+987996594,Canadian Footbag Alliance,49147fb1-fe9c-5e9e-9c5d-f376ffd2375d,Chard Cook,12860,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+988620638,PSF Polish Footbag Association,b046ab19-f057-53dd-a850-18c4248086ff,Antek Szczeniowski,33874,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+988620638,PSF Polish Footbag Association,a3781ac2-c529-5316-b22b-2bdcfa67bb67,Damian Budzik,58881,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+992188139,Ministry of Silly Walks,6469ade8-02a6-5a6f-8b42-c277458d05d7,Chris Kovacs,67373,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+995103575,Footbag-Vienna,24ffb4bb-a58e-54d8-b0d9-06b989c794cd,Alexander Trenner,67229,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+995103575,Footbag-Vienna,68a3d398-624d-5f96-857a-8aefc650ea09,Anita Lenneis,78978,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+995399076,UNITY FOOTBAG CLUB,fba3cb0f-209b-5bfa-a1c1-4c44582592ed,Michael Jauss,12972,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+997985351,Icarus Footbag,7732f45f-1020-563b-8dde-27c2c5fa9b09,Ludovic Lacaze,13447,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+999026236,Footcraft,d36407de-bb18-5470-b0a7-54e4e5758b62,Jarno Terho,12754,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+999606033,FootFighter,565a1720-a819-5c05-b44e-0a53c2027237,Kamil Wysocki,38725,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+airazona,AIR-A-ZONA FOOTBAG NET CLUB,7d915cea-c796-5579-830e-2c5e53e4ac44,Amy Westberg,12057,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+all-stars,D.C. All-Stars,d2f5bd38-a5b0-53c2-a44e-2ab7e6f6ff02,Evan Daniels,67854,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+all-stars,D.C. All-Stars,5141763c-285a-5f50-abd1-c5ef3b16ff0a,Jason Langis,12039,co_leader,provisional,0.9,0.85,2,tied_top_score_with_sufficient_depth
+aqaf,Association Québécoise de Footbag,2367d506-3a7b-5532-9c55-3f970c46cf8c,Dominic O'Brien,75350,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+aqaf,Association Québécoise de Footbag,b8fab5e2-d6d3-482b-b062-0f0394d9bd75,Jean-Philippe Rochefort,38668,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+auckland,The Auckland Freestyle Footbag Club (AFFC),aa5f0e41-79db-5da1-a7dd-d47f3bd16cc2,Adrian Dick,12048,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+austin,Austin Style Footbag Club - Texas Footbag League,3878cf90-a92e-53dc-a8cb-dbba0edd823a,Andrew Koller,42572,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+carlisle-pa,TEAM NET WRECKER,ecf5bb08-8088-5a0d-b236-3eb837afc74e,Amy Noller,19469,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+chico-circle,Sole Power,ee7a398e-1ef7-5492-be05-1ba0240b5e9f,Brian Pihl,12910,leader,provisional,0.9,0.85,1,top_matched_linkable_affiliation
+czech-republic,Czech Footbag Association,249b7568-9f0d-58db-8528-391c2ef34aa0,Hanka Kusnjerová,72408,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+czech-republic,Czech Footbag Association,d7a61318-ffcb-592b-9a2d-1388f18133f9,Jan Huleja,13050,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+dallas-tx,Dallas Footbag Club,63846eb8-93a6-5795-a5bb-a9538ef3f1ee,Ariel Santesteban,12474,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+dallas-tx,Dallas Footbag Club,303c7976-79c0-564f-b9f8-4cbef1879531,Casey Zacek,12440,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+ffa,Suomen Footbag Liitto ry. (Finnish Footbag Association),7c74c3f5-dc54-5e47-8365-e84497f4c943,Aleksi Airinen,68811,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+ffa,Suomen Footbag Liitto ry. (Finnish Footbag Association),998c87dc-4197-5f4d-97aa-f54b82f96a13,Aleksi Öhman,37326,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+kits,Kitsilano Footbag Association,c6c5b8b6-336d-5ca3-9b3a-a1c7bac1f310,Chris Eddicott,13590,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+kits,Kitsilano Footbag Association,1be2728e-4467-59b4-9164-d01cf0bd022a,Dan Borsky,13755,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+memphis,Memphis Footworks,4901847d-1c88-5fda-aca5-a24c19da90d9,Lee Guenther,12009,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+mfa,MIDWEST FOOTBAG ASSOCIATION,4b64e224-7a2f-576c-a81a-ecc0db13e2a3,Jay Moldenhauer,12927,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+nyfa,New York Footbag Association,138a36ab-c52b-5757-827d-766589129128,Barrett Neimeth,77364,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+nyfa,New York Footbag Association,18891d4f-c83b-5a14-938e-5fbda4af8094,Clemens Eigler,71688,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+oops,OOPS,2daa07f5-d830-521e-af6e-4a39cd094e92,Chad Devlahovich,13153,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+oops,OOPS,79aa366f-16ca-5daa-8e20-b6e835faf35a,Chris Pinkus,12878,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+pihlis-puls,Pihlis Puls,8aebbb7b-82ff-550f-8404-287f3e4b523f,Olli Savolainen,12217,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+schwa,Chicago Lake Coast Kickers,ee4a31bf-24fa-5566-b19b-7f7a40e12d22,Aaron Dean,12568,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+seattle-freestyle,Rain City Shred,dccd2dfd-4392-506e-9341-41106dd1e2f0,Alex Zerbe,12209,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+seattle-freestyle,Rain City Shred,2ada39d8-346f-53b9-af55-7a1db8292f19,Andrew Johnson,12938,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth
+sufc,Stanford University Footbag Club,cae9fcaa-a9d1-5992-bc64-d79fd7f5d5f3,Abram Santana,73200,leader,provisional,0.9,0.9,1,top_matched_linkable_affiliation
+sufc,Stanford University Footbag Club,337dc937-b022-51ef-8470-99fff306e2c9,Alex Dworetzky,76261,co_leader,provisional,0.9,0.9,2,tied_top_score_with_sufficient_depth
+zion-fr,RNH Footbag,a6177af9-a854-56a6-a47a-083c3aacf209,Charles Dupuy,67555,leader,provisional,0.9,0.95,1,top_matched_linkable_affiliation
+zion-fr,RNH Footbag,e741bbb4-1245-516b-b6e6-e8c909d6e93c,Franck Remy,13377,co_leader,provisional,0.9,0.95,2,tied_top_score_with_sufficient_depth

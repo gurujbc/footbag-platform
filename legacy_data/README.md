@@ -1,45 +1,65 @@
 # legacy_data
 
-Tooling for archiving and migrating content from the legacy footbag.org site.
+Historical footbag results pipeline. Produces the canonical relational dataset
+covering 1980–present and loads it into the platform SQLite database.
 
-## Contents
+---
 
-| File | Purpose |
-|---|---|
-| `create_mirror_footbag_org.py` | Crawls and archives the legacy footbag.org site for offline reference and data migration |
-| `requirements.txt` | Python dependencies for the mirror script |
-
-## Future
-
-Code to clean up event results data to a canonical format.
-Code to merge that data from other historical event results datasets.
-Code to migrate other useful data from the live site (the future archive.footbag.org) into the new database.
-
-## What the mirror script does
-
-`create_mirror_footbag_org.py` logs into footbag.org (for member-only content),
-crawls pages and media, rewrites links for offline browsing, converts legacy media
-formats (requires `ffmpeg`), and saves progress so it can resume after interruption.
-
-**Expect ~60 GB disk usage and multi-day runtime.**
-
-## Generated artifacts (not committed)
-
-The following are produced by running the script and are excluded from the repository:
-
-- `mirror_footbag_org/` — the downloaded site archive
-- `mirror_progress.json` — resumable crawl state
-- `mirror.log` — run log
-- `footbag_venv/` — Python virtual environment
-- `create_mirror.sh` — local run script (git-ignored, as this keeps the user name and password for footbag.org)
-
-## Usage
+## Quick start
 
 ```bash
-python -m venv footbag_venv
-source footbag_venv/bin/activate
-pip install -r requirements.txt
-python create_mirror_footbag_org.py username password 
+cd ~/projects/footbag-platform/legacy_data
+source .venv/bin/activate        # or footbag_venv / venv — auto-detected
+
+./run_pipeline.sh full           # canonical + enrichment (clubs, membership, persons)
+./run_pipeline.sh canonical_only # canonical pipeline only → workbook + DB load
+./run_pipeline.sh enrichment_only# enrichment phases only (requires canonical outputs)
 ```
 
-`ffmpeg` must be installed separately (e.g. `sudo apt install ffmpeg`).
+Run from `legacy_data/`. The venv is detected automatically; set `VENV_DIR` to
+override.
+
+---
+
+## Pipeline modes
+
+| Mode | What it runs | Use when |
+|------|-------------|----------|
+| `canonical_only` | V0 backbone: mirror + curated → canonical CSVs → QC → workbook → seed → DB | Updating source data or overrides |
+| `enrichment_only` | Phases C–F: membership enrichment, clubs pipeline, provisional persons, persons master | Iterating on enrichment logic (requires canonical outputs already present) |
+| `full` | Both of the above in sequence | Full soup-to-nuts rebuild |
+
+### canonical_only (V0 backbone)
+
+Seven stages in order, **fails fast on QC hard failures** (stages 5–7 never run
+if QC returns exit 1):
+
+| # | Stage | Output |
+|---|-------|--------|
+| 1 | Rebuild | mirror + curated → `out/stage2_canonical_events.csv` |
+| 2 | Release | identity lock + export → `out/canonical/*.csv` + platform export |
+| 3 | Supplement | `02p5b_supplement_class_b.py` → Placements_Flat workbook completeness |
+| 4 | QC gate | `pipeline/qc/run_qc.py` — exit 1 on any hard failure |
+| 5 | Workbook | `pipeline/build_workbook_release.py` → `out/Footbag_Results_Release.xlsx` |
+| 6 | Seed build | `event_results/scripts/07_build_mvfp_seed_full.py` → `event_results/seed/mvfp_full/` |
+| 7 | DB load | `event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py` → `database/footbag.db` |
+
+### enrichment_only (Phases C–F)
+
+Runs a preflight check first (exits if required canonical outputs are missing):
+
+| Phase | What it does | Output |
+|-------|-------------|--------|
+| C | Membership enrichment | `membership/out/` |
+| D | Club inference pipeline | `clubs/out/` |
+| E | Provisional persons | `persons/provisional/out/` |
+| F | Persons master | `persons/out/persons_master.csv` |
+
+---
+
+## Authoritative documentation
+
+Full pipeline rules, source hierarchy, QC requirements, and non-negotiable
+constraints are documented in `CLAUDE.md`.
+
+The current sprint status and release checklist are in `IMPLEMENTATION_PLAN.md`.

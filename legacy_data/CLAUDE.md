@@ -55,18 +55,23 @@ mirror.
 
 ---
 
-## Complete Pipeline — One Command
+## Pipeline Modes
+
+Three modes — run from `legacy_data/` with the venv active:
 
 ```bash
-cd ~/projects/footbag-platform/legacy_data
-./run_pipeline.sh complete
+./run_pipeline.sh canonical_only  # canonical pipeline only (V0 backbone)
+./run_pipeline.sh enrichment_only # enrichment phases C–F only
+./run_pipeline.sh full            # both in sequence (soup to nuts)
 ```
 
-Runs every stage in order and **fails fast on QC hard failures** (stages 5–7 never run
-if QC returns a hard failure). This is the standard command after adding or changing any
-source data, override, or curated CSV.
+The venv is detected automatically (`VENV_DIR` env var → `.venv` → `footbag_venv` → `venv`).
 
-Stage order inside `complete`:
+### canonical_only
+
+Runs the V0 backbone (7 stages) in order and **fails fast on QC hard failures**
+(stages 5–7 never run if QC returns a hard failure). Use this after changing any
+source data, override, or curated CSV.
 
 | # | Stage | Key script |
 |---|-------|------------|
@@ -78,22 +83,45 @@ Stage order inside `complete`:
 | 6 | Seed | `event_results/scripts/07_build_mvfp_seed_full.py` → `event_results/seed/mvfp_full/` |
 | 7 | DB load | `event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py` → `database/footbag.db` |
 
-**Do NOT run stages 5–7 manually when QC is failing.** `./run_pipeline.sh complete`
-enforces this ordering automatically.
+### enrichment_only
 
-Script 08 needs the repo root for `database/footbag.db`. `run_pipeline.sh` resolves this
-automatically — always run `./run_pipeline.sh complete` from `legacy_data/`.
+Runs a preflight check (exits if canonical outputs are missing), then:
+
+| Phase | What it does |
+|-------|-------------|
+| C | Membership enrichment → `membership/out/` |
+| D | Club inference pipeline → `clubs/out/` |
+| E | Provisional persons → `persons/provisional/out/` |
+| F | Persons master → `persons/out/persons_master.csv` |
+
+### full
+
+Runs `canonical_only` then `enrichment_only` in sequence.
+
+**Do NOT run stages 5–7 manually when QC is failing.** The pipeline enforces ordering
+automatically. Script 08 needs the repo root for `database/footbag.db` — always run
+from `legacy_data/`.
 
 ---
 
-## Active Production Path (individual stages)
+## Individual Stage Reference
 
-Use these when you need to re-run only part of the pipeline:
+Use these when you need to re-run a single stage by hand:
 
-```
-./run_pipeline.sh rebuild    # parse mirror + curated → stage2 canonical events
-./run_pipeline.sh release    # apply identity lock, structural cleanup, export canonical CSVs
-./run_pipeline.sh qc         # validate out/canonical/ — must PASS before any commit
+```bash
+# From legacy_data/:
+python pipeline/adapters/mirror_results_adapter.py --mirror mirror_footbag_org
+python pipeline/adapters/curated_events_adapter.py
+python pipeline/01c_merge_stage1.py
+python pipeline/02_canonicalize_results.py
+python pipeline/02p5_player_token_cleanup.py \
+    --identity_lock_persons_csv inputs/identity_lock/Persons_Truth_Final_v52.csv \
+    --identity_lock_placements_csv inputs/identity_lock/Placements_ByPerson_v97.csv
+python pipeline/02p6_structural_cleanup.py
+python pipeline/historical/export_historical_csvs.py
+python pipeline/05p5_remediate_canonical.py
+python pipeline/platform/export_canonical_platform.py
+python pipeline/qc/run_qc.py    # must return QC STATUS: PASS before commit
 ```
 
 Full stage sequence:

@@ -1,0 +1,2164 @@
+provisional_identity_id,canonical_candidate_name,canonical_candidate_name_norm,source_types,staged_row_count,membership_row_count,club_row_count,mirror_member_id_count,confidence,promotion_status
+prov_identity::004005fe2fbd,Philippe Auger,philippe auger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0096af57ce6d,Tomasz Wróbel,tomasz wróbel,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::00a540779ff1,Tomasz Kociołkowski,tomasz kociołkowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0102714ac13e,Andrey S. Serebrenikov,andrey s. serebrenikov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0106d4a1bbdb,Cesar Guerrero,cesar guerrero,CLUB,1,0,1,1,medium,STAGED
+prov_identity::011e252240ab,Greg Pestillo,greg pestillo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::011ee5131164,Dan Jinsoo Jun,dan jinsoo jun,CLUB,1,0,1,1,medium,STAGED
+prov_identity::015dcd3f89f6,Kimi M. Bartram,kimi m. bartram,CLUB,1,0,1,1,medium,STAGED
+prov_identity::01623f9b344e,Donald McMeans,donald mcmeans,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0185c1f1d3ec,C.J. J. Mendez,c.j. j. mendez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::019f0841b473,Martin J. Alvarez,martin j. alvarez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::01bdd1f06b1e,Steve M. Gillette,steve m. gillette,CLUB,1,0,1,1,medium,STAGED
+prov_identity::01d3d58b2692,Ashley R. Vitek,ashley r. vitek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::01efda23ec11,Samuel R. Butler,samuel r. butler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02191f142d02,Andres F. Camargo Claros,andres f. camargo claros,CLUB,1,0,1,1,medium,STAGED
+prov_identity::025b40654a6c,Richie B. Abshire,richie b. abshire,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02aaaf047373,Michael A. Stokely,michael a. stokely,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02abf95dad11,Travis H. Culley,travis h. culley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02b88bd9fe93,Phillip Herrero,phillip herrero,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::02c6f79ecddb,Dan Larochelle,dan larochelle,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02c96891c87d,Megan Finaly,megan finaly,CLUB,1,0,1,1,medium,STAGED
+prov_identity::02ff67f70fb8,Tyler Fonville,tyler fonville,CLUB,1,0,1,1,medium,STAGED
+prov_identity::032eea454db7,Alex Morton,alex morton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::036c3f8f4519,Esther Strauch,esther strauch,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::03793f3a6084,Stig Andersen,stig andersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::03985a9fa2d3,Ted Smith,ted smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::03ccb45ffdf9,Victor Ramirez,victor ramirez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::03d84a2c0b83,Hannes Janetzek,hannes janetzek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0419757ab93e,Andrew Hammons,andrew hammons,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0429b0ed926f,Scott F. Hazard,scott f. hazard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::043c59a1218a,Jody B. Welch,jody b. welch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::046d8371a852,Andre Calado Coroado,andre calado coroado,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0474e6614ae6,Michael Green,michael green,CLUB,1,0,1,1,medium,STAGED
+prov_identity::047ae070c323,Cathy M. Quigg,cathy m. quigg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0484fbbf04b1,John Krieg,john krieg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::048b709455ff,Plamena I. Ivanova,plamena i. ivanova,CLUB,1,0,1,1,medium,STAGED
+prov_identity::04ada35ac778,Paolo Marchionni,paolo marchionni,CLUB,1,0,1,1,medium,STAGED
+prov_identity::04dd75cf7077,Courtney Bohrer,courtney bohrer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::04eba6fb7885,Christy L. Guldenzopf,christy l. guldenzopf,CLUB,1,0,1,1,medium,STAGED
+prov_identity::050cd9639c8a,Julio Cesar Palacio Bedoya,julio cesar palacio bedoya,CLUB,1,0,1,1,medium,STAGED
+prov_identity::052e6e7dfa4f,Fidel E. Sánchez Báez,fidel e. sánchez báez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::05656b3d2724,Jordan Marson,jordan marson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::05a3e37017d7,Florian Medlitsch,florian medlitsch,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::05aa0f2b1504,Heather Cook,heather cook,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::05b09b53ab4d,Michael Mazzone Jr.,michael mazzone jr.,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::05c5d3f846ec,Gordon Gilges,gordon gilges,CLUB,1,0,1,1,medium,STAGED
+prov_identity::05d0441e1dd3,Miles Kelly,miles kelly,CLUB,1,0,1,1,medium,STAGED
+prov_identity::05dabc272295,Ahmed U. Musa Alhaji,ahmed u. musa alhaji,CLUB,1,0,1,1,medium,STAGED
+prov_identity::05f7ac9b59ac,Daniel Wachtler,daniel wachtler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::066cd7dc8b92,Paul Wackerow,paul wackerow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::066edbe5381e,Ari Krepostman,ari krepostman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0697225506a6,Anthony Beliard,anthony beliard,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::06aaa1beed15,Christian Winkelmeier,christian winkelmeier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::06cc673f1f44,Kale L. Tanner,kale l. tanner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::06d7eea21fd8,Joshua R. Schilling,joshua r. schilling,CLUB,1,0,1,1,medium,STAGED
+prov_identity::06f8d50d3434,Giulio De Blasio,giulio de blasio,CLUB,1,0,1,1,medium,STAGED
+prov_identity::071199bf0014,Justin Rutledge,justin rutledge,CLUB,1,0,1,1,medium,STAGED
+prov_identity::075f48b007f6,Matthew B. Sonberg,matthew b. sonberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0774231ebeea,Marco Chacon,marco chacon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0778d0bb4ec8,Daniel Cardenas Toro,daniel cardenas toro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::079161c0fed7,Leigh J. Reily,leigh j. reily,CLUB,1,0,1,1,medium,STAGED
+prov_identity::07d938fc1239,Santiago Giraldo,santiago giraldo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::09805b37bf9f,Junya Shimada,junya shimada,CLUB,1,0,1,1,medium,STAGED
+prov_identity::098b6ca86f6d,Matthias L. Schmidt,matthias l. schmidt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0990da0598b7,Wojciech C. Jamski,wojciech c. jamski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::09bac110a13c,Magdalena Skołowska,magdalena skołowska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::09c25c4eb930,Michael Varvaro,michael varvaro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::09ea6b0e69bd,Patrick Frigault,patrick frigault,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0a018a2ecb51,Mike Bellman,mike bellman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0a414e52cbc1,Jani Säntti,jani säntti,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0a44fbc33e0c,Jospo Espinoza,jospo espinoza,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0a8458b5ac0c,Fraser Hanson,fraser hanson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0abfdbcdb840,George E. Todd,george e. todd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0ad6b172dbd5,Teppo J. Harju,teppo j. harju,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0af9a0026ea3,Tim R. Fuller,tim r. fuller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0b0005040290,Leon W. Anderson-Knight,leon w. anderson-knight,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0b9a6f822743,Mathew J. Bishop,mathew j. bishop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0bae65761f8c,Declan B. Sleeper,declan b. sleeper,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0bf0a43bcb4a,Byrin J. Wylie,byrin j. wylie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c1257c66479,Tom N. Mosher,tom n. mosher,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c2cd941738c,Pete J. Holoien,pete j. holoien,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c38e5d5d845,Jack M. Wright,jack m. wright,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c643299ebf4,David Hillis,david hillis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c6754ffe1f6,Morton East,morton east,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0c940576eb27,Weaver Willow,weaver willow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0cbca8a8db68,Alessandre Naro,alessandre naro,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0cd4220ce606,Mosa Emamjomeh,mosa emamjomeh,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0cd56cad2e75,Bradley A. Robinson,bradley a. robinson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0cf5fa08e3b6,Alfredo A. Perez Linares,alfredo a. perez linares,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0d25fc61a962,Matt C. Pinkus,matt c. pinkus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0d43430091ba,Jon Campbell,jon campbell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0d6f1bc13338,Rosen N. Pelovski,rosen n. pelovski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0d90ccc44b3e,Sean A. McDermid,sean a. mcdermid,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0d9deb9b11a4,Andy S. Bomar,andy s. bomar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0dc711094263,Andi Schwander,andi schwander,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0de05510fc45,Darryl Kasper,darryl kasper,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0df35e2be630,Etienne Gastineau,etienne gastineau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0df38cf6e715,Laurence-Olivier Malouin Trudel,laurence-olivier malouin trudel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e067ee75115,Rachel L. Abramson,rachel l. abramson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e1b767605dd,Ditlev L. Marboe,ditlev l. marboe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e2ad7c63a48,Matt W. Sweeny,matt w. sweeny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e36253076f1,Otto Remis,otto remis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e437d30d8d8,Jason Bjorklund,jason bjorklund,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e604fa884b9,Kyle E. Robinson,kyle e. robinson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e6b76d6712f,Jubal W. Hume,jubal w. hume,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e74fd1e4e8f,Ricardo J. Britto,ricardo j. britto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0e77692f5feb,Ian George,ian george,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::0e7b0aa6d3e3,Angus Lattimore,angus lattimore,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0ecf7bffa12e,Tuomas Kärki,tuomas kärki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f14c9b9b556,Kenneth Ian Brill,kenneth ian brill,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f40d0a7f606,Austen Head,austen head,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f455921d437,William Scott,william scott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f5a1f012ad7,Marco A. Cortés Pérez,marco a. cortés pérez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f647f872806,Oscar Daniel González Franco,oscar daniel gonzález franco,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f74da6f84d5,Zach P. Jahner,zach p. jahner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::0f7fe478d1de,Colin M. Kennedy,colin m. kennedy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1011bef333cf,Chris Williams,chris williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::104537967453,Barbara Jodlowska,barbara jodlowska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::104bc3d89b70,Ryan Truong,ryan truong,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1098cc296241,Dominic J. Montgomery,dominic j. montgomery,CLUB,1,0,1,1,medium,STAGED
+prov_identity::10aaca0b1082,Anthony Vega,anthony vega,CLUB,1,0,1,1,medium,STAGED
+prov_identity::10c362a7e6f5,Calvin M. Smyth,calvin m. smyth,CLUB,1,0,1,1,medium,STAGED
+prov_identity::10dd44cd034a,Andrew J. Barton,andrew j. barton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::110cdf1e4177,Gabriel Fuentes,gabriel fuentes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1117a82042c4,Brandon Button,brandon button,CLUB,1,0,1,1,medium,STAGED
+prov_identity::11429dfbd1d3,Simon R. Hughes,simon r. hughes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1151e046b909,Eric Bartholomay,eric bartholomay,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::115b8387185e,Nicolas Steinert,nicolas steinert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::115bb5e9ce30,Sylwia Kocyk,sylwia kocyk,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1178e40449c9,John Webber,john webber,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::11814579dfcf,Joseph Varvel,joseph varvel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::11904180f9c2,Javier E. Vargas Chacon,javier e. vargas chacon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::11b1f8a0b22c,David O. Castillo Tibocha,david o. castillo tibocha,CLUB,1,0,1,1,medium,STAGED
+prov_identity::11e81dbe6457,Cris Cruz,cris cruz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::11ea9c68867a,Candace N. Beals,candace n. beals,CLUB,1,0,1,1,medium,STAGED
+prov_identity::11fcae5e6c51,Matt Korsmoe,matt korsmoe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::122a75347465,Tanel Punnis,tanel punnis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1262e5dc3a72,Christopher Crounse,christopher crounse,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1267a9293c28,Paul G. Gattringer,paul g. gattringer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::126d73200474,Daniel Russell,daniel russell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::127ae275326d,Karl Bohn,karl bohn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::127dc0e81a6d,Ethan Red Husted,ethan red husted,CLUB,1,0,1,1,medium,STAGED
+prov_identity::12864a2ae88f,Ben Adler,ben adler,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::12ae5ccb031a,Marcos Z. Senfess,marcos z. senfess,CLUB,1,0,1,1,medium,STAGED
+prov_identity::134b30249453,Matthew C. Holmes,matthew c. holmes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::136a4bb2cc74,Jakub K. Worek,jakub k. worek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::13a5e98968c6,Jacob L. Crispell,jacob l. crispell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::13b0018dee25,Ken Scott,ken scott,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::13cca7548607,Alex Blinow,alex blinow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::13ffe2dd9750,Chris C. Courdt,chris c. courdt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::14236e4d481a,Mina Bones,mina bones,CLUB,1,0,1,1,medium,STAGED
+prov_identity::144f6e3963c5,Michael O. Jeboda,michael o. jeboda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::149e7f04e2fb,John Adam Bagi,john adam bagi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::14e5f9c37b87,Ben Spink-McCarthy,ben spink-mccarthy,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::14f0a714fa2a,Carlos Salamanca,carlos salamanca,CLUB,1,0,1,1,medium,STAGED
+prov_identity::152a208b81ed,Mikko Walamies,mikko walamies,CLUB,1,0,1,1,medium,STAGED
+prov_identity::153d4370c142,Priit Kruus,priit kruus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1540794a2d3a,Eldon Aubie,eldon aubie,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::15424ccf027a,Edgardo Arcos Velandia,edgardo arcos velandia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::15488204615f,Alan J. Waters,alan j. waters,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1550c5585aff,Tom Overton,tom overton,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::15ab5659075f,Charles Carter,charles carter,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::15b42c5700ff,Aleksi Öhman,aleksi öhman,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::15b7b87ee793,Patrick B. Devlin,patrick b. devlin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::15c7b8b8ebd2,David P. Brown,david p. brown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::163f1054a504,Simonas Aruna,simonas aruna,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1660054a3249,Aleksi Mattila,aleksi mattila,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1682b9b4af9f,Theo Batiste,theo batiste,CLUB,1,0,1,1,medium,STAGED
+prov_identity::16dac943b27b,Eduardo A. Vetromile Rocha,eduardo a. vetromile rocha,CLUB,1,0,1,1,medium,STAGED
+prov_identity::16f16031826f,Jordan D. Allen,jordan d. allen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1715cb551b68,Damian -. Kali,damian -. kali,CLUB,1,0,1,1,medium,STAGED
+prov_identity::172f02b3c896,John A. Bailey,john a. bailey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::175f02451206,Jesse B. Lindley,jesse b. lindley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::17721eeee272,Robert N. Oslon,robert n. oslon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1783cfb72770,Miguel A. Ochoa Beltran,miguel a. ochoa beltran,CLUB,1,0,1,1,medium,STAGED
+prov_identity::17ab9ee6a40d,Marc Girard-Larivière,marc girard-larivière,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::17d6ccc7a66c,Peter C. Smet,peter c. smet,CLUB,1,0,1,1,medium,STAGED
+prov_identity::17fbbe5f2103,Greg J. Zawada,greg j. zawada,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1817da66a8ae,Pierre Monnat,pierre monnat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1875438bc04d,Jason R. Varvaro,jason r. varvaro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::188c5f421b6c,Cherif Zouein,cherif zouein,CLUB,1,0,1,1,medium,STAGED
+prov_identity::189a47f1d11a,Jake A. Erickson,jake a. erickson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::18d4572687b5,Jean-Marc A. Bennett,jean-marc a. bennett,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1904cd091e35,Justin Kunze,justin kunze,CLUB,1,0,1,1,medium,STAGED
+prov_identity::191fd6b5ca51,Andrew B. Heyer,andrew b. heyer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::19b3005a9927,Martin Côté,martin côté,CLUB,1,0,1,1,medium,STAGED
+prov_identity::19d5037ffd5b,Jonathan Miller,jonathan miller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::19f095ad0c8e,Jay T. Merritt,jay t. merritt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::19f611931678,Brian Schieb,brian schieb,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1a0c243ae8c6,Andreas Käfer,andreas käfer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1a3776119fff,Matt J. Simpton,matt j. simpton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1a5e9f1d6103,Margarita Hiuer,margarita hiuer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1adb5818dd9f,Diego Chavez Diaz,diego chavez diaz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1aee94a271ac,Stephan D. Papadopoulos,stephan d. papadopoulos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1b0af947f6a0,David Williamson,david williamson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1b11735f86e5,Lisa Fandialan,lisa fandialan,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1b39dbbb2cc3,Chris Hawes,chris hawes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1b3f63d67e8e,Francois Lebel,francois lebel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1b48e8b9a378,Andrew Batiuk,andrew batiuk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1b7622d49f94,Tiana Conlon,tiana conlon,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1b8fd48cb4f3,Megan E. Hamann,megan e. hamann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1ba9b8ff81cf,Luka Weyler-Lavallée,luka weyler-lavallée,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1bd12bee93e8,Lukasz Krysiewicz,lukasz krysiewicz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1c09ed5e813c,Adam Costa,adam costa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1c4c2db46f83,John Martin,john martin,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1c75c61c6200,Daniel De La Rosa,daniel de la rosa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1c7d3f08b96c,Dave Velek,dave velek,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1c7d48ff9e1b,Chris E. Kroll,chris e. kroll,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1cbe598cc5ca,Ben Lynn,ben lynn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1cc1832f7a9f,Jonathan M. Sarmiento Bohoruqez,jonathan m. sarmiento bohoruqez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1cc9e77bfd7e,Dylan Hueston-Dane,dylan hueston-dane,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1cd7a8cb285f,Daniel S ebek,daniel s ebek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d139812aa31,Devin R. McArthur,devin r. mcarthur,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d20e1963d69,Mark Kelley,mark kelley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d3ad1481ecb,Sebastian Palao ricketts,sebastian palao ricketts,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d657b254ccf,Bostjan Kobe,bostjan kobe,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1d69a7a32c4f,Steve T. Dowling,steve t. dowling,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d781f04578f,Paul Smith,paul smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1d7a7e2ffade,Takao Wakou,takao wakou,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1d947f73b96b,Daniel Holland,daniel holland,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1db4c5be2731,Petteri Matikainen,petteri matikainen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1ddd9c399394,Joseph D. Bender,joseph d. bender,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1e18ee6b1d7e,Mark G. Mattson,mark g. mattson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1e1a9f4ffd70,Glen Francis,glen francis,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1e622ae1a3e5,Alexander Sandy,alexander sandy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1e7e5af00181,Bryan Smith,bryan smith,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1e98d788b5c8,Joseph D. Abercrombie,joseph d. abercrombie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1ef512992be3,Evan J. Hanson,evan j. hanson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1f1cf04402ed,Flavio Castellanos,flavio castellanos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1f33bba5ef11,Clyde Heath,clyde heath,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::1f516f4147ac,Joselin Moncada Albornoz,joselin moncada albornoz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1f7b45ee4524,William Dement,william dement,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1fa161c3c541,Ian Mullens,ian mullens,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1fa370132ef2,Alexander Fast,alexander fast,CLUB,1,0,1,1,medium,STAGED
+prov_identity::1fb49ca72967,Andy S. Chrapkiewicz,andy s. chrapkiewicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::200468ccf7bd,Aaron T. Ceplina,aaron t. ceplina,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2010584e693b,Jimi Holmes,jimi holmes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::204b05bdecd3,Chadwick D. Rubin,chadwick d. rubin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::204f36514464,Jean-Francois Bélanger,jean-francois bélanger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::20521bbb349b,Damian P. Piechocki,damian p. piechocki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::20c1cac72879,Dan Solnicki,dan solnicki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::20f1dfb0cf7c,Christian Ritter,christian ritter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::210c55b45d8a,Tyler A. Ekstein,tyler a. ekstein,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2123c1a73dab,Kevin B. Mejia,kevin b. mejia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::213095c5c796,Alexandre H. Philippe,alexandre h. philippe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::213a63ef5c79,Marcin Ka,marcin ka,CLUB,1,0,1,1,medium,STAGED
+prov_identity::215a28280f58,Tim McMorrow,tim mcmorrow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::21655d0b9caa,Paul David,paul david,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::21a582c92081,Joanna Rutkowska,joanna rutkowska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::21fbac230677,Philip B. Hornberger,philip b. hornberger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2225bab3d591,Mark E. Bradburn,mark e. bradburn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::228564448014,Denny R. Wood,denny r. wood,CLUB,1,0,1,1,medium,STAGED
+prov_identity::22c3f2bc919c,Alex Bohnhoff,alex bohnhoff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::22e4ab0f5ecf,Eric H. Chang,eric h. chang,CLUB,1,0,1,1,medium,STAGED
+prov_identity::232910ec5768,Charles Gallant,charles gallant,CLUB,1,0,1,1,medium,STAGED
+prov_identity::233b55e12530,Robert C. Creel,robert c. creel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::233fd7632e85,Nick P. Pugh,nick p. pugh,CLUB,1,0,1,1,medium,STAGED
+prov_identity::23450fc01b8b,Mike Richards,mike richards,CLUB,1,0,1,1,medium,STAGED
+prov_identity::23524d1520d4,Sam Dejene,sam dejene,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2355c578a37f,Aaron E. Orton,aaron e. orton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::235d9acf82db,Douglas Epperson,douglas epperson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::236b136c530e,Amotz Ziv-Av,amotz ziv-av,CLUB,1,0,1,1,medium,STAGED
+prov_identity::237185843bb2,Aaron Mavrinac,aaron mavrinac,CLUB,1,0,1,1,medium,STAGED
+prov_identity::237267605fb8,Nathan McDonald,nathan mcdonald,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2394aeee7604,Ben Kühner,ben kühner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::23984485a806,Curtis Hooks,curtis hooks,CLUB,1,0,1,1,medium,STAGED
+prov_identity::23a52850865f,Nassirou Ouro-Agoro,nassirou ouro-agoro,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::23d4f258f0e6,Jeff Wilson,jeff wilson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2404e48d61e9,Evgeni A. Shiryaev,evgeni a. shiryaev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::245b0779d539,Fedor Minaev,fedor minaev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::249f274ddb49,Kyle D. Warren,kyle d. warren,CLUB,1,0,1,1,medium,STAGED
+prov_identity::24c5f6fc501f,Nehemiah J. Sloat,nehemiah j. sloat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::24db445eadb8,Brad Mills,brad mills,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::24fdba43487f,Łukasz Osiński,łukasz osiński,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::250666dcfd40,Mike Mirth,mike mirth,CLUB,1,0,1,1,medium,STAGED
+prov_identity::250d6b73b41b,Skip Trantow,skip trantow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::253981dcb1bd,Jef T. Bishop,jef t. bishop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2543f71ae917,Zane Eli Gardner,zane eli gardner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2549652db24e,Carlos Chacon,carlos chacon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::254d87626278,Reinhard Hierschläger,reinhard hierschläger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25911e27df0d,Charles W. Nourse,charles w. nourse,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25a01dd07954,Henrik Petersen,henrik petersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25a5ebbae3d8,Georg Schenk,georg schenk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25b4d21ea59f,Stanislav Svitak,stanislav svitak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25bb7d35f19d,Roman O. Belozerov,roman o. belozerov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25df2118be1d,Laura Zeller,laura zeller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::25ebae822a0b,Davis E. Kendrick,davis e. kendrick,CLUB,1,0,1,1,medium,STAGED
+prov_identity::25f463095505,Eric Reile,eric reile,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::25f8162149c1,José R. López,josé r. lópez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::261f28d3f6a4,Jonathan J. Long,jonathan j. long,CLUB,1,0,1,1,medium,STAGED
+prov_identity::264236779755,Joe A. Hausinger,joe a. hausinger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2648b86e3b6a,Florian Bauernfeind,florian bauernfeind,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2654a6299c65,Dea D. Evans,dea d. evans,CLUB,1,0,1,1,medium,STAGED
+prov_identity::268190cbf9d8,Vito Vitkauskas,vito vitkauskas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::268b206d93f1,Jaís R. Holtzen,jaís r. holtzen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::269f955e5305,Michael Bowden,michael bowden,CLUB,1,0,1,1,medium,STAGED
+prov_identity::26b56f6826eb,Joshua Kenny,joshua kenny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::26bb73706849,Anthony Hagen,anthony hagen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::26fe150fd668,Garry Gaman,garry gaman,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::271fafb00442,Shea W. Unti,shea w. unti,CLUB,1,0,1,1,medium,STAGED
+prov_identity::271fe1dac69b,Leilani Rector,leilani rector,CLUB,1,0,1,1,medium,STAGED
+prov_identity::275daa196896,Landry T. Campbell,landry t. campbell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2760527ff6f8,Max Einhaus,max einhaus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::277143d4efc5,Chris Carlile,chris carlile,CLUB,1,0,1,1,medium,STAGED
+prov_identity::27797f691cc9,Clint F. Cameron,clint f. cameron,CLUB,1,0,1,1,medium,STAGED
+prov_identity::278c3c011c55,James R. Gilbert,james r. gilbert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::27c916253910,John Lamon,john lamon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::27d7b759b8cb,Jake Shilling,jake shilling,CLUB,1,0,1,1,medium,STAGED
+prov_identity::28018ac28d32,Naoya Tsuchiyama,naoya tsuchiyama,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2823d9ff5017,Dmitry Kim,dmitry kim,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2866a19406c9,Ryan Weaver,ryan weaver,CLUB,1,0,1,1,medium,STAGED
+prov_identity::287809bc94df,Diego Guerrero,diego guerrero,CLUB,1,0,1,1,medium,STAGED
+prov_identity::287b32c53fc1,Silvan Lötscher,silvan lötscher,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2882832ed3cf,Mathieu Gravel,mathieu gravel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::289171f039d1,Yekaterina Sorokina,yekaterina sorokina,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2894099ffb5f,Clovis Jaunet,clovis jaunet,CLUB,1,0,1,1,medium,STAGED
+prov_identity::28badf95cf40,Teresa J. Rogerson,teresa j. rogerson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::28bb730c301d,Jessica Gardner,jessica gardner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::28e332bbe3ed,Reaven Khali,reaven khali,CLUB,1,0,1,1,medium,STAGED
+prov_identity::29489ad205d1,Phillip Van Nostrand,phillip van nostrand,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::294d7b0531f1,Anthony J. Vivas Barrera,anthony j. vivas barrera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2953096cdb84,Bevan Lim,bevan lim,CLUB,1,0,1,1,medium,STAGED
+prov_identity::29831beb9572,Nathan A. Reutter,nathan a. reutter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::299c84a9db90,James Alan Pape,james alan pape,CLUB,1,0,1,1,medium,STAGED
+prov_identity::29dde1f56248,Dylan K. Myers,dylan k. myers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::29e4b711d208,Brian Loan,brian loan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::29ef92877bb9,Trevor L. Caylor,trevor l. caylor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2a2a40f7c905,Bob Ray,bob ray,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2a57b0d51ee5,Olli Torkkeli,olli torkkeli,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2a72037f3d96,Florian Dibbern,florian dibbern,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2a8df0b7ba69,Mauro Wildhaber,mauro wildhaber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2a94964acf71,Richard Pearce,richard pearce,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2aa0d2142e01,Mili Rumpf,mili rumpf,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2b650a7ab27b,Andreina Uzcátegui,andreina uzcátegui,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2baf551d0e8f,Amos P. Schumacher,amos p. schumacher,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2baf88ab7fe8,Reinaldo Perez,reinaldo perez,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2bb6018c65d0,Andrew J. Ivanyo,andrew j. ivanyo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2bb909bb9e95,Scott Bailey,scott bailey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2be94066ae6a,Arnab Basu,arnab basu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2be9a350aa81,Daniel Sebek,daniel sebek,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2c0d7b3d4fb5,Tim D. Livson,tim d. livson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2c1573178348,John C. Kizak,john c. kizak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2c2618a85ca8,Kazuya Uemura,kazuya uemura,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2c27ea287215,Andrew Ashikov,andrew ashikov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2c40a4264950,Max Jefferson,max jefferson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2c9e2272e73a,Jana S. Riisalo,jana s. riisalo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2cc43a7f2773,Tobias C. Larsen,tobias c. larsen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2ce648e54308,James Gemmell,james gemmell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2cf285982c3b,Martin Mracek,martin mracek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2cf7349c1a01,Sean Mahoney,sean mahoney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2d095d45e1c5,Jascha Klugiewicz,jascha klugiewicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2d52ba3e434e,Jacob Oran,jacob oran,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2d705d21973e,Dennis Jones,dennis jones,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2d86aaf7ab43,Cameron Watchorn,cameron watchorn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2db5fe8acb17,Joe R. Lech,joe r. lech,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2dbf8bdac57d,Luis A. Ortegano,luis a. ortegano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2dd615201ff4,Kaitlyn Mae Wescott,kaitlyn mae wescott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2df2f4db9339,Edison A. Rodriguez Betancur,edison a. rodriguez betancur,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2df70e50c43a,Jonathan D. Dixon-Harris,jonathan d. dixon-harris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2e135b6bb2e1,Abby Weise,abby weise,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2e3343487832,David Eelbode,david eelbode,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2e607c6b2bac,Henry Strickland,henry strickland,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2eb0864151af,Savanna Jay-Bonn,savanna jay-bonn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2eb32bfed8fb,Dave Sauer,dave sauer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2ecf8b6a1b9a,Sam J. Madden,sam j. madden,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2eef60b6aaf7,Sharn A. Davies,sharn a. davies,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2eef61338a81,Jennifer L. Douville,jennifer l. douville,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2f3673fe8f27,Łukasz M. Lener,łukasz m. lener,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2f3dd38cde08,Tage Tolbert,tage tolbert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2f468d58fcaa,Adam G. Hutchinson-Wilde,adam g. hutchinson-wilde,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2f9873f0e61f,Eliot Piltz,eliot piltz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2fa3222754eb,Tim Catlin,tim catlin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2fbe4d2edf79,BarTosz D. Kolaczynski,bartosz d. kolaczynski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2fdab296cdc6,Davey Morawski,davey morawski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::2fed001af8d3,Felipe G. Faria,felipe g. faria,CLUB,1,0,1,1,medium,STAGED
+prov_identity::2ff4f67c5e14,Mick N. Stabile,mick n. stabile,CLUB,1,0,1,1,medium,STAGED
+prov_identity::30126bc2022d,Verena Scharf,verena scharf,CLUB,1,0,1,1,medium,STAGED
+prov_identity::30143635f5d4,Justin A. Morgan,justin a. morgan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::303451dfc965,Jarret Porter,jarret porter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::305211b1ef0b,Konstantin Mgaloblishvili,konstantin mgaloblishvili,CLUB,1,0,1,1,medium,STAGED
+prov_identity::30ceb29b6910,Vicent Richart,vicent richart,CLUB,1,0,1,1,medium,STAGED
+prov_identity::30e6adf57266,Till Kolter,till kolter,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::30ebfb338c16,Raul Pacheco,raul pacheco,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::31071aee85bc,Reto Solinger,reto solinger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3109bd508518,Jiri Duchacek,jiri duchacek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3109eae1f735,Julian Florez,julian florez,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::310b2f7af15b,Nikolay K. Petrov,nikolay k. petrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::313adba99050,John P. Penaloza,john p. penaloza,CLUB,1,0,1,1,medium,STAGED
+prov_identity::314f87c6fd68,Sunil S. Jani,sunil s. jani,CLUB,1,0,1,1,medium,STAGED
+prov_identity::31583c73d15b,Thomas Helms,thomas helms,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3168d85985b1,Zach Jahner,zach jahner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::316abe83f924,Raphael St. James,raphael st. james,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3171ae9cc941,Caroline J. Birch,caroline j. birch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::317ac3b487e1,Cody Lyle Brown,cody lyle brown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::318b26e9601d,Dan H. Reed,dan h. reed,CLUB,1,0,1,1,medium,STAGED
+prov_identity::320ce3d71156,Mike Mcginley,mike mcginley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::320de81c5f7f,Donnette M. Spencer,donnette m. spencer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::322a3336c5e9,Dennis Kim,dennis kim,CLUB,1,0,1,1,medium,STAGED
+prov_identity::325716330707,Kage A. Taylor,kage a. taylor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3257d693cb55,Christoph Larndorfer,christoph larndorfer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3273f7103a2f,Caleb Andersen,caleb andersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::327acbe1c239,Ryan Rison,ryan rison,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::32929e06f1c4,Daniel T. Meyer,daniel t. meyer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::32a80c2d2f2e,Joe A. Rosner,joe a. rosner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::32df7ef3db63,Can Doki,can doki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::32f13245fa34,Simon C. Voss,simon c. voss,CLUB,1,0,1,1,medium,STAGED
+prov_identity::32f9e6aab98c,Sergio Mendez Gomez,sergio mendez gomez,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3315d5762b89,Nathan Kelber,nathan kelber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::332e7d7b0b54,Dean Perkins,dean perkins,CLUB,1,0,1,1,medium,STAGED
+prov_identity::333b99c0ea09,Matthias Piecha,matthias piecha,CLUB,1,0,1,1,medium,STAGED
+prov_identity::335cb7d31243,Jordan D. Clark,jordan d. clark,CLUB,1,0,1,1,medium,STAGED
+prov_identity::338ead9a19b1,Daniel Runyan,daniel runyan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::339f143526f8,Dirk J. Leinmüller,dirk j. leinmüller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::343506b46329,Elisabeth Sonnweber,elisabeth sonnweber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::343bc0f3e76f,Benjamin Von Allmen,benjamin von allmen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::345e54153508,Bruce Biddle,bruce biddle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::348c2835780e,Karrisa M. Lawrence,karrisa m. lawrence,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3492d4e75e93,Mat Sustrac,mat sustrac,CLUB,1,0,1,1,medium,STAGED
+prov_identity::349c5cdac394,Avery Bills,avery bills,CLUB,1,0,1,1,medium,STAGED
+prov_identity::34a20d1cc6f4,Mitya Burmistrov,mitya burmistrov,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::34a82032592d,Jaimee Scheffler,jaimee scheffler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::34d4832aff3a,Naomi Lowinger,naomi lowinger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::34faeee0af4c,Martin Kreim,martin kreim,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3514a123c670,Ian R. Ray,ian r. ray,CLUB,1,0,1,1,medium,STAGED
+prov_identity::354793952109,Franklin Maduro Villanueva,franklin maduro villanueva,CLUB,1,0,1,1,medium,STAGED
+prov_identity::359a817498c7,Tobias Thomsen,tobias thomsen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::359d28f6d9c3,John Douma,john douma,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::35b0ef6184bb,Jeffrey W. Predmore,jeffrey w. predmore,CLUB,1,0,1,1,medium,STAGED
+prov_identity::35bfe8c959fc,Michael E. Houck,michael e. houck,CLUB,1,0,1,1,medium,STAGED
+prov_identity::35c3601213c3,Ryan M. Thomas,ryan m. thomas,CLUB,2,0,2,2,medium,STAGED
+prov_identity::35fd6abff1f2,Stéphane M. Gautron,stéphane m. gautron,CLUB,1,0,1,1,medium,STAGED
+prov_identity::362b8c0ffbfb,Alex Katana,alex katana,CLUB,1,0,1,1,medium,STAGED
+prov_identity::364965c0a4bb,Mike Sue,mike sue,CLUB,1,0,1,1,medium,STAGED
+prov_identity::365efbdb83e5,Ben W. Valentine,ben w. valentine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::368f044d59e9,David J. Kyzer,david j. kyzer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::36b160d08f5c,Roger N. McLeod,roger n. mcleod,CLUB,1,0,1,1,medium,STAGED
+prov_identity::370879c8d0d4,Dennis C. Cruz,dennis c. cruz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3712751ddd22,Seth W. Jones,seth w. jones,CLUB,1,0,1,1,medium,STAGED
+prov_identity::372076e8357c,Jon Bulycz,jon bulycz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::372ff6327069,Nathan Edmunds,nathan edmunds,CLUB,1,0,1,1,medium,STAGED
+prov_identity::37446239b16a,Eric R. Pifer,eric r. pifer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::374b67f9b8ec,Fred Nicaise,fred nicaise,CLUB,1,0,1,1,medium,STAGED
+prov_identity::374c1aba0d7a,Christophe Guille,christophe guille,CLUB,1,0,1,1,medium,STAGED
+prov_identity::374db75afef7,Stanimir Kisyov,stanimir kisyov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::376ffdb9d45a,Ethan Rohr,ethan rohr,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3788311f61ee,Laure Thorens,laure thorens,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::37aa0c146bd5,Mike A. Niday,mike a. niday,CLUB,1,0,1,1,medium,STAGED
+prov_identity::37b8fbacdc89,Matt W. Beeson,matt w. beeson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::38242497fb87,Gergo Csallo,gergo csallo,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::383208e32e23,Hannes Jodar,hannes jodar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::38638946a2dc,Colin Kennedy,colin kennedy,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::386d02876994,Nathan Maertens,nathan maertens,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3870c7789d54,Jimmy Stout,jimmy stout,CLUB,1,0,1,1,medium,STAGED
+prov_identity::38a22d70ab58,Seb Belcher,seb belcher,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::38b3f65a58eb,Brian Hendrickson,brian hendrickson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::38dfde5670be,Damon Mathews,damon mathews,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::38f293959d0d,David Piper,david piper,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::38ff09440cac,Tricia S. George,tricia s. george,CLUB,1,0,1,1,medium,STAGED
+prov_identity::390d294453dd,Joshua Sutterfield,joshua sutterfield,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::391e9335fd3a,Hristo T. Marev,hristo t. marev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::392b76e0fb41,Eisuke Kimuro,eisuke kimuro,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::397815a7615f,Miles Bennett-Smith,miles bennett-smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::397a2a42b9ad,Essex Coons,essex coons,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::397b07ae8d3e,Rémi St-Michel,rémi st-michel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::398e31bdb660,Alex Vokaer,alex vokaer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::39bd58f12aa6,Luke Bradley,luke bradley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::39c414b992ac,Robert Krolczyk,robert krolczyk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::39e13f117914,Allen Sneed,allen sneed,CLUB,1,0,1,1,medium,STAGED
+prov_identity::39e74298b54b,Ivan S. Stanev,ivan s. stanev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a0ba1426915,Oliver U. Mathews,oliver u. mathews,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a16024bb2b4,Ryn M. Miller,ryn m. miller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a2516ed9a3e,Xav J. Deflandre,xav j. deflandre,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a293ca1dfc4,Ali Köksal,ali köksal,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3a29b17c2bd8,Julio García,julio garcía,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a45e7f79a48,Dusty M. Myers,dusty m. myers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a5740f13899,Aaron W. Rockwell,aaron w. rockwell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a6f249ace4e,Santiago J. Luque,santiago j. luque,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a8419247046,Christopher J. Simon,christopher j. simon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a86461bc7cf,Ron Searl,ron searl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3a8c95f4c4d8,Glenn J. Gentzke,glenn j. gentzke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ad736c99165,Pawe K. Cisek,pawe k. cisek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3adbd78a2388,Jordon A. McAllister,jordon a. mcallister,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3b05b743dd5d,David J. Hill,david j. hill,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3b193df9ea12,Yukari J. Kawasaki,yukari j. kawasaki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3b3ff017112d,Anne H. Thygesen,anne h. thygesen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3b6da5329e6f,Joe M. Hamlin,joe m. hamlin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3b9ba52a8dc7,Brian Beun,brian beun,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ba0c6c259ce,Mark J. Chafe,mark j. chafe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3bc1195bdd32,Luke Collins,luke collins,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3bc3b2d5bd21,Josh Bright,josh bright,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3bebe0b564ba,Jacob Ray Sams,jacob ray sams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c10f5db22da,Joshua Lackey,joshua lackey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c3cca3ae598,Melissa Elstad-McKirdie,melissa elstad-mckirdie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c3cf5edc2c5,Aaron Gerlich,aaron gerlich,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c5bc5799ee0,Noah D. Walther,noah d. walther,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c6353723d42,Alexander Raia,alexander raia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c9ccaffef07,Mats Eriksson,mats eriksson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3c9ec0dcc1f3,Sidney Dillon,sidney dillon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ca023943a5a,Andres Zapata Pelaez,andres zapata pelaez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3cae04e229e1,Mark Bartes,mark bartes,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3cb315b5dd90,Sam Foster,sam foster,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3d0a1edd6f5a,Benjamin R. Alston,benjamin r. alston,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3d48811ddcc5,Petteri Petäinen,petteri petäinen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3d51cd6beb40,Alyssa Pane,alyssa pane,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3d534b73fdad,Michael Kitterer,michael kitterer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3d837ca35dfb,E. B. Bauby,e. b. bauby,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3d98e6310435,Renato Zülli,renato zülli,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3dd196fe5e2c,Mike A. Cederquist,mike a. cederquist,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3dd5252c6fa0,Alex Crowhurst,alex crowhurst,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3e008d1fe826,Matt A. Churney,matt a. churney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e28afddded7,Felix E. Zenger,felix e. zenger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e432447dcc3,Sawyer R. Frey,sawyer r. frey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e4e52800bea,Jack Montgomery,jack montgomery,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e5466457202,Ryan G. Ramola,ryan g. ramola,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e6ba0bc0131,Amanda L. Suter,amanda l. suter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e7c76495350,Samppa J. Hynninen,samppa j. hynninen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3e9db63bb948,Joey Quesada,joey quesada,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ea87b33a041,Dean D. Harliwich,dean d. harliwich,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ec5c0de7af0,Joshua Clark,joshua clark,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3ee4d412968a,Peter Himpel,peter himpel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3eecb5ad5159,Frederic Applanat,frederic applanat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3eef874d432a,Pablo L. Sánchez Báez,pablo l. sánchez báez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f0337f1fd75,Steve Shackelford,steve shackelford,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::3f27077a3ecd,Spencer C. Pendragon,spencer c. pendragon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f271e389a94,Steffen Pedersen,steffen pedersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f507af4a3b7,Jhonnattan E. Camacho,jhonnattan e. camacho,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f54bc078e61,Mark J. Monistere,mark j. monistere,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f6c956266cd,Michael B. Sprung,michael b. sprung,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3f9f719dfc59,Paul Kolbusz,paul kolbusz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3fb94c98eafc,Jared M. Kuchek,jared m. kuchek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::3fd337342ba4,Casey Brillon,casey brillon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::400f55e5204e,Cody A. Passey,cody a. passey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4054841eaf2a,Eric L. Lockwood,eric l. lockwood,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40681c2a0633,Jose E. Bolivar Izzo,jose e. bolivar izzo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40702e877edb,Arran Arbiter,arran arbiter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::408195c0314d,Jeff Hines,jeff hines,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40ad6d7ef541,Lasko Laskov,lasko laskov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40bf545590fb,Scott T. Cleere,scott t. cleere,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40ea9e7c79dc,Jane J. Zerbe,jane j. zerbe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::40f405990c20,Warren D. Allen,warren d. allen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4132bf608325,Logan Rudemiller,logan rudemiller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::413499e0ab2f,Matthieus C. Dwigans,matthieus c. dwigans,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4144d1daa3db,Tom Yard,tom yard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::41479f59bd9c,Matthew A. Churney,matthew a. churney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4163ff1dde7d,Rodolfo J. Vivas Barrera,rodolfo j. vivas barrera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::41bbe0188547,Kirill Ronchkovskiy,kirill ronchkovskiy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::41c79ae68378,Aron Tennant,aron tennant,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::41e40bbfae68,Jeffrey Rumble,jeffrey rumble,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::422604fdac5a,Peter Weigel,peter weigel,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::424f559f44e7,Rene Rühr,rene rühr,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::42673c206a0a,Julia V. Klouda,julia v. klouda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::427e957c0c44,Loren Baum,loren baum,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::429222ecc88e,David Christy,david christy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4296ba89125f,Jean Francois Fries,jean francois fries,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42b83435284f,Todd Stewart,todd stewart,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42b935da0754,Spurloz Dimitrov,spurloz dimitrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42c459112ea9,Ania Walszczak,ania walszczak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42d36be31a46,Jairo A. Jaramillo,jairo a. jaramillo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42e87fe82784,Brian Wolf,brian wolf,CLUB,1,0,1,1,medium,STAGED
+prov_identity::42f31a38e4fa,Giovani C. Brighenti,giovani c. brighenti,CLUB,1,0,1,1,medium,STAGED
+prov_identity::43077784453c,Lonnie V. Hobbs,lonnie v. hobbs,CLUB,1,0,1,1,medium,STAGED
+prov_identity::43274103b2a9,Renato Zülli,renato zülli,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::43683237ddac,Jeff D. Ploetz,jeff d. ploetz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::436e643f967c,Gabriel A. Jordan,gabriel a. jordan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::43d3e76b91a1,Mark SJ George,mark sj george,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4418fdfe985e,John Conley,john conley,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::441aa9895620,Diego De Gortari,diego de gortari,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4425c24aa861,Michael Kalinowski,michael kalinowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::443196f73aad,Derek S. Thorpe,derek s. thorpe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4471e74e3a4c,Joseph M. Ittoop,joseph m. ittoop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::44bf8ac92b9f,Cory Krukowski,cory krukowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::44c5a24d7c0d,Eric Palmer,eric palmer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::44e657cc36b9,Jeff G. Mudd,jeff g. mudd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::44e766a2cf90,Jared Herholtz,jared herholtz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::44f16f026a4b,James Hilliard,james hilliard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4543734dc7c1,Vitaliy A. Lushai,vitaliy a. lushai,CLUB,1,0,1,1,medium,STAGED
+prov_identity::454b5863b8b5,Dmitry Sergeev,dmitry sergeev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::455764972b6f,Douglas C. Spores,douglas c. spores,CLUB,1,0,1,1,medium,STAGED
+prov_identity::456deef18237,Andrew J. Rincon,andrew j. rincon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4591071de4bb,Alberto G. Inocencio,alberto g. inocencio,CLUB,1,0,1,1,medium,STAGED
+prov_identity::45c752708030,Dan Oblin,dan oblin,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::45ea39a760f0,Jani Malmberg,jani malmberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::45f2fed207f4,Brian J. Cooper,brian j. cooper,CLUB,1,0,1,1,medium,STAGED
+prov_identity::460e9aa3f145,Paul Simpson,paul simpson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4688f890394e,James R. Ward,james r. ward,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4689f2871825,Sharon Berry,sharon berry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4695891151b0,James McCoppin,james mccoppin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::46bf31963e23,Nathan Oates,nathan oates,CLUB,1,0,1,1,medium,STAGED
+prov_identity::46d61e0a8813,Cyndi Borden,cyndi borden,CLUB,1,0,1,1,medium,STAGED
+prov_identity::46ef827b4130,Marko Matvei,marko matvei,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4704078bb604,Kevin R. Coad,kevin r. coad,CLUB,1,0,1,1,medium,STAGED
+prov_identity::47395407d731,Toni Pääkkönen,toni pääkkönen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::47588bd683fe,Willy Felton,willy felton,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::478cafd9f0bb,Nil Goyette,nil goyette,CLUB,1,0,1,1,medium,STAGED
+prov_identity::478f0c629dc7,Ognyan Ognyanov,ognyan ognyanov,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::47b291135077,Scottie K. Monteith,scottie k. monteith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::47c2c1430b14,Paul Hunley,paul hunley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::47ddce84dec1,Jeanne Journeau,jeanne journeau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::47e8e3a3ba15,Joe Brown,joe brown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4811c17f7c92,Bernhard Lugbauer,bernhard lugbauer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4855d79639e8,Sergio M. Pinto,sergio m. pinto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4861369eb773,Craig W. Lord,craig w. lord,CLUB,1,0,1,1,medium,STAGED
+prov_identity::48648799e0b7,John Weber,john weber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::48a396de87a0,Chris Payne,chris payne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::48c27742b53c,Evan Wolf,evan wolf,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::48dc714fb8a5,Chris McKeon,chris mckeon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::48f3219e780d,Jason Graham,jason graham,CLUB,1,0,1,1,medium,STAGED
+prov_identity::48fae1ba94ff,Peter Pujdak,peter pujdak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::491e753808a5,Zachary J. Forth,zachary j. forth,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4948b76a52b0,Dan A. Hollosy,dan a. hollosy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::49601d84e60c,Christopher Prosser,christopher prosser,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::497300840300,Anssi T. Sundberg,anssi t. sundberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::49842c093eac,Kenneth D. Hamric,kenneth d. hamric,CLUB,1,0,1,1,medium,STAGED
+prov_identity::498431ca1ffd,Phillip G. Norrod,phillip g. norrod,CLUB,1,0,1,1,medium,STAGED
+prov_identity::499837a27fb3,Chris Dokurno,chris dokurno,CLUB,1,0,1,1,medium,STAGED
+prov_identity::49d702db84ac,Shawn D. Barabash,shawn d. barabash,CLUB,1,0,1,1,medium,STAGED
+prov_identity::49ff90e9d3f8,Juan J. Trillos,juan j. trillos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4a1f3adfdde4,Shane A. Henrie,shane a. henrie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4a4350c2a74a,Suzy Scott-Williams,suzy scott-williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4a9c87f31fb4,Matthew T. Ellison,matthew t. ellison,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4ada80c2bc65,Cole Rudolph,cole rudolph,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b0de40fb681,Paul D. Castro,paul d. castro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b47821b2fef,Edison J. Forero,edison j. forero,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b47c884eb3a,Steven J. Rios,steven j. rios,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b5a358d5434,David A. Whitehead,david a. whitehead,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b5c84a9f684,Matt O'Dell,matt o'dell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4b635787ead4,Jen Luk,jen luk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b67429ba8f6,Thomas Fricker,thomas fricker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b91b8c1f9a6,Arkady V. Lobankov,arkady v. lobankov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b93a398ac6c,Josh A. Wayborn,josh a. wayborn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4b9fc467f277,Marcus Soler,marcus soler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4ba8191ad0a9,Bruce Dole,bruce dole,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4c03303d1896,Matthew MacNeil,matthew macneil,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4c468be27216,Jared D. McGee,jared d. mcgee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4c8dae8c4c35,Jason Hoeppner,jason hoeppner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4d0400c1b664,Cindy Andras,cindy andras,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4d116916e364,Jillali Soufi,jillali soufi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4d18fa0166d9,Pawel Michalski,pawel michalski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4d273f62da99,Naomi Shafer,naomi shafer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4d38dacd6219,Johanna Neundlinger,johanna neundlinger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4d4e8f785996,Jason N. Scott,jason n. scott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4d54dbb7d5f9,Phillip Geiß,phillip geiß,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4d61d4d59360,Jeanne-Marie Burdette,jeanne-marie burdette,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4d841767427b,Kyle D. Sailors,kyle d. sailors,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4e31bf88237b,Kyle Walker,kyle walker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4e618a3400ca,Piotrek P. Rymaszewski,piotrek p. rymaszewski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4e7203e107bc,Christer M. Lundstrom,christer m. lundstrom,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4e8fed56e04a,Goran Vrane?ević,goran vrane?ević,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4ea609904c6c,Samuel Hufschmid,samuel hufschmid,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4ebb8ba45e16,Jay Martin,jay martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4ecc15d7edfc,Jose L. Herrera,jose l. herrera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4ee35ae6666f,Bjoern Seifert,bjoern seifert,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::4f05552b677e,Ivan K. Bindoff,ivan k. bindoff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4f18e9f8e9d6,Samuel W. Shupe,samuel w. shupe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4f54e9c65544,Adam Samaj,adam samaj,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4f6e1816f5ff,Svetoslav T. Petrov,svetoslav t. petrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4fac4983667c,John Lehmann,john lehmann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4fb40871afb0,Mike Witkin,mike witkin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4fbd99ce31da,Adrian Woodford,adrian woodford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::4fee967024d0,Luka Weyler-Lavallée,luka weyler-lavallée,CLUB,1,0,1,1,medium,STAGED
+prov_identity::50274823ff5e,Jamison K. Tulin-Jensen,jamison k. tulin-jensen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::503ef2dddf78,Kat Onishenko,kat onishenko,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5052a997a391,Simon-François Kolodenchuk,simon-françois kolodenchuk,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5059f054a87b,Leimar A. Salas Romero,leimar a. salas romero,CLUB,1,0,1,1,medium,STAGED
+prov_identity::505a6aa1e0ff,Jacob Jensen,jacob jensen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5090e26cb380,Emmanuel G. Bouchard,emmanuel g. bouchard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5095911f3dfd,Daniel E. González,daniel e. gonzález,CLUB,1,0,1,1,medium,STAGED
+prov_identity::509c8c985b61,Stephanie A. Jazmines,stephanie a. jazmines,CLUB,1,0,1,1,medium,STAGED
+prov_identity::50e54346e714,Rochelle Smith,rochelle smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::50f1b32e9a83,Tasia Lyn Colin,tasia lyn colin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::512fe263ff74,Louis Rinowski,louis rinowski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::513f26e3b2dc,Leilani Rector,leilani rector,CLUB,1,0,1,1,medium,STAGED
+prov_identity::51661be68777,Erin Riffel,erin riffel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::516a011b0178,Luke D. Spriggs,luke d. spriggs,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5174aa2a760a,Bryce B. Tashiro,bryce b. tashiro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5179f1cd1170,Jeff Gran,jeff gran,CLUB,1,0,1,1,medium,STAGED
+prov_identity::518dfa6731fe,Zac Paul Reyna,zac paul reyna,CLUB,1,0,1,1,medium,STAGED
+prov_identity::51e66acece94,Jasper Johansen,jasper johansen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::51e966a6645a,Magda Szumiec,magda szumiec,CLUB,1,0,1,1,medium,STAGED
+prov_identity::521577f5f1c9,Lois Rene,lois rene,CLUB,1,0,1,1,medium,STAGED
+prov_identity::52385be1104f,Andre Lemaire,andre lemaire,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5238a07a06db,Brendon J. Ross,brendon j. ross,CLUB,1,0,1,1,medium,STAGED
+prov_identity::526a16d6072f,Jonathan Aquino,jonathan aquino,CLUB,1,0,1,1,medium,STAGED
+prov_identity::526c9811ba20,Parker Weber,parker weber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::528638cdf032,Chris T. Jones,chris t. jones,CLUB,1,0,1,1,medium,STAGED
+prov_identity::52b25dce96ed,Andrew Burke,andrew burke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::52cb0c813350,Gabriel Enck,gabriel enck,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::52d2e5a6c99b,Jackie A. Cordova,jackie a. cordova,CLUB,1,0,1,1,medium,STAGED
+prov_identity::52fb08693296,Asher Raven,asher raven,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5310c035004f,Jonathan Asencio,jonathan asencio,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5327360ded0f,Daniel Gums,daniel gums,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5344f6fcfad6,Randle S. Garner,randle s. garner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::534749b7ccfa,Christoph Thanhoffer,christoph thanhoffer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::535060fe9427,Marko Stenberg,marko stenberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53625fcfa386,Alex Bills,alex bills,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53762d5902cc,Cody A. Miller,cody a. miller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5388deaf69dd,Alex Jay Lewis,alex jay lewis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53ad254a7438,Colin Hartigan,colin hartigan,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::53be5e846707,Kenneth Stuart,kenneth stuart,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53cd8e7ad322,Itzamar Marquez Rondon,itzamar marquez rondon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53d2e493797e,Pawel M. Rozek,pawel m. rozek,CLUB,2,0,2,2,medium,STAGED
+prov_identity::53d7ace561ba,Camtu Pham,camtu pham,CLUB,1,0,1,1,medium,STAGED
+prov_identity::53fc40d96f5a,Jason Buzby,jason buzby,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::53fdc690618b,Luis J. Romero Palma,luis j. romero palma,CLUB,1,0,1,1,medium,STAGED
+prov_identity::54305616a34f,Paul Elf Toews,paul elf toews,CLUB,1,0,1,1,medium,STAGED
+prov_identity::543a0111b629,Tom D Overton,tom d overton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::545e2224e95c,Al Tong,al tong,CLUB,1,0,1,1,medium,STAGED
+prov_identity::546e7575c3a1,Zachary J. Dallman,zachary j. dallman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::54ab002ae7f7,Mikko Hassinen,mikko hassinen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::54c7ca4442c1,Thomas Laboutka,thomas laboutka,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::54cf17206f87,Justin E. Paulin,justin e. paulin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5501a005daa2,Adrienne M. Dukes,adrienne m. dukes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::550f91c78865,Karl Woisetschlager,karl woisetschlager,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5513828aa712,Vincent Bat Bathily,vincent bat bathily,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5548c3c15a83,Harald Höglinger,harald höglinger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5554b038280b,Uroš Dolinar,uroš dolinar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::555e9f643d10,Derek P. Vandall,derek p. vandall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::55606c0a4c0c,Nicole CHerry,nicole cherry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::557820aa6b01,Tyson Courreges,tyson courreges,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::55791d0ba9e6,Sean McKiernan,sean mckiernan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::558c168a24f1,Christopher D. Miller,christopher d. miller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::55dd11a09c2b,Conrad E. Siebert,conrad e. siebert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::561b1a00d72a,Jairo V. Revueltas,jairo v. revueltas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5639a0cc49c6,Ali Kermani,ali kermani,CLUB,1,0,1,1,medium,STAGED
+prov_identity::566a7614d7a1,Carl-Antoine Boulay,carl-antoine boulay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::56857cdfcdc7,Paweł D. Frączek,paweł d. frączek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::569f7fda3efe,Zac B. Jackson,zac b. jackson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::56a0fa4fc8bb,Gaylene G. Grossen,gaylene g. grossen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::56d088fda094,Walt Rex Houston,walt rex houston,CLUB,2,0,2,2,medium,STAGED
+prov_identity::56fff88b18bc,Annette Hart,annette hart,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5710d0767105,Lisa S. Monti,lisa s. monti,CLUB,1,0,1,1,medium,STAGED
+prov_identity::57224538e0a5,Mathieu Giard-Montpetit,mathieu giard-montpetit,CLUB,1,0,1,1,medium,STAGED
+prov_identity::572aaf110e5e,John Festing,john festing,CLUB,1,0,1,1,medium,STAGED
+prov_identity::57907f5cbe25,Isaac Noyes,isaac noyes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::57adbadc77f2,Julien Apollonio,julien apollonio,CLUB,1,0,1,1,medium,STAGED
+prov_identity::57ae396fcff6,James W. Jackson,james w. jackson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::582031279666,Germain Uzcategui Jimenez,germain uzcategui jimenez,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5849759471b8,Keifer R. Doss,keifer r. doss,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5864dded1831,Vince Bradley,vince bradley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5878abbfe0db,Joschka Sebrantke,joschka sebrantke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::588c72af8d00,Cassandra Larson,cassandra larson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::588e3dd5e844,George Rahi,george rahi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::58a171bf159e,Glen Whisler,glen whisler,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::58cb63a3349f,Christian Trevino,christian trevino,CLUB,1,0,1,1,medium,STAGED
+prov_identity::58d5c4595fa4,Tom M Wheeler,tom m wheeler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::58d7b04243a2,Kasper Nymand,kasper nymand,CLUB,1,0,1,1,medium,STAGED
+prov_identity::58f469012e24,Johannes Koivisto,johannes koivisto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::58f63bc63234,Pat Thomasen,pat thomasen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::58fdff944a3a,Ed J. O'Hara,ed j. o'hara,CLUB,1,0,1,1,medium,STAGED
+prov_identity::590a7e10f462,Charlie Stark,charlie stark,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::59295f930c39,Ken Yep,ken yep,CLUB,1,0,1,1,medium,STAGED
+prov_identity::597ee50a7f2a,Sergio Hernández Santiago,sergio hernández santiago,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5987a02b18c4,Tamara Redondo,tamara redondo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::59aedf24a0f1,Marta M. Madej,marta m. madej,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5a1a93a7e773,Tomasz Ostrowski,tomasz ostrowski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5a261fba2936,Alexander Sun Gall,alexander sun gall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5a4b12b5c572,Pawel N. Nowak,pawel n. nowak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5a64422e90c5,Chris Holden,chris holden,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5a89cd23324e,Kaitlyn M. Guild,kaitlyn m. guild,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5ab4c5c375ce,Devora Unger,devora unger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5ae239b121d7,Wade JA Biegun,wade ja biegun,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5ae51e52bb29,Rob Murath,rob murath,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5aeb1b45082e,Bobby A. Thompson,bobby a. thompson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5b1289ecaa57,Triscia M Race,triscia m race,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5b164023762c,Cory D. Current,cory d. current,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5b56a9089181,Hunter Lee Golden,hunter lee golden,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5b6751589e9f,Dylan H. Fry,dylan h. fry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5b6eebb4e628,Bret Packard,bret packard,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5b9b796bd5ee,Henry Peterson,henry peterson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5bc6304e6216,Vencislav Ivanov,vencislav ivanov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5bf2d7f303eb,Jesse Lindley,jesse lindley,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5c2057127607,Bryce W Fulton,bryce w fulton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c2614299bb0,Charles Carver,charles carver,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5c306eb32ca9,Roman Bednov,roman bednov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c329dbd36ef,Kristy L. Kieda,kristy l. kieda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c3757e90b89,Kuba Patryarcha,kuba patryarcha,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5c440432b201,Benoit Nieuborg,benoit nieuborg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c4e61443305,Russ Arsenault,russ arsenault,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5c61af233821,Nicole Fournier,nicole fournier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c89ef5500af,Zavier Santiago,zavier santiago,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5c9bd427e83c,Quentin MacAulay,quentin macaulay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5cabc6f4e85f,Nathan Rudisill,nathan rudisill,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5d10f2285317,Alexander Sagalovskiy,alexander sagalovskiy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5d1bc447b816,E.J. J. Gammage,e.j. j. gammage,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5d603b70ae8f,Paul McIver,paul mciver,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5d79809b0424,Mahmood Raza,mahmood raza,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5d86b6ee96bc,Matthew Evans,matthew evans,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5d9938acbe99,Josh Ohana,josh ohana,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5db54ea1a5c1,Fritz Arlamovsky,fritz arlamovsky,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5e2b0ed7eabb,Pete Katsaros,pete katsaros,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5e42902669bb,Min jung Shin,min jung shin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5e768f0f0214,Erik Jue,erik jue,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5e77788a2f31,Earl A. Dennis,earl a. dennis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5ea9318a9a1b,Dylan Herlevich,dylan herlevich,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::5ec24773be51,Rebecca L. Walker,rebecca l. walker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5eff089e34e3,Farzon Almaneih,farzon almaneih,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5f040f8176be,Timothée J. Lerolle,timothée j. lerolle,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5f3d59b4bf77,Darryl J. Kasper,darryl j. kasper,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5f3dfa65e8c7,Michael P. Scheele,michael p. scheele,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5f7da86c5c07,Ernesto Gonzáles Torres,ernesto gonzáles torres,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5f90e2139663,Jacob (Jake) Mclellan,jacob (jake) mclellan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::5ff44a287958,Dony S. Permedi,dony s. permedi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::602406c23ed6,Charles Burge,charles burge,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6029986c512a,Kyle Mattson,kyle mattson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::602bd8afd14f,Dimitri Van den Berg,dimitri van den berg,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::605c5ea99a97,Benoît B. Friderich,benoît b. friderich,CLUB,1,0,1,1,medium,STAGED
+prov_identity::607f0c9df8b7,Charles Knapp,charles knapp,CLUB,1,0,1,1,medium,STAGED
+prov_identity::60997465cd6d,Timothy C. Troll,timothy c. troll,CLUB,1,0,1,1,medium,STAGED
+prov_identity::609b6d1833f6,Ryand Sanchez,ryand sanchez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6113783b4b07,A. J. Shultz,a. j. shultz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6152c82591a7,Richard T. Verr,richard t. verr,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6167c03dd301,Vince Canibano,vince canibano,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::618b1d919729,Ilan Cristel,ilan cristel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::618e2bdd4d84,Beau Barnett,beau barnett,CLUB,1,0,1,1,medium,STAGED
+prov_identity::61a7204efaa5,Air Ben,air ben,CLUB,1,0,1,1,medium,STAGED
+prov_identity::61c41cae0893,Dan S. Laggner,dan s. laggner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::621a555e2ca0,Eric Conner,eric conner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::623d27e527a6,Namgyal Lhamo,namgyal lhamo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::62435701168a,Joe J. Scaccia,joe j. scaccia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6266c2155b1f,Moises A. Satie Curie,moises a. satie curie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6271594dec91,Gareth Servant,gareth servant,CLUB,1,0,1,1,medium,STAGED
+prov_identity::627ee5cd2b40,Cody Beeler,cody beeler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6293c682542d,James McElwain,james mcelwain,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::62a4fd1304e6,Adrian Ortega,adrian ortega,CLUB,1,0,1,1,medium,STAGED
+prov_identity::62a79e1933a7,Kyle J. Marchi,kyle j. marchi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::62c0808f0ac9,Glen Howie,glen howie,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::62cc99e86215,Matt D. Chapman,matt d. chapman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::62f179c27b58,Alberto J. Perez,alberto j. perez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::630012157ee3,Gabriel Larrivée,gabriel larrivée,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6313a99ceca0,John-Paul D. Allan,john-paul d. allan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::63b252e9afca,Nick D. Landes,nick d. landes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::63bd700eeaf2,Aksel Mängli,aksel mängli,CLUB,1,0,1,1,medium,STAGED
+prov_identity::63c16ad13a21,Mike Strumpf,mike strumpf,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::63c787872d44,Sam Smith,sam smith,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::63d643f7cc84,Juha-Matti Rytilahti,juha-matti rytilahti,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::63e7d5e9a209,Tony Franks,tony franks,CLUB,1,0,1,1,medium,STAGED
+prov_identity::63ffc828818a,Luis A. Sarmiento Narro,luis a. sarmiento narro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64216b65ef44,Szymon Adamczyk,szymon adamczyk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::643e6d1390b6,Jason C. Hoeppner,jason c. hoeppner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64668865210a,Kam Kuo,kam kuo,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::64b18e0e3352,Steven Lee Anderson,steven lee anderson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64bfb2489da5,Josh Habdas,josh habdas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64f023fbca25,Nathan D. Neal,nathan d. neal,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64f1dfcd8189,Julie H. Ryback,julie h. ryback,CLUB,1,0,1,1,medium,STAGED
+prov_identity::64f53fb8fe67,Jose A. Renteria,jose a. renteria,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6515d8f9035d,Clark Harris,clark harris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6532d6b3b61f,Casey Panyk,casey panyk,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::654279294cc2,Aleksandr G. Orlov,aleksandr g. orlov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6547f3b44cc0,Liam Harris,liam harris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::655ee4e89ffb,Jeff T. Fennell,jeff t. fennell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6598064cb13b,Matt J. Flabiano,matt j. flabiano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::65bdc2aa08ff,Steve Harding,steve harding,CLUB,1,0,1,1,medium,STAGED
+prov_identity::65f7ac6ffb72,Alvaro J. Zamora,alvaro j. zamora,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6606f6b7d52b,Galen A. Gilmore,galen a. gilmore,CLUB,1,0,1,1,medium,STAGED
+prov_identity::66119e288177,Jeremy Lee Walters,jeremy lee walters,CLUB,1,0,1,1,medium,STAGED
+prov_identity::663ee1a91a11,Gisaya Gahungu,gisaya gahungu,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::664738c04159,Max Harris-Janz,max harris-janz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6659b33105f4,Sean T. Sullivan,sean t. sullivan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::666d2b011153,Hans Freller,hans freller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::66b630bd992a,Bryan S. Nelson,bryan s. nelson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::66d04d6134c5,Maciej Jedraszek,maciej jedraszek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6727a949107b,Cory Gene Elia,cory gene elia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6776d251c7c4,Marie Schreiber,marie schreiber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::678a62abfa61,Heather L. Buddy,heather l. buddy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::67bc71da4290,Michael Sauren,michael sauren,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::67c303fe2469,Jennifer Refat,jennifer refat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::67df0b0a8a60,Sebastien Vanhove,sebastien vanhove,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::680d82d0c3ab,Aneta Nowak,aneta nowak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6842a3c6b30f,Klemens Längauer,klemens längauer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::684dea58ed86,Jonathan M. Haber,jonathan m. haber,CLUB,2,0,2,2,medium,STAGED
+prov_identity::686315081dba,Miguel A. Oramas,miguel a. oramas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::686409e99da2,Heike Koller,heike koller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::686c6a568f77,Radim B. Pekárek,radim b. pekárek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::686fe2ea4ff3,Steven J. McKnight,steven j. mcknight,CLUB,1,0,1,1,medium,STAGED
+prov_identity::68a672986617,Fred Anderson,fred anderson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::68beb23f3a03,Joseph W. Walther,joseph w. walther,CLUB,1,0,1,1,medium,STAGED
+prov_identity::68c959bd80b8,Shane Archiquette,shane archiquette,CLUB,1,0,1,1,medium,STAGED
+prov_identity::68eb640340b6,Eva Schindlegger,eva schindlegger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::68f5bc0f83c6,Nico Fandree,nico fandree,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::69404938862e,Tyler R. Shean,tyler r. shean,CLUB,1,0,1,1,medium,STAGED
+prov_identity::69529eabd7f3,Tomasz P. Król,tomasz p. król,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6976e28fc634,Kasper Laustsen,kasper laustsen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6984e2808ef5,Paul Kennington,paul kennington,CLUB,1,0,1,1,medium,STAGED
+prov_identity::69ea78363f2c,Anna Sowada,anna sowada,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a1e1d020a5f,Amber Leann Ott,amber leann ott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a25a1f4934b,Joshua Feltman,joshua feltman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a52a998ef45,Lawrence M. House,lawrence m. house,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a5fa88bb541,Nik C. Thakur,nik c. thakur,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a6725c6ca35,Lence A. Utkin,lence a. utkin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a820d0ef072,Dana Reeder,dana reeder,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a8e4be18794,Anu Webster,anu webster,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6a9ec6d0df11,Wesley K. Bullard,wesley k. bullard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6aa39ba9e40e,Eric Castro,eric castro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6ab47882b7e0,Michael Anello,michael anello,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6acaeeec9334,Carrie Yuan,carrie yuan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6ad03f081ef7,Mikko S. Tapaninaho,mikko s. tapaninaho,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b01e50de2ca,Ba Bu,ba bu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b22e34eca7b,Grégoire Arbonville,grégoire arbonville,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b29dda859ea,Mishi M. Yi,mishi m. yi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b781f2252e3,Artur Masiarz,artur masiarz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b8605b7b861,Piotrek Gryko,piotrek gryko,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b8f589864c5,Manuel Arias Rangel,manuel arias rangel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b9b63f5015c,Loren D. Baum,loren d. baum,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b9e7a8178e1,Adam A. Johnson,adam a. johnson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6b9ecbd27566,Bugra Dual Akýn,bugra dual akýn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6ba9823f8608,Jakub J. Pechá,jakub j. pechá,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6bb3bf6e0202,Conrad Rustad,conrad rustad,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6beb57efacb8,John A. Martin,john a. martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6bfb47901737,Christopher H. Griffin,christopher h. griffin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c229ab17918,Ryan Grimm,ryan grimm,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c2a4d61eb4a,Andrew T. Bosher,andrew t. bosher,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c2e343dab36,Zac S. Wright,zac s. wright,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c473eec41f9,Kinga Gwó¼d¼,kinga gwó¼d¼,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c586ecf9539,Lukas Steiner,lukas steiner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c6075547d28,Damien A. Schlobohm,damien a. schlobohm,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c6250e91d22,mohammad dastranj,mohammad dastranj,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c670b185c63,Jesse Ruotsalainen,jesse ruotsalainen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c6c3a6af9cc,Jon Ward,jon ward,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6c6feac8af5c,Rob K. Wallace,rob k. wallace,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6c6feefd4250,Eduardo A. Portillo Soto,eduardo a. portillo soto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6ca6ad63802f,Pierre-Pascal Gauthier,pierre-pascal gauthier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6cac010fb544,Anneleissa Coen,anneleissa coen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6d076fd75c7e,Robert Mercier,robert mercier,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6d1de75b631e,Joseph A. Karasek,joseph a. karasek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6d307a69ca4f,Dominic Mangonon,dominic mangonon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6da3ea63902b,Benjamin O. Brown,benjamin o. brown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6db40eb37287,Kyle Shane Cook,kyle shane cook,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6dfa16c60f59,Kevin R. Buckingham,kevin r. buckingham,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6dff3c9227c2,Aaron R. Clevenger,aaron r. clevenger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6e41e89644e9,Prunus Aberration,prunus aberration,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6e4d59c10272,Fernando J. Moreno Garcia,fernando j. moreno garcia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6e522a63c616,Egoitz,egoitz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6e750de773d5,Josh Casey,josh casey,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6e9510cf2d4a,Matt D. Grant,matt d. grant,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6eb5eefca7f5,Carlos R. Cordeiro,carlos r. cordeiro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6f1ccf503b90,Thomas Förster,thomas förster,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6f5d8e63191b,Andrew Hatz,andrew hatz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6f67de433754,Alexo Ray Lund,alexo ray lund,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6f78e9a1ae68,Wesley Fox,wesley fox,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6f7a9175bd6b,Tony Lee Schmaltz,tony lee schmaltz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6fa03fe4dde6,Martin Schulz,martin schulz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6fcb4a5a3f2a,Craig Montgomery,craig montgomery,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6fd458d73022,Jeff Lam,jeff lam,CLUB,1,0,1,1,medium,STAGED
+prov_identity::6fea2ed705e0,Noah Jay-Bonn,noah jay-bonn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::6ff876acf982,Adam E. Smith,adam e. smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::701baeda65bb,Diana C. Nagel,diana c. nagel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::701e263e92a6,Josh N. Ruiz,josh n. ruiz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7034a0b69a64,Piotr P. Pauk,piotr p. pauk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::703e718bf475,Heath J. Lambert,heath j. lambert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::704dbe752a8f,Heigo Kivistik,heigo kivistik,CLUB,1,0,1,1,medium,STAGED
+prov_identity::709bc96675b6,Matt Ryan Dowle,matt ryan dowle,CLUB,1,0,1,1,medium,STAGED
+prov_identity::70a26b904192,Alec J. Warren,alec j. warren,CLUB,1,0,1,1,medium,STAGED
+prov_identity::70e405645f69,Jeffrey T. Bishop,jeffrey t. bishop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::70ee5e4077bd,Jesse C. Scott,jesse c. scott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::711976acc4d4,Kevin H. Blair,kevin h. blair,CLUB,1,0,1,1,medium,STAGED
+prov_identity::714b6f8040a1,Nickolay Degtyar,nickolay degtyar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::714e2422783e,Greg Archer,greg archer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7177befd92a6,Nelson G. Castro Lameda,nelson g. castro lameda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::719117dde389,Dimitri Filonenko,dimitri filonenko,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7191ee702a2f,Luis Sarmiento Narro,luis sarmiento narro,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::71b67cdaa6f3,Dominic J. Mack,dominic j. mack,CLUB,1,0,1,1,medium,STAGED
+prov_identity::71c457c10464,Keaton P. Halley,keaton p. halley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::722cee6ac4cf,Ryan S. Bombard,ryan s. bombard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::722e126abf03,Tobias Tralls,tobias tralls,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::725915f9a595,Marc E. Kozachenko,marc e. kozachenko,CLUB,1,0,1,1,medium,STAGED
+prov_identity::727437aee718,Ben Duffle,ben duffle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::72a0ea4d2c05,Alexander S. Semichev,alexander s. semichev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::72d151e750e8,Efrain Delgado,efrain delgado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::72e972d6f94c,Bernhard Stiegeler,bernhard stiegeler,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::72fe0682ae01,Eli C. Krule,eli c. krule,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7310f5540527,Yordan Goldwaser,yordan goldwaser,CLUB,1,0,1,1,medium,STAGED
+prov_identity::731178628ad0,Brandon Waters,brandon waters,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::731ec3b87e0e,Kris Ray Elling,kris ray elling,CLUB,1,0,1,1,medium,STAGED
+prov_identity::73471e050591,Robert Bodine,robert bodine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::73a5ff56b662,Josh M. Julien,josh m. julien,CLUB,1,0,1,1,medium,STAGED
+prov_identity::741ebe135c8a,Randy Nelson,randy nelson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7427bd9e37fc,Rafa³ M. Piórkowski,rafa³ m. piórkowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::742a210007cd,Mike A. Masongsong,mike a. masongsong,CLUB,1,0,1,1,medium,STAGED
+prov_identity::743936f831ff,Joshua Munstermann,joshua munstermann,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::744a10868996,Michael Elliott,michael elliott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7481edc72d2f,Marcel Abel,marcel abel,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::748e50949c25,Max Josef White,max josef white,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7490fdc6403b,Roark Cogdon,roark cogdon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::749f5b917746,Kylan B. Byrd,kylan b. byrd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::74b49f016d8c,Sera White,sera white,CLUB,1,0,1,1,medium,STAGED
+prov_identity::74c8b213366e,Matt F. Guenette,matt f. guenette,CLUB,1,0,1,1,medium,STAGED
+prov_identity::74d0891490ba,Michael Berger,michael berger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::74d9e03a01a5,Dashiell Love,dashiell love,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7504d005c4d8,Kelly M. Wilder,kelly m. wilder,CLUB,1,0,1,1,medium,STAGED
+prov_identity::752fbff53460,Tihomir V. Spirdonov,tihomir v. spirdonov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::758096c7a013,Justin Gazzara,justin gazzara,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7593e69229a7,Łukasz OZi Połomski,łukasz ozi połomski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::75a0a26e58d4,Scott Stevens,scott stevens,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::75a0a6a0f4d9,Andrzej K. Adamczyk,andrzej k. adamczyk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::75ce43a3ed9c,Terry Washburn,terry washburn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::75dcfa7a3af4,Seth Morris,seth morris,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::75e51469fa8c,Jonathan F. Araquistain,jonathan f. araquistain,CLUB,1,0,1,1,medium,STAGED
+prov_identity::75f9ca7c586e,Shawn Johnson,shawn johnson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::761cf660a485,Julian Soldat,julian soldat,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::76439d4cd813,Jan Birkel,jan birkel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76502344375b,Rich W. Emery,rich w. emery,CLUB,1,0,1,1,medium,STAGED
+prov_identity::765214641aae,Angel E. Vivas,angel e. vivas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::765ed3e712ed,Przemek Pietrzycki,przemek pietrzycki,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::769922cab986,Max Maidak,max maidak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76c8bd4703d9,Jordan W. Cunningham,jordan w. cunningham,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76e37bc12d8f,Brian A. Oakes,brian a. oakes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76ef7ceaf4fa,Albert Yau,albert yau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76f1182ea805,Travis M. Williams,travis m. williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::76f609571a02,Chris M. Hughes,chris m. hughes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::772af9f51e57,Ziggy Dennis,ziggy dennis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::772e4fdafc9a,Mark J. Tarbutton,mark j. tarbutton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::77635e769e7d,Derek A. Littlefield,derek a. littlefield,CLUB,1,0,1,1,medium,STAGED
+prov_identity::776bf97c2fd0,Vince Richardson,vince richardson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::77a99cae8938,Joel T. Montgomery,joel t. montgomery,CLUB,1,0,1,1,medium,STAGED
+prov_identity::77ef72d2d524,Queency Mateo,queency mateo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::782d9a208002,Kenny A. Hensley,kenny a. hensley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::782f45b4172a,P.T. Lovern,p.t. lovern,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::786c40074b9e,Terry M. Whitefield,terry m. whitefield,CLUB,1,0,1,1,medium,STAGED
+prov_identity::787f1579e471,Vinicius V. Da Luz,vinicius v. da luz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7884bce9763e,Scott Withrow,scott withrow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::78ac0e9a062d,Jonathan T. Riordan,jonathan t. riordan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::78b30d8c32f5,Mark Fawn,mark fawn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::78fba5b4eb57,David Davis,david davis,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7914b372b026,Jordan Klingel,jordan klingel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::792713be4786,Jeremy Shinoda,jeremy shinoda,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::792bd7f34a1f,Birgit Helfenschneider,birgit helfenschneider,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7964023a49b7,Leon Schreuder,leon schreuder,CLUB,1,0,1,1,medium,STAGED
+prov_identity::798304f1984d,Ray Jones,ray jones,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::79a312f5739b,Tomek Z. Paszkiewicz,tomek z. paszkiewicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::79b161e67fa1,Danny Kleutsch,danny kleutsch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::79c31c3c668f,Jose N. Mantilla paredes,jose n. mantilla paredes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::79e26b4476d4,Priit Eylandt,priit eylandt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7a244179623b,René Kawa,rené kawa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7a4c8efa4d9e,Dakir Polidoro,dakir polidoro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7aadf1f59310,Nathan Perry,nathan perry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7aae50de2168,Kirk Kaufman,kirk kaufman,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7ad144c79382,Manoj Saini,manoj saini,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7af33cc42323,Nick Rosman,nick rosman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7b53ef211765,Martin Dahlmann,martin dahlmann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7b5a6656e8d3,Mike Hu,mike hu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7b5dcc42541d,Gabriel M. Wells,gabriel m. wells,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7b8acfaee4ea,Christopher J. Teeter,christopher j. teeter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7bacc736cf67,Ellery Murdock,ellery murdock,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7bb83c05fb8c,"Michael R. Rice, Jr.","michael r. rice, jr.",CLUB,1,0,1,1,medium,STAGED
+prov_identity::7c3d83a2997e,Christopher M. Alsop,christopher m. alsop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7c533da70f14,Federico C. Johnson,federico c. johnson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7c5a58675050,Jeff C. Wells,jeff c. wells,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7c6c9d8827a6,Mike F. Ford,mike f. ford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7c70e6827ada,Joshua R. Davis,joshua r. davis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7ca6334d0096,Stephen Beare,stephen beare,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7cf1514472a8,Laura Leite,laura leite,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7cfb71c31d8c,Dylan T. McDonald,dylan t. mcdonald,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7d297c812690,Alexo Lund,alexo lund,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7d52202bbf90,Jay Buissink,jay buissink,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7d7ca8361cd6,Chad C. Rasmussen,chad c. rasmussen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7d8420ec06ec,Mathieu Dubost,mathieu dubost,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7da343403f37,Tim Y. Shan,tim y. shan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7da55cd58b22,Jon Spencer,jon spencer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7db10d5d9757,Jeremy J. Parish,jeremy j. parish,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7dbead2846f8,Brian Eister,brian eister,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7dd3f9baf262,Bradley Coleman,bradley coleman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7deb3ae7463d,Grzegorz Latuszynski,grzegorz latuszynski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7df7c2577e9f,Andrzej S. Mlody,andrzej s. mlody,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e21699ab4d3,Steven R. Boliek,steven r. boliek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e283f5ae913,Karl Easley,karl easley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e3a2a963191,Cassio U Castro,cassio u castro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e4b6791c131,Fernando Aguilar,fernando aguilar,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7e4f5b8f41c1,Colby Clegg,colby clegg,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::7e643cb768e5,Paul D. Vorvick,paul d. vorvick,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e7c373c1198,Emil Nachman,emil nachman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e83bb8409e5,Bryce R. Wagoner,bryce r. wagoner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7e8a34b74e57,Lukasz &. Furmanski,lukasz &. furmanski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7eac09cd9691,Chris John Dean,chris john dean,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7ed062bf3b60,Nicolas Jarry,nicolas jarry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7ed3789c717f,Matteo Paris,matteo paris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7edffdf6a1da,Luis Manrique,luis manrique,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7ee87268a58f,Matthew Gibbs,matthew gibbs,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7eeadae131f9,Magdalena Thanhoffer,magdalena thanhoffer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7eeb6f083b06,Melissa Lovelace,melissa lovelace,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f1b92988fef,Mateusz Lisaj,mateusz lisaj,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f30e0b06195,Kaarel Täll,kaarel täll,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f5998e3ff70,Owen Littmann,owen littmann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f78063b3329,Aaron English,aaron english,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f7a15c02904,Dustin Doty,dustin doty,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7f949af33aaa,Bartosz Rzasa,bartosz rzasa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7fd9499b0d02,Mike Doff,mike doff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7fde2610f756,Soren T. Hodne,soren t. hodne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::7fe9d36d08e1,Marcus K. Maleus,marcus k. maleus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::801ca32ed948,Marcin Goźleński,marcin goźleński,CLUB,1,0,1,1,medium,STAGED
+prov_identity::802abde16bb3,Dave Ostry,dave ostry,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8048fe4e06a9,Dafinka Yancova,dafinka yancova,CLUB,1,0,1,1,medium,STAGED
+prov_identity::805b1d154965,Eric Oliver,eric oliver,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8085a0eded41,Josue M. Arroyo González,josue m. arroyo gonzález,CLUB,1,0,1,1,medium,STAGED
+prov_identity::809dcbbff3e9,Arman Solak,arman solak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::80b8d4921f3e,Maggi Barry,maggi barry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::80d7bd0f02c3,Jeremy Smith,jeremy smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::80f97e572597,Patrick Deere,patrick deere,CLUB,1,0,1,1,medium,STAGED
+prov_identity::80fd9a46e415,Brian Stilwell,brian stilwell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::813959ead569,Robert Stevens,robert stevens,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8139e9eaefb6,Andres Raun,andres raun,CLUB,1,0,1,1,medium,STAGED
+prov_identity::814389985301,Kevin J. Alvarado Zapata,kevin j. alvarado zapata,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8169eecb9d40,Nehemiah Sloat,nehemiah sloat,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::81bfadc795f5,Vsevolod Dee,vsevolod dee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82091585947c,Daniel Märzke,daniel märzke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8239821e2e81,Zachary Baker,zachary baker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::826222cefaf0,Alex Kesner,alex kesner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82794cb968d7,Drew M. Martin,drew m. martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82893aecc1e3,Skylar Morelos,skylar morelos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82aac29830b2,Collin K. Robertson,collin k. robertson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82c6884adfda,James Bull,james bull,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::82f0569a75f8,Luis J. Lovera Calanche,luis j. lovera calanche,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82f4ea36bb27,Camille Arnott,camille arnott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::82fc90421be5,Marat Asadullin,marat asadullin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8304f0aaadea,Ken Gilgan,ken gilgan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8314083b8f36,David A. Podhorsky,david a. podhorsky,CLUB,1,0,1,1,medium,STAGED
+prov_identity::832dac72d3ef,Jeffrey C. Wells,jeffrey c. wells,CLUB,1,0,1,1,medium,STAGED
+prov_identity::833bb56ab03a,Jared Raab,jared raab,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::833daa304898,Marcin K. Kalczor,marcin k. kalczor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8344c9d62ec2,Barbara Róg,barbara róg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::837e12e54b43,Klemens Längauer,klemens längauer,CLUB,2,0,2,2,medium,STAGED
+prov_identity::83a9634b1d2c,Alejandro Salazar,alejandro salazar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::83c02212b052,Stephanie Chan,stephanie chan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::83c879e54012,Elizabeth A. Uren,elizabeth a. uren,CLUB,1,0,1,1,medium,STAGED
+prov_identity::83d3fe76b0d0,Danny L. French,danny l. french,CLUB,1,0,1,1,medium,STAGED
+prov_identity::83e20f1f69fe,Geoff A. Brin,geoff a. brin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::83e7be646372,John Heywood,john heywood,CLUB,1,0,1,1,medium,STAGED
+prov_identity::842334f09248,Sean Hurley,sean hurley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::844c221d4f17,Eric J. Bloomer,eric j. bloomer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::844d08e7b794,Jeremy T. O'Wheel,jeremy t. o'wheel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::848fcad7150c,Philipp Dohnert,philipp dohnert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::84acce37cf12,Martin Kolenský,martin kolenský,CLUB,1,0,1,1,medium,STAGED
+prov_identity::84f425db922d,Devon A. Facuiri-French,devon a. facuiri-french,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8500340424ec,Brian T. Parsons,brian t. parsons,CLUB,1,0,1,1,medium,STAGED
+prov_identity::853db30007c4,Jeffrey Martin,jeffrey martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8550983902ef,Dave Blasi,dave blasi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8561783595a2,Anthony Sole,anthony sole,CLUB,1,0,1,1,medium,STAGED
+prov_identity::85649e6db332,Vera Asquith,vera asquith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::856a201ea9f6,Francois Stierli,francois stierli,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::856c4f20d65f,Ryan O'Beirne,ryan o'beirne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::85a07a20b1d5,Garrett Bisch,garrett bisch,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::85b62fcb1695,Adrian C. Verhoef,adrian c. verhoef,CLUB,1,0,1,1,medium,STAGED
+prov_identity::85bd0c459c33,Pawel Krysiewicz,pawel krysiewicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::85d857b6cbd0,Eric Castro H,eric castro h,CLUB,1,0,1,1,medium,STAGED
+prov_identity::85fe505804d8,T.J. Boutorwick,t.j. boutorwick,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8669d45c9f62,Daniel Iachini,daniel iachini,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8669ecd82e23,John Bailey,john bailey,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::868948d59a64,Rheal J. Laramee,rheal j. laramee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8689a4454c82,Derek Lee Wilcox,derek lee wilcox,CLUB,1,0,1,1,medium,STAGED
+prov_identity::86a9c298f563,Joshua Fallaw,joshua fallaw,CLUB,1,0,1,1,medium,STAGED
+prov_identity::86aad980860a,David Bernatchez,david bernatchez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::86b7f22c9b37,Egor Sharapov,egor sharapov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::86c8b2487176,Joseph Dalla Tezza,joseph dalla tezza,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::86e992ee7720,Konrad J. Chan,konrad j. chan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::86ea56a323fb,Whitney A. Williams,whitney a. williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8739e6e26dba,Vojin Mitrovic,vojin mitrovic,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::875e981a180c,Eric T. Sorensen,eric t. sorensen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8767efd83b6c,Ashenti Savoie Dubé,ashenti savoie dubé,CLUB,1,0,1,1,medium,STAGED
+prov_identity::876a1783eb6f,Thomas Weiss,thomas weiss,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::87734708904d,Jason L. Ausmus,jason l. ausmus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::87902fd49eb1,Benjamin West,benjamin west,CLUB,1,0,1,1,medium,STAGED
+prov_identity::87a58fdd0557,Alex V. Spears,alex v. spears,CLUB,1,0,1,1,medium,STAGED
+prov_identity::87e154d47b23,Maxell Smith,maxell smith,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::87f3845af487,Jeremiah Bechard-Somberg,jeremiah bechard-somberg,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::88225b7d6aa3,Kerstin Längauer,kerstin längauer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::882a69be04c6,Brendan Cohen,brendan cohen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::883783d83e00,Adam J. Hanlon,adam j. hanlon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::883c339c3dbc,Michał Lisik M. Lisik Lisik,michał lisik m. lisik lisik,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8891de246e14,Kevin J. Crowley,kevin j. crowley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::889570df96c2,Matt Patterson,matt patterson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::889bb2350ba5,Kip P. Nichols,kip p. nichols,CLUB,1,0,1,1,medium,STAGED
+prov_identity::88dd670e8c52,Wilfrid Vincendeau,wilfrid vincendeau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::88fe2eff10be,Kean Senaratne,kean senaratne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8900eb02e863,Charles J. Hinkle,charles j. hinkle,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8956e963d3e5,Ivan Mak,ivan mak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a2260baa522,Johannes Leitner,johannes leitner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a2d10349e24,Will J. Johsno,will j. johsno,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a41d1ef378e,Vyacheslav A. Kuksov,vyacheslav a. kuksov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a4f343e5555,Robin Behal,robin behal,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a5db2b5cb51,Kacper T. Kudyniuk,kacper t. kudyniuk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a6b932271e7,Artem Glazistov,artem glazistov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a8790d8979d,Jesse Patel,jesse patel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8a9ba4a34bc5,Yoshi Dihada,yoshi dihada,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8aafa702bbdf,Matthew W. Overstreet-Anderson,matthew w. overstreet-anderson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8ad8e6067a9b,Alberto Giraldo,alberto giraldo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8b18752a5e20,Soren L. Andersen,soren l. andersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8b769e03fcbc,Rafał Andryka,rafał andryka,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8b77c77644f0,Doug S. McMechen,doug s. mcmechen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8c0a1474130a,Tommy Cullen,tommy cullen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8c1fc8b82954,Brian D. Potter,brian d. potter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8c2aa747cd13,Tamas Bogo,tamas bogo,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8c3717c479d5,Austin C. Carmen,austin c. carmen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8c5149352a5a,Grace H. Bin,grace h. bin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8c679997bb8f,Harry Reischl,harry reischl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8cecaf585284,Paul M. Nakoneczny,paul m. nakoneczny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8cf66170789d,Pengpeng Du,pengpeng du,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8d01f4aed957,Graeme Mutu,graeme mutu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8d2ad5f558ab,Bruce Stansel,bruce stansel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8d2d1004e571,Michael J. Watts,michael j. watts,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8d6f791fce4f,Andrew Angelico,andrew angelico,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8d7040e3c860,Ben I Cochrane,ben i cochrane,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8d9bd6b07e61,Mac Kearney,mac kearney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8e2a7fac0f90,Cleveland J. Harris,cleveland j. harris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8e59e8377fd4,Ivanecxy D. Zambrano,ivanecxy d. zambrano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8e7c7e872f5a,Peter Achenbach,peter achenbach,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8e8da9f483f3,Dan J. Feareys,dan j. feareys,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8ead3728b7c0,Derek Rochniak,derek rochniak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8eadf742ad2d,Jon Bane,jon bane,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8eb086270911,Julian A. Topcik,julian a. topcik,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8eb7adcb84be,Kai Badenhausen,kai badenhausen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8ec2ee6634ad,Walt Benziger,walt benziger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::8f1dabce42dc,James R. Randall,james r. randall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8f25893db24d,Chris McCort,chris mccort,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8fba1b77bbbc,Marco Meier,marco meier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8fc1f5c78640,Juan D. Monsalve Gomez,juan d. monsalve gomez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::8fdc44db777b,Brandon C. Watts,brandon c. watts,CLUB,1,0,1,1,medium,STAGED
+prov_identity::900ebf0ef660,Nikolai Nesteroke,nikolai nesteroke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::903797a6fa75,Ricardo A. Morel,ricardo a. morel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9057426d766d,Chuck Ford,chuck ford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9069d3e91b70,Sumner Meckel,sumner meckel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::907f0518f3c4,Jack R. Larimore,jack r. larimore,CLUB,1,0,1,1,medium,STAGED
+prov_identity::90b978133e0a,Lauri Schiffbauer,lauri schiffbauer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::90bfa9697618,Jaimie Conley,jaimie conley,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::90f8e31c0bc2,Michael J. Bishop,michael j. bishop,CLUB,1,0,1,1,medium,STAGED
+prov_identity::910ab8f899d9,Roberto A. Da Silva,roberto a. da silva,CLUB,1,0,1,1,medium,STAGED
+prov_identity::910bbeb0529b,Scott H. Floyd,scott h. floyd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::91314fe26b40,Jonathan Harnois,jonathan harnois,CLUB,1,0,1,1,medium,STAGED
+prov_identity::913fa7a36bae,Sebastian O. Barnes,sebastian o. barnes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::914422a1dc74,Kamil Burzynski,kamil burzynski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::914ada7106d9,Nicholasi Bruckman,nicholasi bruckman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::915039e3235c,David Kikl,david kikl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::916744a37867,Mark Bratcher,mark bratcher,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9171855adc90,Travis H. Livingston,travis h. livingston,CLUB,1,0,1,1,medium,STAGED
+prov_identity::91b7b9b566ff,Luke A. Hostetter,luke a. hostetter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::91bd351fb4ef,Joseph R. Esposito,joseph r. esposito,CLUB,1,0,1,1,medium,STAGED
+prov_identity::91c3db139214,Dat Phan,dat phan,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::91d3d31f91fc,Kate Hastilow,kate hastilow,CLUB,1,0,1,1,medium,STAGED
+prov_identity::922612c95737,Jim Ball,jim ball,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::929242a607b6,Shane McDevitt,shane mcdevitt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::92f46b6319be,Rico Böhme,rico böhme,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9300f8ede90f,Mayur Pant,mayur pant,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::930c5d4e3531,Lenny Mota,lenny mota,CLUB,1,0,1,1,medium,STAGED
+prov_identity::930cd5ef7f40,Slawek Brzezinski,slawek brzezinski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::936cd98f5454,Victor J. Lezama,victor j. lezama,CLUB,1,0,1,1,medium,STAGED
+prov_identity::93789a30618c,Pat Morris,pat morris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::93931d5252b5,Artakas Akopianas,artakas akopianas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::93c1bf12aaa4,Fabian Nyblom,fabian nyblom,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::93f40fae7051,Felix R. Pansegrau,felix r. pansegrau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::93ffb830088f,Jeremy J. Quistorff,jeremy j. quistorff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94001c7d8f7c,Jonathan C. Green-Phelan,jonathan c. green-phelan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::940a1dd7a961,Hannes N. Aasamets,hannes n. aasamets,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9410a942b892,David Soderberg,david soderberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94168a7f1553,Spencer Behm,spencer behm,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::941cc0cd083a,Edward Wyles,edward wyles,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94384c2608a5,Jerzy Z. Wierzchowski,jerzy z. wierzchowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9445907ad61a,George Starks,george starks,CLUB,1,0,1,1,medium,STAGED
+prov_identity::944cf1cb428b,Friedemann Heinz,friedemann heinz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::947d72ef0532,Kyle Newcomer,kyle newcomer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94817470e644,Cory J. Allen,cory j. allen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9485f8a781ef,Gino Magliocca,gino magliocca,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94b41bf1def6,Sara J. Gardephe,sara j. gardephe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::94d5d4079cb5,Ben Rollans,ben rollans,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95010045cf6f,Nathan J. Hume,nathan j. hume,CLUB,1,0,1,1,medium,STAGED
+prov_identity::951b46e95005,Daniel Schlaepfer,daniel schlaepfer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95289c733e94,Fahd De Bruin,fahd de bruin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::953e9632e165,Andrew D. Coleman,andrew d. coleman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::955883ae97ed,Andrew P. Lecher,andrew p. lecher,CLUB,1,0,1,1,medium,STAGED
+prov_identity::955daf8e6447,Cody A. Girard,cody a. girard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9568507a255a,Margarett Vozar,margarett vozar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95a88f11adb1,Adam M. Rodriguez,adam m. rodriguez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95ae478f3567,Jule Böhm,jule böhm,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::95b7a6b69ec3,Mitchell Gardiner,mitchell gardiner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95c645b32d3a,Nelson Medina,nelson medina,CLUB,1,0,1,1,medium,STAGED
+prov_identity::95c66296204b,Tomasz D. Bilicki,tomasz d. bilicki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9629e82ccea3,Peter Kloc,peter kloc,CLUB,1,0,1,1,medium,STAGED
+prov_identity::963532296f0e,Laurent G. Cornu,laurent g. cornu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::963e2edd0abf,Reimo õun,reimo õun,CLUB,1,0,1,1,medium,STAGED
+prov_identity::96610dd61ad3,Roland Acevedo,roland acevedo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::966f2b0b6340,Joe Spano,joe spano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9685102e3727,Charles C. Hardtke,charles c. hardtke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9689491300ce,Samuel D. McAulay,samuel d. mcaulay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::96910f5223c7,Camille M. Surovy,camille m. surovy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::96b11fed9e89,Johannes Hoppe,johannes hoppe,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::96ea63407411,Donny Grubb,donny grubb,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::971173d991e9,Tom R. Eaton,tom r. eaton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::972b145531c9,Camden Carey,camden carey,CLUB,2,0,2,2,medium,STAGED
+prov_identity::972de15612bd,Daniel Vasile,daniel vasile,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97527a955211,Brandon S. Goodwin,brandon s. goodwin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::975cafaa311f,Zach Rail,zach rail,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97788cdfa111,Mario M. Robles,mario m. robles,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9780673381d7,Georg Waldispühl,georg waldispühl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97b5574b3d29,Marcin Staroñ,marcin staroñ,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97ec30b1faa1,Kester K. Takayama,kester k. takayama,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97eea4f1ec5e,Jean-Gabriel Davis,jean-gabriel davis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::97fcc3d369be,Tony m. Westerlund,tony m. westerlund,CLUB,1,0,1,1,medium,STAGED
+prov_identity::980e824b0eeb,Richard P. Gonzales,richard p. gonzales,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9845d3a6db54,Plinio M. Lisbôa Costa,plinio m. lisbôa costa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::985851abccc4,Reece Weber,reece weber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9864f25b32e7,Jason Zheng,jason zheng,CLUB,1,0,1,1,medium,STAGED
+prov_identity::98686974f1b4,Eric Marsiglia,eric marsiglia,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::98b0336f1f0e,Taylor C. Hamilton,taylor c. hamilton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::98cd7af6146a,Brady S. Curtin,brady s. curtin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::98f1b54d1ae0,Theodore B. Jerdes,theodore b. jerdes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9908ea999b0f,Jay Dealy,jay dealy,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::992ac4dd97ad,Mark Cundiff,mark cundiff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::992f1f923094,José G. Vargas Centeno,josé g. vargas centeno,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9945a6dccdaa,Rene Rühr,rene rühr,CLUB,1,0,1,1,medium,STAGED
+prov_identity::99900105ccdd,Danny P. Williams,danny p. williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::99a9022a86ba,Joshua Dougherty,joshua dougherty,CLUB,1,0,1,1,medium,STAGED
+prov_identity::99b3ce0dc1f2,Emil Kofod-Olsen,emil kofod-olsen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::99c524f144f6,Shane Kelley,shane kelley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::99e5c3449895,Joshua Caulfield,joshua caulfield,CLUB,1,0,1,1,medium,STAGED
+prov_identity::99ef7c19734b,Alexander Lukach,alexander lukach,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9a108be8dc62,Mark Hunsberger,mark hunsberger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9a232685f53a,Nikolaos G. Lemonis,nikolaos g. lemonis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9a4031f73797,Suzanne Misso,suzanne misso,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9a5e1565ed76,Bill Fischetti,bill fischetti,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9a7041fbc556,Fred Vilfeu,fred vilfeu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9a848d73129b,Benoît Friderich,benoît friderich,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9a9b55511c7f,Matthew G. McGregor,matthew g. mcgregor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9abc9f7e837e,Alex G. Strassman,alex g. strassman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9b0b4c9857fb,Mike L. Angeski,mike l. angeski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9b272f949866,Lukas Krittian,lukas krittian,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9b435e7b1f56,Jonathan S. Kaufman,jonathan s. kaufman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9bb355af3a63,Gustavo A. Camargo Barrera,gustavo a. camargo barrera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9bf6eff4cfdb,Carlos J. Cuadrado,carlos j. cuadrado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9c178ed7313a,Jessiah Baillies,jessiah baillies,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9c625acb4c88,Dan Fournier,dan fournier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9c7304e7fd1f,Joe Wilson,joe wilson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9c7c162496d8,Jack Barraclough,jack barraclough,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9c979d4f667f,Simon R. Coutu,simon r. coutu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9cb9060e18f0,Bryan Fournier,bryan fournier,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9d350a7f798b,Jack S. Keller,jack s. keller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9d5d09d9a039,DorOta D. Nelc,dorota d. nelc,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9d6644fd4f52,Mike Lovendahl,mike lovendahl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9d8a70d3027e,José L. Capacoel,josé l. capacoel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9de5875e8ee3,Chris Cullen,chris cullen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9df05c1900ba,Karen Roberts,karen roberts,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9dfbf64d633f,Evgeny Kichigin,evgeny kichigin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9e9b83ae536a,James Ashbolt,james ashbolt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9ea1b996d5b3,Kevin Z. Watson,kevin z. watson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9ea414d9a62f,Victor T. Afonso,victor t. afonso,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9ea76205349a,Benjamin Rice,benjamin rice,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9eca5cfe086c,William M. Blase,william m. blase,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9ef8de4bbed5,Vetal F. Mirny,vetal f. mirny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9f04d54a44e1,Daniel Taylor,daniel taylor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9f32822a2cd9,Patrick J. McFarland,patrick j. mcfarland,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9f4b9f6e25b8,Jhoan Cubides,jhoan cubides,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9f5824ee2be3,Pavel Belchev,pavel belchev,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9f6959143b9e,Devin Henderson,devin henderson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9fb1816a489f,Lauri Toivonen,lauri toivonen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::9fb96be63840,Tre Caffall,tre caffall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9fc239a6c8b8,Asia A. Liwuś,asia a. liwuś,CLUB,1,0,1,1,medium,STAGED
+prov_identity::9ff4c5a40195,Bennet Hei,bennet hei,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a03c1440a243,Richard Rosman,richard rosman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0562ac31719,Karol Luis O. Ortiz,karol luis o. ortiz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a05a2d25e9da,Josef Rokicki,josef rokicki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a07548d542b8,Lars Koslowski,lars koslowski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a080177e5e8f,Patrick R. Weinberg,patrick r. weinberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a083e8e7ec82,Ugo Ash Montironi,ugo ash montironi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0a475c79701,Mark Batchelder,mark batchelder,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0afa46c49b1,Chelsea R. Catchpole,chelsea r. catchpole,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0d501e32427,Taz McNellis,taz mcnellis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0d80a266448,Pat T. Plante,pat t. plante,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0d84614a9a9,Johnny M. Noto,johnny m. noto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0df84d5f923,Matt L. Baker,matt l. baker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a0fc49b160bf,Jake W. West,jake w. west,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a120eb129dd5,Andy Chumbley,andy chumbley,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a13135eb960f,Mikko Honkonen,mikko honkonen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a138073d53be,Allen J. Brown,allen j. brown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a19ccc319195,Verena Struckmann,verena struckmann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a1a9fbfbf821,Tomas Drbohlav,tomas drbohlav,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a1cb7a3f069a,David Duterte,david duterte,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a1fb02d0837a,Eric Burton,eric burton,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a208e3820240,Marcin R. Gadzinski,marcin r. gadzinski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a20980cc848f,Agata Oczkowicz,agata oczkowicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a230a26b4624,Steven C. Sisco,steven c. sisco,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a24df817190e,Cameron D. Boyer,cameron d. boyer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a272c4d0c069,Michal Lisik,michal lisik,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a290613cc669,Tomas Konicek,tomas konicek,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a2b0718a0809,Chris Baker,chris baker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a2b12122348d,Drew R. Krause,drew r. krause,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a2f53bd87a9d,Sol W. Howarth,sol w. howarth,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a30386701511,Nicholas Comaratta,nicholas comaratta,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a31ba6ec87f1,Matthew A. Thomas,matthew a. thomas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a31d642e5512,Essex M. Coons,essex m. coons,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a31e91d5d699,Nathan D. Hanson,nathan d. hanson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a330dcbb2fc0,Cory Reese,cory reese,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a397ba5bf50f,Kaspar Bigler,kaspar bigler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a3a795a602ea,Severin Weber,severin weber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a3bb1e6fab34,Ari Ramcharan,ari ramcharan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a3d36a8c5f75,Kenn Anderson,kenn anderson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a412a35ae06d,Kevin Tully,kevin tully,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a413d7e87d51,Alberto Inocencio,alberto inocencio,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a419390cf5f7,Tad Whitmire,tad whitmire,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a42c0aac697c,Deter Moralinca,deter moralinca,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a44a9aac037d,James Jansen,james jansen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a45803beb00b,Leandro G. Guimarães,leandro g. guimarães,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a4702ee73584,John Baldwin,john baldwin,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a492417a0cd9,Michael S. Nielsen,michael s. nielsen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a4ad410c4d74,Garrett Washburn,garrett washburn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a4d3453cf5e5,Juan Morantes,juan morantes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a4e75b2c53ae,Francisco J. Moreno Gamboa,francisco j. moreno gamboa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a505132511d4,Tim A. Scotchler,tim a. scotchler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a510a6fb1b9a,Louis-Philippe L. Grenier,louis-philippe l. grenier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5582dc0ad9e,Ryan J. Stepka,ryan j. stepka,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a563951a098c,Kelly A. Kelley,kelly a. kelley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a57ee26d5e35,Sunny D. Freeman Genz,sunny d. freeman genz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5b4ad8f0ac7,Chris C. Kuhny,chris c. kuhny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5b9645360bc,Michael A. Rael,michael a. rael,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5cb6b549ede,Koby Vargas,koby vargas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5cf345dc80b,Jouni M. Rissanen,jouni m. rissanen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5d20dd00b3b,Andy Li,andy li,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a5ed53140b23,Joel A. Beverley,joel a. beverley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a634158ab319,Ben Godin,ben godin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a65a166c7801,Michael G Williams,michael g williams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a68a413aa1ac,David O. Kirby,david o. kirby,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a68c37beeed8,Nemo Burkhard,nemo burkhard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a6a7170981e7,Michael T. Mann,michael t. mann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a6ba67958dc6,Alejandro Roura,alejandro roura,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a6c7dc390e9a,Stephen Orsborn,stephen orsborn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a6e3fe1d49f4,Kristin T Gohl,kristin t gohl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a778946218e5,Nikita Aleksandrov,nikita aleksandrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a783e78920b3,Tony Lamusga,tony lamusga,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a78b6f998ae5,Jessica S. Gardner,jessica s. gardner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a7aa9050be70,John H. Cooke,john h. cooke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a7be69498865,Joe J. Abbott,joe j. abbott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a7d9f1e860ec,Elliot D. Filson,elliot d. filson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a7fa6b519d2e,Gerson O. Camacho,gerson o. camacho,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a7ff90674196,Daniel E. Cadavid,daniel e. cadavid,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a808d42c0c6b,Jonas Pflug,jonas pflug,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a81d36ed45c8,Evan Jorgensen,evan jorgensen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a821d3bc5a08,Justin J. Eichenlaub,justin j. eichenlaub,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a8476ef59a8b,Hubert G. Godlewski,hubert g. godlewski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a8f6cb2f3462,Oscar B. Bayly,oscar b. bayly,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a8fb00b0b4bc,Elías A. González Calzadilla,elías a. gonzález calzadilla,CLUB,2,0,2,2,medium,STAGED
+prov_identity::a8fe89bd91bd,Jasper Wine,jasper wine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a90babd2973d,Gosia Szpulecka,gosia szpulecka,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a932f1c05e0e,Matt Mac Hansen,matt mac hansen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a95bcc7eadd4,Bartlomiej H. Tuta,bartlomiej h. tuta,CLUB,1,0,1,1,medium,STAGED
+prov_identity::a972a9b9c7b8,Gašper Žnidaršič,gašper žnidaršič,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::a997ce8dcaf8,Ken R. Blaney,ken r. blaney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aa25b3265ea8,Cullen N. Quinn,cullen n. quinn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aa260558f7e3,Nicholas D. Thornton,nicholas d. thornton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aa9027daf0d7,Chris Scott,chris scott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aa941ea6b099,Dave Shults,dave shults,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::aac89bef2267,Chris McGuire,chris mcguire,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::aaeedc104ba8,Stephen Flynn,stephen flynn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aaf44cbc0458,Iliya Kupriyanov,iliya kupriyanov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab0adbbe4112,Brian Kinross,brian kinross,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab26fb04a3d5,Chase Garrett,chase garrett,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab2b3aa1ca96,Radoslav R. Roev,radoslav r. roev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab3e43712ca6,Matias A. Farias,matias a. farias,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab552dbd2045,Eric Jurgens,eric jurgens,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab5aa2104e0d,Josh J. Newtown,josh j. newtown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab65da704f4e,Michal Mizera,michal mizera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab817cbdb43f,Thomas P. DiStefano,thomas p. distefano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ab939bce6d3c,Krzysiek Fugiel,krzysiek fugiel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aba6814273dc,Desten Lee Johnson,desten lee johnson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::abc2ad7d4a92,Borut Kralj,borut kralj,CLUB,1,0,1,1,medium,STAGED
+prov_identity::abf241979dc2,Alex MCD Lopez,alex mcd lopez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::abf530993562,Kyle Thornton,kyle thornton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ac146d3f904f,Steve Gillette,steve gillette,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ac1f833512e4,Jacques P. Toupin,jacques p. toupin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ac3b3d003cef,François D. Pelletier,françois d. pelletier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ac7797e5afb9,Lawrence W. Norman,lawrence w. norman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ac80e0c420a2,Kimball R. Isaacson,kimball r. isaacson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::acafa8e59184,ronald r. pihlapson,ronald r. pihlapson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::acb0bf1514e1,Vladimir A. Sharonov,vladimir a. sharonov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::acd4d57975e1,Randy W Pace,randy w pace,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ace0c81b9745,Daniel J. Reed,daniel j. reed,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aced9033390e,Dustin Dikes,dustin dikes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::acf8ad66d1d5,Rego W. Poopuu,rego w. poopuu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad03b7e85b50,Yurii Hydrick,yurii hydrick,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ad09703235df,Bryan W. Scott,bryan w. scott,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad22f1a24091,Gustavo J. Artaza,gustavo j. artaza,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad347887ecbc,Red Wall,red wall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad5462b5c245,Kirk Flagg,kirk flagg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad6ea10a43c0,Paul-Olivier Alix,paul-olivier alix,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ad7d3f337209,Theodore Anderson,theodore anderson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ad7dabf80d01,Ashley Robinson,ashley robinson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::adb621f3dff3,Patrick R. McKinney,patrick r. mckinney,CLUB,1,0,1,1,medium,STAGED
+prov_identity::adbb0e1eaabb,Julian Wulf,julian wulf,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ae009b66cd6a,David Hostettler,david hostettler,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ae150423c8b4,Zak D. Morek,zak d. morek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ae178c54a94f,Robert Hipsz,robert hipsz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ae3067b152de,Roberto Siwek,roberto siwek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ae47ffc31114,Malcolm Tyrrell,malcolm tyrrell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ae9bcd0c845c,Junichiro Nakashima,junichiro nakashima,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::aea1f7dcd44d,Radek R. Latka,radek r. latka,CLUB,1,0,1,1,medium,STAGED
+prov_identity::aee68d7e5da2,Andrew Bollman,andrew bollman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::af0a2293a9b2,Rohan Longbottom,rohan longbottom,CLUB,1,0,1,1,medium,STAGED
+prov_identity::af48bad170bc,James G. Claffey,james g. claffey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::af52a725c178,Evan M. Gatesman,evan m. gatesman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::af8b3c2aa77b,Michael P. Remmers,michael p. remmers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::af93ed97732f,Bryan Wright,bryan wright,CLUB,1,0,1,1,medium,STAGED
+prov_identity::afa1f7bdfdd7,Josh D. Sadler,josh d. sadler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::afdcbf74763a,Jared MacKay,jared mackay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b002d53e181f,Mary Lanciloti,mary lanciloti,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b09c4f7b0a28,Nelson G. Castro lameda,nelson g. castro lameda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b0be3e33f604,Jack Wei,jack wei,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b0e995c5721c,Kyle C. Norton,kyle c. norton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b107b3b7a410,Stephane Roy,stephane roy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b138fe5d0b64,Tuukka J. Antikainen,tuukka j. antikainen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b155d3fcd27f,David M. Clark,david m. clark,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b16326676135,Keith Zintak,keith zintak,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b173b4c787f2,Mario Vieira,mario vieira,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b1b71db06f49,Olivier Z. Baillon,olivier z. baillon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b1b98aa4ae52,Matthew J. Olson,matthew j. olson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b1c7968fe917,Kevin S. Roark,kevin s. roark,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b1dd55fb566d,Stephen R. Garcia,stephen r. garcia,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b1f3435181fe,Chris Bond,chris bond,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b24496335c0a,Guido Tapia,guido tapia,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b24cd8b4b600,Adrienne Randall,adrienne randall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b24eee539f91,Josh Han,josh han,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b25ec7144f26,Matthew Botur,matthew botur,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b2da02759255,Joseph Merfalen,joseph merfalen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b2dd455ad6fc,Dariusz K. Strelau,dariusz k. strelau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b2e8bdaeeb58,Vesa Ruuskanen,vesa ruuskanen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b2fe789dd1e8,Maciej M. Samborowski,maciej m. samborowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b317d484344d,Jonathan Bean,jonathan bean,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b36007c03bf1,Mason F. Luet,mason f. luet,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b3a0d8be5c6b,Christopher A. Gregory,christopher a. gregory,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b3b8cb218921,Chase Cardurns,chase cardurns,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b3d87a5a4dac,Jake Jo Dodd,jake jo dodd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b3e845d640f1,Jesús E. Gómez,jesús e. gómez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b3ebf8243e42,Victor V. Coronado,victor v. coronado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b42a52debcfb,Mariusz M. Wilk,mariusz m. wilk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b45d32605c0b,Cory Phillips,cory phillips,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b48c5a654aa4,Ethan M. Bond,ethan m. bond,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b48d774952a5,Eduardo Ramires,eduardo ramires,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b4b0896f1bb0,Carlos A. Aguilera,carlos a. aguilera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b4dccbfb472c,Troy Bidwell,troy bidwell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b4e207edbe1e,Thomas R. Tatchell,thomas r. tatchell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b4ff6e3d93d7,Donald W. Baseler,donald w. baseler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b5056581c025,Zackary Bourdeau-Pouplier,zackary bourdeau-pouplier,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b5551836caa7,Luis R. Viera,luis r. viera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b56d1235d890,Ben Harris,ben harris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b585e8d3b82d,Biran Dickson,biran dickson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b5b1dbea8902,Batikan Cetin,batikan cetin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b5bcbfa94783,Joseph Don Benningfield,joseph don benningfield,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b5c745d7cfce,Carlos A. Lopez,carlos a. lopez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b5caba632de5,Liam Dallas,liam dallas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b60b0d20b1b2,Dani Waldispuehl,dani waldispuehl,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b688ecde29b9,Jonas Meyer,jonas meyer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b69c414d20a4,Picard M. Maud,picard m. maud,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b6a356df1026,Josh M. Kidwell,josh m. kidwell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b6cc0a4b176c,Michal M. Smola,michal m. smola,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b6dcd36683db,Tom Von Neefe,tom von neefe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b6fe8ef975f2,Seraphim M. Gonzalez,seraphim m. gonzalez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b702a9538f55,Jake J. Howell,jake j. howell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b709b4f0df3a,Marcel Neureuther,marcel neureuther,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b72417d061f5,Donovon Thakur,donovon thakur,CLUB,2,0,2,2,medium,STAGED
+prov_identity::b74e5fdf3fbf,Camilo Navarro Ramirez,camilo navarro ramirez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b7c29f787efd,Chris M. Ordonez,chris m. ordonez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b8032e287d95,Andrew Barksdale,andrew barksdale,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b809f4cecfa8,Marguerite Black,marguerite black,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b826912a4a81,Jayson Sherrod,jayson sherrod,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b830ffc626f3,Joseph D. Stoops,joseph d. stoops,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b85e5d414394,Lucjan Korwin Małaczyński,lucjan korwin małaczyński,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b888d903ecc4,Patrick Meyer,patrick meyer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b8b61f070cd5,Thomas V. Cleveland,thomas v. cleveland,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b8eeb9c1ba1c,Matt Dickson,matt dickson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b95a4ac3fc18,Chris Courdt,chris courdt,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b9923e95dccb,Alejandro Betancurt,alejandro betancurt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b9b34fb2974d,Shawn A. Moehring,shawn a. moehring,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b9bd5ebd1517,Andres F. Candela Otero,andres f. candela otero,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b9cb1e67ca36,SidaLee L. Robles,sidalee l. robles,CLUB,1,0,1,1,medium,STAGED
+prov_identity::b9d4de6eb6dc,Antony Corbiere,antony corbiere,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::b9fbd9849b7a,Anton Grigorovskiy,anton grigorovskiy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ba1e2aaa5641,Yinqing Gu,yinqing gu,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ba1f966ba300,Cody Hatch,cody hatch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::baa442b0e77e,Patrick LaRue,patrick larue,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bab34f52d883,Gordon H. Peddie,gordon h. peddie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bac388a20ef4,Rusty Schneider,rusty schneider,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bad6c7866883,Marysia M. Barczewska,marysia m. barczewska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bae6ee0b7ac8,Milosh S. Trnka,milosh s. trnka,CLUB,1,0,1,1,medium,STAGED
+prov_identity::baee0cb437f6,Charles Brickham,charles brickham,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::baf62d763fb5,Ryan Wasell,ryan wasell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::baff49ba8bbe,Jason Frost,jason frost,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bb209d1798a0,Pavel O. Ivanov,pavel o. ivanov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bb3a7788c4b1,Jake B. Nugent,jake b. nugent,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bb47797c9eac,Mary L. Meinke,mary l. meinke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bba10534cc84,Jonathan Demers,jonathan demers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bba3b854d04b,Alex Y. Venis,alex y. venis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bbb0217fffff,Jeffrey Mansfield,jeffrey mansfield,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bc02da5f7e8b,Duke Herzog,duke herzog,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bc34b22116c2,Khalid Phillip,khalid phillip,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bc61699c9088,Sophie So Pleau,sophie so pleau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bc66f6bc01dc,Frances Eleni Papatestas,frances eleni papatestas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bca071351149,Garwin Bruce,garwin bruce,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bca3eaf68e92,Samuel Leathers,samuel leathers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bca5b3ec7a74,Matthew Friesz,matthew friesz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bca6a5ff6b8b,Frederik Mens,frederik mens,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bcdb3660b5ff,Max Kropp,max kropp,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bcdc3afd2c90,John Diggs,john diggs,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bcea2723a758,Steven A. Jolly,steven a. jolly,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bcfbe8edea1c,Viktoria Kuzina,viktoria kuzina,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd085a9f0a29,Christophe A. Kabache,christophe a. kabache,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd093b70a538,Scott Kirchner,scott kirchner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bd14ad9d8cc3,Andrew W. Grieshaber,andrew w. grieshaber,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd2475288bb4,Brody Ebel,brody ebel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd3fab6c4632,David Dittrich,david dittrich,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd43c5febfcb,Damian Coventry,damian coventry,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bd4f476c7786,Krister Vendelin,krister vendelin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd5f331691c9,Jack M. Willis,jack m. willis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd818f9b715b,Parastu Gharehgozloo,parastu gharehgozloo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bd9803fe68a6,Benjamin Zahner,benjamin zahner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bdadb74b531c,S tìpán Ulver,s tìpán ulver,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bdd714fee0a3,Jim B. Penske,jim b. penske,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bddca7d028ea,Wendy R. Dallaire,wendy r. dallaire,CLUB,1,0,1,1,medium,STAGED
+prov_identity::be2020b81a99,Claire Beltran,claire beltran,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::be2df5441c18,Jeremy C. Kumbruch,jeremy c. kumbruch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::be702e40f976,Bryan Pineda,bryan pineda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::be76a1c94847,Hunter W. Baird,hunter w. baird,CLUB,1,0,1,1,medium,STAGED
+prov_identity::beae36334bdc,Ralph Shelton,ralph shelton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::beb787de4258,Greg Simone,greg simone,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bec384fb7536,Maksym Rybytva,maksym rybytva,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bed11441a4c1,Thomas B. Sharp,thomas b. sharp,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bee353d1cbe5,Joshua Elmer,joshua elmer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bef50ea600ae,Berto Cabrera,berto cabrera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf1af58b5d67,Jim Markus,jim markus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf3ae7375ec0,Ethan Herman,ethan herman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf5d599e9e0b,Harrison Shaw,harrison shaw,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf65e35c3794,Yvonne L. Boeckel,yvonne l. boeckel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf6cba920aae,Pablo P. Glangetas,pablo p. glangetas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf8835fa3f06,Allan Pill,allan pill,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf8b7653217c,Gabriel Ramos,gabriel ramos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf9285495831,Ludwig Weixelberger,ludwig weixelberger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf943998aed6,Will Ackerman,will ackerman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf97c2b12ee8,Peter Cullen,peter cullen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bf9a65b0eb0f,Eric Gantner,eric gantner,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bfa366d6de46,Jeffrey Hibbs,jeffrey hibbs,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::bfb29d3b4418,Pawe M. Stalmach,pawe m. stalmach,CLUB,1,0,1,1,medium,STAGED
+prov_identity::bff2e431e7b4,Andrew E. Firestone,andrew e. firestone,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c006984e3005,Jay F. McMahan,jay f. mcmahan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c034546b1691,Alexander V. Piña Nava,alexander v. piña nava,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c093fbc778d2,Aaron Clevenger,aaron clevenger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c0997884679f,Cheryl R. Fidelman,cheryl r. fidelman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c0aad72aa87c,Christian Schauhuber,christian schauhuber,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c0c3baa12a2d,Robert Nicholson,robert nicholson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c0e026986c9f,Morgan B. Stead,morgan b. stead,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c1668e15ab77,Jared M. Moyes,jared m. moyes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c1e716fa0d91,Matt Fliegel,matt fliegel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c1eb44a72839,Paul Deventer,paul deventer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c1f8c285eb1f,Sam F. Potter,sam f. potter,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c24f47055726,Ulysse Cazzato,ulysse cazzato,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c26ead93eadb,Caleb Mckee,caleb mckee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c28d7fc40b06,Nick Charles,nick charles,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c29a4ddd1d9a,Mats Eriksson,mats eriksson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c29f4553f628,Sebastian Hoefer,sebastian hoefer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c2d4df0ec507,Yin Hsin Chieh,yin hsin chieh,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c3067de71eea,Pawel Bronk,pawel bronk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c345dd7d2d99,Charles Dutrisac,charles dutrisac,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c354c708f0c2,Michael Mueller,michael mueller,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c35be8a611c7,Logan K. Cooke,logan k. cooke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c38e37e8910b,Michael L. Longoria,michael l. longoria,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c391c61c8d12,Greg N Lombaert,greg n lombaert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c3c5e1df9d89,Andrew J. Dunford,andrew j. dunford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c3f0a94ccbb8,Andrew Lee,andrew lee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c41e97bca731,Kayla M. Schryer,kayla m. schryer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c452628d4eab,Riley Stark,riley stark,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c46b4d8ffada,Emmanuelle B. Vincendeau,emmanuelle b. vincendeau,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c4c4b645fff9,Shawn Boyle,shawn boyle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c4cda2fb5268,Adrian Espindola,adrian espindola,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c5181e1d0551,Camilo Daouk,camilo daouk,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c51d3e23eee4,Jimmy Wendt,jimmy wendt,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c51f8ccf0487,Fred Noinaj,fred noinaj,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c530633bde5e,André G. Regert,andré g. regert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c530bdaa8572,Lars H. Madsen,lars h. madsen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c533bd901ba2,Eugene Palmer,eugene palmer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c54dc7c235ff,Antonio J. Linero Castro,antonio j. linero castro,CLUB,2,0,2,2,medium,STAGED
+prov_identity::c56dae2d3b79,Barnabas P. Reed,barnabas p. reed,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c575baa31463,Kevin Fine,kevin fine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c586f36cb6fd,Yo Kelley,yo kelley,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c595277fc6d7,Jonathan A. Schneider,jonathan a. schneider,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c5cb1a0761ee,Sara Little,sara little,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c5dcad20a50b,Michael Berry,michael berry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c5e0028e8fa7,Kim Redmon,kim redmon,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c601ca338188,Simon Sonnichsen,simon sonnichsen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c61624b7b2b3,Gustavo J. Ocanto,gustavo j. ocanto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c61ae44e4822,Cole Mercer,cole mercer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c62efadfb2af,Diego Jose,diego jose,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c63724232bd2,Simon-François Kolodenchuk,simon-françois kolodenchuk,CLUB,2,0,2,2,medium,STAGED
+prov_identity::c644d09fd534,Marshall Angel,marshall angel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c6a47fe98ddf,Loren J. Dobson,loren j. dobson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c6d3b1711ac8,Garry H. Gaman,garry h. gaman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c6e4d1ef749e,Josh D. Mouser,josh d. mouser,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c6e4f56beeae,Saulo C. Goncalves Bruzon,saulo c. goncalves bruzon,CLUB,2,0,2,2,medium,STAGED
+prov_identity::c6f1a4e6c454,Adriana M. Rueda C.,adriana m. rueda c.,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c70c1df98204,Cody J. Seltzer,cody j. seltzer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c72d6472692d,April Lynn,april lynn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c732c47308d8,Juan C. DeLaTorre,juan c. delatorre,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7455a1c581f,David Labindao,david labindao,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c74ca2a5bd60,Craig H. Singer,craig h. singer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7508ef2ddab,Josh L. Collins,josh l. collins,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c796f0ae1561,Albert B. Franklin,albert b. franklin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7b37875af09,John H. Patiño rodriguez,john h. patiño rodriguez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7be9795a751,Theodore J. Fritsch,theodore j. fritsch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7bf9da6e6e6,Adam Barski,adam barski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7df50642b60,Jordan Ray Alley,jordan ray alley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c7f208b8ee52,Vadim Dukhovny,vadim dukhovny,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c7fd91cbddc7,Sean Billings,sean billings,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c805de53e7b6,Tommy Shrader,tommy shrader,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c8905f9434f1,Eric Schultz,eric schultz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c8f1c044277a,Leland Reibling,leland reibling,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c91d80f4fa7a,Greg Neumann,greg neumann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c947d02d4bb3,Mike Lee Hess,mike lee hess,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c94cc18e6a65,Aaron M. Kielisch,aaron m. kielisch,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c9a4b40cb9ef,Peter A. Bowler,peter a. bowler,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c9ad29f1df38,Curtis R. Alexander,curtis r. alexander,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c9cf621a4059,Galina Vorotilina,galina vorotilina,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::c9d46ceae6ca,Myer Nore,myer nore,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c9d9bdfe8c90,Fritz Westover,fritz westover,CLUB,1,0,1,1,medium,STAGED
+prov_identity::c9fde25ee4c1,Sam T. Alexander,sam t. alexander,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca04c9cdde79,Naomi S. Lowinger,naomi s. lowinger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca46c8646586,Jakub P. Bessarab,jakub p. bessarab,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca4c63603467,Zoë Jäckel,zoë jäckel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca50aa143d95,Ramon A. Zambrano De La Torre,ramon a. zambrano de la torre,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca83c06e6fe9,Daniel S. Stalmach,daniel s. stalmach,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ca8a11104993,Carlos J Maldonado,carlos j maldonado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::caa67cdbf46d,Bryant Hansen,bryant hansen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::cb365cb5552f,Vojta Polák,vojta polák,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cb372744099d,Marie-Lou Roy,marie-lou roy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cb44a00c7b68,James Vea,james vea,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cb4ffb443486,Brad Ian Verebay,brad ian verebay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cb58534f03b9,Ben Kurtzer,ben kurtzer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cb888c66e11f,Stephan Rautenberg,stephan rautenberg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cbfb56ab5619,Eric Hamburg,eric hamburg,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cc044495453a,Ale? Pelko,ale? pelko,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cc272de667de,Eddie Gonzales,eddie gonzales,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cc8a28f217cd,Nic Bathgate,nic bathgate,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::cc9d0bc39c0b,Chris A. Morrison,chris a. morrison,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ccf2f47f4899,John R. Ruiz,john r. ruiz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd4c207c041e,Brandon A. Turner,brandon a. turner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd657f75c60f,Julian A. Florez,julian a. florez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd73683de381,Cory T. Martin,cory t. martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd8464580f46,Taras Zaporozan,taras zaporozan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd8c1baae245,Nhan Ho,nhan ho,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd8dcff742a9,Seth A. Reed,seth a. reed,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cd96aa4eb93a,Chris Löw,chris löw,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::cdbb2d3ae552,Dakota W. Davis,dakota w. davis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cdcce456ec4e,Kevin J. Ivins,kevin j. ivins,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cde463b95c80,Rubin St. John,rubin st. john,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ce1910433ce0,Connor T. Payne,connor t. payne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ce6de0ae2de1,Markus Kaspczak,markus kaspczak,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ce8de6716659,Zach McDonald,zach mcdonald,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ce910f03d783,Antti J. Lehtovirta,antti j. lehtovirta,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ce9666d67a94,Philippe Spring,philippe spring,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ce9c83958a52,Steve Santangelo,steve santangelo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cebe08a8f838,Juan C. Gutierrez,juan c. gutierrez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf26fc32000b,Joe Shermetaro,joe shermetaro,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf2e077da581,James T. Evans,james t. evans,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf4d5240989b,Joel Gilbert,joel gilbert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf78cb318795,Geoff M. Hetric,geoff m. hetric,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf81f350d991,Ricardo Carbajal Merlos,ricardo carbajal merlos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cf9c0710684c,Sandra Harwalik,sandra harwalik,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cfa493f1395d,James M. Kieda,james m. kieda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cfc734b88e03,Pedro Machado,pedro machado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cff7c81f7c5a,Jordan Davies,jordan davies,CLUB,1,0,1,1,medium,STAGED
+prov_identity::cffce9507fc7,Mark D. Perkins,mark d. perkins,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0100b4ad20d,Nathan Hartigan,nathan hartigan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0258bbf9b8d,Ian Hubbard,ian hubbard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d028fb9501fe,Radek Decowski,radek decowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0b7926d7168,Joseph Machado,joseph machado,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0c5508ce3b9,Gus Curley,gus curley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0d568b4f0e1,Quinn McConnell,quinn mcconnell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0de190f2c77,Aaron J. Dugan,aaron j. dugan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0e11443769d,Anthony Pill,anthony pill,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d0fec99c2605,Miriam Roldan,miriam roldan,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d13a4475bb25,Matt Chlebowski,matt chlebowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d17668105353,Wilmer A. Rojas Fuentes,wilmer a. rojas fuentes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d19c923dc784,Rafael Aranjo,rafael aranjo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d1af40e754f5,Jason Davey,jason davey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d1bf6f283201,Duane J. Barringer,duane j. barringer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d1c46355a891,Piotrek Kostecki,piotrek kostecki,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d21640495d57,Cesar W. Gomez,cesar w. gomez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d248f122b48f,Forrester Winterburn,forrester winterburn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d260cb0a294c,Kenny Wunder,kenny wunder,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d27276a91f1a,James H. Dewart,james h. dewart,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d2961f3cad53,John M. Evers,john m. evers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d2ab207d4d3b,Jason Heard,jason heard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d2b43c8272e6,DJ Williams,dj williams,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d2d1b1f8576b,Amber N. Staton,amber n. staton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d2e0e0782f81,Cameron Hayes,cameron hayes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d2fafeaf20ef,Colin D. Murphy,colin d. murphy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d303587bad2f,Dmitry Danilevski,dmitry danilevski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d30611029c6d,Noah T. Balderas,noah t. balderas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d329499dbdbb,Peter Fleury,peter fleury,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d35b94770222,A. J. Shultz,a. j. shultz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d389f75fd2de,Josh Putnam,josh putnam,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d38c27cee507,Jonas Katamay,jonas katamay,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d3c860540ae5,Jonay Diaz,jonay diaz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d3cc6a45e5fe,Austin Hinkel,austin hinkel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d404be0f8565,Isaac Holland,isaac holland,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d4075947d2be,Paul Sandre,paul sandre,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d40db9e00145,Henryk Sienkiewicz,henryk sienkiewicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d420cf742ea8,Pierre Pogorelsky,pierre pogorelsky,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d437c5fbd8fc,Ian Mcaleece,ian mcaleece,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d43de85174bf,Marcela M. Giraldo,marcela m. giraldo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d4f05fca6f1b,Sebastian M. Jurzysta,sebastian m. jurzysta,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5062a6bdcb6,Jimmy A. Wendt,jimmy a. wendt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5292f0e3729,Christian Miotto,christian miotto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d54bd6d32da3,Youlee Merida,youlee merida,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5906ef83bc8,Denton R. Louis,denton r. louis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5b000a18138,Ben France,ben france,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5b8cf07fe65,Laurenz Prokoph,laurenz prokoph,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5d026338af1,Dustin McFall,dustin mcfall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5e31b5065c4,Nicholas J. Kirbo,nicholas j. kirbo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5e9cb7f058b,Dogukan Cetin,dogukan cetin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d5f7bcf9cb81,Ben E. Skaggs,ben e. skaggs,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d634a91c5311,Stephen A. Schmaltz,stephen a. schmaltz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d6420cb61aec,Russell Arsenault,russell arsenault,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d6472c14c6d2,David O. Beyers,david o. beyers,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d68381280bdc,Boris J. Ollivier,boris j. ollivier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d6d0baef5f46,Sam Conlon,sam conlon,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d6f148f06bc7,Tom Moore,tom moore,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d70f120cf5d0,Brian Kopke,brian kopke,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d724681483d6,Thomas E. Whitworth,thomas e. whitworth,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d73bc0cc861d,Wilder I. Zambrano Torres,wilder i. zambrano torres,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d74ab3761f9b,Jairo E. Soto,jairo e. soto,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d76b191cc181,Andrew T. Grant,andrew t. grant,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d7822ab42fe6,Robin Püchel,robin püchel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d7a9cdf9fc07,Will Little,will little,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d808959b52b2,Nestor D. Vergara,nestor d. vergara,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d80ee6ef1cca,Jake S. Milofsky,jake s. milofsky,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d81946a568e6,Aric R. McIntosh,aric r. mcintosh,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d83606e2775c,Mark T. Zimmerman,mark t. zimmerman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d85653c6c6e3,Evan Z. Fischer,evan z. fischer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d85e1cab0b20,Ville Luotonen,ville luotonen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d87bae849cc5,Mariu Barends,mariu barends,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d88722bf4bdf,Steven J. Pena,steven j. pena,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d8c5b90f2939,Curtis R. Taylor,curtis r. taylor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d8deeb19ff6a,Xavier Beauchamp-Tremblay,xavier beauchamp-tremblay,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::d8fd4bfeda55,David K. Wilder,david k. wilder,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d902fbc657b2,Lorena Reyes,lorena reyes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9138175db5c,Francisco J. Perez/Rodriguez,francisco j. perez/rodriguez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9204c276ec7,Elise M. Regreny,elise m. regreny,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d92f30f094c1,Kevin F. Staveley-O'carroll,kevin f. staveley-o'carroll,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d94994e942e3,Wil Kodie,wil kodie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9b186e5a7b3,Dinko D. Dimitrov,dinko d. dimitrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9c41210f172,Nick G. Leimbach,nick g. leimbach,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9cb78b35c8a,Tomás Daněk,tomás daněk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9db898149e9,Brian P. McGuire,brian p. mcguire,CLUB,1,0,1,1,medium,STAGED
+prov_identity::d9df31009c5e,Ara Bagdassarian,ara bagdassarian,CLUB,1,0,1,1,medium,STAGED
+prov_identity::da1c47866744,Al Tholl,al tholl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dab6d5e574af,Matthew K. Estes,matthew k. estes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dae694631805,Megan T. Mccullum,megan t. mccullum,CLUB,1,0,1,1,medium,STAGED
+prov_identity::daf65272493b,Silvio A. Barnes,silvio a. barnes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db1945156b6a,Dominic M. Romer,dominic m. romer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db232bdff359,Josh Bauer,josh bauer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::db353f7d9170,Paul Gressett,paul gressett,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db356d348c58,Adam S. Czeszkiel,adam s. czeszkiel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db3a43371646,Mohamed Magri-Foughali,mohamed magri-foughali,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::db5af0043459,Mark E. Leeman,mark e. leeman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db6073b97e15,Chris Lee LaComba,chris lee lacomba,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db85d52b3c93,Marcus P. Corbyn,marcus p. corbyn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db998040966d,Nicole Melnyk,nicole melnyk,CLUB,1,0,1,1,medium,STAGED
+prov_identity::db9cdaeaa7b3,Emmanuel Ferreira Puigmarti,emmanuel ferreira puigmarti,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dc6def164876,Marcus Lohmann,marcus lohmann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dc7758272ce7,Nicolas Laille,nicolas laille,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dc98061e6d1b,Jeremiah J. Clark,jeremiah j. clark,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dca090689244,Sean T. O'Hara,sean t. o'hara,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dca8de67d8cc,Dawid T. Michalowicz,dawid t. michalowicz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dccc5c2b46a5,Keith Johnson,keith johnson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dd04b1dbeac5,Phillip Sifuentes,phillip sifuentes,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::dd1d409af63e,Erik J. Rolt,erik j. rolt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dd4a38741091,Timothy K. Crowe,timothy k. crowe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dd504ea8181f,Derek N. Parker,derek n. parker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dd672f7c1217,Bryan R. Fournier,bryan r. fournier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dd860b8cee43,Zacharie Palin-Vernier,zacharie palin-vernier,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dda588b72180,Mikko J. Inkinen,mikko j. inkinen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ddb5b4167d83,Casey B. Smetters,casey b. smetters,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dde891ce1bc2,Rob Alan Adams,rob alan adams,CLUB,1,0,1,1,medium,STAGED
+prov_identity::de00a716d6de,Rory Clarke,rory clarke,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::de2e2a7baf32,Hanna Mickiewicz,hanna mickiewicz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::de40a395950e,Anthony Ghali,anthony ghali,CLUB,1,0,1,1,medium,STAGED
+prov_identity::de48869f3aae,Andres Abreu,andres abreu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::de5eb493b23b,Tim N. Werner,tim n. werner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::de8f782a4146,Meinard Nano,meinard nano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dec073fc0edb,Edgar Y. Matute,edgar y. matute,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dec868369217,Andre C. Lemaire,andre c. lemaire,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ded4c329ea12,Jonathan Keith,jonathan keith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dee2e9bbc71b,Ronald A. Añez Mora,ronald a. añez mora,CLUB,1,0,1,1,medium,STAGED
+prov_identity::defd34f442b3,Emil Tsao,emil tsao,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::df0786d5c980,henna dohmen,henna dohmen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::df21227e8ebe,Cooper M Bahlinger,cooper m bahlinger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::df2e14f6903f,Trevor J. Kokenge,trevor j. kokenge,CLUB,1,0,1,1,medium,STAGED
+prov_identity::df8da75382e4,Konstantin Ochs,konstantin ochs,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::dfa9ed34e684,James k Heath,james k heath,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dfc23d282d76,Michael Holzapfel,michael holzapfel,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::dfc7516b5fd5,Ramon A. Chacon Caceres,ramon a. chacon caceres,CLUB,1,0,1,1,medium,STAGED
+prov_identity::dfedd2c117dc,Pete Kruger,pete kruger,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e01285f9af3e,Michal Daněk,michal daněk,CLUB,2,0,2,2,medium,STAGED
+prov_identity::e02704b7cc8c,Nathan P. McDonald,nathan p. mcdonald,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e04ad14d9335,Noah Morkert,noah morkert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e05357dd1f14,vladimir Billich,vladimir billich,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e06bc1782e40,Léa L'espérance,léa l'espérance,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e0927d085027,Sébastien Duchesne,sébastien duchesne,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e0a13eb0c18e,Bryan P. Andrews,bryan p. andrews,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e0e85a0f0335,Tommy F. Duncan,tommy f. duncan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e12316c508e4,Marcin Wierzchowski,marcin wierzchowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e13f5d5a824d,Bryce Templeton,bryce templeton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e1643b2fa205,Olli Kärki,olli kärki,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e169e571df16,Brian Preuss,brian preuss,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e19630e69e62,Quimel A. González Calzadilla,quimel a. gonzález calzadilla,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e1c13979d408,Tony R. Morgan,tony r. morgan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e1e151c70b41,Toomas Jakobson,toomas jakobson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e2097a0a670c,Jessie Sutton,jessie sutton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e2189f14ff23,Seppo Silvennoinen,seppo silvennoinen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e234dd4bde61,Ville Laakso,ville laakso,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e2a524949945,Joseph Karasek,joseph karasek,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e2c5fcb845d7,Chris P. Cleaver,chris p. cleaver,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e31378b6d76f,Brenda Solonoski,brenda solonoski,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e344b9ab065d,Kyle R. Crawford,kyle r. crawford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e3999dd90b45,David Wright,david wright,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e3b5cec49dbf,Robert M. McCloskey,robert m. mccloskey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e3b786acada4,Ian P. Haley,ian p. haley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e3b85855da87,Mike S. Santor,mike s. santor,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e3dc2cb582b8,Derrick Ogden,derrick ogden,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e438f0e3e45e,Dominik Simku,dominik simku,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e439201ecc40,Dustin Mccormack,dustin mccormack,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e453d55f391e,Andreas Hald,andreas hald,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e460ae4f6797,Jeremiah Owens,jeremiah owens,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e47b79d66ac4,Bryce Ledner,bryce ledner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e47d7c91c12c,Brittany L. Trogen,brittany l. trogen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e484a3f1e383,Andrea D. Dimitrov,andrea d. dimitrov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e497394f231e,Chad Baleskie,chad baleskie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e4bae22d2b99,Matthew A. McLaren,matthew a. mclaren,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e4d793f24d7d,Javier A. Osorio Morales,javier a. osorio morales,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e4d8aa300b2a,Jason Rice,jason rice,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e55bb527f6be,Dave Brohawn,dave brohawn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e581cb98c842,Kevin W. Hargrove,kevin w. hargrove,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e583f4e1e2ee,Eric Cole,eric cole,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e58f2b4177de,Arty Martin,arty martin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e5ac1e3a1950,Ben Morris,ben morris,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e5dd87fe4094,Chris D. Smead,chris d. smead,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e5eeac9c179e,Clément Gobé,clément gobé,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e5f509046189,Ali Dastrandj,ali dastrandj,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e602a7de6335,Matthias Fischer,matthias fischer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e6083ca4ec35,Rob D. Couvell,rob d. couvell,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e61143e8809e,Samantha Quintana,samantha quintana,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e61326c9d467,Patrick Lee Keehan,patrick lee keehan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e68b8a86bcca,Jarrett C. Krause,jarrett c. krause,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e6901e107534,Jessica Fu,jessica fu,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e6b92bbb380c,Penelope J. Fontaine,penelope j. fontaine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e7298796d294,Brendan Chase,brendan chase,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e74aec791f76,Stefan Sommer,stefan sommer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e777e6138a5c,Jacob A. Carson,jacob a. carson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e78234acadae,Guillaume G. Degat,guillaume g. degat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e78b462445e6,Christopher Vincent,christopher vincent,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e7948f9edbb6,Javier Osorio,javier osorio,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e7e39ec7f838,Bill White,bill white,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e8470aeea522,Joni M. Hasel,joni m. hasel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e86440a28264,flo hofhansl,flo hofhansl,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e89a40553b1e,Kevin Andrews,kevin andrews,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e8a40d5ac8a5,Cody Richardson,cody richardson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e8c26df0c4d5,Agata Machalska,agata machalska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e8e91f1e1a13,Carlos R. Márquez,carlos r. márquez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e8fd3904933b,Rachel Channer,rachel channer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e924ef9e04dc,Tushkanov Alexey,tushkanov alexey,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e933ac48598e,Catherine Clerc,catherine clerc,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e93d349a9c6c,Carlos M. Acosta Funes,carlos m. acosta funes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e95a271d24b2,Ben J. Heath,ben j. heath,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e961c9f98779,Tam Nguyen,tam nguyen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e97695fff75f,Geneviève Bousquet,geneviève bousquet,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e981f14b47d6,Piotr Bałtrukiewicz,piotr bałtrukiewicz,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e9833ad79f3c,Christopher Ingle,christopher ingle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::e9bcc673b396,Tammo J. Rockel,tammo j. rockel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e9caa187bedb,Camilo A. Rubio Barbosa,camilo a. rubio barbosa,CLUB,1,0,1,1,medium,STAGED
+prov_identity::e9cfcba8e479,Scot W. Hansen,scot w. hansen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea00c895af54,Joe Varvel,joe varvel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea1b40cf3520,Gosia N. Debska,gosia n. debska,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea1c76532de0,Barry Roberts,barry roberts,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ea1d5a9550c5,Steve Ricks,steve ricks,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea25a81c2c67,Jillian Dickens,jillian dickens,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea40aeb0382f,Joel A. Galarraga Vera,joel a. galarraga vera,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea64dbfadb37,Chema Caillet-Bois,chema caillet-bois,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ea9cfee5b4bc,Johana Yepez,johana yepez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eaa061d6259b,Adam D. Levitus,adam d. levitus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eafc1c118819,Alan D. Gonzalez Gomez,alan d. gonzalez gomez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eafdfda429c9,John A. Nash,john a. nash,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eaff0ab1f4b3,Mike P. McCarthy,mike p. mccarthy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eb3a3c9963e7,Peter Jaffe,peter jaffe,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eb3f8f285568,Mike D. Ferran,mike d. ferran,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eb5137e6dff8,Manoj Kumar,manoj kumar,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eb998e61f609,Xenia Poole,xenia poole,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eba2de44fbe2,Zachary A. Cousino,zachary a. cousino,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ebec1f503ea4,David Dorto,david dorto,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ec3480b0662d,Josh Wells,josh wells,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ec34e9a16cff,Pawel M. Cisek,pawel m. cisek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ec5a158e604f,Marco Doebeli,marco doebeli,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ec9e76c3b2cd,Rebeca Gutiérrez,rebeca gutiérrez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ecace6dc9d83,Ryan J. Severns,ryan j. severns,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ece28be940ed,Marko Sool,marko sool,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ed0a8b3f9039,Chase Crewdson,chase crewdson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ed132c2655f3,Jordan Wong,jordan wong,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ed42805c33da,Zdravko D. Doichev,zdravko d. doichev,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ed76981ce5c3,Reilley J. Adamson,reilley j. adamson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ed7b4e6ccd06,Piia Tantarimäki,piia tantarimäki,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::eda9b5d29716,Casey Davis,casey davis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::edd81ea6c798,Alexander G. Smirnov,alexander g. smirnov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::edea56834145,Parrish Cruse,parrish cruse,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ee01b1c83e89,Emily Abarquez,emily abarquez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee0658645017,Hayden Marcus,hayden marcus,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee154e51a970,Bartek Bubula,bartek bubula,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee1d53dfc169,Christopher M. Siebert,christopher m. siebert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee1df065542c,Henri L. Nlend,henri l. nlend,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee27655730d4,Abman Ravat,abman ravat,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee27cf410469,Chris C. Hall,chris c. hall,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee2c2f405c02,Alex B. Fry,alex b. fry,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee53c98f9db4,Rasmus K. Rendsvig,rasmus k. rendsvig,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ee8355aa0547,Jeremy B. Janese,jeremy b. janese,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eec9379d42d5,Chris R. Hudson,chris r. hudson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::eec9cf918887,Ariel Sarig,ariel sarig,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::eed0a077feec,Mike Joe Emmert,mike joe emmert,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef01c64137f4,Serje Strelov,serje strelov,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef0bafa72134,"Devin "". Harrison","devin "". harrison",CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef2022c7d7b3,Dustin W. Jones,dustin w. jones,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef584951fe21,Rune Lau Pedersen,rune lau pedersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef7a7a19377b,Jin Hyung Lee,jin hyung lee,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef80b0e5cc90,Cory J. Dantica,cory j. dantica,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ef8f5b0d9895,Paulo F. Blanco Gomes,paulo f. blanco gomes,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efb3c47e9528,Connor Smith,connor smith,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efb6d204f68d,Zachary A. Walker,zachary a. walker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efbd90ea4bb8,Stephan M. Glanzner,stephan m. glanzner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efcd132e306f,Daniel E. Greer,daniel e. greer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efe7013e968e,Tony W. Macarthur,tony w. macarthur,CLUB,1,0,1,1,medium,STAGED
+prov_identity::efecdb1fb49d,Garrett Dryden,garrett dryden,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f032b81efdcb,Johnny Burton,johnny burton,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f0555d712b20,Karl D. Heidrick,karl d. heidrick,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f07b56f4adec,Nathan Andersen,nathan andersen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f08b0f4f337f,Anthony R. Fugazi,anthony r. fugazi,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f0ce2a3a18e4,Benjamin Appold,benjamin appold,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f143fd4b928b,Laura J. Zeller,laura j. zeller,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f14e1a109521,Shannon J. Guest,shannon j. guest,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1789451d8d4,Fred Valdivieso,fred valdivieso,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f17d4fe81557,Adam Griffiths,adam griffiths,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f198716cf869,Alexander Brieden,alexander brieden,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1a4256c32b0,Sean R. Burke,sean r. burke,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1a9ce081adf,David Sanchez,david sanchez,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f1b3a48ee51c,Tavis C. Walker,tavis c. walker,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1ce653affaa,Alex Roitburt,alex roitburt,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1e0bf5c419c,Chris Oliver,chris oliver,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1e67f6a931c,Sam Simpson,sam simpson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1eab22c0f3f,Matt L. Cross,matt l. cross,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f1ebfbd6662c,Dan Brohawn,dan brohawn,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f208e2635204,Joyce Wong,joyce wong,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f236d7a77179,Brian Kimball,brian kimball,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f24950fa83ec,Patrick Swift,patrick swift,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f262903aa26b,Brian P. Boisvine,brian p. boisvine,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f281c6a10ebc,Flavio Lötscher,flavio lötscher,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f29f20fc45a4,Grégoire Stoltz,grégoire stoltz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f2b27130368f,Daniel B. Buntjer,daniel b. buntjer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f2d1281069b8,Dmytro Levash,dmytro levash,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f2db3d05746c,Kris C. Boorman,kris c. boorman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f2f52d91c4d8,Tim E. Wahlstrom,tim e. wahlstrom,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f3107641d5ae,Phil Schaefer,phil schaefer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f33e988323a4,Grant Kingston,grant kingston,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f36552fe9cb0,Christian Köpper,christian köpper,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f376350b2f06,Austin W. Sparks,austin w. sparks,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f3a5da0be891,Ladd Hoffman,ladd hoffman,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f3b8e0783492,Devin P. DeBoer,devin p. deboer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f3d3b612350a,Tomas Lopez,tomas lopez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f3e5920ba71b,Joseph Esposito,joseph esposito,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f42f17c954d8,Mirko Rader,mirko rader,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f4444cd04e81,Anthony C. Vizza,anthony c. vizza,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f457ff5b6afc,Igor K. Kondratenko,igor k. kondratenko,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f48607172d8b,Isaac Demott Stowell,isaac demott stowell,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f4b193f4c47b,Jonah L. Scap,jonah l. scap,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f4bb0077c08a,Bartek B. Malinowski,bartek b. malinowski,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f4c30e59cbd1,Juan B. Palacios Lemos,juan b. palacios lemos,CLUB,2,0,2,2,medium,STAGED
+prov_identity::f5107d42e4c2,Pekka J. Muukkonen,pekka j. muukkonen,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f51aa2cfea7b,Gauthier Kervyn,gauthier kervyn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5954304e044,Chuck E. Donnelly,chuck e. donnelly,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f59966734ccf,Mike G. Chesrown,mike g. chesrown,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5b3956fe5fc,Adam C. Greenwood,adam c. greenwood,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5e742ec2fe2,Miguelangel Zambrano,miguelangel zambrano,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5ea3b60b31f,Dennison L. Gray,dennison l. gray,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5ebd9f7e82a,Brendan Richard,brendan richard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f5f064adcfae,Jeff M. Overbo,jeff m. overbo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f6039f39769a,Samuel Ira Reames,samuel ira reames,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f6070b87ae4a,Joshua D. Rilko,joshua d. rilko,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f639dc785216,Moshe R. Odisho,moshe r. odisho,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f65354a7c236,Jose Herrera,jose herrera,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f6e3a20e4a68,Allen G. Paule,allen g. paule,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f6ed05eeebae,Erik V. Anthony,erik v. anthony,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f7243879f556,Ronald S. Mclelland,ronald s. mclelland,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f74495487429,Shaun J. Kaluznick,shaun j. kaluznick,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f7474dae59a9,Michael Nicholson,michael nicholson,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f7b081c7ad2e,Wolf B. Price,wolf b. price,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f7b3537deea9,Jindra Smola,jindra smola,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f7b97ed0a00d,Alan Villalobos,alan villalobos,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f7ee17df633c,Andres A. Vivas,andres a. vivas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f85453fe05f3,Ryan Leedy,ryan leedy,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f88313696a97,Travis Skinner,travis skinner,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f8a52525b58c,Florian Kaulfürst,florian kaulfürst,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f8b1b01c8b52,Heather Squires-Thomas,heather squires-thomas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f8debb527b17,Evgeny Y. Kihigin,evgeny y. kihigin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f8e512282f7d,Alex M. Aranda,alex m. aranda,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f8f34eb23ffb,James I. Duncan,james i. duncan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f92319ea7d25,Ken David,ken david,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f94d729b8be8,Luisa M. Keel,luisa m. keel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f964ca80b87b,Samuel McAulay,samuel mcaulay,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f98b0436e4ea,Mathias Edwards,mathias edwards,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f99d0e76bfd0,Austin Barnard,austin barnard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f9bf3606520e,Marco Döbeli,marco döbeli,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::f9d491e7414b,Tracy Lee Tynsky,tracy lee tynsky,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f9dbbf92143c,Izzy Hechkoff,izzy hechkoff,CLUB,1,0,1,1,medium,STAGED
+prov_identity::f9fcd806cc50,Jim Tran,jim tran,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fa1b7d0fe9c0,Jason T. Mann,jason t. mann,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fa22aed62baa,Ivaneidy d. Zambrano Torres,ivaneidy d. zambrano torres,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fa5c6f95b176,Philipp Hanak,philipp hanak,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fb093d504c4f,Martin Petrnousek,martin petrnousek,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fb135678b996,Marc D. Strauss,marc d. strauss,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fb75b030b1a3,Piotr P. Patora,piotr p. patora,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fb80ebff7dda,Andy H. Stafford,andy h. stafford,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fb853bebc099,Jason Oberle,jason oberle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fb8d96151b73,Jesse Thomas,jesse thomas,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fb9259c5ce80,Ivan Bel,ivan bel,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fba3e7a6ad0c,Scott A. Stanley,scott a. stanley,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fbaa7929b406,Shinichi Ohta,shinichi ohta,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fbc4d9bbeb3b,Jayson K. Sherrod,jayson k. sherrod,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fbc54495264f,Beatrice Jaeger,beatrice jaeger,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fbd4de3b83f3,Jim S. Haidacher,jim s. haidacher,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fbe4f0c43db1,Mike Krystie,mike krystie,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fc01ae239d54,Lisa McDaniel,lisa mcdaniel,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fc21561f19e7,Anthony N. Perez,anthony n. perez,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fc247d6bd5e8,Sam O. Neale,sam o. neale,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fc7bdeb0f4f9,Christopher Harry,christopher harry,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fc8cead8c518,Marcus Marin,marcus marin,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fc936b24df2e,Gabriel Riedo,gabriel riedo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fcba7f49d5b9,Guy S. Johansonson,guy s. johansonson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fcbb8a452171,Jesse McCuaig,jesse mccuaig,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fcef58e3e49d,Anthony C. Northcote,anthony c. northcote,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd09bd2db812,Artur Roszczyn,artur roszczyn,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd1c5ed43bd5,Alex Roz Embree,alex roz embree,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd20a0201a59,Micah B. Anshan,micah b. anshan,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd2a2021c3fb,Ryan N. Blair,ryan n. blair,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd346bdde0ac,Dan Shedd,dan shedd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd3800d0bc08,Denise S. Kurz,denise s. kurz,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd4458a41245,Valeria R. Davidson,valeria r. davidson,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd46030c17f4,Chris T. Wollick,chris t. wollick,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd51433ca0a8,Lee Broier Byrd,lee broier byrd,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd6b92e8bfbd,Carlos A. Zucco,carlos a. zucco,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd8a0910cb20,Alvaro J. Martinez Junca,alvaro j. martinez junca,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fd8aa8dfefeb,Scott E. Yarbrough,scott e. yarbrough,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fda82ff18520,Kevin J. Kraft,kevin j. kraft,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fdbdc5fcf47f,Georg Waldispühl,georg waldispühl,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fddd733b5f2b,Kyle Zender,kyle zender,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fe088b4bb27b,Bill Lidle,bill lidle,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fe0f8007d72e,Eric Cote,eric cote,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fe94d4303509,Luke Kristensen,luke kristensen,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::fe9615b27493,Vincent Buchta,vincent buchta,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fec2b435939d,Gene Shteyngarts,gene shteyngarts,CLUB,1,0,1,1,medium,STAGED
+prov_identity::fed7445b0ad2,Thorsten Schäfer,thorsten schäfer,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ff0bc6b71552,Tristan Searle,tristan searle,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ff2aa2a29d49,David Wilder,david wilder,MEMBERSHIP,1,1,0,0,medium,STAGED
+prov_identity::ff439017a190,Gianni D. Santucci Carrillo,gianni d. santucci carrillo,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ff740deded8a,Christian E. Dubuis,christian e. dubuis,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ffc0e21a23c3,Dallas S. Wiard,dallas s. wiard,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ffc8ac24105c,Daniel T. Schirmer,daniel t. schirmer,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ffddaf2b6e5e,Matthew A. Johns,matthew a. johns,CLUB,1,0,1,1,medium,STAGED
+prov_identity::ffe40de7fb5f,Lili Dimitrova,lili dimitrova,CLUB,1,0,1,1,medium,STAGED
