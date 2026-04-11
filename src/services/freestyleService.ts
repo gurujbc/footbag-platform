@@ -58,7 +58,7 @@ export interface FreestyleLandingContent {
 // Shaping helpers
 // ---------------------------------------------------------------------------
 
-function shapeRow(row: FreestyleRecordRow): FreestyleRecordViewModel {
+export function shapeFreestyleRecord(row: FreestyleRecordRow): FreestyleRecordViewModel {
   return {
     id:              row.id,
     holderName:      row.holder_name,
@@ -87,7 +87,7 @@ function groupByType(rows: FreestyleRecordRow[]): FreestyleRecordGroup[] {
   return Array.from(groupMap.entries()).map(([recordType, typeRows]) => ({
     recordType,
     label:   labelForType(recordType),
-    records: typeRows.map(shapeRow),
+    records: typeRows.map(shapeFreestyleRecord),
   }));
 }
 

@@ -26,6 +26,7 @@ import {
 import {
   insertHistoricalPerson,
   insertFreestyleRecord,
+  insertMember,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3080');
@@ -85,9 +86,39 @@ beforeAll(async () => {
     superseded_by:  'fr-public-linked',
   });
 
+  // Player with their own freestyle records — HoF so page is publicly accessible
+  insertHistoricalPerson(db, {
+    person_id:    FREESTYLE_PLAYER_ID,
+    person_name:  'Bob Freestyler',
+    source_scope: 'CANONICAL',
+    hof_member:   1,
+  });
+  insertFreestyleRecord(db, {
+    id:            'fr-bob-1',
+    person_id:     FREESTYLE_PLAYER_ID,
+    display_name:  'Bob Freestyler',
+    trick_name:    'Pixie',
+    value_numeric: 55,
+    confidence:    'probable',
+    video_url:     'https://youtu.be/pixie123',
+    video_timecode: '0:42',
+  });
+  insertFreestyleRecord(db, {
+    id:            'fr-bob-provisional',
+    person_id:     FREESTYLE_PLAYER_ID,
+    display_name:  'Bob Freestyler',
+    trick_name:    'Hidden Trick',
+    value_numeric: 99,
+    confidence:    'provisional',  // must NOT appear on player page
+  });
+
   db.close();
   createApp = await importApp();
 });
+
+// A second person with freestyle records — used for /history/:personId tests.
+// Must be HoF or BAP so the player page is publicly accessible without auth.
+const FREESTYLE_PLAYER_ID = 'person-freestyle-player-001';
 
 afterAll(() => cleanupTestDb(dbPath));
 

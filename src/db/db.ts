@@ -673,6 +673,32 @@ export const freestyleRecords = {
     GROUP BY record_type
     ORDER BY record_type ASC
   `),
+
+  listByPersonId: db.prepare(`
+    SELECT
+      fr.id,
+      fr.record_type,
+      fr.person_id,
+      COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      fr.trick_name,
+      fr.sort_name,
+      fr.adds_count,
+      fr.value_numeric,
+      fr.achieved_date,
+      fr.date_precision,
+      fr.confidence,
+      fr.video_url,
+      fr.video_timecode,
+      fr.notes
+    FROM freestyle_records AS fr
+    LEFT JOIN historical_persons AS hp
+      ON hp.person_id = fr.person_id
+    WHERE fr.person_id = ?
+      AND fr.confidence IN ('verified', 'probable')
+      AND fr.superseded_by IS NULL
+      AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
+    ORDER BY fr.value_numeric DESC
+  `),
 } as const;
 
 export const health = {

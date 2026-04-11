@@ -1,4 +1,4 @@
-import { PublicPlayerResultRow, publicPlayers, account } from '../db/db';
+import { PublicPlayerResultRow, FreestyleRecordRow, publicPlayers, freestyleRecords, account } from '../db/db';
 import { NotFoundError } from './serviceErrors';
 import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
@@ -6,6 +6,7 @@ import { getPhotoStorage } from '../adapters/photoStorageInstance';
 import { PageViewModel } from '../types/page';
 import { groupPlayerResults } from './playerShaping';
 import type { PlayerEventGroup, PlayerHeroData } from '../types/playerProfile';
+import { FreestyleRecordViewModel, shapeFreestyleRecord } from './freestyleService';
 
 interface HistoricalPlayer {
   personId: string;
@@ -29,6 +30,7 @@ export interface HistoryDetailContent {
   avatarThumbUrl: string | null;
   heroData: PlayerHeroData;
   eventGroups: PlayerEventGroup[];
+  freestyleRecords: FreestyleRecordViewModel[];
 }
 
 export type HistoryDetailResult =
@@ -65,6 +67,10 @@ export const historyService = {
       hofInductionYear: (p['hof_induction_year'] as number | null) ?? null,
       eventGroups:        groupPlayerResults(resultRows, { selfPersonId: personId }),
     };
+
+    const freestyleRows = runSqliteRead('listFreestyleRecordsByPersonId', () =>
+      freestyleRecords.listByPersonId.all(personId),
+    ) as FreestyleRecordRow[];
 
     // Look up linked member account (if any) for member profile link and avatar.
     const linkedRow = runSqliteRead('findLinkedMemberSlug', () =>
@@ -125,7 +131,8 @@ export const historyService = {
           bapMember:     player.bapMember,
           avatarThumbUrl,
           heroData,
-          eventGroups:   player.eventGroups,
+          eventGroups:      player.eventGroups,
+          freestyleRecords: freestyleRows.map(shapeFreestyleRecord),
         },
       },
     };

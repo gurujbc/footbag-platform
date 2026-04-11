@@ -21,4 +21,55 @@
 
     {{> player-results eventGroups=content.eventGroups}}
   </section>
+
+  {{#if content.freestyleRecords.length}}
+  <section class="player-freestyle-records">
+    <h2 class="section-heading">Freestyle Records</h2>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Trick</th>
+          <th class="col-num">Count</th>
+          <th>Adds</th>
+          <th>Date</th>
+          <th>Video</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each content.freestyleRecords}}
+        <tr>
+          <td>
+            <span class="trick-name">{{trickName}}</span>
+            {{#if sortName}}<span class="trick-sort-name">{{sortName}}</span>{{/if}}
+          </td>
+          <td class="col-num">{{valueNumeric}}</td>
+          <td>{{#if addsCount}}{{addsCount}}{{else}}&mdash;{{/if}}</td>
+          <td>
+            {{#if achievedDate}}
+              {{achievedDate}}{{#if dateApproximate}} <em>(approx.)</em>{{/if}}
+            {{else}}
+              &mdash;
+            {{/if}}
+          </td>
+          <td>
+            {{#if videoUrl}}
+              <a href="{{videoUrl}}" class="video-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Watch {{trickName}} record video">
+                ▶{{#if videoTimecode}} {{videoTimecode}}{{/if}}
+              </a>
+            {{else}}
+              &mdash;
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <p class="source-note">
+      Records sourced from the freestyle passback video archive.
+      <a href="/freestyle/records">View all freestyle records</a>
+    </p>
+  </section>
+  {{/if}}
+
 </div>
