@@ -1291,14 +1291,20 @@ def build_year_sheets(wb: Workbook, raw_results, events: dict,
                    font=_YF_DIV, fill=dfill, align=ALIGN_L)
                 max_name_len = max(max_name_len, len(disc_name))
 
-                for pi in range(1, _TOP_PLCS + 1):
-                    slot_rows = _dedup_slot(disc_placements.get(pi, []))
-                    if slot_rows:
-                        disp, is_unk = _team_display(slot_rows)
-                    else:
-                        disp, is_unk = ("", False)
+                # Dense placement rendering: iterate only the actual place values
+                # present in the data, writing to consecutive rows.  Tie-adjusted
+                # rankings (e.g. 1,2,3,5,9) are packed without blank holes.
+                # When a gap exists the actual place number is embedded in the cell
+                # text (e.g. "5. Aleksi Airinen / ...") so the reader knows the
+                # official finishing position.
+                actual_places = sorted(disc_placements.keys())
+                for disp_idx, pi in enumerate(actual_places[:_TOP_PLCS], start=1):
+                    slot_rows = _dedup_slot(disc_placements[pi])
+                    disp, is_unk = _team_display(slot_rows)
+                    if disp and pi != disp_idx:
+                        disp = f"{pi}. {disp}"
                     font = _YF_UNK if is_unk and disp else _YF_PLC
-                    _w(ws, dr + pi, col_offset, disp, font=font, align=ALIGN_L)
+                    _w(ws, dr + disp_idx, col_offset, disp, font=font, align=ALIGN_L)
                     max_name_len = max(max_name_len, len(disp))
 
             ws.column_dimensions[col_letter].width = min(

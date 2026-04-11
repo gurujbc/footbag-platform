@@ -118,6 +118,60 @@ def resolve_person(display_name: str, name_index: dict[str, str]) -> str | None:
 
 
 # ---------------------------------------------------------------------------
+# Superseded chain computation
+# ---------------------------------------------------------------------------
+
+def compute_superseded_chains(conn: sqlite3.Connection) -> int:
+    """
+    Infer superseded_by relationships for public freestyle records.
+
+    Within each (trick_name, adds_count) group of public records:
+      - The record(s) with the maximum value_numeric are current → superseded_by = NULL
+      - Every sub-max record is superseded by the record with the lowest
+        value_numeric that still exceeds it (building a proper progression chain)
+
+    Ties at the maximum are preserved as concurrent records (e.g. DSO 23/23).
+    Ties below the maximum each point to the same next-higher record.
+
+    The pass is idempotent: superseded_by is reset to NULL before recomputing.
+    """
+    # Step 1: reset (idempotent)
+    conn.execute("""
+        UPDATE freestyle_records
+        SET superseded_by = NULL
+        WHERE confidence IN ('verified', 'probable')
+    """)
+
+    # Step 2: set superseded_by for every non-max record in its group.
+    # Uses IS for adds_count comparison so NULL adds_count groups correctly.
+    # The inner SELECT finds the record with the lowest value that still beats
+    # this record — that is the immediate predecessor in the progression chain.
+    cur = conn.execute("""
+        UPDATE freestyle_records
+        SET superseded_by = (
+            SELECT fr2.id
+            FROM freestyle_records AS fr2
+            WHERE fr2.trick_name    = freestyle_records.trick_name
+              AND fr2.adds_count    IS freestyle_records.adds_count
+              AND fr2.confidence    IN ('verified', 'probable')
+              AND fr2.value_numeric >  freestyle_records.value_numeric
+            ORDER BY fr2.value_numeric ASC
+            LIMIT 1
+        )
+        WHERE confidence IN ('verified', 'probable')
+          AND trick_name IS NOT NULL
+          AND value_numeric < (
+              SELECT MAX(fr2.value_numeric)
+              FROM freestyle_records AS fr2
+              WHERE fr2.trick_name  = freestyle_records.trick_name
+                AND fr2.adds_count  IS freestyle_records.adds_count
+                AND fr2.confidence  IN ('verified', 'probable')
+          )
+    """)
+    return cur.rowcount
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -255,6 +309,15 @@ def main() -> None:
                 skipped_bad += 1
 
         conn.commit()
+
+    # ---------------------------------------------------------------------------
+    # Superseded chains
+    # ---------------------------------------------------------------------------
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("PRAGMA foreign_keys = ON;")
+        updated = compute_superseded_chains(conn)
+        conn.commit()
+    print(f"\nSuperseded chain rows updated: {updated:,}")
 
     # ---------------------------------------------------------------------------
     # Report

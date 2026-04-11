@@ -1763,6 +1763,39 @@ print(f"  Bare labels upgraded to Net: {_f9_upgraded}")
 print(f"  Results rows updated:        {_f9_results_updated}")
 print(f"  Participant rows updated:    {_f9_parts_updated}")
 
+# ── Fix 10: Pre-1993 governing-body host_club assignment ──────────────────────
+# Events through 1982 were organised under the NHSA (National Hacky Sack
+# Association).  The WFA (World Footbag Association) succeeded NHSA in 1983.
+# Rule:
+#   • "NHSA" in event_name                   → host_club = "NHSA"  (explicit tag)
+#   • year < 1983 (and no explicit tag)       → host_club = "NHSA"  (year-based)
+#   • 1983 ≤ year ≤ 1993 (no explicit tag)   → host_club = "WFA"
+# Events with host_club already set are left unchanged.
+# Events in 1983 that carry "(NHSA)" in their name receive "NHSA"; all others
+# in 1983 receive "WFA" — matching the confirmed transition year.
+
+print("\n[Fix 10] Assigning host_club for pre-1993 governing body events...")
+_f10_assigned = 0
+for ev in events:
+    if ev.get("host_club"):          # already set — do not override
+        continue
+    yr_str = ev.get("year", "")
+    if not yr_str or not yr_str.isdigit():
+        continue
+    yr = int(yr_str)
+    if yr > 1993:
+        continue
+    name = ev.get("event_name", "")
+    if "NHSA" in name or yr < 1983:
+        ev["host_club"] = "NHSA"
+    else:                             # 1983–1993, not explicitly NHSA-named
+        ev["host_club"] = "WFA"
+    _f10_assigned += 1
+
+print(f"  host_club assigned: {_f10_assigned} events  "
+      f"(NHSA: {sum(1 for e in events if e.get('host_club') == 'NHSA' and int(e.get('year','0') or 0) <= 1993)}, "
+      f"WFA: {sum(1 for e in events if e.get('host_club') == 'WFA')})")
+
 # ── Save ──────────────────────────────────────────────────────────────────────
 
 print("\nSaving...")
@@ -1811,6 +1844,7 @@ print(f"""
 ║ Fix 7  Resolved by exact name match      {_f7_name_match:>6,} ║
 ║        Left unresolved (empty pid)       {_f7_left_empty:>6,} ║
 ║ Fix 9  Bare labels → Net                 {_f9_upgraded:>6,} ║
+║ Fix 10 host_club assigned (NHSA/WFA)     {_f10_assigned:>6,} ║
 ║ Pre97  Parse failures repaired           {_pA_fixed:>6,} ║
 ║        Missing placements added          {_pB_results_added:>6,} ║
 ╠══════════════════════════════════════════╣
