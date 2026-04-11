@@ -34,7 +34,8 @@ const { dbPath } = setTestEnv('3080');
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
 
-const PERSON_ID = 'person-freestyle-test-001';
+const PERSON_ID          = 'person-freestyle-test-001';
+const FREESTYLE_PLAYER_ID = 'person-freestyle-player-001';
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
@@ -116,10 +117,6 @@ beforeAll(async () => {
   createApp = await importApp();
 });
 
-// A second person with freestyle records — used for /history/:personId tests.
-// Must be HoF or BAP so the player page is publicly accessible without auth.
-const FREESTYLE_PLAYER_ID = 'person-freestyle-player-001';
-
 afterAll(() => cleanupTestDb(dbPath));
 
 // ---------------------------------------------------------------------------
@@ -189,5 +186,176 @@ describe('GET /freestyle/records', () => {
     const app = createApp();
     const res = await request(app).get('/freestyle/records');
     expect(res.text).toContain('https://youtu.be/abc123');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle/leaders', () => {
+  it('returns 200', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/leaders');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows Alice Shredder as a leader (has 1 public record)', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/leaders');
+    expect(res.text).toContain('Alice Shredder');
+  });
+
+  it('links resolved person_id holders to /history/:personId', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/leaders');
+    expect(res.text).toContain(`/history/${PERSON_ID}`);
+  });
+
+  it('renders unresolved holder as plain text', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/leaders');
+    expect(res.text).toContain('Unknown Player');
+    expect(res.text).not.toContain('/history/null');
+  });
+
+  it('does not include provisional records in leader counts', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/leaders');
+    expect(res.text).not.toContain('Hidden Player');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle — enriched landing page', () => {
+  it('shows top holders section', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('Top Record Holders');
+    expect(res.text).toContain('Alice Shredder');
+  });
+
+  it('shows recent records section', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('Recent Records');
+  });
+
+  it('contains links to both records and leaders sub-pages', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('/freestyle/records');
+    expect(res.text).toContain('/freestyle/leaders');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle/about', () => {
+  it('returns 200 with page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/about');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('About Freestyle');
+  });
+
+  it('contains competition format content', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/about');
+    expect(res.text).toContain('Routines');
+    expect(res.text).toContain('30 Second Shred');
+    expect(res.text).toContain('Sick 3');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle/moves', () => {
+  it('returns 200 with page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/moves');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Move Sets');
+  });
+
+  it('contains core set names', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/moves');
+    expect(res.text).toContain('Pixie');
+    expect(res.text).toContain('Fairy');
+    expect(res.text).toContain('Nuclear');
+    expect(res.text).toContain('Stepping');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle/tricks/:slug', () => {
+  it('returns 200 for a known trick slug', async () => {
+    const app = createApp();
+    // 'Torque' was inserted in beforeAll with slug 'torque'
+    const res = await request(app).get('/freestyle/tricks/torque');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Torque');
+    expect(res.text).toContain('Alice Shredder');
+  });
+
+  it('links holder to /history/:personId', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/tricks/torque');
+    expect(res.text).toContain(`/history/${PERSON_ID}`);
+  });
+
+  it('returns 404 for an unknown slug', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/tricks/not-a-real-trick');
+    expect(res.status).toBe(404);
+  });
+
+  it('shows video link when present', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/tricks/torque');
+    expect(res.text).toContain('https://youtu.be/abc123');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('records page trick links', () => {
+  it('links trick names to /freestyle/tricks/:slug on records page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/records');
+    expect(res.text).toContain('/freestyle/tricks/torque');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('GET /history/:personId — freestyle records section', () => {
+  it('shows freestyle records section for a player with records', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${FREESTYLE_PLAYER_ID}`);
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Freestyle Records');
+    expect(res.text).toContain('Pixie');
+    expect(res.text).toContain('55');
+  });
+
+  it('shows video link with timecode on player freestyle section', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${FREESTYLE_PLAYER_ID}`);
+    expect(res.text).toContain('https://youtu.be/pixie123');
+    expect(res.text).toContain('0:42');
+  });
+
+  it('does not show provisional records on player page', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${FREESTYLE_PLAYER_ID}`);
+    expect(res.text).not.toContain('Hidden Trick');
+  });
+
+  it('includes link to /freestyle/records from player freestyle section', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/history/${FREESTYLE_PLAYER_ID}`);
+    expect(res.text).toContain('/freestyle/records');
   });
 });

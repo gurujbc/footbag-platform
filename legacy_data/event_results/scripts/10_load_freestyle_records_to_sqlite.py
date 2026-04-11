@@ -103,11 +103,12 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 def build_name_index(conn: sqlite3.Connection) -> dict[str, str]:
     """
     Returns {lowercase_name: person_id} from historical_persons.
-    Only canonical persons (source_scope = 'CANONICAL') are included —
-    provisional persons should not be linked to external records.
+    All persons are indexed (CANONICAL, PROVISIONAL, and NULL-scope) so that
+    freestyle records resolve against any known identity, regardless of
+    whether they have competition results.
     """
     rows = conn.execute(
-        "SELECT person_id, person_name FROM historical_persons WHERE source_scope = 'CANONICAL'"
+        "SELECT person_id, person_name FROM historical_persons"
     ).fetchall()
     return {name.strip().lower(): pid for pid, name in rows}
 
@@ -154,7 +155,7 @@ def main() -> None:
         conn.execute("PRAGMA journal_mode = WAL;")
 
         name_index = build_name_index(conn)
-        print(f"Canonical persons in name index: {len(name_index):,}")
+        print(f"Persons in name index: {len(name_index):,}")
 
         for row in rows:
             record_id = row["record_id"].strip()

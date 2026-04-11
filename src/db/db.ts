@@ -27,6 +27,13 @@ import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabas
  * - GET /events
  * - GET /events/year/:year
  * - GET /events/:eventKey
+ * - GET /freestyle
+ * - GET /freestyle/about
+ * - GET /freestyle/moves
+ * - GET /freestyle/records
+ * - GET /freestyle/leaders
+ * - GET /freestyle/tricks/:slug
+ * - GET /consecutive
  * - GET /history
  * - GET /history/:personId
  * - GET /members/:memberId
@@ -698,6 +705,154 @@ export const freestyleRecords = {
       AND fr.superseded_by IS NULL
       AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
     ORDER BY fr.value_numeric DESC
+  `),
+
+  listLeaders: db.prepare(`
+    SELECT
+      fr.person_id,
+      COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      COUNT(*)                                   AS record_count,
+      MAX(fr.value_numeric)                      AS top_value,
+      MAX(CASE WHEN fr.value_numeric = (
+            SELECT MAX(fr2.value_numeric)
+            FROM freestyle_records fr2
+            WHERE (fr2.person_id = fr.person_id OR (fr2.person_id IS NULL AND fr2.display_name = fr.display_name))
+              AND fr2.confidence IN ('verified', 'probable')
+              AND fr2.superseded_by IS NULL
+          ) THEN fr.trick_name END)              AS top_trick
+    FROM freestyle_records AS fr
+    LEFT JOIN historical_persons AS hp
+      ON hp.person_id = fr.person_id
+    WHERE fr.confidence IN ('verified', 'probable')
+      AND fr.superseded_by IS NULL
+      AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
+    GROUP BY fr.person_id, fr.display_name
+    ORDER BY record_count DESC, holder_name ASC
+  `),
+
+  listByTrickName: db.prepare(`
+    SELECT
+      fr.id,
+      fr.record_type,
+      fr.person_id,
+      COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      fr.trick_name,
+      fr.sort_name,
+      fr.adds_count,
+      fr.value_numeric,
+      fr.achieved_date,
+      fr.date_precision,
+      fr.confidence,
+      fr.video_url,
+      fr.video_timecode,
+      fr.notes
+    FROM freestyle_records AS fr
+    LEFT JOIN historical_persons AS hp
+      ON hp.person_id = fr.person_id
+    WHERE fr.trick_name = ?
+      AND fr.confidence IN ('verified', 'probable')
+      AND fr.superseded_by IS NULL
+      AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
+    ORDER BY fr.value_numeric DESC
+  `),
+
+  listRecentPublic: db.prepare(`
+    SELECT
+      fr.id,
+      fr.record_type,
+      fr.person_id,
+      COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      fr.trick_name,
+      fr.sort_name,
+      fr.adds_count,
+      fr.value_numeric,
+      fr.achieved_date,
+      fr.date_precision,
+      fr.confidence,
+      fr.video_url,
+      fr.video_timecode,
+      fr.notes
+    FROM freestyle_records AS fr
+    LEFT JOIN historical_persons AS hp
+      ON hp.person_id = fr.person_id
+    WHERE fr.confidence IN ('verified', 'probable')
+      AND fr.superseded_by IS NULL
+      AND fr.achieved_date IS NOT NULL
+      AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
+    ORDER BY fr.achieved_date DESC
+    LIMIT 5
+  `),
+} as const;
+
+export interface FreestyleLeaderRow {
+  person_id: string | null;
+  holder_name: string;
+  record_count: number;
+  top_value: number;
+  top_trick: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// consecutiveKicksRecords
+//
+// WFA-sanctioned consecutive kicks records loaded from the curated CSV.
+// Four sections: Official World Records, Highest Official Scores,
+// World Record Progression, Milestone Firsts.
+// ---------------------------------------------------------------------------
+export interface ConsecutiveKicksRow {
+  sort_order: number;
+  section: string;
+  subsection: string;
+  division: string;
+  year: string | null;
+  rank: number | null;
+  player_1: string | null;
+  player_2: string | null;
+  score: number | null;
+  note: string | null;
+  event_date: string | null;
+  event_name: string | null;
+  location: string | null;
+}
+
+export const consecutiveKicksRecords = {
+  listWorldRecords: db.prepare(`
+    SELECT sort_order, section, subsection, division, year, rank,
+           player_1, player_2, score, note, event_date, event_name, location
+    FROM consecutive_kicks_records
+    WHERE section = 'Official World Records'
+    ORDER BY sort_order ASC
+  `),
+
+  listHighestScores: db.prepare(`
+    SELECT sort_order, section, subsection, division, year, rank,
+           player_1, player_2, score, note, event_date, event_name, location
+    FROM consecutive_kicks_records
+    WHERE section = 'Highest Official Scores'
+    ORDER BY sort_order ASC
+  `),
+
+  listProgression: db.prepare(`
+    SELECT sort_order, section, subsection, division, year, rank,
+           player_1, player_2, score, note, event_date, event_name, location
+    FROM consecutive_kicks_records
+    WHERE section = 'World Record Progression'
+    ORDER BY sort_order ASC
+  `),
+
+  listMilestones: db.prepare(`
+    SELECT sort_order, section, subsection, division, year, rank,
+           player_1, player_2, score, note, event_date, event_name, location
+    FROM consecutive_kicks_records
+    WHERE section = 'Milestone Firsts'
+    ORDER BY sort_order ASC
+  `),
+
+  countBySection: db.prepare(`
+    SELECT section, COUNT(*) AS n
+    FROM consecutive_kicks_records
+    GROUP BY section
+    ORDER BY MIN(sort_order)
   `),
 } as const;
 

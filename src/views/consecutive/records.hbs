@@ -1,0 +1,159 @@
+{{! /consecutive — WFA Consecutive Kicks Records }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── Current World Records ─────────────────────────────────────────────── }}
+  {{#if content.worldRecords}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Current World Records</h2>
+    </div>
+    <table class="records-table consecutive-wr-table">
+      <thead>
+        <tr>
+          <th>Division</th>
+          <th>Holder(s)</th>
+          <th class="col-num">Kicks</th>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each content.worldRecords}}
+        <tr>
+          <td>{{division}}</td>
+          <td class="col-holder">
+            {{player_1}}{{#if player_2}} &amp; {{player_2}}{{/if}}
+          </td>
+          <td class="col-num">{{scoreFormatted}}</td>
+          <td>{{#if eventName}}{{eventName}}{{else}}&mdash;{{/if}}</td>
+          <td class="col-date">{{#if eventDate}}{{eventDate}}{{else}}&mdash;{{/if}}</td>
+          <td>{{#if location}}{{location}}{{else}}&mdash;{{/if}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+  {{/if}}
+
+  {{! ── Highest Official Scores ───────────────────────────────────────────── }}
+  {{#if content.highestScores}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Highest Official Scores</h2>
+    </div>
+    {{#each content.highestScores}}
+    <h3 class="content-subheading">{{subsection}}</h3>
+    <table class="records-table consecutive-scores-table">
+      <thead>
+        <tr>
+          <th class="col-rank">#</th>
+          <th>Player(s)</th>
+          <th>Division</th>
+          <th class="col-num">Kicks</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+        <tr{{#if isWorldRecord}} class="record-world"{{/if}}>
+          <td class="col-rank">{{rank}}</td>
+          <td class="col-holder">
+            {{player_1}}{{#if player_2}} &amp; {{player_2}}{{/if}}
+          </td>
+          <td>{{division}}</td>
+          <td class="col-num">{{scoreFormatted}}</td>
+          <td class="col-note">{{#if note}}{{note}}{{else}}&mdash;{{/if}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{! ── World Record Progression ──────────────────────────────────────────── }}
+  {{#if content.progression}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>World Record Progression</h2>
+    </div>
+    {{#each content.progression}}
+    <h3 class="content-subheading">{{subsection}}</h3>
+    <table class="records-table consecutive-progression-table">
+      <thead>
+        <tr>
+          <th class="col-year">Year</th>
+          <th>Holder(s)</th>
+          <th class="col-num">Kicks</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+        <tr>
+          <td class="col-year">{{#if year}}{{year}}{{else}}&mdash;{{/if}}</td>
+          <td class="col-holder">
+            {{player_1}}{{#if player_2}} &amp; {{player_2}}{{/if}}
+          </td>
+          <td class="col-num">{{scoreFormatted}}</td>
+          <td class="col-note">{{#if note}}{{note}}{{else}}&mdash;{{/if}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{! ── Milestone Firsts ──────────────────────────────────────────────────── }}
+  {{#if content.milestones}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Milestone Firsts</h2>
+      <p class="section-desc">First player to reach each milestone kick count.</p>
+    </div>
+    {{#each content.milestones}}
+    <h3 class="content-subheading">{{subsection}}</h3>
+    <table class="records-table consecutive-milestones-table">
+      <thead>
+        <tr>
+          <th>Player(s)</th>
+          <th>Division</th>
+          <th class="col-num">Milestone</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+        <tr>
+          <td class="col-holder">
+            {{player_1}}{{#if player_2}} &amp; {{player_2}}{{/if}}
+          </td>
+          <td>{{division}}</td>
+          <td class="col-num">{{#if score}}{{scoreFormatted}}{{else}}&mdash;{{/if}}</td>
+          <td class="col-note">{{#if note}}{{note}}{{else}}&mdash;{{/if}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  <section class="content-section">
+    <p class="source-note">
+      Records sanctioned by the World Footbag Association (WFA).
+      Source data compiled from the Footbag Hall of Fame and World Footbag websites.
+    </p>
+  </section>
+
+</div>

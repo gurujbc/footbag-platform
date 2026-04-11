@@ -497,3 +497,51 @@ export function insertFreestyleRecord(
   );
   return id;
 }
+
+// ── Consecutive Kicks Record ──────────────────────────────────────────────────
+
+export interface ConsecutiveKicksRecordOverrides {
+  sort_order?: number;
+  section?: string;
+  subsection?: string;
+  division?: string;
+  year?: string | null;
+  rank?: number | null;
+  player_1?: string | null;
+  player_2?: string | null;
+  score?: number | null;
+  note?: string | null;
+  event_date?: string | null;
+  event_name?: string | null;
+  location?: string | null;
+}
+
+let _sortOrderCounter = 9000;
+
+export function insertConsecutiveKicksRecord(
+  db: BetterSqlite3.Database,
+  o: ConsecutiveKicksRecordOverrides = {},
+): number {
+  const sort_order = o.sort_order ?? ++_sortOrderCounter;
+  db.prepare(`
+    INSERT INTO consecutive_kicks_records
+      (sort_order, section, subsection, division, year, rank,
+       player_1, player_2, score, note, event_date, event_name, location)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    sort_order,
+    o.section    ?? 'Official World Records',
+    o.subsection ?? 'Current Official World Records',
+    o.division   ?? 'Open Singles',
+    o.year       ?? null,
+    o.rank       ?? null,
+    o.player_1   ?? 'Test Player',
+    o.player_2   ?? null,
+    o.score      ?? 1000,
+    o.note       ?? null,
+    o.event_date ?? null,
+    o.event_name ?? null,
+    o.location   ?? null,
+  );
+  return sort_order;
+}

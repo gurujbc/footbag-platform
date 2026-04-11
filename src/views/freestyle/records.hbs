@@ -50,7 +50,11 @@
             {{#each records}}
             <tr class="record-row{{#if isProbable}} record-probable{{/if}}">
               <td class="col-trick">
-                <span class="trick-name">{{trickName}}</span>
+                {{#if trickHref}}
+                  <a href="{{trickHref}}" class="trick-name">{{trickName}}</a>
+                {{else}}
+                  <span class="trick-name">{{trickName}}</span>
+                {{/if}}
                 {{#if sortName}}
                 <span class="trick-sort-name">{{sortName}}</span>
                 {{/if}}

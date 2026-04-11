@@ -1,0 +1,65 @@
+{{! /freestyle/leaders — rankings by records held }}
+
+<div class="hero hero-sm">
+  <div>
+    {{#if navigation.breadcrumbs}}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      {{#each navigation.breadcrumbs}}
+        {{#if href}}<a href="{{href}}">{{label}}</a> <span class="breadcrumb-sep">/</span> {{else}}<span>{{label}}</span>{{/if}}
+      {{/each}}
+    </nav>
+    {{/if}}
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
+    {{#if content.totalHolders}}
+    <div class="hero-stats">
+      <span>{{content.totalHolders}} holders</span>
+      <span>{{content.totalRecords}} records</span>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{#if content.leaders}}
+  <div class="records-table-wrap">
+    <table class="records-table leaders-table">
+      <thead>
+        <tr>
+          <th class="col-rank">#</th>
+          <th>Player</th>
+          <th class="col-num">Records</th>
+          <th>Top Trick</th>
+          <th class="col-num">Top Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each content.leaders}}
+        <tr>
+          <td class="col-rank">{{rank}}</td>
+          <td>
+            {{#if holderHref}}
+              <a href="{{holderHref}}">{{holderName}}</a>
+            {{else}}
+              {{holderName}}
+            {{/if}}
+          </td>
+          <td class="col-num">{{recordCount}}</td>
+          <td>{{#if topTrick}}{{topTrick}}{{else}}&mdash;{{/if}}</td>
+          <td class="col-num">{{topValue}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="empty-state">No records found.</div>
+  {{/if}}
+
+  <p class="source-note">
+    Rankings based on current per-trick consecutive records from the freestyle passback video archive.
+    <a href="/freestyle/records">View all records</a>
+  </p>
+
+</div>

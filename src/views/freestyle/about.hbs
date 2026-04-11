@@ -1,0 +1,82 @@
+{{! /freestyle/about — competition formats and overview }}
+
+<div class="hero hero-sm">
+  <div>
+    {{#if navigation.breadcrumbs}}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      {{#each navigation.breadcrumbs}}
+        {{#if href}}<a href="{{href}}">{{label}}</a> <span class="breadcrumb-sep">/</span> {{else}}<span>{{label}}</span>{{/if}}
+      {{/each}}
+    </nav>
+    {{/if}}
+    <h1>{{page.title}}</h1>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <section class="content-section">
+    <h2 class="section-heading">What is Freestyle Footbag?</h2>
+    <p>
+      Freestyle footbag is the only footbag discipline that allows use of the entire body — head,
+      shoulders, chest, and arms are all in play alongside the feet. Unlike net footbag, which is
+      scored on rallies and placement, freestyle rewards trick difficulty, add count, variety, and
+      individual style.
+    </p>
+    <p>
+      Moves are built on a set notation system: each trick is defined by a set (the arc of the bag),
+      a body action (dexterity, spin, or combination), and the adds — additional difficulty layers
+      stacked before the catch. Higher add counts indicate greater difficulty.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2 class="section-heading">Competition Formats</h2>
+
+    <h3 class="content-subheading">Routines</h3>
+    <p>
+      The primary competition format. Competitors perform a 90-second routine to music of their
+      choice. Judges score on four axes: difficulty (add count and trick complexity), variety
+      (breadth of tricks and sets used), execution (clean contacts and controlled catches), and
+      presentation (musicality, flow, and style). Routines may be performed solo or in pairs.
+    </p>
+
+    <h3 class="content-subheading">30 Second Shred</h3>
+    <p>
+      A focused burst format. Competitors have 30 seconds to perform as many high-difficulty
+      tricks as possible. Scoring emphasises raw trick output and adds per move rather than
+      presentation or flow. A high-intensity showcase of technical ability.
+    </p>
+
+    <h3 class="content-subheading">Sick 3</h3>
+    <p>
+      Competitors nominate three specific tricks in advance and attempt to land each cleanly.
+      The format tests precise execution of self-declared difficulty — there is no room to
+      substitute easier moves if a trick fails. Judges score on successful completion, add count,
+      and execution quality.
+    </p>
+  </section>
+
+  <section class="content-section">
+    <h2 class="section-heading">Passback Records</h2>
+    <p>
+      Outside of formal competition, the freestyle community tracks per-trick consecutive records
+      through the passback video archive: documented attempts where a player completes a given trick
+      consecutively without a miss. Records are sourced from video evidence and carry a confidence
+      rating — <em>verified</em> records have independent confirmation; <em>probable</em> records
+      are well-documented but not independently cross-checked.
+    </p>
+    <a href="/freestyle/records" class="btn btn-outline">Browse Records</a>
+  </section>
+
+  <section class="content-section">
+    <h2 class="section-heading">Move Sets Reference</h2>
+    <p>
+      New-school freestyle is built on a shared set notation system. Each set name describes the
+      bag's arc, the plant foot, and the direction of the dexterity. Understanding set notation
+      unlocks the naming logic behind nearly every trick name in the records.
+    </p>
+    <a href="/freestyle/moves" class="btn btn-outline">View Move Sets</a>
+  </section>
+
+</div>

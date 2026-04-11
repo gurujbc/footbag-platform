@@ -80,6 +80,7 @@ export function createApp(): express.Application {
         countryFlag: (country: string) => COUNTRY_FLAGS[country] ?? '',
         eq:  (a: unknown, b: unknown) => a === b,
         gt:  (a: unknown, b: unknown) => (a as number) > (b as number),
+        add: (a: unknown, b: unknown) => (a as number) + (b as number),
         not: (a: unknown) => !a,
         formatDate: (iso: string) => {
           const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -122,6 +123,8 @@ export function createApp(): express.Application {
       : req.path.startsWith('/history') ? 'history'
       : req.path.startsWith('/clubs') ? 'clubs'
       : req.path.startsWith('/hof') ? 'hof'
+      : req.path.startsWith('/freestyle') ? 'freestyle'
+      : req.path.startsWith('/consecutive') ? 'consecutive'
       : '';
     res.locals.isAuthenticated = req.isAuthenticated;
     res.locals.currentUser = req.user;

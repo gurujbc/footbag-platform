@@ -1508,3 +1508,97 @@ section.home-media { padding-top: 0; }
   .records-table .col-adds,
   .records-table th:nth-child(2) { display: none; }
 }
+
+/* ── Leaders table ──────────────────────────────────────────────────────── */
+.leaders-table .col-rank {
+  width: 2.5rem;
+  text-align: center;
+  color: var(--text-secondary, #888);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Content sub-headings (About, Moves pages) ──────────────────────────── */
+.content-subheading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 20px 0 6px;
+  color: var(--text-primary, #111);
+}
+
+/* ── Moves reference table ──────────────────────────────────────────────── */
+.moves-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.moves-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.moves-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 600;
+  color: var(--text-secondary, #555);
+}
+.moves-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+.moves-table tr:last-child td { border-bottom: none; }
+.moves-table code {
+  font-size: 0.82rem;
+  background: #f4f4f4;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ── Moves tag list (spinning, whirl variants, etc.) ────────────────────── */
+.moves-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.moves-tag {
+  background: #f0f0f0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #444);
+}
+
+/* ── Trick detail: notes column ─────────────────────────────────────────── */
+.records-table .col-notes {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #666);
+  max-width: 220px;
+}
+
+/* ── Consecutive kicks tables ────────────────────────────────────────────── */
+.consecutive-wr-table td,
+.consecutive-scores-table td,
+.consecutive-progression-table td,
+.consecutive-milestones-table td {
+  vertical-align: top;
+}
+.consecutive-wr-table .col-num,
+.consecutive-scores-table .col-num,
+.consecutive-progression-table .col-num,
+.consecutive-milestones-table .col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.consecutive-wr-table .col-holder,
+.consecutive-scores-table .col-holder,
+.consecutive-progression-table .col-holder,
+.consecutive-milestones-table .col-holder {
+  white-space: nowrap;
+}
+.col-year {
+  width: 4rem;
+  white-space: nowrap;
+}
+.record-world {
+  font-weight: 600;
+}

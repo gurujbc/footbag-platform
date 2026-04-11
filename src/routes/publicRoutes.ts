@@ -8,6 +8,7 @@ import { claimController } from '../controllers/claimController';
 import { authController } from '../controllers/authController';
 import { hofController } from '../controllers/hofController';
 import { freestyleController } from '../controllers/freestyleController';
+import { consecutiveController } from '../controllers/consecutiveController';
 import { requireAuth } from '../middleware/authStub';
 
 export const publicRouter = Router();
@@ -17,10 +18,16 @@ publicRouter.get('/clubs',       clubController.index);
 publicRouter.get('/clubs/:key', clubController.byKey);
 publicRouter.get('/hof',   hofController.index);
 
-// IMPORTANT: /freestyle/records must be registered before /freestyle (exact match
-// first) so the literal segment "records" is not swallowed by a future param route.
-publicRouter.get('/freestyle/records', freestyleController.records);
-publicRouter.get('/freestyle',         freestyleController.landing);
+// IMPORTANT: literal sub-routes registered before param routes (/freestyle/tricks/:slug)
+// and before /freestyle itself.
+publicRouter.get('/freestyle/records',       freestyleController.records);
+publicRouter.get('/freestyle/leaders',       freestyleController.leaders);
+publicRouter.get('/freestyle/about',         freestyleController.about);
+publicRouter.get('/freestyle/moves',         freestyleController.moves);
+publicRouter.get('/freestyle/tricks/:slug',  freestyleController.trick);
+publicRouter.get('/freestyle',               freestyleController.landing);
+
+publicRouter.get('/consecutive', consecutiveController.records);
 
 // IMPORTANT: /events/year/:year MUST be registered before /events/:eventKey.
 // Express matches routes in registration order. Without this ordering,
