@@ -220,7 +220,7 @@ def _worlds_name_override(ev: dict) -> str | None:
         year = int(ev.get("year", "") or 0)
     except ValueError:
         return None
-    if year < 1984:
+    if year <= 1984:
         return None
 
     etype = ev.get("event_type", "")
@@ -1125,9 +1125,8 @@ def _team_display(slot_rows: list[dict]) -> tuple[str, bool]:
     if not by_order:
         return (_UNKNOWN_DISPLAY, True)
 
-    parts = [by_order.get(1, _UNKNOWN_DISPLAY)]
-    if 2 in by_order:
-        parts.append(by_order[2])
+    # Include ALL participants at this placement (handles ties with 3+ players)
+    parts = [by_order[k] for k in sorted(by_order.keys())]
 
     parts = [p for p in parts if p]
     disp  = " / ".join(parts) if parts else _UNKNOWN_DISPLAY

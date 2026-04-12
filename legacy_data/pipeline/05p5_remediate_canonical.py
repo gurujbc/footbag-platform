@@ -651,9 +651,15 @@ for fix in discipline_fixes:
 
     # ── structural repair: reshape_doubles_to_singles ─────────────────────────
     if ft == "reshape_doubles_to_singles":
+        # Optional exclude_placements column: comma-separated placement numbers
+        # to filter out before reshape analysis (e.g. "15" for JFK outlier).
+        _excl_str = fix.get("exclude_placements", "").strip()
+        _excl_pls = {s.strip() for s in _excl_str.split(",") if s.strip()} if _excl_str else set()
+
         disc_parts = [
             p for p in participants
             if p["event_key"] == ek and p["discipline_key"] == dk
+            and p["placement"] not in _excl_pls
         ]
         if not disc_parts:
             print(f"  WARN  ({ek}, {dk}) no participant rows found — skipping reshape")
@@ -700,7 +706,12 @@ for fix in discipline_fixes:
             new_row["participant_order"] = "1"
             replacement_rows.append(new_row)
 
-        before = len(disc_parts)
+        # Remove ALL rows for this discipline (including excluded placements)
+        all_disc_rows = [
+            p for p in participants
+            if p["event_key"] == ek and p["discipline_key"] == dk
+        ]
+        before = len(all_disc_rows)
         participants[:] = [
             p for p in participants
             if not (p["event_key"] == ek and p["discipline_key"] == dk)
@@ -711,6 +722,8 @@ for fix in discipline_fixes:
         print(f"    team_type: '{old_tt}' → 'singles'")
         if new_name:
             print(f"    name:      '{old_name}' → '{new_name}'")
+        if _excl_pls:
+            print(f"    excluded placements: {sorted(_excl_pls)}")
         print(f"    participants: {before} rows → {len(replacement_rows)} rows "
               f"({before - len(replacement_rows)} discarded)")
 

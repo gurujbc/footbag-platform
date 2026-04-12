@@ -418,6 +418,15 @@ def resolve_person_id(player_id: str | None, player_name: str) -> str:
             n2 = _norm_name(stripped)
             if n2 in names_to_person:
                 return names_to_person[n2]
+        # Strip everything from first '(' onwards
+        # (catches "Name (Country) TITLE" patterns from source annotations)
+        paren_pos = player_name.find("(")
+        if paren_pos > 0:
+            before_paren = player_name[:paren_pos].strip()
+            if before_paren:
+                n3 = _norm_name(before_paren)
+                if n3 in names_to_person:
+                    return names_to_person[n3]
     return ""
 
 
