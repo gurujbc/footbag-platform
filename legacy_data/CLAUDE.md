@@ -297,6 +297,8 @@ decisions in one should inform the other. Do not conflate the mechanics; do alig
 - Event key standardization for 1982–1986 (18 unambiguous renames identified)
 - Full retirement of `stage1_raw_events_magazine.csv` (25 stubs remain)
 - `05p5` participant merge limitation for some merged historical events (QC passes)
+- 2004 JFK `split_merged_discipline` fix (active=0, pending validator + split implementation)
+- ~60 remaining unresolved participant names (Funtastik shorthand, corrupt entries)
 
 ---
 
@@ -309,7 +311,7 @@ decisions in one should inform the other. Do not conflate the mechanics; do alig
    Fix at the parser, override, or curated CSV level — then rebuild.
 
 3. **Never modify identity lock files directly.**
-   `inputs/identity_lock/Persons_Truth_Final_v51.csv` and `Placements_ByPerson_v96.csv`
+   `inputs/identity_lock/Persons_Truth_Final_v53.csv` and `Placements_ByPerson_v97.csv`
    are versioned and frozen. Changes require a new version via patch toolchain.
 
 4. **Never fabricate results.** Unknown data stays unknown. Unresolved names are

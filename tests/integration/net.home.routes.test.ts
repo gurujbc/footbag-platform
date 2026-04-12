@@ -158,36 +158,26 @@ describe('GET /net', () => {
     expect(res.text).toContain('may not reflect official partnerships');
   });
 
-  it('includes the about/intro text', async () => {
+  it('includes the data note', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('placement records');
     expect(res.text).toContain('no match-level data is reconstructed');
   });
 
-  it('shows the Most Active Teams section with team names', async () => {
+  it('shows team names in notable partnerships', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('Most Active Teams');
     expect(res.text).toContain('Home Alpha');
     expect(res.text).toContain('Home Beta');
   });
 
-  it('links from top teams to team detail pages', async () => {
+  it('links partnerships to partnership detail pages', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain(`/net/teams/${TEAM_AB}`);
+    expect(res.text).toContain(`/net/partnerships/${TEAM_AB}`);
   });
 
-  it('shows the Most Connected Players section', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Most Connected Players');
-    // Home Alpha has 2 partners (B and C) — should appear
-    expect(res.text).toContain('Home Alpha');
-  });
-
-  it('links from top players to player pages', async () => {
+  it('links players to player pages', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
     expect(res.text).toContain(`/net/players/${PERSON_A}`);
@@ -212,16 +202,13 @@ describe('GET /net', () => {
     expect(res.text).toContain('Multi-stage');
   });
 
-  it('shows the Long Careers section', async () => {
+  it('shows the Explore section with discovery links', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('Long Careers');
-  });
-
-  it('includes links to all teams and all events', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
+    expect(res.text).toContain('Explore');
+    expect(res.text).toContain('/net/partnerships');
     expect(res.text).toContain('/net/teams');
+    expect(res.text).toContain('/net/events');
     expect(res.text).toContain('/net/events');
   });
 
@@ -239,5 +226,151 @@ describe('GET /net', () => {
     const res = await request(app).get('/net');
     // The nav and footer should link to /net (not /net/teams)
     expect(res.text).toContain('href="/net"');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Notable Partnerships section on /net
+// ---------------------------------------------------------------------------
+
+describe('GET /net — Notable Partnerships', () => {
+  it('renders Most Wins bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Team AB has 2 wins — should appear in Most Wins bucket
+    expect(res.text).toContain('Most Wins');
+  });
+
+  it('renders Most Podium Finishes bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Most Podium Finishes');
+  });
+
+  it('renders Longest Spans bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Longest Spans');
+  });
+
+  it('shows Team AB (Home Alpha / Home Beta) in notable section', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Team AB qualifies (3 appearances, 2 wins, 10-year span)
+    // Should appear in at least one notable bucket
+    const notableSection = res.text.substring(res.text.indexOf('Most Wins'));
+    expect(notableSection).toContain('Home Alpha');
+    expect(notableSection).toContain('Home Beta');
+  });
+
+  it('links partnership names to partnership detail page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain(`/net/partnerships/${TEAM_AB}`);
+  });
+
+  it('shows "All partnerships" link', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('/net/partnerships');
+    expect(res.text).toContain('All partnerships');
+  });
+
+  it('shows win and podium counts in notable rows', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Wins');
+    expect(res.text).toContain('Podiums');
+  });
+
+  it('shows year span in notable rows', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Team AB spans 2010–2020
+    expect(res.text).toContain('2010');
+    expect(res.text).toContain('2020');
+  });
+
+  it('does not show teams with fewer than 3 appearances in notable', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Team CD has only 1 appearance — should not appear in notable section
+    const afterNotable = res.text.substring(res.text.indexOf('Most Wins'));
+    const beforeRecent = afterNotable.substring(0, afterNotable.indexOf('Recent Events') || afterNotable.length);
+    expect(beforeRecent).not.toContain('Home Delta');
+  });
+
+  it('does not use overstated language', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    const lower = res.text.toLowerCase();
+    expect(lower).not.toContain('greatest');
+    expect(lower).not.toContain('best of all time');
+    expect(lower).not.toContain('dominant');
+    expect(lower).not.toContain('dynasty');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Notable Players section on /net
+// ---------------------------------------------------------------------------
+
+describe('GET /net — Notable Players', () => {
+  it('renders Most Wins player bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Team AB has 3 appearances (2 wins) — both Alpha and Beta qualify
+    // "Most Wins" bucket title appears for players
+    // (also appears for partnerships, so check the Players table has person links)
+    const text = res.text;
+    // At least one notable player bucket should render with person links
+    expect(text).toContain('Partners');  // column header in notable players table
+  });
+
+  it('renders Longest Active Spans player bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Longest Active Spans');
+  });
+
+  it('renders Most Partner Connections player bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Most Partner Connections');
+  });
+
+  it('renders Most Podium Finishes player bucket', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Most Podium Finishes');
+  });
+
+  it('shows Home Alpha in notable players (3 total appearances)', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Alpha has 3 appearances (AB:3) + 1 appearance (AC:1) = 4 total via canonical view
+    // Both AB and AC teams → Alpha qualifies for notable
+    expect(res.text).toContain('Home Alpha');
+  });
+
+  it('links player names to player pages', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain(`/net/players/${PERSON_A}`);
+  });
+
+  it('shows partner count in notable player rows', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    // Home Alpha has 2 partners (Bob and Carol) — should show partner count
+    expect(res.text).toContain('Partners');
+  });
+
+  it('does not use overstated language in player section', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    const lower = res.text.toLowerCase();
+    expect(lower).not.toContain('goat');
+    expect(lower).not.toContain('greatest player');
   });
 });

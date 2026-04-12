@@ -41,7 +41,8 @@ publicRouter.get('/net',                  netController.homePage);
 publicRouter.get('/net/events',           netController.eventsPage);
 publicRouter.get('/net/events/:eventId',  netController.eventDetailPage);
 
-publicRouter.get('/net/partnerships',   netController.partnershipsPage);
+publicRouter.get('/net/partnerships',             netController.partnershipsPage);
+publicRouter.get('/net/partnerships/:teamId',    netController.partnershipDetail);
 
 // IMPORTANT: /net/teams/:teamId must be registered after /net/teams
 publicRouter.get('/net/teams',          netController.teams);

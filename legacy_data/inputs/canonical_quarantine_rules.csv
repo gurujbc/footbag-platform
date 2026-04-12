@@ -1,0 +1,5 @@
+event_key,discipline_key,quarantine_scope,trigger_pattern,rationale,confidence,active
+2009_rnh_contest,initial_seeding_open_doubles_net,discipline_all,,Initial seeding block ingested as canonical placements — not actual competition results,confirmed,1
+2009_rnh_contest,initial_seeding_open_singles_net,discipline_all,,Initial seeding block — not competition results,confirmed,1
+2010_rnh_contest,initial_seeding_open_doubles_net,discipline_all,,Initial seeding block ingested as canonical placements,confirmed,1
+2010_rnh_contest,initial_seeding_open_singles_net,discipline_all,,Initial seeding block — not competition results,confirmed,1

@@ -230,11 +230,34 @@ export const netController = {
   },
 
   /** GET /net/partnerships */
-  partnershipsPage(_req: Request, res: Response, next: NextFunction): void {
+  partnershipsPage(req: Request, res: Response, next: NextFunction): void {
     try {
-      const vm = netService.getPartnershipsPage();
+      const rawDivision = req.query['division'];
+      const rawSearch   = req.query['q'];
+      const division = typeof rawDivision === 'string' && rawDivision.trim()
+        ? rawDivision.trim() : undefined;
+      const search = typeof rawSearch === 'string' && rawSearch.trim().length >= 2
+        ? rawSearch.trim() : undefined;
+      const vm = netService.getPartnershipsPage(division, search);
       res.render('net/partnerships', vm);
     } catch (err) {
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** GET /net/partnerships/:teamId */
+  partnershipDetail(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netService.getPartnershipDetailPage(req.params['teamId'] ?? '');
+      res.render('net/partnership-detail', vm);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).render('errors/not-found', {
+          seo:  { title: 'Page Not Found' },
+          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+        });
+        return;
+      }
       netController._handleError(err, res, next);
     }
   },

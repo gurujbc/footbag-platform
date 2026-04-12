@@ -1,4 +1,4 @@
-{{! /net/partnerships — top doubles partnerships }}
+{{! /net/partnerships — top doubles partnerships with division filter }}
 
 <div class="hero hero-sm">
   <div>
@@ -13,6 +13,27 @@
 </div>
 
 <div class="wrapper">
+
+  <form method="GET" action="/net/partnerships" class="filter-bar">
+    <label>
+      Division
+      <select name="division" onchange="this.form.submit()">
+        {{#each content.divisionOptions}}
+        <option value="{{value}}"{{#if selected}} selected{{/if}}>{{label}}{{#if count}} ({{count}}){{/if}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>
+      Search
+      <input type="text" name="q" value="{{content.activeSearch}}" placeholder="Player name..." />
+    </label>
+    <button type="submit">Filter</button>
+    {{#if content.activeDivision}}
+    <a href="/net/partnerships" class="btn-link">Clear</a>
+    {{else if content.activeSearch}}
+    <a href="/net/partnerships" class="btn-link">Clear</a>
+    {{/if}}
+  </form>
 
   <p class="source-note">{{content.disclaimer}}</p>
 
@@ -46,7 +67,7 @@
     </table>
   </div>
   {{else}}
-  <div class="empty-state">No partnerships found with 2 or more appearances.</div>
+  <div class="empty-state">No partnerships found for this division.</div>
   {{/if}}
 
 </div>

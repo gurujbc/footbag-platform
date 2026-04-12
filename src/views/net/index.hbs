@@ -3,48 +3,35 @@
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
-    <p class="hero-subtitle">Historical footbag net doubles results from IFPA competitions.</p>
+    <p class="hero-subtitle">Historical footbag net doubles results from IFPA competitions, 1981&ndash;present.</p>
   </div>
 </div>
 
 <div class="wrapper">
 
-  <p class="source-note">{{content.disclaimer}}</p>
-
-  <div class="source-note">
-    <strong>About this section:</strong>
-    Teams are algorithmically constructed from placement records — they are not official registrations.
-    Results reflect placements only; no match-level data is reconstructed.
-    Some events are incomplete or under review.
-    <a href="/net/teams">Browse all teams</a> &middot;
-    <a href="/net/partnerships">Top partnerships</a> &middot;
-    <a href="/net/events">Browse all events</a>
-  </div>
-
-  {{! ── Top Teams ────────────────────────────────────────────────── }}
-  {{#if content.topTeams}}
+  {{! ── Notable Partnerships ──────────────────────────────────────── }}
+  {{#if content.notablePartnerships.length}}
+  {{#each content.notablePartnerships}}
   <section class="content-section">
     <div class="section-heading">
-      <h2>Most Active Teams</h2>
-      <a href="/net/teams" class="section-link">All teams &rarr;</a>
+      <h2>{{title}}</h2>
+      {{#if @first}}<a href="/net/partnerships" class="section-link">All partnerships &rarr;</a>{{/if}}
     </div>
     <div class="records-table-wrap">
       <table class="records-table">
         <thead>
           <tr>
-            <th class="col-rank">#</th>
-            <th>Team</th>
-            <th class="col-num">Events</th>
+            <th>Partnership</th>
+            <th class="col-num">Apps</th>
             <th class="col-rank">Wins</th>
             <th class="col-rank">Podiums</th>
             <th>Years</th>
           </tr>
         </thead>
         <tbody>
-          {{#each content.topTeams}}
+          {{#each partnerships}}
           <tr>
-            <td class="col-rank">{{add @index 1}}</td>
-            <td><a href="{{teamHref}}">{{teamName}}</a></td>
+            <td><a href="{{{teamHref}}}">{{teamName}}</a></td>
             <td class="col-num">{{appearanceCount}}</td>
             <td class="col-rank">{{winCount}}</td>
             <td class="col-rank">{{podiumCount}}</td>
@@ -55,38 +42,57 @@
       </table>
     </div>
   </section>
+  {{/each}}
   {{/if}}
 
-  {{! ── Most Connected Players ─────────────────────────────────── }}
-  {{#if content.topPlayers}}
+  {{! ── Notable Players ───────────────────────────────────────────── }}
+  {{#if content.notablePlayers.length}}
+  {{#each content.notablePlayers}}
   <section class="content-section">
     <div class="section-heading">
-      <h2>Most Connected Players</h2>
+      <h2>{{title}}</h2>
     </div>
     <div class="records-table-wrap">
       <table class="records-table">
         <thead>
           <tr>
-            <th class="col-rank">#</th>
             <th>Player</th>
+            <th class="col-num">Apps</th>
+            <th class="col-rank">Wins</th>
+            <th class="col-rank">Podiums</th>
+            <th>Years</th>
             <th class="col-num">Partners</th>
-            <th class="col-num">Appearances</th>
           </tr>
         </thead>
         <tbody>
-          {{#each content.topPlayers}}
+          {{#each players}}
           <tr>
-            <td class="col-rank">{{add @index 1}}</td>
-            <td><a href="{{href}}">{{personName}}</a>{{#if country}} <span class="detail-muted">{{country}}</span>{{/if}}</td>
+            <td><a href="{{{href}}}">{{personName}}</a>{{#if country}} <span class="detail-muted">{{country}}</span>{{/if}}</td>
+            <td class="col-num">{{totalAppearances}}</td>
+            <td class="col-rank">{{totalWins}}</td>
+            <td class="col-rank">{{totalPodiums}}</td>
+            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
             <td class="col-num">{{partnerCount}}</td>
-            <td class="col-num">{{appearanceCount}}</td>
           </tr>
           {{/each}}
         </tbody>
       </table>
     </div>
   </section>
+  {{/each}}
   {{/if}}
+
+  {{! ── Explore ───────────────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Explore</h2>
+    </div>
+    <p>
+      <a href="/net/partnerships">All partnerships</a> &middot;
+      <a href="/net/teams">All teams</a> &middot;
+      <a href="/net/events">All events</a>
+    </p>
+  </section>
 
   {{! ── Recent Events ────────────────────────────────────────────── }}
   {{#if content.recentEvents}}
@@ -118,35 +124,10 @@
   </section>
   {{/if}}
 
-  {{! ── Interesting Teams ──────────────────────────────────────── }}
-  {{#if content.interestingTeams}}
-  <section class="content-section">
-    <div class="section-heading">
-      <h2>Long Careers</h2>
-    </div>
-    <div class="records-table-wrap">
-      <table class="records-table">
-        <thead>
-          <tr>
-            <th>Team</th>
-            <th>Years Active</th>
-            <th class="col-rank">Wins</th>
-            <th class="col-rank">Best</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each content.interestingTeams}}
-          <tr>
-            <td><a href="{{teamHref}}">{{teamName}}</a></td>
-            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
-            <td class="col-rank">{{winCount}}</td>
-            <td class="col-rank">{{bestPlacementLabel}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </section>
-  {{/if}}
+  {{! ── Data note ─────────────────────────────────────────────────── }}
+  <p class="source-note">
+    {{content.disclaimer}}
+    Results reflect placements only; no match-level data is reconstructed.
+  </p>
 
 </div>

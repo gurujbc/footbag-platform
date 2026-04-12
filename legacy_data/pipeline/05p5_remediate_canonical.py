@@ -725,6 +725,67 @@ print(f"  Fixes applied: {_f0_applied}  skipped: {_f0_skipped}  "
       f"ghost rows removed: {_f0_ghost_removed}  "
       f"reshape rows removed: {_f0_reshape_removed}")
 
+# ── Quarantine: remove non-result disciplines ─────────────────────────────────
+# Loads canonical_quarantine_rules.csv and removes quarantined disciplines
+# (scope=discipline_all) from all canonical tables.
+QUARANTINE_RULES = ROOT / "inputs" / "canonical_quarantine_rules.csv"
+_q_applied = 0
+_q_disc_removed = 0
+_q_result_removed = 0
+_q_part_removed = 0
+if QUARANTINE_RULES.exists():
+    print("\n[Quarantine] Loading quarantine rules...")
+    quarantine_rules: list[dict] = []
+    with open(QUARANTINE_RULES, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row.get("active", "").strip() != "1":
+                continue
+            quarantine_rules.append(row)
+    print(f"  Active quarantine rules: {len(quarantine_rules)}")
+
+    for rule in quarantine_rules:
+        ek = rule["event_key"].strip()
+        dk = rule["discipline_key"].strip()
+        scope = rule.get("quarantine_scope", "").strip()
+
+        if scope != "discipline_all":
+            print(f"  SKIP  ({ek}, {dk}) scope='{scope}' — only 'discipline_all' is implemented")
+            continue
+
+        # Remove from disciplines
+        before_disc = len(disciplines)
+        disciplines[:] = [d for d in disciplines
+                          if not (d["event_key"] == ek and d["discipline_key"] == dk)]
+        removed_disc = before_disc - len(disciplines)
+
+        # Remove from results
+        before_res = len(results)
+        results[:] = [r for r in results
+                      if not (r["event_key"] == ek and r["discipline_key"] == dk)]
+        removed_res = before_res - len(results)
+
+        # Remove from participants
+        before_part = len(participants)
+        participants[:] = [p for p in participants
+                           if not (p["event_key"] == ek and p["discipline_key"] == dk)]
+        removed_part = before_part - len(participants)
+
+        if removed_disc or removed_res or removed_part:
+            print(f"  QUARANTINED  ({ek}, {dk})  scope={scope}")
+            print(f"    removed: {removed_disc} disc, {removed_res} results, {removed_part} participants")
+            _q_applied += 1
+            _q_disc_removed += removed_disc
+            _q_result_removed += removed_res
+            _q_part_removed += removed_part
+        else:
+            print(f"  WARN  ({ek}, {dk}) not found in canonical data — skipping")
+
+    print(f"  Quarantine applied: {_q_applied}  "
+          f"disciplines: {_q_disc_removed}  results: {_q_result_removed}  "
+          f"participants: {_q_part_removed}")
+else:
+    print(f"\n[Quarantine] No quarantine rules file (create {QUARANTINE_RULES.name} to add)")
+
 # ── Fix 1 & 2: Identity Sync + Regex Deep-Clean ───────────────────────────────
 
 print("\n[Fix 1+2] Identity sync & regex cleaning...")

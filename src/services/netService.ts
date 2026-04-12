@@ -1,14 +1,16 @@
 import {
   netTeams,      NetTeamSummaryRow, NetTeamAppearanceRow,
-  netPartnerships, NetPartnershipRow,
+  netPartnerships, NetPartnershipRow, NetDivisionOptionRow,
+  queryFilteredPartnerships,
   netRecoverySignals, RecoveryPartnerRepeatRow, RecoveryAbbreviationRow,
                       RecoveryHighValueRow,
   netRecoveryCandidates, RecoveryCandidateAbbrevRow, RecoveryCandidateFreqRow,
   netRecoveryApproval, RecoveryAliasCandidateRow,
-  netPlayers,    NetPlayerSummaryRow, NetPartnerRow,
+  netPlayers,    NetPlayerSummaryRow, NetPartnerRow, NetPartnerNetworkRow,
   netEvents,     NetEventSummaryRow, NetEventAppearanceRow,
   netHome,       NetHomeTopTeamRow, NetHomeTopPlayerRow,
                  NetHomeRecentEventRow, NetHomeInterestingTeamRow,
+                 NetNotablePlayerRow,
   netReview,     NetReviewSummaryRow, NetReviewClassificationSummaryRow,
                  NetReviewDecisionSummaryRow, NetReviewFixTypeSummaryRow,
                  NetReviewTopEventRow, NetReviewTotalsRow, NetReviewItemRow,
@@ -77,15 +79,39 @@ export interface NetHomeInterestingTeamViewModel {
   bestPlacementLabel: string;
 }
 
+interface NotableBucketViewModel {
+  title:        string;
+  partnerships: NetPartnershipViewModel[];
+}
+
+interface NotablePlayerItemViewModel {
+  personId:         string;
+  personName:       string;
+  country:          string | null;
+  href:             string;
+  totalAppearances: number;
+  totalWins:        number;
+  totalPodiums:     number;
+  yearSpan:         string | null;
+  partnerCount:     number;
+}
+
+interface NotablePlayerBucketViewModel {
+  title:   string;
+  players: NotablePlayerItemViewModel[];
+}
+
 interface NetHomePageViewModel {
   seo:     { title: string };
   page:    { sectionKey: string; pageKey: string; title: string };
   content: {
-    topTeams:         NetHomeTopTeamViewModel[];
-    topPlayers:       NetHomeTopPlayerViewModel[];
-    recentEvents:     NetHomeRecentEventViewModel[];
-    interestingTeams: NetHomeInterestingTeamViewModel[];
-    disclaimer:       string;
+    topTeams:              NetHomeTopTeamViewModel[];
+    topPlayers:            NetHomeTopPlayerViewModel[];
+    recentEvents:          NetHomeRecentEventViewModel[];
+    interestingTeams:      NetHomeInterestingTeamViewModel[];
+    notablePartnerships:   NotableBucketViewModel[];
+    notablePlayers:        NotablePlayerBucketViewModel[];
+    disclaimer:            string;
   };
 }
 
@@ -147,6 +173,24 @@ interface NetTeamDetailViewModel {
   };
 }
 
+interface NetPartnershipSummaryViewModel {
+  appearanceCount: number;
+  winCount:        number;
+  podiumCount:     number;
+  yearSpan:        string | null;
+}
+
+interface NetPartnershipDetailPageViewModel {
+  seo:  { title: string };
+  page: { sectionKey: string; pageKey: string; title: string };
+  content: {
+    team:         NetTeamViewModel;
+    summary:      NetPartnershipSummaryViewModel;
+    appearances:  NetAppearanceViewModel[];
+    disclaimer:   string;
+  };
+}
+
 export interface NetPartnershipViewModel {
   teamId:          string;
   teamName:        string;
@@ -163,13 +207,23 @@ export interface NetPartnershipViewModel {
   yearSpan:        string | null;
 }
 
+interface DivisionFilterOption {
+  value: string;
+  label: string;
+  count: number;
+  selected: boolean;
+}
+
 interface NetPartnershipsPageViewModel {
   seo:     { title: string };
   page:    { sectionKey: string; pageKey: string; title: string; intro: string };
   content: {
-    partnerships: NetPartnershipViewModel[];
-    totalShown:   number;
-    disclaimer:   string;
+    partnerships:    NetPartnershipViewModel[];
+    totalShown:      number;
+    divisionOptions: DivisionFilterOption[];
+    activeDivision:  string | null;
+    activeSearch:    string | null;
+    disclaimer:      string;
   };
 }
 
@@ -267,14 +321,41 @@ export interface NetPartnerViewModel {
   bestPlacementLabel: string;
 }
 
+export interface NetPartnerNetworkViewModel {
+  partnerPersonId: string;
+  partnerName:     string;
+  partnerCountry:  string | null;
+  partnerHref:     string;
+  appearanceCount: number;
+  winCount:        number;
+  podiumCount:     number;
+  yearSpan:        string | null;
+}
+
+interface CareerHighlightPartner {
+  partnerName: string;
+  partnerHref: string;
+  stat:        string;   // e.g. "33 appearances", "22 wins", "1985–2025"
+}
+
+interface CareerHighlightsViewModel {
+  mostFrequentPartner:    CareerHighlightPartner | null;
+  mostSuccessfulPartner:  CareerHighlightPartner | null;
+  longestPartnership:     CareerHighlightPartner | null;
+  careerSpan:             string | null;   // "1985–2025 (40 years)"
+  hasHighlights:          boolean;
+}
+
 interface NetPlayerPageViewModel {
   seo:     { title: string };
   page:    { sectionKey: string; pageKey: string; title: string };
   content: {
-    player:        NetPlayerViewModel;
-    partners:      NetPartnerViewModel[];
-    totalPartners: number;
-    disclaimer:    string;
+    player:           NetPlayerViewModel;
+    partners:         NetPartnerViewModel[];
+    topPartners:      NetPartnerNetworkViewModel[];
+    careerHighlights: CareerHighlightsViewModel;
+    totalPartners:    number;
+    disclaimer:       string;
   };
 }
 
@@ -501,6 +582,75 @@ function shapePartner(personId: string, row: NetPartnerRow): NetPartnerViewModel
   };
 }
 
+function buildCareerHighlights(networkRows: NetPartnerNetworkRow[]): CareerHighlightsViewModel {
+  if (networkRows.length === 0) {
+    return {
+      mostFrequentPartner: null,
+      mostSuccessfulPartner: null,
+      longestPartnership: null,
+      careerSpan: null,
+      hasHighlights: false,
+    };
+  }
+
+  function makeHighlight(r: NetPartnerNetworkRow, stat: string): CareerHighlightPartner {
+    return {
+      partnerName: r.partner_name,
+      partnerHref: netPlayerHref(r.partner_person_id) ?? `/net/players/${r.partner_person_id}`,
+      stat,
+    };
+  }
+
+  // Most frequent: max appearance_count
+  const byApps = [...networkRows].sort((a, b) =>
+    b.appearance_count - a.appearance_count || b.win_count - a.win_count);
+  const mostFrequent = byApps[0];
+
+  // Most successful: max win_count (skip if 0 wins across all partners)
+  const byWins = [...networkRows].sort((a, b) =>
+    b.win_count - a.win_count || b.podium_count - a.podium_count || b.appearance_count - a.appearance_count);
+  const mostSuccessful = byWins[0].win_count > 0 ? byWins[0] : null;
+
+  // Longest partnership: max span
+  const bySpan = [...networkRows].sort((a, b) => {
+    const spanA = (a.last_year ?? 0) - (a.first_year ?? 0);
+    const spanB = (b.last_year ?? 0) - (b.first_year ?? 0);
+    return spanB - spanA || b.appearance_count - a.appearance_count;
+  });
+  const longest = bySpan[0];
+  const longestSpanYears = (longest.last_year ?? 0) - (longest.first_year ?? 0);
+
+  // Career span across all partnerships
+  let minYear: number | null = null;
+  let maxYear: number | null = null;
+  for (const r of networkRows) {
+    if (r.first_year !== null && (minYear === null || r.first_year < minYear)) minYear = r.first_year;
+    if (r.last_year !== null && (maxYear === null || r.last_year > maxYear)) maxYear = r.last_year;
+  }
+
+  let careerSpanStr: string | null = null;
+  if (minYear !== null && maxYear !== null) {
+    const spanLen = maxYear - minYear;
+    if (minYear === maxYear) {
+      careerSpanStr = `${minYear}`;
+    } else {
+      careerSpanStr = `${minYear}–${maxYear} (${spanLen} years)`;
+    }
+  }
+
+  return {
+    mostFrequentPartner:   makeHighlight(mostFrequent, `${mostFrequent.appearance_count} appearances`),
+    mostSuccessfulPartner: mostSuccessful
+      ? makeHighlight(mostSuccessful, `${mostSuccessful.win_count} wins`)
+      : null,
+    longestPartnership:    longestSpanYears > 0
+      ? makeHighlight(longest, yearSpan(longest.first_year, longest.last_year) ?? '')
+      : null,
+    careerSpan:            careerSpanStr,
+    hasHighlights:         true,
+  };
+}
+
 function shapeHomeTopTeam(row: NetHomeTopTeamRow): NetHomeTopTeamViewModel {
   return {
     teamId:             row.team_id,
@@ -571,7 +721,7 @@ function shapeEventAppearance(row: NetEventAppearanceRow): NetEventAppearanceVie
   return {
     teamId:        row.team_id,
     teamName:      teamName(row.person_name_a, row.person_name_b),
-    teamHref:      `/net/teams/${row.team_id}`,
+    teamHref:      `/net/partnerships/${row.team_id}`,
     personIdA:     row.person_id_a,
     personNameA:   row.person_name_a,
     hrefA:         netPlayerHref(row.person_id_a),
@@ -1384,6 +1534,99 @@ export const netService = {
     const topPlayerRows      = netHome.getTopPlayersByPartners.all()  as NetHomeTopPlayerRow[];
     const recentEventRows    = netHome.getRecentEvents.all()          as NetHomeRecentEventRow[];
     const interestingTeamRows = netHome.getInterestingTeams.all()     as NetHomeInterestingTeamRow[];
+    const notablePool        = netPartnerships.listNotablePool.all()  as NetPartnershipRow[];
+
+    // Build notable buckets from the shared pool (different sort orders, top 5 each)
+    const BUCKET_SIZE = 5;
+
+    function shapePoolRow(r: NetPartnershipRow): NetPartnershipViewModel {
+      return {
+        teamId:          r.team_id,
+        teamName:        teamName(r.person_name_a, r.person_name_b),
+        teamHref:        `/net/partnerships/${r.team_id}`,
+        personIdA:       r.person_id_a,
+        personNameA:     r.person_name_a,
+        hrefA:           netPlayerHref(r.person_id_a),
+        personIdB:       r.person_id_b,
+        personNameB:     r.person_name_b,
+        hrefB:           netPlayerHref(r.person_id_b),
+        appearanceCount: r.appearance_count,
+        winCount:        r.win_count,
+        podiumCount:     r.podium_count,
+        yearSpan:        yearSpan(r.first_year, r.last_year),
+      };
+    }
+
+    const byWins = [...notablePool].sort((a, b) =>
+      b.win_count - a.win_count || b.podium_count - a.podium_count || b.appearance_count - a.appearance_count);
+
+    const byPodiums = [...notablePool].sort((a, b) =>
+      b.podium_count - a.podium_count || b.win_count - a.win_count || b.appearance_count - a.appearance_count);
+
+    const bySpan = [...notablePool].sort((a, b) => {
+      const spanA = (a.last_year ?? 0) - (a.first_year ?? 0);
+      const spanB = (b.last_year ?? 0) - (b.first_year ?? 0);
+      return spanB - spanA || b.appearance_count - a.appearance_count;
+    });
+
+    // Each bucket independently picks its top entries
+    const notablePartnerships: NotableBucketViewModel[] = [];
+
+    const winsB = byWins.slice(0, BUCKET_SIZE).map(shapePoolRow);
+    if (winsB.length) notablePartnerships.push({ title: 'Most Wins', partnerships: winsB });
+
+    const podiumsB = byPodiums.slice(0, BUCKET_SIZE).map(shapePoolRow);
+    if (podiumsB.length) notablePartnerships.push({ title: 'Most Podium Finishes', partnerships: podiumsB });
+
+    const spanB = bySpan.slice(0, BUCKET_SIZE).map(shapePoolRow);
+    if (spanB.length) notablePartnerships.push({ title: 'Longest Spans', partnerships: spanB });
+
+    // Notable players — buckets from player aggregate pool
+    const playerPool = netHome.listNotablePlayerPool.all() as NetNotablePlayerRow[];
+
+    function shapeNotablePlayer(r: NetNotablePlayerRow): NotablePlayerItemViewModel {
+      return {
+        personId:         r.person_id,
+        personName:       r.person_name,
+        country:          r.country,
+        href:             netPlayerHref(r.person_id) ?? `/net/players/${r.person_id}`,
+        totalAppearances: r.total_appearances,
+        totalWins:        r.total_wins,
+        totalPodiums:     r.total_podiums,
+        yearSpan:         yearSpan(r.first_year, r.last_year),
+        partnerCount:     r.partner_count,
+      };
+    }
+
+    const playerByWins = [...playerPool].sort((a, b) =>
+      b.total_wins - a.total_wins || b.total_podiums - a.total_podiums || b.total_appearances - a.total_appearances);
+
+    const playerBySpan = [...playerPool].sort((a, b) => {
+      const sa = (a.last_year ?? 0) - (a.first_year ?? 0);
+      const sb = (b.last_year ?? 0) - (b.first_year ?? 0);
+      return sb - sa || b.total_appearances - a.total_appearances;
+    });
+
+    const playerByPartners = [...playerPool].sort((a, b) =>
+      b.partner_count - a.partner_count || b.total_appearances - a.total_appearances);
+
+    const playerByPodiums = [...playerPool].sort((a, b) =>
+      b.total_podiums - a.total_podiums || b.total_wins - a.total_wins || b.total_appearances - a.total_appearances);
+
+    const notablePlayers: NotablePlayerBucketViewModel[] = [];
+
+    const pwB = playerByWins.slice(0, BUCKET_SIZE).map(shapeNotablePlayer);
+    if (pwB.length) notablePlayers.push({ title: 'Most Wins', players: pwB });
+
+    const ppB = playerByPodiums.slice(0, BUCKET_SIZE).map(shapeNotablePlayer);
+    if (ppB.length) notablePlayers.push({ title: 'Most Podium Finishes', players: ppB });
+
+    const psB = playerBySpan.slice(0, BUCKET_SIZE).map(shapeNotablePlayer);
+    if (psB.length) notablePlayers.push({ title: 'Longest Active Spans', players: psB });
+
+    const pcB = playerByPartners.slice(0, BUCKET_SIZE).map(shapeNotablePlayer);
+    if (pcB.length) notablePlayers.push({ title: 'Most Partner Connections', players: pcB });
+
     return {
       seo:  { title: 'Net Doubles' },
       page: {
@@ -1392,11 +1635,13 @@ export const netService = {
         title:      'Net Doubles',
       },
       content: {
-        topTeams:         topTeamRows.map(shapeHomeTopTeam),
-        topPlayers:       topPlayerRows.map(shapeHomeTopPlayer),
-        recentEvents:     recentEventRows.map(shapeHomeRecentEvent),
-        interestingTeams: interestingTeamRows.map(shapeHomeInterestingTeam),
-        disclaimer:       TEAM_DISCLAIMER,
+        topTeams:            topTeamRows.map(shapeHomeTopTeam),
+        topPlayers:          topPlayerRows.map(shapeHomeTopPlayer),
+        recentEvents:        recentEventRows.map(shapeHomeRecentEvent),
+        interestingTeams:    interestingTeamRows.map(shapeHomeInterestingTeam),
+        notablePartnerships,
+        notablePlayers,
+        disclaimer:          TEAM_DISCLAIMER,
       },
     };
   },
@@ -1578,12 +1823,16 @@ export const netService = {
     };
   },
 
-  getPartnershipsPage(): NetPartnershipsPageViewModel {
-    const rows = netPartnerships.listTopPartnerships.all() as NetPartnershipRow[];
+  getPartnershipsPage(division?: string, search?: string): NetPartnershipsPageViewModel {
+    const hasFilter = !!(division || search);
+    const rows = hasFilter
+      ? queryFilteredPartnerships({ division, search })
+      : netPartnerships.listTopPartnerships.all() as NetPartnershipRow[];
+
     const partnerships: NetPartnershipViewModel[] = rows.map(r => ({
       teamId:          r.team_id,
       teamName:        teamName(r.person_name_a, r.person_name_b),
-      teamHref:        `/net/teams/${r.team_id}`,
+      teamHref:        `/net/partnerships/${r.team_id}`,
       personIdA:       r.person_id_a,
       personNameA:     r.person_name_a,
       hrefA:           netPlayerHref(r.person_id_a),
@@ -1595,18 +1844,36 @@ export const netService = {
       podiumCount:     r.podium_count,
       yearSpan:        yearSpan(r.first_year, r.last_year),
     }));
+
+    const divisionRows = netPartnerships.listDivisionOptions.all() as NetDivisionOptionRow[];
+    const divisionOptions: DivisionFilterOption[] = [
+      { value: '', label: 'All divisions', count: 0, selected: !division },
+      ...divisionRows.map(r => ({
+        value:    r.canonical_group,
+        label:    GROUP_LABELS[r.canonical_group] || r.canonical_group,
+        count:    r.appearance_count,
+        selected: r.canonical_group === division,
+      })),
+    ];
+
+    const divisionLabel = division ? (GROUP_LABELS[division] || division) : null;
+    const titleSuffix = divisionLabel ? ` — ${divisionLabel}` : '';
+
     return {
-      seo:  { title: 'Net Partnerships' },
+      seo:  { title: `Net Partnerships${titleSuffix}` },
       page: {
         sectionKey: 'net',
         pageKey:    'net_partnerships',
-        title:      'Top Net Partnerships',
+        title:      `Top Net Partnerships${titleSuffix}`,
         intro:      'The most significant doubles partnerships in footbag net history, ranked by competitive appearances.',
       },
       content: {
         partnerships,
-        totalShown: partnerships.length,
-        disclaimer: TEAM_DISCLAIMER,
+        totalShown:      partnerships.length,
+        divisionOptions,
+        activeDivision:  division ?? null,
+        activeSearch:    search ?? null,
+        disclaimer:      TEAM_DISCLAIMER,
       },
     };
   },
@@ -1758,11 +2025,63 @@ export const netService = {
     };
   },
 
+  getPartnershipDetailPage(teamId: string): NetPartnershipDetailPageViewModel {
+    const teamRow = netTeams.getById.get(teamId) as NetTeamSummaryRow | undefined;
+    if (!teamRow) throw new NotFoundError(`Partnership not found: ${teamId}`);
+
+    const appearanceRows = netTeams.listAppearancesByTeamId.all(teamId) as NetTeamAppearanceRow[];
+    const shaped = appearanceRows.map(shapeAppearance);
+
+    // Sort ascending by year then placement for timeline view
+    shaped.sort((a, b) => a.eventYear - b.eventYear || a.placement - b.placement);
+
+    // Compute summary from appearances
+    const winCount   = shaped.filter(a => a.placement === 1).length;
+    const podiumCount = shaped.filter(a => a.placement <= 3).length;
+
+    const title = teamName(teamRow.person_name_a, teamRow.person_name_b);
+
+    return {
+      seo:  { title: `${title} — Partnership` },
+      page: {
+        sectionKey: 'net',
+        pageKey:    'net_partnership_detail',
+        title,
+      },
+      content: {
+        team:    shapeTeam(teamRow),
+        summary: {
+          appearanceCount: shaped.length,
+          winCount,
+          podiumCount,
+          yearSpan: yearSpan(teamRow.first_year, teamRow.last_year),
+        },
+        appearances: shaped,
+        disclaimer:  TEAM_DISCLAIMER,
+      },
+    };
+  },
+
   getPlayerPage(personId: string): NetPlayerPageViewModel {
     const playerRow = netPlayers.getPlayerSummary.get(personId) as NetPlayerSummaryRow | undefined;
     if (!playerRow) throw new NotFoundError(`Net player not found: ${personId}`);
 
-    const partnerRows = netPlayers.listPartnersByPersonId.all(personId) as NetPartnerRow[];
+    const partnerRows  = netPlayers.listPartnersByPersonId.all(personId) as NetPartnerRow[];
+    const networkRows  = netPlayers.listPartnerNetworkByPersonId.all(personId) as NetPartnerNetworkRow[];
+
+    const topPartners: NetPartnerNetworkViewModel[] = networkRows.map(r => ({
+      partnerPersonId: r.partner_person_id,
+      partnerName:     r.partner_name,
+      partnerCountry:  r.partner_country,
+      partnerHref:     netPlayerHref(r.partner_person_id) ?? `/net/players/${r.partner_person_id}`,
+      appearanceCount: r.appearance_count,
+      winCount:        r.win_count,
+      podiumCount:     r.podium_count,
+      yearSpan:        yearSpan(r.first_year, r.last_year),
+    }));
+
+    // Compute career highlights from network data
+    const careerHighlights = buildCareerHighlights(networkRows);
 
     return {
       seo:  { title: `${playerRow.person_name} — Net` },
@@ -1772,10 +2091,12 @@ export const netService = {
         title:      playerRow.person_name,
       },
       content: {
-        player:        shapePlayer(playerRow),
-        partners:      partnerRows.map(r => shapePartner(personId, r)),
-        totalPartners: partnerRows.length,
-        disclaimer:    TEAM_DISCLAIMER,
+        player:           shapePlayer(playerRow),
+        partners:         partnerRows.map(r => shapePartner(personId, r)),
+        topPartners,
+        careerHighlights,
+        totalPartners:    partnerRows.length,
+        disclaimer:       TEAM_DISCLAIMER,
       },
     };
   },

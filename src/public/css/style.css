@@ -1602,3 +1602,25 @@ section.home-media { padding-top: 0; }
 .record-world {
   font-weight: 600;
 }
+
+/* ── Filter bar (partnerships, etc.) ─────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.filter-bar label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+.filter-bar select {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+}
+.filter-bar .btn-link {
+  font-size: 0.85rem;
+}

@@ -67,7 +67,18 @@ function setupDb(db: BetterSqlite3.Database): void {
   const disc2 = insertDiscipline(db, event2, { id: 'disc-net-test-open-2015', name: 'Open Doubles Net', discipline_category: 'net', team_type: 'doubles' });
   const disc3 = insertDiscipline(db, event3, { id: 'disc-net-test-conflict-2012', name: 'Footbag Net: Singles', discipline_category: 'net', team_type: 'doubles' });
 
-  // net_discipline_group for conflict_flag test (disc3)
+  // net_discipline_group entries for division filter tests
+  db.prepare(`
+    INSERT INTO net_discipline_group
+      (discipline_id, canonical_group, match_method, review_needed, conflict_flag, mapped_at, mapped_by)
+    VALUES (?, 'open_doubles', 'exact', 0, 0, '2025-01-01T00:00:00.000Z', 'test')
+  `).run('disc-net-test-open-2010');
+  db.prepare(`
+    INSERT INTO net_discipline_group
+      (discipline_id, canonical_group, match_method, review_needed, conflict_flag, mapped_at, mapped_by)
+    VALUES (?, 'open_doubles', 'exact', 0, 0, '2025-01-01T00:00:00.000Z', 'test')
+  `).run('disc-net-test-open-2015');
+  // conflict_flag test (disc3)
   db.prepare(`
     INSERT INTO net_discipline_group
       (discipline_id, canonical_group, match_method, review_needed, conflict_flag, mapped_at, mapped_by)
@@ -331,10 +342,10 @@ describe('GET /net/partnerships', () => {
     expect(res.text).toContain('2015');
   });
 
-  it('links partnership names to team detail page', async () => {
+  it('links partnership names to partnership detail page', async () => {
     const app = createApp();
     const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain(`/net/teams/${TEAM_1_ID}`);
+    expect(res.text).toContain(`/net/partnerships/${TEAM_1_ID}`);
   });
 
   it('does not include inferred_partial appearances in counts', async () => {
@@ -364,5 +375,201 @@ describe('GET /net/partnerships', () => {
     const app = createApp();
     const res = await request(app).get('/net/partnerships');
     expect(res.text).toContain('1 partnerships shown');
+  });
+
+  it('links to partnership detail page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain(`/net/partnerships/${TEAM_1_ID}`);
+  });
+
+  it('shows division filter dropdown', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('name="division"');
+    expect(res.text).toContain('All divisions');
+  });
+
+  it('shows Open Doubles in division options', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('open_doubles');
+  });
+});
+
+describe('GET /net/partnerships?division=open_doubles', () => {
+  it('returns 200', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows division in page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    expect(res.text).toContain('Open Doubles');
+  });
+
+  it('shows team 1 (which plays in open doubles)', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    expect(res.text).toContain('Alice Net');
+  });
+
+  it('marks the selected division as selected in dropdown', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    expect(res.text).toContain('value="open_doubles" selected');
+  });
+
+  it('shows clear filter link when division is active', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    expect(res.text).toContain('Clear');
+  });
+
+  it('returns empty for a division with no partnerships', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=masters_doubles');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('No partnerships found');
+  });
+
+  it('ignores unknown division values gracefully', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=not_real');
+    expect(res.status).toBe(200);
+    // Unknown division = empty results, not an error
+    expect(res.text).toContain('No partnerships found');
+  });
+});
+
+describe('GET /net/partnerships?q=Alice', () => {
+  it('returns 200 and shows matching partnership', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?q=Alice');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Alice Net');
+  });
+
+  it('does not show non-matching partnerships', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?q=Nonexistent');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('No partnerships found');
+  });
+
+  it('shows search input with current value', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?q=Alice');
+    expect(res.text).toContain('value="Alice"');
+  });
+
+  it('ignores search queries shorter than 2 characters', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?q=A');
+    expect(res.status).toBe(200);
+    // Short query ignored → shows default results
+    expect(res.text).toContain('Alice Net');
+  });
+
+  it('combines division and search filters', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships?division=open_doubles&q=Alice');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Alice Net');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GET /net/partnerships/:teamId
+// ---------------------------------------------------------------------------
+
+describe('GET /net/partnerships/:teamId', () => {
+  it('returns 200 for valid team', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.status).toBe(200);
+  });
+
+  it('shows both partner names in title', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('Alice Net');
+    expect(res.text).toContain('Bob Net');
+  });
+
+  it('shows summary stats', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    // Team 1: 2 canonical appearances (placement 1 + placement 2)
+    expect(res.text).toContain('2 appearances');
+    expect(res.text).toContain('1 wins');
+    expect(res.text).toContain('2 podiums');
+  });
+
+  it('shows competitive timeline', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('Competitive Timeline');
+    expect(res.text).toContain('Net Open 2010');
+    expect(res.text).toContain('Net Open 2015');
+  });
+
+  it('orders timeline by year ascending', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const idx2010 = res.text.indexOf('Net Open 2010');
+    const idx2015 = res.text.indexOf('Net Open 2015');
+    expect(idx2010).toBeGreaterThan(0);
+    expect(idx2015).toBeGreaterThan(idx2010);
+  });
+
+  it('shows placement labels (1st, 2nd)', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('1st');
+    expect(res.text).toContain('2nd');
+  });
+
+  it('links event names to event pages', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('/events/');
+  });
+
+  it('links player names to player pages', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain(`/net/players/${PERSON_A1}`);
+    expect(res.text).toContain(`/net/players/${PERSON_B1}`);
+  });
+
+  it('includes evidence disclaimer', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('algorithmically constructed');
+  });
+
+  it('excludes inferred_partial appearances from timeline and summary', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    // Team 1 has 2 canonical + 1 inferred_partial. Should show 2 appearances.
+    expect(res.text).toContain('2 appearances');
+    // European Net 2012 was the inferred_partial event — should NOT appear
+    expect(res.text).not.toContain('European Net 2012');
+  });
+
+  it('returns 404 for unknown team', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships/not-a-real-team');
+    expect(res.status).toBe(404);
+  });
+
+  it('shows breadcrumb back to partnerships list', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    expect(res.text).toContain('/net/partnerships');
+    expect(res.text).toContain('Partnerships');
   });
 });

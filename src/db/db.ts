@@ -1201,7 +1201,98 @@ export const netPartnerships = {
     ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
     LIMIT 50
   `),
+
+  /** Division filter options — distinct canonical groups with appearance counts. */
+  listDivisionOptions: db.prepare(`
+    SELECT dg.canonical_group, COUNT(DISTINCT a.id) AS appearance_count
+    FROM net_discipline_group dg
+    JOIN net_team_appearance_canonical a ON a.discipline_id = dg.discipline_id
+    WHERE dg.conflict_flag = 0
+    GROUP BY dg.canonical_group
+    ORDER BY appearance_count DESC
+  `),
+
+  /** Wider pool for notable partnership buckets — top 100 with >=3 appearances. */
+  listNotablePool: db.prepare(`
+    SELECT
+      t.team_id,
+      t.person_id_a,
+      pa.person_name  AS person_name_a,
+      pa.country      AS country_a,
+      t.person_id_b,
+      pb.person_name  AS person_name_b,
+      pb.country      AS country_b,
+      COUNT(*)                                              AS appearance_count,
+      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
+      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
+      MIN(a.event_year)                                     AS first_year,
+      MAX(a.event_year)                                     AS last_year
+    FROM net_team t
+    JOIN historical_persons pa ON pa.person_id = t.person_id_a
+    JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    GROUP BY t.team_id
+    HAVING COUNT(*) >= 3
+    ORDER BY appearance_count DESC
+    LIMIT 100
+  `),
 } as const;
+
+export interface NetDivisionOptionRow {
+  canonical_group:  string;
+  appearance_count: number;
+}
+
+/**
+ * Dynamic partnership query with optional division (canonical_group) filter.
+ * Uses runtime db.prepare() for the optional JOIN clause.
+ */
+export function queryFilteredPartnerships(filters: {
+  division?: string;
+  search?: string;
+}): NetPartnershipRow[] {
+  const joins: string[] = [];
+  const conditions: string[] = [];
+  const params: string[] = [];
+
+  if (filters.division) {
+    joins.push('JOIN net_discipline_group dg ON dg.discipline_id = a.discipline_id AND dg.canonical_group = ?');
+    params.push(filters.division);
+  }
+  if (filters.search) {
+    conditions.push("(pa.person_name LIKE ? OR pb.person_name LIKE ?)");
+    const like = `%${filters.search}%`;
+    params.push(like, like);
+  }
+
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  return db.prepare(`
+    SELECT
+      t.team_id,
+      t.person_id_a,
+      pa.person_name  AS person_name_a,
+      pa.country      AS country_a,
+      t.person_id_b,
+      pb.person_name  AS person_name_b,
+      pb.country      AS country_b,
+      COUNT(*)                                              AS appearance_count,
+      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
+      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
+      MIN(a.event_year)                                     AS first_year,
+      MAX(a.event_year)                                     AS last_year
+    FROM net_team t
+    JOIN historical_persons pa ON pa.person_id = t.person_id_a
+    JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    ${joins.join('\n    ')}
+    ${where}
+    GROUP BY t.team_id
+    HAVING COUNT(*) >= 2
+    ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
+    LIMIT 50
+  `).all(...params) as NetPartnershipRow[];
+}
 
 // ---------------------------------------------------------------------------
 // netRecoverySignals
@@ -1494,6 +1585,17 @@ export interface NetPartnerRow {
   best_placement:    number;
 }
 
+export interface NetPartnerNetworkRow {
+  partner_person_id: string;
+  partner_name:      string;
+  partner_country:   string | null;
+  appearance_count:  number;
+  win_count:         number;
+  podium_count:      number;
+  first_year:        number | null;
+  last_year:         number | null;
+}
+
 export const netPlayers = {
   // STATS FIREWALL: all appearance joins use net_team_appearance_canonical view.
   // INNER JOINs mean null result = no net appearances (→ 404, not an error).
@@ -1531,6 +1633,29 @@ export const netPlayers = {
     WHERE nm_self.person_id = ?
     GROUP BY nm_partner.person_id, nm_self.team_id
     ORDER BY COUNT(a.id) DESC, MIN(a.placement) ASC
+  `),
+  /** Partner network: aggregate stats per partner across all teams. */
+  listPartnerNetworkByPersonId: db.prepare(`
+    -- STATS FIREWALL: uses net_team_appearance_canonical view
+    SELECT
+      nm_partner.person_id  AS partner_person_id,
+      hp.person_name        AS partner_name,
+      hp.country            AS partner_country,
+      COUNT(a.id)                                            AS appearance_count,
+      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)     AS win_count,
+      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)    AS podium_count,
+      MIN(a.event_year)                                      AS first_year,
+      MAX(a.event_year)                                      AS last_year
+    FROM net_team_member nm_self
+    JOIN net_team_member nm_partner
+      ON  nm_partner.team_id   = nm_self.team_id
+      AND nm_partner.person_id != nm_self.person_id
+    JOIN net_team_appearance_canonical a ON a.team_id = nm_self.team_id
+    JOIN historical_persons hp ON hp.person_id = nm_partner.person_id
+    WHERE nm_self.person_id = ?
+    GROUP BY nm_partner.person_id
+    ORDER BY appearance_count DESC, win_count DESC, hp.person_name ASC
+    LIMIT 10
   `),
 } as const;
 
@@ -1697,6 +1822,18 @@ export interface NetHomeTopPlayerRow {
   appearance_count: number;
 }
 
+export interface NetNotablePlayerRow {
+  person_id:        string;
+  person_name:      string;
+  country:          string | null;
+  total_appearances: number;
+  total_wins:       number;
+  total_podiums:    number;
+  first_year:       number | null;
+  last_year:        number | null;
+  partner_count:    number;
+}
+
 export interface NetHomeRecentEventRow {
   event_id:             string;
   event_title:          string;
@@ -1812,6 +1949,32 @@ export const netHome = {
     GROUP BY t.team_id
     ORDER BY year_span_length DESC, win_count DESC, best_placement ASC
     LIMIT 10
+  `),
+
+  /** Player aggregate pool for notable player buckets — top 100 by appearances. */
+  listNotablePlayerPool: db.prepare(`
+    -- STATS FIREWALL: uses net_team_appearance_canonical view.
+    SELECT
+      hp.person_id,
+      hp.person_name,
+      hp.country,
+      COUNT(a.id)                                            AS total_appearances,
+      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)     AS total_wins,
+      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)    AS total_podiums,
+      MIN(a.event_year)                                      AS first_year,
+      MAX(a.event_year)                                      AS last_year,
+      COUNT(DISTINCT nm_partner.person_id)                   AS partner_count
+    FROM historical_persons hp
+    JOIN net_team_member nm_self    ON nm_self.person_id = hp.person_id
+    JOIN net_team_member nm_partner
+      ON  nm_partner.team_id   = nm_self.team_id
+      AND nm_partner.person_id != nm_self.person_id
+    JOIN net_team_appearance_canonical a ON a.team_id = nm_self.team_id
+    WHERE hp.person_name NOT IN ('Unknown', '__NON_PERSON__', '[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__')
+    GROUP BY hp.person_id
+    HAVING COUNT(a.id) >= 3
+    ORDER BY total_appearances DESC
+    LIMIT 100
   `),
 } as const;
 

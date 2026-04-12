@@ -3,7 +3,7 @@
 <div class="hero hero-sm">
   <div>
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/net/teams">Net Teams</a> <span class="breadcrumb-sep">/</span>
+      <a href="/net">Net</a> <span class="breadcrumb-sep">/</span>
       <a href="/net/events">Events</a> <span class="breadcrumb-sep">/</span>
       <span>{{page.title}}</span>
     </nav>
@@ -51,7 +51,8 @@
         <tr>
           <td class="col-rank">{{placementLabel}}</td>
           <td>
-            <a href="{{hrefA}}">{{personNameA}}</a> / <a href="{{hrefB}}">{{personNameB}}</a>
+            <a href="{{{hrefA}}}">{{personNameA}}</a> / <a href="{{{hrefB}}}">{{personNameB}}</a>
+            <a href="{{{teamHref}}}" class="detail-muted" title="Partnership history">&rarr;</a>
           </td>
         </tr>
         {{/each}}
