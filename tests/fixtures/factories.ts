@@ -781,6 +781,77 @@ export function insertFreestyleTrick(
   return slug;
 }
 
+// ── Net Review Queue Item ─────────────────────────────────────────────────────
+
+export interface NetReviewQueueItemOverrides {
+  id?:                       string;
+  source_file?:              string;
+  item_type?:                'quarantine_event' | 'qc_issue';
+  priority?:                 1 | 2 | 3 | 4;
+  event_id?:                 string | null;
+  discipline_id?:            string | null;
+  check_id?:                 string | null;
+  severity?:                 string;
+  reason_code?:              string | null;
+  message?:                  string;
+  raw_context?:              string | null;
+  review_stage?:             string | null;
+  resolution_status?:        'open' | 'resolved' | 'wont_fix' | 'escalated';
+  resolution_notes?:         string | null;
+  resolved_by?:              string | null;
+  resolved_at?:              string | null;
+  // Classification metadata
+  classification?:            string | null;
+  proposed_fix_type?:         string | null;
+  classification_confidence?: string | null;
+  decision_status?:           string | null;
+  decision_notes?:            string | null;
+  classified_by?:             string | null;
+  classified_at?:             string | null;
+}
+
+export function insertNetReviewQueueItem(
+  db: BetterSqlite3.Database,
+  o: NetReviewQueueItemOverrides = {},
+): string {
+  const id = o.id ?? `net-review-${uid()}`;
+  db.prepare(`
+    INSERT INTO net_review_queue
+      (id, source_file, item_type, priority, event_id, discipline_id, check_id,
+       severity, reason_code, message, raw_context, review_stage,
+       resolution_status, resolution_notes, resolved_by, resolved_at, imported_at,
+       classification, proposed_fix_type, classification_confidence,
+       decision_status, decision_notes, classified_by, classified_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id,
+    o.source_file              ?? 'test',
+    o.item_type                ?? 'qc_issue',
+    o.priority                 ?? 3,
+    o.event_id                 ?? null,
+    o.discipline_id            ?? null,
+    o.check_id                 ?? null,
+    o.severity                 ?? 'medium',
+    o.reason_code              ?? null,
+    o.message                  ?? 'Test review item',
+    o.raw_context              ?? null,
+    o.review_stage             ?? null,
+    o.resolution_status        ?? 'open',
+    o.resolution_notes         ?? null,
+    o.resolved_by              ?? null,
+    o.resolved_at              ?? null,
+    TS,
+    o.classification           ?? null,
+    o.proposed_fix_type        ?? null,
+    o.classification_confidence ?? null,
+    o.decision_status          ?? null,
+    o.decision_notes           ?? null,
+    o.classified_by            ?? null,
+    o.classified_at            ?? null,
+  );
+  return id;
+}
+
 export function insertNetCuratedMatch(
   db: BetterSqlite3.Database,
   o: NetCuratedMatchOverrides,
@@ -806,6 +877,50 @@ export function insertNetCuratedMatch(
     o.curator_note        ?? null,
     TS,
     o.curated_by          ?? 'operator',
+  );
+  return id;
+}
+
+// ── Net Recovery Alias Candidate ─────────────────────────────────────────────
+
+export interface NetRecoveryAliasCandidateOverrides {
+  id?:                    string;
+  stub_name?:             string;
+  stub_person_id?:        string;
+  suggested_person_id?:   string;
+  suggested_person_name?: string;
+  suggestion_type?:       string;
+  confidence?:            string;
+  appearance_count?:      number;
+  operator_decision?:     string | null;
+  operator_notes?:        string | null;
+}
+
+export function insertNetRecoveryAliasCandidate(
+  db: BetterSqlite3.Database,
+  o: NetRecoveryAliasCandidateOverrides = {},
+): string {
+  const id = o.id ?? `rc-${uid()}`;
+  db.prepare(`
+    INSERT INTO net_recovery_alias_candidate
+      (id, stub_name, stub_person_id, suggested_person_id, suggested_person_name,
+       suggestion_type, confidence, appearance_count,
+       operator_decision, operator_notes, reviewed_by, reviewed_at, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id,
+    o.stub_name             ?? 'J. Test',
+    o.stub_person_id        ?? `stub-${uid()}`,
+    o.suggested_person_id   ?? `known-${uid()}`,
+    o.suggested_person_name ?? 'Jane Test',
+    o.suggestion_type       ?? 'abbreviation',
+    o.confidence            ?? 'high',
+    o.appearance_count      ?? 2,
+    o.operator_decision     ?? null,
+    o.operator_notes        ?? null,
+    o.operator_decision ? 'operator' : null,
+    o.operator_decision ? TS : null,
+    TS,
   );
   return id;
 }

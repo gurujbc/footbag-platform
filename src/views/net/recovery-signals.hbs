@@ -1,0 +1,122 @@
+{{! /internal/net/recovery-signals — identity recovery diagnostic }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      Surfaces high-confidence signals for identity recovery, alias detection, and data anomalies.
+      Internal only. Read-only.
+      <a href="/internal/net/review">&larr; Back to review</a>
+      &middot; <a href="/internal/net/recovery-candidates">Recovery Candidates &rarr;</a>
+    </p>
+    <div class="hero-stats">
+      <span>{{content.stubCount}} stub persons remaining</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── High-Value Recovery Candidates ─────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>High-Value Recovery Candidates</h2>
+      <span class="section-meta">Stub persons with most appearances — highest payoff for identity resolution</span>
+    </div>
+    {{#if content.highValueCandidates.length}}
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="col-num">Appearances</th>
+            <th class="col-num">Events</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.highValueCandidates}}
+          <tr>
+            <td>{{personName}}</td>
+            <td class="col-num">{{appearances}}</td>
+            <td class="col-num">{{eventCount}}</td>
+            <td>{{years}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No stub persons with appearances found.</div>
+    {{/if}}
+  </section>
+
+  {{! ── Unresolved Partner Repeats ─────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Unresolved Partner Repeats</h2>
+      <span class="section-meta">Known players paired with stub partners in doubles</span>
+    </div>
+    {{#if content.unresolvedPartnerRepeats.length}}
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Known Player</th>
+            <th>Stub Partner</th>
+            <th class="col-num">Co-appearances</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.unresolvedPartnerRepeats}}
+          <tr>
+            <td>
+              {{#if knownHref}}<a href="{{{knownHref}}}">{{knownPlayer}}</a>{{else}}{{knownPlayer}}{{/if}}
+            </td>
+            <td>{{stubPartner}}</td>
+            <td class="col-num">{{coCount}}</td>
+            <td>{{years}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No unresolved partner repeats found.</div>
+    {{/if}}
+  </section>
+
+  {{! ── Abbreviation Clusters ──────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Abbreviation Clusters</h2>
+      <span class="section-meta">Stub names that share a last name and first initial with a known person</span>
+    </div>
+    {{#if content.abbreviationClusters.length}}
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Stub Name</th>
+            <th>Likely Match</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.abbreviationClusters}}
+          <tr>
+            <td>{{stubName}}</td>
+            <td>
+              {{#if likelyHref}}<a href="{{{likelyHref}}}">{{likelyMatch}}</a>{{else}}{{likelyMatch}}{{/if}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No abbreviation clusters found.</div>
+    {{/if}}
+  </section>
+
+</div>

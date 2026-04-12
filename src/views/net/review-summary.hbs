@@ -1,0 +1,151 @@
+{{! /internal/net/review/summary — prioritization view for pipeline work }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      High-level view of review queue classifications and actionable fixes.
+      Read-only. <a href="/internal/net/review">&larr; Back to review items</a>
+    </p>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── Totals ──────────────────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Overview</h2>
+    </div>
+    <div class="review-summary-grid">
+      <div class="review-card">
+        <table class="records-table records-table-sm">
+          <tbody>
+            <tr><td>Total items</td><td class="col-num">{{content.totals.total}}</td></tr>
+            <tr><td>Classified</td><td class="col-num">{{content.totals.classified}} ({{content.totals.classifiedPct}})</td></tr>
+            <tr><td>With decision</td><td class="col-num">{{content.totals.decided}}</td></tr>
+            <tr><td>Unclassified</td><td class="col-num">{{content.totals.unclassified}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {{! ── Ready-to-Fix Pipeline Work ─────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Ready-to-Fix Pipeline Work</h2>
+      <span class="section-meta">Items with fix_encoded or fix_active decision and a proposed fix type</span>
+    </div>
+    {{#if content.actionableFixes.length}}
+    <table class="records-table records-table-sm">
+      <thead><tr><th>Fix Type</th><th class="col-num">Count</th><th>View</th></tr></thead>
+      <tbody>
+        {{#each content.actionableFixes}}
+        <tr>
+          <td>{{label}}</td>
+          <td class="col-num">{{count}}</td>
+          <td><a href="{{{href}}}">View items &rarr;</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="empty-state">No items are ready for pipeline fixes yet.</div>
+    {{/if}}
+  </section>
+
+  {{! ── By Classification ───────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>By Classification</h2>
+    </div>
+    {{#if content.byClassification.length}}
+    <table class="records-table records-table-sm">
+      <thead><tr><th>Classification</th><th class="col-num">Count</th><th>View</th></tr></thead>
+      <tbody>
+        {{#each content.byClassification}}
+        <tr>
+          <td>{{label}}</td>
+          <td class="col-num">{{count}}</td>
+          <td><a href="{{{href}}}">View &rarr;</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="empty-state">No items have been classified yet.</div>
+    {{/if}}
+  </section>
+
+  {{! ── By Fix Type ─────────────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>By Fix Type</h2>
+    </div>
+    {{#if content.byFixType.length}}
+    <table class="records-table records-table-sm">
+      <thead><tr><th>Fix Type</th><th class="col-num">Count</th><th>View</th></tr></thead>
+      <tbody>
+        {{#each content.byFixType}}
+        <tr>
+          <td>{{label}}</td>
+          <td class="col-num">{{count}}</td>
+          <td><a href="{{{href}}}">View &rarr;</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="empty-state">No fix types assigned yet.</div>
+    {{/if}}
+  </section>
+
+  {{! ── By Decision Status ──────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>By Decision Status</h2>
+    </div>
+    {{#if content.byDecision.length}}
+    <table class="records-table records-table-sm">
+      <thead><tr><th>Decision</th><th class="col-num">Count</th><th>View</th></tr></thead>
+      <tbody>
+        {{#each content.byDecision}}
+        <tr>
+          <td>{{label}}</td>
+          <td class="col-num">{{count}}</td>
+          <td><a href="{{{href}}}">View &rarr;</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="empty-state">No decisions recorded yet.</div>
+    {{/if}}
+  </section>
+
+  {{! ── Top Events with Issues ──────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Top Events with Issues</h2>
+      <span class="section-meta">Top 20 events by review item count</span>
+    </div>
+    {{#if content.topEvents.length}}
+    <table class="records-table records-table-sm">
+      <thead><tr><th>Event</th><th class="col-num">Issues</th><th>View</th></tr></thead>
+      <tbody>
+        {{#each content.topEvents}}
+        <tr>
+          <td>{{eventTitle}}</td>
+          <td class="col-num">{{count}}</td>
+          <td><a href="{{{href}}}">View &rarr;</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="empty-state">No event-linked issues found.</div>
+    {{/if}}
+  </section>
+
+</div>

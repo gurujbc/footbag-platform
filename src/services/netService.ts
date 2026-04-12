@@ -1,12 +1,20 @@
 import {
   netTeams,      NetTeamSummaryRow, NetTeamAppearanceRow,
+  netPartnerships, NetPartnershipRow,
+  netRecoverySignals, RecoveryPartnerRepeatRow, RecoveryAbbreviationRow,
+                      RecoveryHighValueRow,
+  netRecoveryCandidates, RecoveryCandidateAbbrevRow, RecoveryCandidateFreqRow,
+  netRecoveryApproval, RecoveryAliasCandidateRow,
   netPlayers,    NetPlayerSummaryRow, NetPartnerRow,
   netEvents,     NetEventSummaryRow, NetEventAppearanceRow,
   netHome,       NetHomeTopTeamRow, NetHomeTopPlayerRow,
                  NetHomeRecentEventRow, NetHomeInterestingTeamRow,
-  netReview,     NetReviewSummaryRow, NetReviewItemRow,
+  netReview,     NetReviewSummaryRow, NetReviewClassificationSummaryRow,
+                 NetReviewDecisionSummaryRow, NetReviewFixTypeSummaryRow,
+                 NetReviewTopEventRow, NetReviewTotalsRow, NetReviewItemRow,
                  NetReviewEventContextRow, NetReviewConflictDisciplineRow,
                  NetReviewFilters, queryReviewItems,
+                 updateReviewClassification, updateReviewDecisionFields,
   netCandidates, NetCandidateSummaryRow, NetCandidateRow,
                  NetCandidateSourceSummaryRow, NetCandidateEventSummaryRow,
                  NetCandidateYearSummaryRow,
@@ -18,7 +26,7 @@ import {
                  NetCuratedBrowseFilters, queryCuratedItems, NetCuratedBrowseRow,
   transaction,
 } from '../db/db';
-import { NotFoundError, ConflictError } from './serviceErrors';
+import { NotFoundError, ConflictError, ValidationError } from './serviceErrors';
 import { randomUUID } from 'crypto';
 
 // ---------------------------------------------------------------------------
@@ -136,6 +144,103 @@ interface NetTeamDetailViewModel {
     team:        NetTeamViewModel;
     byYear:      NetAppearanceYearGroup[];
     disclaimer:  string;
+  };
+}
+
+export interface NetPartnershipViewModel {
+  teamId:          string;
+  teamName:        string;
+  teamHref:        string;
+  personIdA:       string;
+  personNameA:     string;
+  hrefA:           string | null;
+  personIdB:       string;
+  personNameB:     string;
+  hrefB:           string | null;
+  appearanceCount: number;
+  winCount:        number;
+  podiumCount:     number;
+  yearSpan:        string | null;
+}
+
+interface NetPartnershipsPageViewModel {
+  seo:     { title: string };
+  page:    { sectionKey: string; pageKey: string; title: string; intro: string };
+  content: {
+    partnerships: NetPartnershipViewModel[];
+    totalShown:   number;
+    disclaimer:   string;
+  };
+}
+
+// ── Recovery signals (internal) ──────────────────────────────────────────────
+
+interface RecoveryPartnerRepeatVM {
+  knownPlayer:  string;
+  knownHref:    string | null;
+  stubPartner:  string;
+  stubPid:      string;
+  coCount:      number;
+  years:        string;
+}
+
+interface RecoveryAbbreviationVM {
+  stubName:    string;
+  stubPid:     string;
+  likelyMatch: string;
+  likelyHref:  string | null;
+}
+
+interface RecoveryHighValueVM {
+  personName:  string;
+  personId:    string;
+  appearances: number;
+  eventCount:  number;
+  years:       string;
+}
+
+interface NetRecoverySignalsPageViewModel {
+  seo:  { title: string };
+  page: { sectionKey: string; pageKey: string; title: string };
+  content: {
+    stubCount:                number;
+    unresolvedPartnerRepeats: RecoveryPartnerRepeatVM[];
+    abbreviationClusters:     RecoveryAbbreviationVM[];
+    highValueCandidates:      RecoveryHighValueVM[];
+  };
+}
+
+interface RecoveryCandidateVM {
+  id:              string;
+  stubName:        string;
+  stubPid:         string;
+  suggestedName:   string;
+  suggestedPid:    string;
+  suggestedHref:   string | null;
+  suggestionType:  string;
+  confidence:      string;
+  appearances:     number;
+  operatorDecision: string | null;
+  operatorNotes:   string | null;
+}
+
+interface RecoveryNewPersonVM {
+  personName:  string;
+  personId:    string;
+  appearances: number;
+  eventCount:  number;
+  years:       string;
+}
+
+interface NetRecoveryCandidatesPageViewModel {
+  seo:  { title: string };
+  page: { sectionKey: string; pageKey: string; title: string };
+  content: {
+    aliasCandidates:     RecoveryCandidateVM[];
+    newPersonCandidates: RecoveryNewPersonVM[];
+    totalAlias:          number;
+    totalApproved:       number;
+    totalNewPerson:      number;
   };
 }
 
@@ -519,10 +624,12 @@ interface FilterOption {
 }
 
 interface NetReviewSummaryViewModel {
-  byReason:   { reasonCode: string | null; count: number }[];
-  byPriority: { priority: number; label: string; count: number }[];
-  byStatus:   { status: string; count: number }[];
-  totalItems: number;
+  byReason:         { reasonCode: string | null; count: number }[];
+  byPriority:       { priority: number; label: string; count: number }[];
+  byStatus:         { status: string; count: number }[];
+  byClassification: { label: string; value: string; count: number }[];
+  byDecision:       { label: string; value: string; count: number }[];
+  totalItems:       number;
 }
 
 interface NetReviewItemViewModel {
@@ -540,6 +647,18 @@ interface NetReviewItemViewModel {
   reviewStage:    string | null;
   status:         string;
   importedAt:     string;
+  // Classification fields (all nullable)
+  classification:            string | null;
+  classificationLabel:       string | null;
+  proposedFixType:           string | null;
+  proposedFixTypeLabel:      string | null;
+  classificationConfidence:  string | null;
+  confidenceLabel:           string | null;
+  decisionStatus:            string | null;
+  decisionStatusLabel:       string | null;
+  decisionNotes:             string | null;
+  classifiedBy:              string | null;
+  classifiedAt:              string | null;
 }
 
 interface NetReviewConflictDisciplineViewModel {
@@ -570,16 +689,41 @@ interface NetReviewPageViewModel {
     eventContext:         NetReviewEventContextViewModel | null;
     conflictDisciplines:  NetReviewConflictDisciplineViewModel[];
     filterOptions: {
-      reasonCodes:  FilterOption[];
-      priorities:   FilterOption[];
-      statuses:     FilterOption[];
+      reasonCodes:      FilterOption[];
+      priorities:       FilterOption[];
+      statuses:         FilterOption[];
+      classifications:  FilterOption[];
+      fixTypes:         FilterOption[];
+      decisionStatuses: FilterOption[];
     };
     activeFilters: {
       reasonCode:        string | null;
       priority:          number | null;
       resolutionStatus:  string | null;
       eventId:           string | null;
+      classification:    string | null;
+      proposedFixType:   string | null;
+      decisionStatus:    string | null;
     };
+  };
+}
+
+interface NetReviewSummaryPageViewModel {
+  seo:  { title: string };
+  page: { sectionKey: string; pageKey: string; title: string };
+  content: {
+    totals: {
+      total:        number;
+      classified:   number;
+      decided:      number;
+      unclassified: number;
+      classifiedPct: string;
+    };
+    byClassification: { label: string; value: string; count: number; href: string }[];
+    byFixType:        { label: string; value: string; count: number; href: string }[];
+    byDecision:       { label: string; value: string; count: number; href: string }[];
+    actionableFixes:  { label: string; value: string; count: number; href: string }[];
+    topEvents:        { eventId: string; eventTitle: string; count: number; href: string }[];
   };
 }
 
@@ -830,6 +974,36 @@ interface NetCandidatesPageViewModel {
 
 // ── Review helpers ─────────────────────────────────────────────────────────
 
+const CLASSIFICATION_LABELS: Record<string, string> = {
+  retag_team_type:              'Retag Team Type',
+  split_merged_discipline:      'Split Merged Discipline',
+  quarantine_non_results_block: 'Quarantine Non-Results Block',
+  parser_improvement:           'Parser Improvement',
+  unresolved:                   'Unresolved',
+};
+
+const FIX_TYPE_LABELS: Record<string, string> = {
+  retag_team_type:              'Retag Team Type',
+  rename_discipline:            'Rename Discipline',
+  rename_and_retag:             'Rename & Retag',
+  reshape_doubles_to_singles:   'Reshape Doubles → Singles',
+  split_merged_discipline:      'Split Merged Discipline',
+  quarantine_non_results_block: 'Quarantine Non-Results Block',
+  parser_improvement:           'Parser Improvement',
+};
+
+const DECISION_STATUS_LABELS: Record<string, string> = {
+  fix_encoded: 'Fix Encoded',
+  fix_active:  'Fix Active',
+  deferred:    'Deferred',
+  wont_fix:    "Won't Fix",
+};
+
+const CONFIDENCE_LABELS: Record<string, string> = {
+  confirmed: 'Confirmed',
+  tentative: 'Tentative',
+};
+
 function buildReviewSummary(rows: NetReviewSummaryRow[]): NetReviewSummaryViewModel {
   const reasonMap   = new Map<string | null, number>();
   const priorityMap = new Map<number, number>();
@@ -843,6 +1017,9 @@ function buildReviewSummary(rows: NetReviewSummaryRow[]): NetReviewSummaryViewMo
   }
 
   const totalItems = [...statusMap.values()].reduce((a, b) => a + b, 0);
+
+  const classificationRows = netReview.listClassificationSummary.all() as NetReviewClassificationSummaryRow[];
+  const decisionRows       = netReview.listDecisionSummary.all() as NetReviewDecisionSummaryRow[];
 
   return {
     byReason: [...reasonMap.entries()]
@@ -858,6 +1035,16 @@ function buildReviewSummary(rows: NetReviewSummaryRow[]): NetReviewSummaryViewMo
     byStatus: [...statusMap.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([status, count]) => ({ status, count })),
+    byClassification: classificationRows.map(r => ({
+      value: r.classification,
+      label: CLASSIFICATION_LABELS[r.classification] ?? r.classification,
+      count: r.item_count,
+    })),
+    byDecision: decisionRows.map(r => ({
+      value: r.decision_status,
+      label: DECISION_STATUS_LABELS[r.decision_status] ?? r.decision_status,
+      count: r.item_count,
+    })),
     totalItems,
   };
 }
@@ -878,6 +1065,17 @@ function shapeReviewItem(row: NetReviewItemRow): NetReviewItemViewModel {
     reviewStage:    row.review_stage,
     status:         row.resolution_status,
     importedAt:     row.imported_at.slice(0, 10),  // date portion only
+    classification:            row.classification,
+    classificationLabel:       row.classification ? (CLASSIFICATION_LABELS[row.classification] ?? row.classification) : null,
+    proposedFixType:           row.proposed_fix_type,
+    proposedFixTypeLabel:      row.proposed_fix_type ? (FIX_TYPE_LABELS[row.proposed_fix_type] ?? row.proposed_fix_type) : null,
+    classificationConfidence:  row.classification_confidence,
+    confidenceLabel:           row.classification_confidence ? (CONFIDENCE_LABELS[row.classification_confidence] ?? row.classification_confidence) : null,
+    decisionStatus:            row.decision_status,
+    decisionStatusLabel:       row.decision_status ? (DECISION_STATUS_LABELS[row.decision_status] ?? row.decision_status) : null,
+    decisionNotes:             row.decision_notes,
+    classifiedBy:              row.classified_by,
+    classifiedAt:              row.classified_at ? row.classified_at.slice(0, 10) : null,
   };
 }
 
@@ -928,7 +1126,34 @@ function buildFilterOptions(
     })),
   ];
 
-  return { reasonCodes, priorities, statuses };
+  const classifications: FilterOption[] = [
+    { value: '', label: 'All classifications', selected: !filters.classification },
+    ...Object.entries(CLASSIFICATION_LABELS).map(([value, label]) => ({
+      value,
+      label,
+      selected: value === filters.classification,
+    })),
+  ];
+
+  const fixTypes: FilterOption[] = [
+    { value: '', label: 'All fix types', selected: !filters.proposed_fix_type },
+    ...Object.entries(FIX_TYPE_LABELS).map(([value, label]) => ({
+      value,
+      label,
+      selected: value === filters.proposed_fix_type,
+    })),
+  ];
+
+  const decisionStatuses: FilterOption[] = [
+    { value: '', label: 'All decisions', selected: !filters.decision_status },
+    ...Object.entries(DECISION_STATUS_LABELS).map(([value, label]) => ({
+      value,
+      label,
+      selected: value === filters.decision_status,
+    })),
+  ];
+
+  return { reasonCodes, priorities, statuses, classifications, fixTypes, decisionStatuses };
 }
 
 // ── Candidate helpers ──────────────────────────────────────────────────────
@@ -1217,9 +1442,122 @@ export const netService = {
           priority:         filters.priority          ?? null,
           resolutionStatus: filters.resolution_status ?? null,
           eventId:          filters.event_id          ?? null,
+          classification:   filters.classification    ?? null,
+          proposedFixType:  filters.proposed_fix_type ?? null,
+          decisionStatus:   filters.decision_status   ?? null,
         },
       },
     };
+  },
+
+  getNetReviewSummaryPage(): NetReviewSummaryPageViewModel {
+    const totalsRow          = netReview.countTotals.get() as NetReviewTotalsRow;
+    const classificationRows = netReview.listClassificationSummary.all() as NetReviewClassificationSummaryRow[];
+    const fixTypeRows        = netReview.listFixTypeSummary.all() as NetReviewFixTypeSummaryRow[];
+    const decisionRows       = netReview.listDecisionSummary.all() as NetReviewDecisionSummaryRow[];
+    const actionableRows     = netReview.listActionableFixSummary.all() as NetReviewFixTypeSummaryRow[];
+    const topEventRows       = netReview.listTopEventIssues.all() as NetReviewTopEventRow[];
+
+    const classifiedPct = totalsRow.total > 0
+      ? `${Math.round((totalsRow.classified / totalsRow.total) * 100)}%`
+      : '—';
+
+    return {
+      seo:  { title: 'Net Review Summary' },
+      page: {
+        sectionKey: '',
+        pageKey:    'net_review_summary',
+        title:      'Net Review — Priority Summary',
+      },
+      content: {
+        totals: { ...totalsRow, classifiedPct },
+        byClassification: classificationRows.map(r => ({
+          value: r.classification,
+          label: CLASSIFICATION_LABELS[r.classification] ?? r.classification,
+          count: r.item_count,
+          href:  `/internal/net/review?classification=${encodeURIComponent(r.classification)}`,
+        })),
+        byFixType: fixTypeRows.map(r => ({
+          value: r.proposed_fix_type,
+          label: FIX_TYPE_LABELS[r.proposed_fix_type] ?? r.proposed_fix_type,
+          count: r.item_count,
+          href:  `/internal/net/review?fix_type=${encodeURIComponent(r.proposed_fix_type)}`,
+        })),
+        byDecision: decisionRows.map(r => ({
+          value: r.decision_status,
+          label: DECISION_STATUS_LABELS[r.decision_status] ?? r.decision_status,
+          count: r.item_count,
+          href:  `/internal/net/review?decision=${encodeURIComponent(r.decision_status)}`,
+        })),
+        actionableFixes: actionableRows.map(r => ({
+          value: r.proposed_fix_type,
+          label: FIX_TYPE_LABELS[r.proposed_fix_type] ?? r.proposed_fix_type,
+          count: r.item_count,
+          href:  `/internal/net/review?decision=fix_active&fix_type=${encodeURIComponent(r.proposed_fix_type)}`,
+        })),
+        topEvents: topEventRows.map(r => ({
+          eventId:    r.event_id,
+          eventTitle: r.event_title ?? r.event_id,
+          count:      r.item_count,
+          href:       `/internal/net/review?event=${encodeURIComponent(r.event_id)}`,
+        })),
+      },
+    };
+  },
+
+  /**
+   * Update classification fields on a review queue item.
+   * Only fields present in the payload are written; others are preserved.
+   * Always stamps classified_by='operator' and classified_at=now.
+   * Throws NotFoundError if the item does not exist.
+   * Throws ValidationError if any value is not in the allowed set.
+   */
+  classifyReviewItem(id: string, payload: {
+    classification?:            string | null;
+    proposed_fix_type?:         string | null;
+    classification_confidence?: string | null;
+  }): void {
+    const VALID_CLASSIFICATIONS = new Set(Object.keys(CLASSIFICATION_LABELS));
+    const VALID_FIX_TYPES       = new Set(Object.keys(FIX_TYPE_LABELS));
+    const VALID_CONFIDENCES     = new Set(Object.keys(CONFIDENCE_LABELS));
+
+    if (payload.classification != null && !VALID_CLASSIFICATIONS.has(payload.classification)) {
+      throw new ValidationError(`Invalid classification: ${payload.classification}`);
+    }
+    if (payload.proposed_fix_type != null && !VALID_FIX_TYPES.has(payload.proposed_fix_type)) {
+      throw new ValidationError(`Invalid proposed_fix_type: ${payload.proposed_fix_type}`);
+    }
+    if (payload.classification_confidence != null && !VALID_CONFIDENCES.has(payload.classification_confidence)) {
+      throw new ValidationError(`Invalid classification_confidence: ${payload.classification_confidence}`);
+    }
+
+    const row = netReview.getReviewItemById.get(id);
+    if (!row) throw new NotFoundError(`Review item not found: ${id}`);
+
+    updateReviewClassification(id, payload, 'operator');
+  },
+
+  /**
+   * Update decision fields on a review queue item.
+   * Only fields present in the payload are written; others are preserved.
+   * Always stamps classified_by='operator' and classified_at=now.
+   * Throws NotFoundError if the item does not exist.
+   * Throws ValidationError if any value is not in the allowed set.
+   */
+  updateReviewDecision(id: string, payload: {
+    decision_status?: string | null;
+    decision_notes?:  string | null;
+  }): void {
+    const VALID_DECISION_STATUSES = new Set(Object.keys(DECISION_STATUS_LABELS));
+
+    if (payload.decision_status != null && !VALID_DECISION_STATUSES.has(payload.decision_status)) {
+      throw new ValidationError(`Invalid decision_status: ${payload.decision_status}`);
+    }
+
+    const row = netReview.getReviewItemById.get(id);
+    if (!row) throw new NotFoundError(`Review item not found: ${id}`);
+
+    updateReviewDecisionFields(id, payload, 'operator');
   },
 
   getTeamsPage(): NetTeamsPageViewModel {
@@ -1238,6 +1576,164 @@ export const netService = {
         disclaimer: TEAM_DISCLAIMER,
       },
     };
+  },
+
+  getPartnershipsPage(): NetPartnershipsPageViewModel {
+    const rows = netPartnerships.listTopPartnerships.all() as NetPartnershipRow[];
+    const partnerships: NetPartnershipViewModel[] = rows.map(r => ({
+      teamId:          r.team_id,
+      teamName:        teamName(r.person_name_a, r.person_name_b),
+      teamHref:        `/net/teams/${r.team_id}`,
+      personIdA:       r.person_id_a,
+      personNameA:     r.person_name_a,
+      hrefA:           netPlayerHref(r.person_id_a),
+      personIdB:       r.person_id_b,
+      personNameB:     r.person_name_b,
+      hrefB:           netPlayerHref(r.person_id_b),
+      appearanceCount: r.appearance_count,
+      winCount:        r.win_count,
+      podiumCount:     r.podium_count,
+      yearSpan:        yearSpan(r.first_year, r.last_year),
+    }));
+    return {
+      seo:  { title: 'Net Partnerships' },
+      page: {
+        sectionKey: 'net',
+        pageKey:    'net_partnerships',
+        title:      'Top Net Partnerships',
+        intro:      'The most significant doubles partnerships in footbag net history, ranked by competitive appearances.',
+      },
+      content: {
+        partnerships,
+        totalShown: partnerships.length,
+        disclaimer: TEAM_DISCLAIMER,
+      },
+    };
+  },
+
+  getRecoverySignalsPage(): NetRecoverySignalsPageViewModel {
+    const stubCountRow = netRecoverySignals.countStubs.get() as { stub_count: number };
+    const partnerRows  = netRecoverySignals.listUnresolvedPartnerRepeats.all() as RecoveryPartnerRepeatRow[];
+    const abbrRows     = netRecoverySignals.listAbbreviationClusters.all() as RecoveryAbbreviationRow[];
+    const highRows     = netRecoverySignals.listHighValueCandidates.all() as RecoveryHighValueRow[];
+
+    return {
+      seo:  { title: 'Net Recovery Signals' },
+      page: {
+        sectionKey: '',
+        pageKey:    'net_recovery_signals',
+        title:      'Net Recovery Signals',
+      },
+      content: {
+        stubCount: stubCountRow.stub_count,
+        unresolvedPartnerRepeats: partnerRows.map(r => ({
+          knownPlayer: r.known_player,
+          knownHref:   netPlayerHref(r.known_pid),
+          stubPartner: r.stub_partner,
+          stubPid:     r.stub_pid,
+          coCount:     r.co_count,
+          years:       r.years,
+        })),
+        abbreviationClusters: abbrRows.map(r => ({
+          stubName:    r.stub_name,
+          stubPid:     r.stub_pid,
+          likelyMatch: r.likely_match,
+          likelyHref:  netPlayerHref(r.likely_pid),
+        })),
+        highValueCandidates: highRows.map(r => ({
+          personName:  r.person_name,
+          personId:    r.person_id,
+          appearances: r.appearances,
+          eventCount:  r.event_count,
+          years:       r.years,
+        })),
+      },
+    };
+  },
+
+  getRecoveryCandidatesPage(): NetRecoveryCandidatesPageViewModel {
+    const abbrevRows = netRecoveryCandidates.listAbbreviationCandidates.all() as RecoveryCandidateAbbrevRow[];
+    const freqRows   = netRecoveryCandidates.listHighFrequencyStubs.all() as RecoveryCandidateFreqRow[];
+
+    // Upsert abbreviation candidates into the approval table so decisions persist
+    for (const r of abbrevRows) {
+      const candidateId = `rc_${r.stub_pid.slice(0, 24)}`;
+      netRecoveryApproval.upsertCandidate.run(
+        candidateId, r.stub_name, r.stub_pid,
+        r.match_pid, r.match_name,
+        'abbreviation', 'high', r.stub_appearances,
+      );
+    }
+
+    // Read back from approval table (includes operator decisions)
+    const persistedRows = netRecoveryApproval.listAll.all() as RecoveryAliasCandidateRow[];
+    const aliasCandidates: RecoveryCandidateVM[] = persistedRows.map(r => ({
+      id:               r.id,
+      stubName:         r.stub_name,
+      stubPid:          r.stub_person_id,
+      suggestedName:    r.suggested_person_name,
+      suggestedPid:     r.suggested_person_id,
+      suggestedHref:    netPlayerHref(r.suggested_person_id),
+      suggestionType:   r.suggestion_type,
+      confidence:       r.confidence,
+      appearances:      r.appearance_count,
+      operatorDecision: r.operator_decision,
+      operatorNotes:    r.operator_notes,
+    }));
+
+    // High-frequency stubs → likely new persons (not alias candidates)
+    const aliasStubPids = new Set(aliasCandidates.map(c => c.stubPid));
+    const newPersonCandidates: RecoveryNewPersonVM[] = freqRows
+      .filter(r => !aliasStubPids.has(r.person_id))
+      .map(r => ({
+        personName:  r.person_name,
+        personId:    r.person_id,
+        appearances: r.appearances,
+        eventCount:  r.event_count,
+        years:       r.years,
+      }));
+
+    const totalApproved = aliasCandidates.filter(c => c.operatorDecision === 'approve').length;
+
+    return {
+      seo:  { title: 'Net Recovery Candidates' },
+      page: {
+        sectionKey: '',
+        pageKey:    'net_recovery_candidates',
+        title:      'Recovery Candidates',
+      },
+      content: {
+        aliasCandidates,
+        newPersonCandidates,
+        totalAlias:     aliasCandidates.length,
+        totalApproved,
+        totalNewPerson: newPersonCandidates.length,
+      },
+    };
+  },
+
+  /**
+   * Update the operator decision on a recovery alias candidate.
+   * Throws NotFoundError if the candidate does not exist.
+   * Throws ValidationError if the decision value is invalid.
+   */
+  updateRecoveryDecision(candidateId: string, payload: {
+    decision: string;
+    notes?: string | null;
+  }): void {
+    const VALID = new Set(['approve', 'reject', 'defer']);
+    if (!VALID.has(payload.decision)) {
+      throw new ValidationError(`Invalid decision: ${payload.decision}`);
+    }
+    const row = netRecoveryApproval.getById.get(candidateId);
+    if (!row) throw new NotFoundError(`Recovery candidate not found: ${candidateId}`);
+
+    netRecoveryApproval.updateDecision.run(
+      payload.decision,
+      payload.notes?.trim() || null,
+      'operator',
+      candidateId,
+    );
   },
 
   getTeamDetailPage(teamId: string): NetTeamDetailViewModel {

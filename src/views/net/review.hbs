@@ -1,12 +1,25 @@
 {{! /internal/net/review — net enrichment QC / review tool }}
 
+<style>
+.review-edit-row td { padding: 0 0.5rem 0.5rem; background: #f8f8f8; }
+.review-edit-row details summary { cursor: pointer; font-size: 0.85em; color: #666; padding: 0.25rem 0; }
+.review-edit-forms { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 0; }
+.review-inline-form fieldset { border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-end; }
+.review-inline-form legend { font-weight: 600; font-size: 0.85em; }
+.review-inline-form label { display: flex; flex-direction: column; font-size: 0.8em; gap: 0.15rem; }
+.review-inline-form select, .review-inline-form input[type="text"] { font-size: 0.85em; padding: 0.2rem 0.3rem; }
+.review-inline-form button { font-size: 0.8em; padding: 0.3rem 0.6rem; cursor: pointer; }
+</style>
+
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
     <p class="hero-subtitle">
       Operator review of net enrichment metadata.
       Summarises non-public QC items and discipline mapping issues.
-      Read-only. Not shown in public pages.
+      Not shown in public pages.
+      <a href="/internal/net/review/summary">Priority Summary &rarr;</a>
+      &middot; <a href="/internal/net/recovery-signals">Recovery Signals &rarr;</a>
     </p>
   </div>
 </div>
@@ -66,6 +79,40 @@
         <p class="detail-muted">Total: {{content.summary.totalItems}}</p>
       </div>
 
+      {{#if content.summary.byClassification.length}}
+      <div class="review-card">
+        <h3>By Classification</h3>
+        <table class="records-table records-table-sm">
+          <thead><tr><th>Classification</th><th class="col-num">Count</th></tr></thead>
+          <tbody>
+            {{#each content.summary.byClassification}}
+            <tr>
+              <td><a href="/internal/net/review?classification={{value}}">{{label}}</a></td>
+              <td class="col-num">{{count}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      {{#if content.summary.byDecision.length}}
+      <div class="review-card">
+        <h3>By Decision</h3>
+        <table class="records-table records-table-sm">
+          <thead><tr><th>Decision</th><th class="col-num">Count</th></tr></thead>
+          <tbody>
+            {{#each content.summary.byDecision}}
+            <tr>
+              <td><a href="/internal/net/review?decision={{value}}">{{label}}</a></td>
+              <td class="col-num">{{count}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
     </div>
   </section>
 
@@ -103,6 +150,30 @@
         Event ID
         <input type="text" name="event" value="{{content.activeFilters.eventId}}" placeholder="event id..." />
       </label>
+      <label>
+        Classification
+        <select name="classification">
+          {{#each content.filterOptions.classifications}}
+          <option value="{{value}}"{{#if selected}} selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <label>
+        Fix Type
+        <select name="fix_type">
+          {{#each content.filterOptions.fixTypes}}
+          <option value="{{value}}"{{#if selected}} selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <label>
+        Decision
+        <select name="decision">
+          {{#each content.filterOptions.decisionStatuses}}
+          <option value="{{value}}"{{#if selected}} selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </label>
       <div class="review-filter-actions">
         <button type="submit">Apply</button>
         <a href="/internal/net/review" class="btn-link">Clear</a>
@@ -127,7 +198,7 @@
     </div>
 
     {{#if content.items}}
-    <div class="records-table-wrap">
+    <div class="records-table-wrap" style="overflow-x:auto">
       <table class="records-table records-table-sm">
         <thead>
           <tr>
@@ -138,6 +209,10 @@
             <th>Discipline</th>
             <th>Message</th>
             <th>Imported</th>
+            <th>Classification</th>
+            <th>Fix Type</th>
+            <th>Confidence</th>
+            <th>Decision</th>
           </tr>
         </thead>
         <tbody>
@@ -158,6 +233,77 @@
             <td>{{#if disciplineName}}{{disciplineName}}{{else if disciplineId}}{{disciplineId}}{{else}}<em>—</em>{{/if}}</td>
             <td>{{message}}</td>
             <td class="col-date">{{importedAt}}</td>
+            <td>{{#if classificationLabel}}{{classificationLabel}}{{else}}<em>—</em>{{/if}}</td>
+            <td>{{#if proposedFixTypeLabel}}{{proposedFixTypeLabel}}{{else}}<em>—</em>{{/if}}</td>
+            <td>{{#if confidenceLabel}}{{confidenceLabel}}{{else}}<em>—</em>{{/if}}</td>
+            <td>{{#if decisionStatusLabel}}{{decisionStatusLabel}}{{else}}<em>—</em>{{/if}}</td>
+          </tr>
+          <tr class="review-edit-row">
+            <td colspan="11">
+              <details>
+                <summary>Edit</summary>
+                <div class="review-edit-forms">
+                  <form method="POST" action="/internal/net/review/{{id}}/classify" class="review-inline-form">
+                    <fieldset>
+                      <legend>Classification</legend>
+                      <label>
+                        Type
+                        <select name="classification">
+                          <option value="">— clear —</option>
+                          <option value="retag_team_type"{{#if (eq classification 'retag_team_type')}} selected{{/if}}>Retag Team Type</option>
+                          <option value="split_merged_discipline"{{#if (eq classification 'split_merged_discipline')}} selected{{/if}}>Split Merged Discipline</option>
+                          <option value="quarantine_non_results_block"{{#if (eq classification 'quarantine_non_results_block')}} selected{{/if}}>Quarantine Non-Results Block</option>
+                          <option value="parser_improvement"{{#if (eq classification 'parser_improvement')}} selected{{/if}}>Parser Improvement</option>
+                          <option value="unresolved"{{#if (eq classification 'unresolved')}} selected{{/if}}>Unresolved</option>
+                        </select>
+                      </label>
+                      <label>
+                        Fix Type
+                        <select name="proposed_fix_type">
+                          <option value="">— clear —</option>
+                          <option value="retag_team_type"{{#if (eq proposedFixType 'retag_team_type')}} selected{{/if}}>Retag Team Type</option>
+                          <option value="rename_discipline"{{#if (eq proposedFixType 'rename_discipline')}} selected{{/if}}>Rename Discipline</option>
+                          <option value="rename_and_retag"{{#if (eq proposedFixType 'rename_and_retag')}} selected{{/if}}>Rename &amp; Retag</option>
+                          <option value="reshape_doubles_to_singles"{{#if (eq proposedFixType 'reshape_doubles_to_singles')}} selected{{/if}}>Reshape Doubles → Singles</option>
+                          <option value="split_merged_discipline"{{#if (eq proposedFixType 'split_merged_discipline')}} selected{{/if}}>Split Merged Discipline</option>
+                          <option value="quarantine_non_results_block"{{#if (eq proposedFixType 'quarantine_non_results_block')}} selected{{/if}}>Quarantine Non-Results Block</option>
+                          <option value="parser_improvement"{{#if (eq proposedFixType 'parser_improvement')}} selected{{/if}}>Parser Improvement</option>
+                        </select>
+                      </label>
+                      <label>
+                        Confidence
+                        <select name="classification_confidence">
+                          <option value="">— clear —</option>
+                          <option value="confirmed"{{#if (eq classificationConfidence 'confirmed')}} selected{{/if}}>Confirmed</option>
+                          <option value="tentative"{{#if (eq classificationConfidence 'tentative')}} selected{{/if}}>Tentative</option>
+                        </select>
+                      </label>
+                      <button type="submit">Save Classification</button>
+                    </fieldset>
+                  </form>
+                  <form method="POST" action="/internal/net/review/{{id}}/decision" class="review-inline-form">
+                    <fieldset>
+                      <legend>Decision</legend>
+                      <label>
+                        Status
+                        <select name="decision_status">
+                          <option value="">— clear —</option>
+                          <option value="fix_encoded"{{#if (eq decisionStatus 'fix_encoded')}} selected{{/if}}>Fix Encoded</option>
+                          <option value="fix_active"{{#if (eq decisionStatus 'fix_active')}} selected{{/if}}>Fix Active</option>
+                          <option value="deferred"{{#if (eq decisionStatus 'deferred')}} selected{{/if}}>Deferred</option>
+                          <option value="wont_fix"{{#if (eq decisionStatus 'wont_fix')}} selected{{/if}}>Won't Fix</option>
+                        </select>
+                      </label>
+                      <label>
+                        Notes
+                        <input type="text" name="decision_notes" value="{{decisionNotes}}" placeholder="decision notes..." />
+                      </label>
+                      <button type="submit">Save Decision</button>
+                    </fieldset>
+                  </form>
+                </div>
+              </details>
+            </td>
           </tr>
           {{/each}}
         </tbody>

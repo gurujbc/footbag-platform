@@ -271,3 +271,98 @@ describe('GET /net/teams/:teamId', () => {
     expect(lower).not.toContain('head-to-head');
   });
 });
+
+// ---------------------------------------------------------------------------
+// GET /net/partnerships
+// ---------------------------------------------------------------------------
+
+describe('GET /net/partnerships', () => {
+  it('returns 200', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows the page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('Top Net Partnerships');
+  });
+
+  it('includes the evidence disclaimer', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('algorithmically constructed');
+  });
+
+  it('shows team 1 (Alice/Bob, 2 appearances) which meets the >=2 threshold', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('Alice Net');
+    expect(res.text).toContain('Bob Net');
+  });
+
+  it('excludes team 2 (Carol/Dave, 1 appearance) which does not meet the >=2 threshold', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).not.toContain('Carol Net');
+    expect(res.text).not.toContain('Dave Net');
+  });
+
+  it('shows win count (team 1 has 1 win at placement=1)', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    // The table has columns: Appearances, Wins, Podiums
+    // Team 1: 2 appearances, 1 win (placement 1 at event 2010), 1 podium (placement 2 at 2015)
+    expect(res.text).toContain('Wins');
+  });
+
+  it('shows podium count', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('Podiums');
+  });
+
+  it('shows year span', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    // Team 1: first_year=2010, last_year=2015 → "2010–2015"
+    expect(res.text).toContain('2010');
+    expect(res.text).toContain('2015');
+  });
+
+  it('links partnership names to team detail page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain(`/net/teams/${TEAM_1_ID}`);
+  });
+
+  it('does not include inferred_partial appearances in counts', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    // Team 1 has 2 canonical + 1 inferred_partial. Only 2 should count.
+    // The appearance_count column for team 1 should show "2", not "3"
+    // (The inferred_partial is filtered by the net_team_appearance_canonical view)
+    expect(res.text).toContain('Alice Net');
+    // There should only be one team row, and it should show 2 appearances
+    const matches = res.text.match(/<td class="col-num">(\d+)<\/td>/g) || [];
+    // First col-num in the row = appearance count = 2
+    expect(matches[0]).toContain('2');
+  });
+
+  it('does not contain forbidden stat language', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    const lower = res.text.toLowerCase();
+    expect(lower).not.toContain('head-to-head');
+    expect(lower).not.toContain('ranking');
+    expect(lower).not.toContain('win/loss');
+    expect(lower).not.toContain('rating');
+  });
+
+  it('shows total partnerships count', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/partnerships');
+    expect(res.text).toContain('1 partnerships shown');
+  });
+});

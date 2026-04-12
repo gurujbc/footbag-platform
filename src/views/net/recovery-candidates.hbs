@@ -1,0 +1,117 @@
+{{! /internal/net/recovery-candidates — structured alias candidates with approval workflow }}
+
+<style>
+.rc-decision-form { display: inline-flex; gap: 0.3rem; align-items: center; }
+.rc-decision-form select, .rc-decision-form input[type="text"] { font-size: 0.85em; padding: 0.15rem 0.3rem; }
+.rc-decision-form button { font-size: 0.8em; padding: 0.2rem 0.5rem; cursor: pointer; }
+.rc-approved { background: #e8f5e9; }
+.rc-rejected { background: #fbe9e7; }
+.rc-deferred { background: #fff8e1; }
+</style>
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      Structured alias candidates from recovery signals. Mark approve / reject / defer.
+      <a href="/internal/net/recovery-signals">&larr; Recovery Signals</a>
+    </p>
+    <div class="hero-stats">
+      <span>{{content.totalAlias}} candidates</span>
+      <span>{{content.totalApproved}} approved</span>
+      <span>{{content.totalNewPerson}} likely new persons</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{#if content.totalApproved}}
+  <div class="notice notice-info">
+    {{content.totalApproved}} approved candidate(s) ready for export. Run:<br>
+    <code>.venv/bin/python pipeline/export_approved_aliases.py</code>
+  </div>
+  {{/if}}
+
+  {{! ── Alias Candidates ───────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Alias Candidates</h2>
+      <span class="section-meta">Unambiguous abbreviation matches — same last name, matching first initial, exactly one known person</span>
+    </div>
+    {{#if content.aliasCandidates.length}}
+    <div class="records-table-wrap" style="overflow-x:auto">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Stub Name</th>
+            <th>Suggested Match</th>
+            <th class="col-num">Apps</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.aliasCandidates}}
+          <tr class="{{#if (eq operatorDecision 'approve')}}rc-approved{{/if}}{{#if (eq operatorDecision 'reject')}}rc-rejected{{/if}}{{#if (eq operatorDecision 'defer')}}rc-deferred{{/if}}">
+            <td>{{stubName}}</td>
+            <td>
+              {{#if suggestedHref}}<a href="{{{suggestedHref}}}">{{suggestedName}}</a>{{else}}{{suggestedName}}{{/if}}
+            </td>
+            <td class="col-num">{{appearances}}</td>
+            <td>
+              <form method="POST" action="/internal/net/recovery-candidates/{{id}}/decision" class="rc-decision-form">
+                <select name="decision">
+                  <option value="">--</option>
+                  <option value="approve"{{#if (eq operatorDecision 'approve')}} selected{{/if}}>Approve</option>
+                  <option value="reject"{{#if (eq operatorDecision 'reject')}} selected{{/if}}>Reject</option>
+                  <option value="defer"{{#if (eq operatorDecision 'defer')}} selected{{/if}}>Defer</option>
+                </select>
+                <input type="text" name="notes" value="{{operatorNotes}}" placeholder="notes..." />
+                <button type="submit">Save</button>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No alias candidates found.</div>
+    {{/if}}
+  </section>
+
+  {{! ── Likely New Persons ─────────────────────────────────────────── }}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>Likely New Persons</h2>
+      <span class="section-meta">High-frequency stubs with no abbreviation match — need new PT entries</span>
+    </div>
+    {{#if content.newPersonCandidates.length}}
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="col-num">Appearances</th>
+            <th class="col-num">Events</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.newPersonCandidates}}
+          <tr>
+            <td>{{personName}}</td>
+            <td class="col-num">{{appearances}}</td>
+            <td class="col-num">{{eventCount}}</td>
+            <td>{{years}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No high-frequency stubs found.</div>
+    {{/if}}
+  </section>
+
+</div>

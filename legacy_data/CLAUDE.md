@@ -49,9 +49,10 @@ mirror.
    authoritative intake format for all pre-1997 data. Raw TXT/magazine stubs are legacy
    and must be promoted to structured CSVs before being treated as authoritative.
 
-4. **Identity lock** (`inputs/identity_lock/Persons_Truth_Final_v51.csv`,
-   `Placements_ByPerson_v96.csv`) is frozen. Do not modify identity lock files directly.
+4. **Identity lock** (`inputs/identity_lock/Persons_Truth_Final_v53.csv`,
+   `Placements_ByPerson_v97.csv`) is frozen. Do not modify identity lock files directly.
    New persons or merges require a new lock version via the patch toolchain.
+   PT v53 added 690 persons for previously-unresolved canonical participants.
 
 ---
 
@@ -115,7 +116,7 @@ python pipeline/adapters/curated_events_adapter.py
 python pipeline/01c_merge_stage1.py
 python pipeline/02_canonicalize_results.py
 python pipeline/02p5_player_token_cleanup.py \
-    --identity_lock_persons_csv inputs/identity_lock/Persons_Truth_Final_v52.csv \
+    --identity_lock_persons_csv inputs/identity_lock/Persons_Truth_Final_v53.csv \
     --identity_lock_placements_csv inputs/identity_lock/Placements_ByPerson_v97.csv
 python pipeline/02p6_structural_cleanup.py
 python pipeline/historical/export_historical_csvs.py
@@ -130,7 +131,7 @@ Full stage sequence:
 Stage 01   pipeline/adapters/mirror_results_adapter.py     mirror HTML → stage1_raw_events_mirror.csv
 Stage 01c  pipeline/adapters/curated_events_adapter.py     curated CSVs → stage1_raw_events_curated.csv
 Stage 02   pipeline/02_canonicalize_results.py             raw events → stage2_canonical_events.csv
-Stage 02p5 pipeline/02p5_player_token_cleanup.py           apply identity lock (PT v51 / PBP v96)
+Stage 02p5 pipeline/02p5_player_token_cleanup.py           apply identity lock (PT v53 / PBP v97)
 Stage 02p6 pipeline/02p6_structural_cleanup.py             artifact removal + structural fixes
 Stage 05   pipeline/historical/export_historical_csvs.py   export out/canonical/*.csv  ← AUTHORITATIVE
 Stage 05p5 pipeline/05p5_remediate_canonical.py            final integrity + event merge pass
@@ -184,8 +185,8 @@ After a full `rebuild + release + qc` run:
 | `out/canonical/event_result_participants.csv` | Participant rows |
 | `out/canonical/persons.csv` | Canonically identified persons |
 
-Current totals: **830 events / 4,295 disciplines / 25,807 results / 36,261 participants
-/ 3,396 persons**. QC: PASS.
+Current totals: **838 events / 4,398 disciplines / 26,385 results / 36,966 participants
+/ 4,085 persons**. QC: PASS.
 
 ## Workbook Builds
 
@@ -271,7 +272,7 @@ decisions in one should inform the other. Do not conflate the mechanics; do alig
 ## What Is Migrated vs Legacy/Research-Only
 
 ### Migrated (production canonical)
-- All post-1997 mirror events (PT v51 / PBP v96 identity lock)
+- All post-1997 mirror events (PT v53 / PBP v97 identity lock)
 - 19 FBW structured CSVs (Variant B)
 - 15 magazine structured CSVs (Variant B)
 - 13 Worlds TXT files 1985–1997 (Variant A/C)

@@ -2977,11 +2977,26 @@ CREATE TABLE IF NOT EXISTS net_review_queue (
   resolution_notes  TEXT,
   resolved_by       TEXT,
   resolved_at       TEXT,
-  imported_at       TEXT NOT NULL
+  imported_at       TEXT NOT NULL,
+  -- Classification metadata (all nullable; populated by curator or remediation workflow)
+  -- classification valid values: retag_team_type | split_merged_discipline |
+  --   quarantine_non_results_block | parser_improvement | unresolved
+  classification            TEXT,
+  -- proposed_fix_type mirrors fix_type values in canonical_discipline_fixes.csv
+  proposed_fix_type         TEXT,
+  -- classification_confidence valid values: confirmed | tentative
+  classification_confidence TEXT,
+  -- decision_status valid values: fix_encoded | fix_active | deferred | wont_fix
+  decision_status           TEXT,
+  decision_notes            TEXT,
+  classified_by             TEXT,
+  classified_at             TEXT   -- ISO-8601 timestamp
 );
-CREATE INDEX IF NOT EXISTS idx_net_review_event    ON net_review_queue(event_id);
-CREATE INDEX IF NOT EXISTS idx_net_review_status   ON net_review_queue(resolution_status);
-CREATE INDEX IF NOT EXISTS idx_net_review_priority ON net_review_queue(priority);
+CREATE INDEX IF NOT EXISTS idx_net_review_event          ON net_review_queue(event_id);
+CREATE INDEX IF NOT EXISTS idx_net_review_status         ON net_review_queue(resolution_status);
+CREATE INDEX IF NOT EXISTS idx_net_review_priority       ON net_review_queue(priority);
+CREATE INDEX IF NOT EXISTS idx_net_review_classification ON net_review_queue(classification);
+CREATE INDEX IF NOT EXISTS idx_net_review_decision       ON net_review_queue(decision_status);
 
 -- Phase 2 stub: raw text fragments from unstructured sources (OLD_RESULTS.txt etc.)
 CREATE TABLE IF NOT EXISTS net_raw_fragment (
@@ -3092,6 +3107,26 @@ CREATE TABLE IF NOT EXISTS freestyle_trick_modifiers (
   notes                 TEXT,
   loaded_at             TEXT NOT NULL
 );
+
+-- Recovery alias candidates — operator-reviewed identity recovery workflow.
+-- Populated from recovery signal analysis; operator marks approve/reject/defer.
+-- Approved rows are exported to overrides/person_aliases.csv via pipeline script.
+CREATE TABLE IF NOT EXISTS net_recovery_alias_candidate (
+  id                    TEXT PRIMARY KEY,
+  stub_name             TEXT NOT NULL,
+  stub_person_id        TEXT NOT NULL,
+  suggested_person_id   TEXT NOT NULL,
+  suggested_person_name TEXT NOT NULL,
+  suggestion_type       TEXT NOT NULL,     -- abbreviation | partner_cooccurrence | frequency
+  confidence            TEXT NOT NULL,     -- high | medium | low
+  appearance_count      INTEGER NOT NULL DEFAULT 0,
+  operator_decision     TEXT,              -- approve | reject | defer
+  operator_notes        TEXT,
+  reviewed_by           TEXT,
+  reviewed_at           TEXT,              -- ISO-8601 timestamp
+  created_at            TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_net_recovery_decision ON net_recovery_alias_candidate(operator_decision);
 
 -- =============================================================================
 -- END OF SCHEMA v0.1

@@ -8,8 +8,15 @@ import { netController } from '../controllers/netController';
  */
 export const internalRouter = Router();
 
+// Net recovery signals + candidates (identity diagnostic)
+internalRouter.get('/net/recovery-signals',    netController.recoverySignalsPage);
+internalRouter.get('/net/recovery-candidates',              netController.recoveryCandidatesPage);
+internalRouter.post('/net/recovery-candidates/:id/decision', netController.recoveryCandidateDecision);
 // Net enrichment QC / review
-internalRouter.get('/net/review',      netController.reviewPage);
+internalRouter.get('/net/review/summary',            netController.reviewSummaryPage);
+internalRouter.get('/net/review',                    netController.reviewPage);
+internalRouter.post('/net/review/:id/classify',      netController.reviewClassify);
+internalRouter.post('/net/review/:id/decision',      netController.reviewDecision);
 // Net curated match browser
 internalRouter.get('/net/curated',     netController.curatedPage);
 // Net match candidates from noise extraction

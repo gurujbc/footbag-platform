@@ -330,12 +330,12 @@ with open(_pt_source, newline="", encoding="utf-8") as f:
         _canon = row.get("person_canon", "").strip()
         if _canon:
             names_to_person[_norm_name(_canon)] = pid
-        for name in row["player_names_seen"].split(" | "):
+        for name in re.split(r"\s*\|\s*", row["player_names_seen"]):
             name = name.strip()
             if name:
                 names_to_person[_norm_name(name)] = pid
         # Also index aliases_presentable so alias forms resolve without a PT rebuild.
-        for alias in row.get("aliases_presentable", "").split(" | "):
+        for alias in re.split(r"\s*\|\s*", row.get("aliases_presentable", "")):
             alias = alias.strip()
             if alias and len(alias) > 3:
                 names_to_person.setdefault(_norm_name(alias), pid)
@@ -1102,8 +1102,12 @@ for row in sorted_rows:
         PT resolution so alias variants (e.g. "Kenny Shults" → PT "Kenneth Shults")
         are still captured here.
         """
-        if not pid or pid == "__NON_PERSON__":
+        if pid == "__NON_PERSON__":
             return ""
+        if not pid:
+            # PBP row with empty person_id — try to resolve via current
+            # PT + person_aliases index before giving up.
+            return resolve_person_id(None, name) or ""
         if _UUID_RE.match(pid):
             if pid in _pt_person_ids or pid in _pt51_person_ids:
                 return pid          # directly in PT or PT v51 lock — use as-is

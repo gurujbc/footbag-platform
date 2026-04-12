@@ -1154,6 +1154,318 @@ export const netTeams = {
 } as const;
 
 // ---------------------------------------------------------------------------
+// netPartnerships
+//
+// Top partnerships page — aggregated stats from net_team_appearance_canonical.
+// STATISTICS FIREWALL: queries net_team_appearance_canonical view only.
+// Route: /net/partnerships
+// ---------------------------------------------------------------------------
+
+export interface NetPartnershipRow {
+  team_id:          string;
+  person_id_a:      string;
+  person_name_a:    string;
+  country_a:        string | null;
+  person_id_b:      string;
+  person_name_b:    string;
+  country_b:        string | null;
+  appearance_count: number;
+  win_count:        number;
+  podium_count:     number;
+  first_year:       number | null;
+  last_year:        number | null;
+}
+
+export const netPartnerships = {
+  // STATS FIREWALL: queries net_team_appearance_canonical (canonical_only enforced at DB layer)
+  listTopPartnerships: db.prepare(`
+    SELECT
+      t.team_id,
+      t.person_id_a,
+      pa.person_name  AS person_name_a,
+      pa.country      AS country_a,
+      t.person_id_b,
+      pb.person_name  AS person_name_b,
+      pb.country      AS country_b,
+      COUNT(*)                                              AS appearance_count,
+      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
+      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
+      MIN(a.event_year)                                     AS first_year,
+      MAX(a.event_year)                                     AS last_year
+    FROM net_team t
+    JOIN historical_persons pa ON pa.person_id = t.person_id_a
+    JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    GROUP BY t.team_id
+    HAVING COUNT(*) >= 2
+    ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
+    LIMIT 50
+  `),
+} as const;
+
+// ---------------------------------------------------------------------------
+// netRecoverySignals
+//
+// Internal-only diagnostic queries for identity recovery.
+// Detects stub persons (auto-generated, no real PT entry) by checking
+// event_count IS NULL or 0 — these are persons the seed builder created
+// as placeholders for unresolved canonical participants.
+// Route: /internal/net/recovery-signals
+// ---------------------------------------------------------------------------
+
+export interface RecoveryPartnerRepeatRow {
+  known_player:    string;
+  known_pid:       string;
+  stub_partner:    string;
+  stub_pid:        string;
+  co_count:        number;
+  years:           string;
+}
+
+export interface RecoveryAbbreviationRow {
+  stub_name:     string;
+  stub_pid:      string;
+  likely_match:  string;
+  likely_pid:    string;
+}
+
+export interface RecoveryHighValueRow {
+  person_name:  string;
+  person_id:    string;
+  appearances:  number;
+  event_count:  number;
+  years:        string;
+}
+
+export const netRecoverySignals = {
+  /** Doubles entries where a known player is partnered with a stub person. */
+  listUnresolvedPartnerRepeats: db.prepare(`
+    SELECT
+      hp_known.person_name AS known_player,
+      hp_known.person_id   AS known_pid,
+      hp_stub.person_name  AS stub_partner,
+      hp_stub.person_id    AS stub_pid,
+      COUNT(DISTINCT p_stub.result_entry_id) AS co_count,
+      GROUP_CONCAT(DISTINCT SUBSTR(ev.start_date, 1, 4)) AS years
+    FROM event_result_entry_participants p_known
+    JOIN event_result_entry_participants p_stub
+      ON p_stub.result_entry_id = p_known.result_entry_id
+      AND p_stub.id != p_known.id
+    JOIN historical_persons hp_known ON hp_known.person_id = p_known.historical_person_id
+    JOIN historical_persons hp_stub  ON hp_stub.person_id  = p_stub.historical_person_id
+    JOIN event_result_entries re ON re.id = p_known.result_entry_id
+    JOIN event_disciplines ed   ON ed.id = re.discipline_id AND ed.team_type = 'doubles'
+    JOIN events ev              ON ev.id = re.event_id
+    WHERE hp_known.event_count > 0
+      AND (hp_stub.event_count IS NULL OR hp_stub.event_count = 0)
+      AND hp_stub.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+    GROUP BY hp_known.person_id, hp_stub.person_id
+    ORDER BY co_count DESC
+    LIMIT 30
+  `),
+
+  /** Stub names that share a last name (4+ chars) with a known person.
+   *  Initial+lastname abbreviation detection. */
+  listAbbreviationClusters: db.prepare(`
+    SELECT
+      hp_stub.person_name  AS stub_name,
+      hp_stub.person_id    AS stub_pid,
+      hp_known.person_name AS likely_match,
+      hp_known.person_id   AS likely_pid
+    FROM historical_persons hp_stub
+    JOIN historical_persons hp_known
+      ON LOWER(SUBSTR(hp_known.person_name,
+                      INSTR(hp_known.person_name, ' ') + 1))
+         = LOWER(SUBSTR(hp_stub.person_name,
+                        INSTR(hp_stub.person_name, ' ') + 1))
+    WHERE (hp_stub.event_count IS NULL OR hp_stub.event_count = 0)
+      AND hp_known.event_count > 0
+      AND hp_stub.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+      AND INSTR(hp_stub.person_name, ' ') > 0
+      AND INSTR(hp_known.person_name, ' ') > 0
+      AND LENGTH(SUBSTR(hp_known.person_name,
+                        INSTR(hp_known.person_name, ' ') + 1)) >= 4
+      AND LENGTH(hp_stub.person_name) < LENGTH(hp_known.person_name)
+      AND LOWER(SUBSTR(hp_known.person_name, 1, 1))
+          = LOWER(SUBSTR(REPLACE(hp_stub.person_name, '.', ''), 1, 1))
+    ORDER BY hp_stub.person_name, hp_known.person_name
+  `),
+
+  /** Top stub persons by appearance count. */
+  listHighValueCandidates: db.prepare(`
+    SELECT
+      hp.person_name,
+      hp.person_id,
+      COUNT(DISTINCT p.result_entry_id) AS appearances,
+      COUNT(DISTINCT re.event_id)       AS event_count,
+      GROUP_CONCAT(DISTINCT SUBSTR(ev.start_date, 1, 4)) AS years
+    FROM historical_persons hp
+    JOIN event_result_entry_participants p ON p.historical_person_id = hp.person_id
+    JOIN event_result_entries re           ON re.id = p.result_entry_id
+    JOIN events ev                        ON ev.id = re.event_id
+    WHERE (hp.event_count IS NULL OR hp.event_count = 0)
+      AND hp.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+    GROUP BY hp.person_id
+    ORDER BY appearances DESC
+    LIMIT 30
+  `),
+
+  /** Total stub person count. */
+  countStubs: db.prepare(`
+    SELECT COUNT(*) AS stub_count
+    FROM historical_persons
+    WHERE (event_count IS NULL OR event_count = 0)
+      AND person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+  `),
+} as const;
+
+// ---------------------------------------------------------------------------
+// netRecoveryCandidates
+//
+// Internal-only: generates structured alias candidates from recovery signals.
+// Route: /internal/net/recovery-candidates
+// ---------------------------------------------------------------------------
+
+export interface RecoveryCandidateAbbrevRow {
+  stub_name:    string;
+  stub_pid:     string;
+  match_name:   string;
+  match_pid:    string;
+  match_count:  number;   // how many known persons share that last name + initial
+  stub_appearances: number;
+}
+
+export interface RecoveryCandidateFreqRow {
+  person_name:  string;
+  person_id:    string;
+  appearances:  number;
+  event_count:  number;
+  years:        string;
+}
+
+export const netRecoveryCandidates = {
+  /** Unambiguous abbreviation candidates: stub shares last name + first initial
+   *  with exactly ONE known person. */
+  listAbbreviationCandidates: db.prepare(`
+    SELECT
+      hp_stub.person_name  AS stub_name,
+      hp_stub.person_id    AS stub_pid,
+      hp_known.person_name AS match_name,
+      hp_known.person_id   AS match_pid,
+      (SELECT COUNT(DISTINCT p.result_entry_id)
+       FROM event_result_entry_participants p
+       WHERE p.historical_person_id = hp_stub.person_id) AS stub_appearances
+    FROM historical_persons hp_stub
+    JOIN historical_persons hp_known
+      ON LOWER(SUBSTR(hp_known.person_name, INSTR(hp_known.person_name, ' ') + 1))
+       = LOWER(SUBSTR(hp_stub.person_name, INSTR(hp_stub.person_name, ' ') + 1))
+    WHERE (hp_stub.event_count IS NULL OR hp_stub.event_count = 0)
+      AND hp_known.event_count > 0
+      AND hp_stub.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+      AND INSTR(hp_stub.person_name, ' ') > 0
+      AND INSTR(hp_known.person_name, ' ') > 0
+      AND LENGTH(SUBSTR(hp_known.person_name, INSTR(hp_known.person_name, ' ') + 1)) >= 4
+      AND LENGTH(hp_stub.person_name) < LENGTH(hp_known.person_name)
+      AND LOWER(SUBSTR(hp_known.person_name, 1, 1))
+          = LOWER(SUBSTR(REPLACE(hp_stub.person_name, '.', ''), 1, 1))
+      AND (SELECT COUNT(DISTINCT hp2.person_id)
+           FROM historical_persons hp2
+           WHERE hp2.event_count > 0
+             AND LOWER(SUBSTR(hp2.person_name, INSTR(hp2.person_name, ' ') + 1))
+               = LOWER(SUBSTR(hp_stub.person_name, INSTR(hp_stub.person_name, ' ') + 1))
+             AND INSTR(hp2.person_name, ' ') > 0
+             AND LENGTH(SUBSTR(hp2.person_name, INSTR(hp2.person_name, ' ') + 1)) >= 4
+             AND LENGTH(hp_stub.person_name) < LENGTH(hp2.person_name)
+             AND LOWER(SUBSTR(hp2.person_name, 1, 1))
+                 = LOWER(SUBSTR(REPLACE(hp_stub.person_name, '.', ''), 1, 1))
+          ) = 1
+    ORDER BY stub_appearances DESC, hp_stub.person_name ASC
+  `),
+
+  /** High-frequency stubs (>=3 appearances) — likely real persons needing PT entries. */
+  listHighFrequencyStubs: db.prepare(`
+    SELECT
+      hp.person_name,
+      hp.person_id,
+      COUNT(DISTINCT p.result_entry_id) AS appearances,
+      COUNT(DISTINCT re.event_id)       AS event_count,
+      GROUP_CONCAT(DISTINCT SUBSTR(ev.start_date, 1, 4)) AS years
+    FROM historical_persons hp
+    JOIN event_result_entry_participants p ON p.historical_person_id = hp.person_id
+    JOIN event_result_entries re           ON re.id = p.result_entry_id
+    JOIN events ev                        ON ev.id = re.event_id
+    WHERE (hp.event_count IS NULL OR hp.event_count = 0)
+      AND hp.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
+    GROUP BY hp.person_id
+    HAVING appearances >= 3
+    ORDER BY appearances DESC
+  `),
+} as const;
+
+// ---------------------------------------------------------------------------
+// netRecoveryApproval
+//
+// Internal-only: operator approval workflow for recovery alias candidates.
+// Route: /internal/net/recovery-candidates
+// ---------------------------------------------------------------------------
+
+export interface RecoveryAliasCandidateRow {
+  id:                    string;
+  stub_name:             string;
+  stub_person_id:        string;
+  suggested_person_id:   string;
+  suggested_person_name: string;
+  suggestion_type:       string;
+  confidence:            string;
+  appearance_count:      number;
+  operator_decision:     string | null;
+  operator_notes:        string | null;
+  reviewed_by:           string | null;
+  reviewed_at:           string | null;
+}
+
+export const netRecoveryApproval = {
+  listAll: db.prepare(`
+    SELECT id, stub_name, stub_person_id, suggested_person_id, suggested_person_name,
+           suggestion_type, confidence, appearance_count,
+           operator_decision, operator_notes, reviewed_by, reviewed_at
+    FROM net_recovery_alias_candidate
+    ORDER BY appearance_count DESC, stub_name ASC
+  `),
+
+  getById: db.prepare(`
+    SELECT id FROM net_recovery_alias_candidate WHERE id = ?
+  `),
+
+  upsertCandidate: db.prepare(`
+    INSERT INTO net_recovery_alias_candidate
+      (id, stub_name, stub_person_id, suggested_person_id, suggested_person_name,
+       suggestion_type, confidence, appearance_count, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    ON CONFLICT(id) DO UPDATE SET
+      appearance_count = excluded.appearance_count,
+      suggested_person_name = excluded.suggested_person_name
+  `),
+
+  updateDecision: db.prepare(`
+    UPDATE net_recovery_alias_candidate
+    SET operator_decision = ?,
+        operator_notes    = ?,
+        reviewed_by       = ?,
+        reviewed_at       = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+    WHERE id = ?
+  `),
+
+  listApproved: db.prepare(`
+    SELECT stub_name, suggested_person_id, suggested_person_name,
+           suggestion_type, operator_notes
+    FROM net_recovery_alias_candidate
+    WHERE operator_decision = 'approve'
+    ORDER BY stub_name ASC
+  `),
+} as const;
+
+// ---------------------------------------------------------------------------
 // netPlayers
 //
 // Player-centric reads for the net domain enrichment layer.
@@ -1525,6 +1837,34 @@ export interface NetReviewSummaryRow {
   item_count:        number;
 }
 
+export interface NetReviewClassificationSummaryRow {
+  classification: string;
+  item_count:     number;
+}
+
+export interface NetReviewDecisionSummaryRow {
+  decision_status: string;
+  item_count:      number;
+}
+
+export interface NetReviewFixTypeSummaryRow {
+  proposed_fix_type: string;
+  item_count:        number;
+}
+
+export interface NetReviewTopEventRow {
+  event_id:    string;
+  event_title: string | null;
+  item_count:  number;
+}
+
+export interface NetReviewTotalsRow {
+  total:        number;
+  classified:   number;
+  decided:      number;
+  unclassified: number;
+}
+
 export interface NetReviewItemRow {
   id:                string;
   item_type:         string;
@@ -1539,6 +1879,14 @@ export interface NetReviewItemRow {
   review_stage:      string | null;
   resolution_status: string;
   imported_at:       string;
+  // Classification metadata (all nullable)
+  classification:             string | null;
+  proposed_fix_type:          string | null;
+  classification_confidence:  string | null;
+  decision_status:            string | null;
+  decision_notes:             string | null;
+  classified_by:              string | null;
+  classified_at:              string | null;
 }
 
 export interface NetReviewEventContextRow {
@@ -1563,6 +1911,9 @@ export interface NetReviewFilters {
   priority?:          number;
   resolution_status?: string;
   event_id?:          string;
+  classification?:    string;
+  proposed_fix_type?: string;
+  decision_status?:   string;
   limit?:             number;
   offset?:            number;
 }
@@ -1592,6 +1943,62 @@ export const netReview = {
     JOIN event_disciplines ed ON ed.id = dg.discipline_id
     WHERE dg.conflict_flag = 1 OR dg.review_needed = 1
     ORDER BY dg.conflict_flag DESC, dg.review_needed DESC, ed.name ASC
+  `),
+
+  listClassificationSummary: db.prepare(`
+    SELECT classification, COUNT(*) AS item_count
+    FROM net_review_queue
+    WHERE classification IS NOT NULL
+    GROUP BY classification
+    ORDER BY item_count DESC
+  `),
+
+  listDecisionSummary: db.prepare(`
+    SELECT decision_status, COUNT(*) AS item_count
+    FROM net_review_queue
+    WHERE decision_status IS NOT NULL
+    GROUP BY decision_status
+    ORDER BY item_count DESC
+  `),
+
+  getReviewItemById: db.prepare(`
+    SELECT id FROM net_review_queue WHERE id = ?
+  `),
+
+  listFixTypeSummary: db.prepare(`
+    SELECT proposed_fix_type, COUNT(*) AS item_count
+    FROM net_review_queue
+    WHERE proposed_fix_type IS NOT NULL
+    GROUP BY proposed_fix_type
+    ORDER BY item_count DESC
+  `),
+
+  listActionableFixSummary: db.prepare(`
+    SELECT proposed_fix_type, COUNT(*) AS item_count
+    FROM net_review_queue
+    WHERE decision_status IN ('fix_encoded', 'fix_active')
+      AND proposed_fix_type IS NOT NULL
+    GROUP BY proposed_fix_type
+    ORDER BY item_count DESC
+  `),
+
+  listTopEventIssues: db.prepare(`
+    SELECT rq.event_id, e.title AS event_title, COUNT(*) AS item_count
+    FROM net_review_queue rq
+    LEFT JOIN events e ON e.id = rq.event_id
+    WHERE rq.event_id IS NOT NULL
+    GROUP BY rq.event_id
+    ORDER BY item_count DESC
+    LIMIT 20
+  `),
+
+  countTotals: db.prepare(`
+    SELECT
+      COUNT(*)                                              AS total,
+      COUNT(classification)                                 AS classified,
+      COUNT(CASE WHEN decision_status IS NOT NULL THEN 1 END) AS decided,
+      COUNT(CASE WHEN classification IS NULL THEN 1 END)   AS unclassified
+    FROM net_review_queue
   `),
 } as const;
 
@@ -2070,6 +2477,18 @@ export function queryReviewItems(filters: NetReviewFilters): NetReviewItemRow[] 
     conditions.push('rq.event_id = ?');
     params.push(filters.event_id);
   }
+  if (filters.classification) {
+    conditions.push('rq.classification = ?');
+    params.push(filters.classification);
+  }
+  if (filters.proposed_fix_type) {
+    conditions.push('rq.proposed_fix_type = ?');
+    params.push(filters.proposed_fix_type);
+  }
+  if (filters.decision_status) {
+    conditions.push('rq.decision_status = ?');
+    params.push(filters.decision_status);
+  }
 
   const where   = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
   const limit   = Math.min(filters.limit  ?? 50, 200);
@@ -2081,7 +2500,9 @@ export function queryReviewItems(filters: NetReviewFilters): NetReviewItemRow[] 
       rq.id, rq.item_type, rq.priority, rq.reason_code, rq.severity, rq.message,
       rq.event_id,      e.title      AS event_title,
       rq.discipline_id, ed.name      AS discipline_name,
-      rq.review_stage,  rq.resolution_status, rq.imported_at
+      rq.review_stage,  rq.resolution_status, rq.imported_at,
+      rq.classification, rq.proposed_fix_type, rq.classification_confidence,
+      rq.decision_status, rq.decision_notes, rq.classified_by, rq.classified_at
     FROM net_review_queue rq
     LEFT JOIN events            e   ON e.id   = rq.event_id
     LEFT JOIN event_disciplines ed  ON ed.id  = rq.discipline_id
@@ -2089,6 +2510,83 @@ export function queryReviewItems(filters: NetReviewFilters): NetReviewItemRow[] 
     ORDER BY rq.priority ASC, rq.imported_at DESC
     LIMIT ? OFFSET ?
   `).all(...params) as NetReviewItemRow[];
+}
+
+/**
+ * Partial UPDATE of classification fields on a net_review_queue row.
+ * Only fields present in `fields` are updated. `classified_by` and
+ * `classified_at` are always stamped. Uses runtime db.prepare() for
+ * partial-update flexibility; acceptable for a low-frequency internal tool.
+ * Returns true if the row existed and was modified.
+ */
+export function updateReviewClassification(
+  id: string,
+  fields: Partial<{
+    classification:            string | null;
+    proposed_fix_type:         string | null;
+    classification_confidence: string | null;
+  }>,
+  classifiedBy: string,
+): boolean {
+  const sets: string[] = [
+    'classified_by = ?',
+    "classified_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')",
+  ];
+  const params: (string | null)[] = [classifiedBy];
+
+  if (Object.prototype.hasOwnProperty.call(fields, 'classification')) {
+    sets.push('classification = ?');
+    params.push(fields.classification ?? null);
+  }
+  if (Object.prototype.hasOwnProperty.call(fields, 'proposed_fix_type')) {
+    sets.push('proposed_fix_type = ?');
+    params.push(fields.proposed_fix_type ?? null);
+  }
+  if (Object.prototype.hasOwnProperty.call(fields, 'classification_confidence')) {
+    sets.push('classification_confidence = ?');
+    params.push(fields.classification_confidence ?? null);
+  }
+
+  params.push(id);
+  const result = db.prepare(
+    `UPDATE net_review_queue SET ${sets.join(', ')} WHERE id = ?`,
+  ).run(...params);
+  return result.changes > 0;
+}
+
+/**
+ * Partial UPDATE of decision fields on a net_review_queue row.
+ * Only fields present in `fields` are updated. `classified_by` and
+ * `classified_at` are always stamped.
+ */
+export function updateReviewDecisionFields(
+  id: string,
+  fields: Partial<{
+    decision_status: string | null;
+    decision_notes:  string | null;
+  }>,
+  classifiedBy: string,
+): boolean {
+  const sets: string[] = [
+    'classified_by = ?',
+    "classified_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')",
+  ];
+  const params: (string | null)[] = [classifiedBy];
+
+  if (Object.prototype.hasOwnProperty.call(fields, 'decision_status')) {
+    sets.push('decision_status = ?');
+    params.push(fields.decision_status ?? null);
+  }
+  if (Object.prototype.hasOwnProperty.call(fields, 'decision_notes')) {
+    sets.push('decision_notes = ?');
+    params.push(fields.decision_notes ?? null);
+  }
+
+  params.push(id);
+  const result = db.prepare(
+    `UPDATE net_review_queue SET ${sets.join(', ')} WHERE id = ?`,
+  ).run(...params);
+  return result.changes > 0;
 }
 
 export interface MemberAuthRow {

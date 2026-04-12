@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { netService } from '../services/netService';
-import { NotFoundError, ServiceUnavailableError, ConflictError } from '../services/serviceErrors';
+import { NotFoundError, ServiceUnavailableError, ConflictError, ValidationError } from '../services/serviceErrors';
 import { logger } from '../config/logger';
 
 /**
@@ -76,14 +76,91 @@ export const netController = {
     }
   },
 
+  /** GET /internal/net/review/summary */
+  reviewSummaryPage(_req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netService.getNetReviewSummaryPage();
+      res.render('net/review-summary', vm);
+    } catch (err) {
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** GET /internal/net/recovery-candidates */
+  recoveryCandidatesPage(_req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netService.getRecoveryCandidatesPage();
+      res.render('net/recovery-candidates', vm);
+    } catch (err) {
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** POST /internal/net/recovery-candidates/:id/decision */
+  recoveryCandidateDecision(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const candidateId = req.params['id'] ?? '';
+      const rawDecision = req.body?.['decision'];
+      const rawNotes    = req.body?.['notes'];
+
+      if (typeof rawDecision !== 'string' || !rawDecision.trim()) {
+        res.status(400).send('Bad Request: decision is required');
+        return;
+      }
+
+      netService.updateRecoveryDecision(candidateId, {
+        decision: rawDecision.trim(),
+        notes:    typeof rawNotes === 'string' ? rawNotes : null,
+      });
+      res.redirect('/internal/net/recovery-candidates');
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).render('errors/not-found', {
+          seo:  { title: 'Page Not Found' },
+          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+        });
+        return;
+      }
+      if (err instanceof ValidationError) {
+        res.status(400).send(`Bad Request: ${err.message}`);
+        return;
+      }
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** GET /internal/net/recovery-signals */
+  recoverySignalsPage(_req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netService.getRecoverySignalsPage();
+      res.render('net/recovery-signals', vm);
+    } catch (err) {
+      netController._handleError(err, res, next);
+    }
+  },
+
   /** GET /internal/net/review */
   reviewPage(req: Request, res: Response, next: NextFunction): void {
     try {
-      const rawReason   = req.query['reason'];
-      const rawPriority = req.query['priority'];
-      const rawStatus   = req.query['status'];
-      const rawEvent    = req.query['event'];
-      const rawLimit    = req.query['limit'];
+      const rawReason         = req.query['reason'];
+      const rawPriority       = req.query['priority'];
+      const rawStatus         = req.query['status'];
+      const rawEvent          = req.query['event'];
+      const rawLimit          = req.query['limit'];
+      const rawClassification = req.query['classification'];
+      const rawFixType        = req.query['fix_type'];
+      const rawDecision       = req.query['decision'];
+
+      const VALID_CLASSIFICATIONS   = new Set([
+        'retag_team_type', 'split_merged_discipline', 'quarantine_non_results_block',
+        'parser_improvement', 'unresolved',
+      ]);
+      const VALID_FIX_TYPES = new Set([
+        'retag_team_type', 'rename_discipline', 'rename_and_retag',
+        'reshape_doubles_to_singles', 'split_merged_discipline',
+        'quarantine_non_results_block', 'parser_improvement',
+      ]);
+      const VALID_DECISION_STATUSES = new Set(['fix_encoded', 'fix_active', 'deferred', 'wont_fix']);
 
       const filters = {
         reason_code: typeof rawReason === 'string' && rawReason.trim()
@@ -97,6 +174,15 @@ export const netController = {
           ? rawEvent.trim() : undefined,
         limit: typeof rawLimit === 'string' && /^\d+$/.test(rawLimit)
           ? Math.min(parseInt(rawLimit, 10), 200) : 50,
+        classification: typeof rawClassification === 'string' &&
+          VALID_CLASSIFICATIONS.has(rawClassification)
+          ? rawClassification : undefined,
+        proposed_fix_type: typeof rawFixType === 'string' &&
+          VALID_FIX_TYPES.has(rawFixType)
+          ? rawFixType : undefined,
+        decision_status: typeof rawDecision === 'string' &&
+          VALID_DECISION_STATUSES.has(rawDecision)
+          ? rawDecision : undefined,
       };
 
       const vm = netService.getNetReviewPage(filters);
@@ -139,6 +225,16 @@ export const netController = {
         });
         return;
       }
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** GET /net/partnerships */
+  partnershipsPage(_req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netService.getPartnershipsPage();
+      res.render('net/partnerships', vm);
+    } catch (err) {
       netController._handleError(err, res, next);
     }
   },
@@ -272,6 +368,87 @@ export const netController = {
           seo:  { title: 'Already Curated' },
           page: { sectionKey: '', pageKey: 'error_409', title: 'Already Curated' },
         });
+        return;
+      }
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** POST /internal/net/review/:id/classify */
+  reviewClassify(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const id = req.params['id'] ?? '';
+
+      const rawClassification = req.body?.['classification'];
+      const rawFixType        = req.body?.['proposed_fix_type'];
+      const rawConfidence     = req.body?.['classification_confidence'];
+
+      const payload: {
+        classification?:            string | null;
+        proposed_fix_type?:         string | null;
+        classification_confidence?: string | null;
+      } = {};
+
+      if (typeof rawClassification === 'string') {
+        payload.classification = rawClassification.trim() || null;
+      }
+      if (typeof rawFixType === 'string') {
+        payload.proposed_fix_type = rawFixType.trim() || null;
+      }
+      if (typeof rawConfidence === 'string') {
+        payload.classification_confidence = rawConfidence.trim() || null;
+      }
+
+      netService.classifyReviewItem(id, payload);
+      res.redirect('/internal/net/review');
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).render('errors/not-found', {
+          seo:  { title: 'Page Not Found' },
+          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+        });
+        return;
+      }
+      if (err instanceof ValidationError) {
+        res.status(400).send(`Bad Request: ${err.message}`);
+        return;
+      }
+      netController._handleError(err, res, next);
+    }
+  },
+
+  /** POST /internal/net/review/:id/decision */
+  reviewDecision(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const id = req.params['id'] ?? '';
+
+      const rawStatus = req.body?.['decision_status'];
+      const rawNotes  = req.body?.['decision_notes'];
+
+      const payload: {
+        decision_status?: string | null;
+        decision_notes?:  string | null;
+      } = {};
+
+      if (typeof rawStatus === 'string') {
+        payload.decision_status = rawStatus.trim() || null;
+      }
+      if (typeof rawNotes === 'string') {
+        payload.decision_notes = rawNotes.trim() || null;
+      }
+
+      netService.updateReviewDecision(id, payload);
+      res.redirect('/internal/net/review');
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).render('errors/not-found', {
+          seo:  { title: 'Page Not Found' },
+          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+        });
+        return;
+      }
+      if (err instanceof ValidationError) {
+        res.status(400).send(`Bad Request: ${err.message}`);
         return;
       }
       netController._handleError(err, res, next);

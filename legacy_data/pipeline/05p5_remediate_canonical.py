@@ -6,6 +6,18 @@ Runs immediately after stage 05 (05_export_canonical_csv.py) and applies
 five logic fixes to the canonical CSV set before downstream consumption.
 
 Fixes (in order):
+  0. Discipline Fix Registry — apply declarative corrections from
+                            inputs/canonical_discipline_fixes.csv.  Inactive rows
+                            (active ≠ '1') are logged and skipped.  Runs BEFORE
+                            Fix 3 and Fix 5 so downstream fixes see corrected data.
+                            Supports four fix_types:
+                              rename_discipline         — update discipline_name
+                              retag_team_type           — update team_type
+                              rename_and_retag          — both
+                              reshape_doubles_to_singles— structural repair: pick
+                                one winner per placement using person_id preference;
+                                requires 100% resolution + no duplicate person_ids;
+                                emits audit CSV to out/audit/
   1. Identity Sync        — overwrite display_name from persons.csv when person_id present
   2. Regex Deep-Clean     — strip ordinals, scores, parentheticals for unresolved rows
   3. Singles Density Check— remap doubles→singles when participant density = 1.0
@@ -58,14 +70,21 @@ Input/output: out/canonical/ (repo-relative)
 """
 
 import csv
+import datetime
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
+
+# Shared heuristic for reshape_doubles_to_singles (see discipline_repair.py)
+sys.path.insert(0, str(Path(__file__).parent))
+from discipline_repair import reshape_discipline, REPAIR_THRESHOLD
 
 ROOT      = Path(__file__).resolve().parents[1]
 CANONICAL = ROOT / "out" / "canonical"
 OVERRIDES = ROOT / "inputs" / "keep_doubles_overrides.csv"
 COVERAGE_FLAG_OVERRIDES = ROOT / "overrides" / "coverage_flag_overrides.csv"
+DISCIPLINE_FIXES = ROOT / "inputs" / "canonical_discipline_fixes.csv"
 
 csv.field_size_limit(10 * 1024 * 1024)
 
@@ -175,6 +194,72 @@ if COVERAGE_FLAG_OVERRIDES.exists():
     print(f"  Coverage-flag overrides: {len(coverage_flag_overrides)} discipline(s)")
 else:
     print(f"  Coverage-flag overrides: none (create {COVERAGE_FLAG_OVERRIDES.name} to add)")
+
+# Load canonical discipline fixes (optional).
+# fix_type options and behavior:
+#   rename_discipline         — update discipline_name only
+#   retag_team_type           — update team_type only; doubles→singles removes ghost rows
+#   rename_and_retag          — both of the above
+#   reshape_doubles_to_singles— structural repair: doubles-shaped participant rows
+#                               are analyzed per-placement and reduced to one winner
+#                               each; requires 100% resolution confidence and no
+#                               duplicate person_ids before it will apply
+# Only rows with active='1' are applied.  Inactive rows are logged but skipped.
+_VALID_FIX_TYPES  = {
+    "rename_discipline",
+    "retag_team_type",
+    "rename_and_retag",
+    "reshape_doubles_to_singles",   # structural repair: doubles-shaped → true singles
+}
+_VALID_TEAM_TYPES = {"singles", "doubles"}
+discipline_fixes: list[dict] = []
+if DISCIPLINE_FIXES.exists():
+    _seen_disc_fix_keys: set[tuple[str, str]] = set()
+    with open(DISCIPLINE_FIXES, newline="", encoding="utf-8") as f:
+        for lineno, row in enumerate(csv.DictReader(f), start=2):
+            ek  = row["event_key"].strip()
+            dk  = row["discipline_key"].strip()
+            ft  = row["fix_type"].strip()
+            act = row["active"].strip()
+            if not ek or not dk:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"event_key and discipline_key are required")
+            if ft not in _VALID_FIX_TYPES:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"invalid fix_type '{ft}' — must be one of {_VALID_FIX_TYPES}")
+            if (ek, dk) in _seen_disc_fix_keys:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"duplicate entry for ({ek}, {dk})")
+            _seen_disc_fix_keys.add((ek, dk))
+            new_name = row.get("new_name", "").strip()
+            new_tt   = row.get("new_team_type", "").strip()
+            if ft in {"rename_discipline", "rename_and_retag"} and not new_name:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"fix_type '{ft}' requires new_name")
+            if ft in {"retag_team_type", "rename_and_retag"} and not new_tt:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"fix_type '{ft}' requires new_team_type")
+            if new_tt and new_tt not in _VALID_TEAM_TYPES:
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"invalid new_team_type '{new_tt}' — must be 'singles' or 'doubles'")
+            # reshape_doubles_to_singles: new_team_type defaults to 'singles' if not set;
+            # original_team_type=doubles is required (validated at application time).
+            if ft == "reshape_doubles_to_singles" and new_tt and new_tt != "singles":
+                raise SystemExit(f"canonical_discipline_fixes.csv line {lineno}: "
+                                 f"reshape_doubles_to_singles requires new_team_type='singles' "
+                                 f"(got '{new_tt}')")
+            if ft == "reshape_doubles_to_singles" and not new_tt:
+                new_tt = "singles"  # default
+            discipline_fixes.append({**row,
+                                      "event_key": ek, "discipline_key": dk,
+                                      "fix_type": ft, "active": act,
+                                      "new_name": new_name, "new_team_type": new_tt})
+    active_count   = sum(1 for r in discipline_fixes if r["active"] == "1")
+    inactive_count = len(discipline_fixes) - active_count
+    print(f"  Discipline fixes: {len(discipline_fixes)} total  "
+          f"({active_count} active, {inactive_count} inactive)")
+else:
+    print(f"  Discipline fixes: none (create {DISCIPLINE_FIXES.name} to add)")
 
 _coverage_patched = 0
 for row in disciplines:
@@ -428,6 +513,217 @@ if _1985_changes:
     print(f"\n  1985 standalone events updated: {len(_1985_changes)}")
 else:
     print("  No changes — 1985 standalone events already normalized.")
+
+# ── Fix 0: Canonical Discipline Fix Registry ──────────────────────────────────
+# Applies declarative name / team_type corrections for known discipline integrity
+# errors.  Runs BEFORE Fix 3 (singles density check) and Fix 5 (ghost partnering)
+# so downstream fixes see corrected team_type.
+#
+# fix_type semantics:
+#   rename_discipline  — update discipline_name only
+#   retag_team_type    — update team_type only; if doubles→singles, remove ghost
+#                        partner rows (notes='auto:ghost_partner') from participants
+#   rename_and_retag   — both of the above
+#
+# Safety rules:
+#   • Inactive rows (active ≠ '1') are logged and skipped.
+#   • Discipline not found → skip with warning (event may have been renamed upstream).
+#   • original_name mismatch  → skip with warning (upstream source may have changed).
+#   • original_team_type mismatch → skip with warning.
+
+print("\n[Fix 0] Applying canonical discipline fixes...")
+
+# Build fast lookup: (event_key, discipline_key) → discipline row
+_disc_index: dict[tuple[str, str], dict] = {
+    (d["event_key"], d["discipline_key"]): d for d in disciplines
+}
+
+_f0_applied           = 0
+_f0_skipped           = 0
+_f0_ghost_removed     = 0
+_f0_reshape_removed   = 0   # participant rows replaced by reshape repair
+
+
+def _emit_reshape_audit(fix_ek: str, fix_dk: str, reshape_result: dict) -> None:
+    """Write a CSV audit record for a reshape_doubles_to_singles application."""
+    audit_dir = ROOT / "out" / "audit"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%S")
+    audit_path = audit_dir / f"disc_repair_{fix_ek}_{fix_dk}_{ts}.csv"
+    fieldnames = [
+        "event_key", "discipline_key", "placement",
+        "outcome",           # resolved | ambiguous | unresolvable
+        "winner_name", "winner_person_id", "winner_order",
+        "discarded_name", "discarded_person_id", "discarded_order",
+        "reason",
+    ]
+    with open(audit_path, "w", newline="", encoding="utf-8") as af:
+        w = csv.DictWriter(af, fieldnames=fieldnames, extrasaction="ignore")
+        w.writeheader()
+        for pl, winner, discarded, reason in reshape_result["resolved"]:
+            w.writerow({
+                "event_key": fix_ek, "discipline_key": fix_dk,
+                "placement": pl, "outcome": "resolved",
+                "winner_name":       (winner.get("display_name", "") if winner else ""),
+                "winner_person_id":  (winner.get("person_id", "") if winner else ""),
+                "winner_order":      (winner.get("participant_order", "") if winner else ""),
+                "discarded_name":    (discarded.get("display_name", "") if discarded else ""),
+                "discarded_person_id": (discarded.get("person_id", "") if discarded else ""),
+                "discarded_order":   (discarded.get("participant_order", "") if discarded else ""),
+                "reason": reason,
+            })
+        for pl, reason in reshape_result["ambiguous"]:
+            w.writerow({"event_key": fix_ek, "discipline_key": fix_dk,
+                        "placement": pl, "outcome": "ambiguous", "reason": reason})
+        for pl, reason in reshape_result["unresolvable"]:
+            w.writerow({"event_key": fix_ek, "discipline_key": fix_dk,
+                        "placement": pl, "outcome": "unresolvable", "reason": reason})
+    print(f"    audit written: {audit_path.relative_to(ROOT)}")
+
+
+for fix in discipline_fixes:
+    ek, dk    = fix["event_key"], fix["discipline_key"]
+    ft        = fix["fix_type"]
+    active    = fix["active"] == "1"
+    orig_name = fix.get("original_name", "").strip()
+    orig_tt   = fix.get("original_team_type", "").strip()
+    new_name  = fix["new_name"]
+    new_tt    = fix["new_team_type"]
+
+    if not active:
+        print(f"  SKIP (inactive)  ({ek}, {dk})  fix_type={ft}")
+        _f0_skipped += 1
+        continue
+
+    disc = _disc_index.get((ek, dk))
+    if disc is None:
+        print(f"  WARN  ({ek}, {dk}) not found in event_disciplines — skipping")
+        _f0_skipped += 1
+        continue
+
+    if orig_name and disc["discipline_name"] != orig_name:
+        print(f"  WARN  ({ek}, {dk}) original_name mismatch: "
+              f"expected '{orig_name}', found '{disc['discipline_name']}' — skipping")
+        _f0_skipped += 1
+        continue
+
+    if orig_tt and disc["team_type"] != orig_tt:
+        print(f"  WARN  ({ek}, {dk}) original_team_type mismatch: "
+              f"expected '{orig_tt}', found '{disc['team_type']}' — skipping")
+        _f0_skipped += 1
+        continue
+
+    old_name = disc["discipline_name"]
+    old_tt   = disc["team_type"]
+
+    # ── simple fixes: rename / retag ──────────────────────────────────────────
+    if ft in {"rename_discipline", "retag_team_type", "rename_and_retag"}:
+        doubles_to_singles = (ft in {"retag_team_type", "rename_and_retag"}
+                              and old_tt == "doubles" and new_tt == "singles")
+        if ft in {"rename_discipline", "rename_and_retag"}:
+            disc["discipline_name"] = new_name
+        if ft in {"retag_team_type", "rename_and_retag"}:
+            disc["team_type"] = new_tt
+
+        print(f"  APPLIED  ({ek}, {dk})  fix_type={ft}")
+        if ft in {"rename_discipline", "rename_and_retag"}:
+            print(f"    name:      '{old_name}' → '{new_name}'")
+        if ft in {"retag_team_type", "rename_and_retag"}:
+            print(f"    team_type: '{old_tt}' → '{new_tt}'")
+
+        # Remove ghost partner rows for doubles→singles retag.
+        if doubles_to_singles:
+            before = len(participants)
+            participants[:] = [
+                p for p in participants
+                if not (p["event_key"] == ek
+                        and p["discipline_key"] == dk
+                        and p.get("display_name") == "__UNKNOWN_PARTNER__"
+                        and p.get("notes") == "auto:ghost_partner")
+            ]
+            removed = before - len(participants)
+            _f0_ghost_removed += removed
+            if removed:
+                print(f"    ghost partners removed: {removed}")
+
+        _f0_applied += 1
+        continue
+
+    # ── structural repair: reshape_doubles_to_singles ─────────────────────────
+    if ft == "reshape_doubles_to_singles":
+        disc_parts = [
+            p for p in participants
+            if p["event_key"] == ek and p["discipline_key"] == dk
+        ]
+        if not disc_parts:
+            print(f"  WARN  ({ek}, {dk}) no participant rows found — skipping reshape")
+            _f0_skipped += 1
+            continue
+
+        rr = reshape_discipline(disc_parts, threshold=REPAIR_THRESHOLD)
+
+        if not rr["can_apply"]:
+            reasons = []
+            if not rr["passes_threshold"]:
+                reasons.append(
+                    f"resolution rate {rr['resolution_rate']:.0%} < "
+                    f"{REPAIR_THRESHOLD:.0%} threshold"
+                )
+            if not rr["passes_duplicate_check"]:
+                n_dup = len(rr["duplicate_person_placements"])
+                reasons.append(f"{n_dup} duplicate person_id(s) in resolved winners")
+            print(f"  SKIP  ({ek}, {dk}) reshape validation failed: "
+                  f"{'; '.join(reasons)}")
+            n = rr["total_placements"]
+            print(f"    resolved {len(rr['resolved'])}/{n}  "
+                  f"ambiguous {len(rr['ambiguous'])}  "
+                  f"unresolvable {len(rr['unresolvable'])}")
+            for pl, reason in rr["ambiguous"]:
+                print(f"    ambiguous    P{pl}: {reason}")
+            for pl, reason in rr["unresolvable"]:
+                print(f"    unresolvable P{pl}: {reason}")
+            for pid, pls in rr["duplicate_person_placements"]:
+                print(f"    duplicate    pid={pid[:8]} at placements {pls}")
+            _f0_skipped += 1
+            continue
+
+        # Validation passed — apply the repair
+        disc["team_type"] = "singles"
+        if new_name:
+            disc["discipline_name"] = new_name
+
+        # Build replacement participant rows: one winner per placement,
+        # participant_order reset to "1" (canonical singles convention).
+        replacement_rows = []
+        for pl, winner, _, _ in sorted(rr["resolved"], key=lambda x: x[0]):
+            new_row = dict(winner)
+            new_row["participant_order"] = "1"
+            replacement_rows.append(new_row)
+
+        before = len(disc_parts)
+        participants[:] = [
+            p for p in participants
+            if not (p["event_key"] == ek and p["discipline_key"] == dk)
+        ] + replacement_rows
+        _f0_reshape_removed += before - len(replacement_rows)
+
+        print(f"  APPLIED  ({ek}, {dk})  fix_type={ft}")
+        print(f"    team_type: '{old_tt}' → 'singles'")
+        if new_name:
+            print(f"    name:      '{old_name}' → '{new_name}'")
+        print(f"    participants: {before} rows → {len(replacement_rows)} rows "
+              f"({before - len(replacement_rows)} discarded)")
+
+        _emit_reshape_audit(ek, dk, rr)
+        _f0_applied += 1
+        continue
+
+    # Should never reach here — _VALID_FIX_TYPES check in load block guards this.
+    raise SystemExit(f"[Fix 0] Unhandled fix_type: {ft!r}")
+
+print(f"  Fixes applied: {_f0_applied}  skipped: {_f0_skipped}  "
+      f"ghost rows removed: {_f0_ghost_removed}  "
+      f"reshape rows removed: {_f0_reshape_removed}")
 
 # ── Fix 1 & 2: Identity Sync + Regex Deep-Clean ───────────────────────────────
 
@@ -1834,6 +2130,9 @@ print(f"""
 ╔══════════════════════════════════════════╗
 ║   Relational Health Report — Stage 05p5 ║
 ╠══════════════════════════════════════════╣
+║ Fix 0  Discipline fixes applied          {_f0_applied:>6,} ║
+║        Ghost rows removed (retag)       {_f0_ghost_removed:>6,} ║
+║        Participant rows reshaped (out)  {_f0_reshape_removed:>6,} ║
 ║ Fix 1  Names synced from person master   {names_from_master:>6,} ║
 ║ Fix 2  Names regex-cleaned (unresolved)  {names_regex_cleaned:>6,} ║
 ║ Fix 3  Disciplines remapped→singles      {remapped:>6,} ║
