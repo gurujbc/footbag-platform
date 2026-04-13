@@ -323,6 +323,7 @@ run_phase_net() {
 case "$MODE" in
     full)
         run_v0_backbone
+        run_phase_net
         run_preflight
         run_phase_c
         run_phase_d
