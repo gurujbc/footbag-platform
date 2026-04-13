@@ -2041,41 +2041,180 @@ This section is still part of onboarding because the AWS setup story is not full
 
 If CloudFront pass 2 is not already complete, finish it here rather than treating it as part of the routine deploy path.
 
-When CloudFront is not yet enabled for staging, complete the original pass-2 flow:
+#### Prerequisites
+
+- `export AWS_PROFILE=footbag-operator` in your terminal
+- SSH alias `footbag-staging` working (`ssh footbag-staging` connects on port 2222)
+- `npm test` and `npm run build` passing locally
+
+#### Phase A: Deploy code to staging host first
+
+The nginx config must land before CloudFront is enabled. CloudFront strips `X-Forwarded-Proto` from origin requests but sends `CloudFront-Forwarded-Proto` instead. The `map` directive in `docker/nginx/nginx.conf` translates this to `X-Forwarded-Proto` so the app sets the session cookie `Secure` flag correctly. Without this, login cookies would lack the `Secure` flag when accessed through CloudFront. When accessed directly (no CloudFront header), the map falls back to `$scheme`.
+
+```bash
+bash scripts/deploy-code.sh <password>
+```
+
+Verify the site still works via direct IP:
+
+```bash
+curl -I http://34.192.250.246/
+curl -I http://34.192.250.246/health/ready
+```
+
+Both should return 200.
+
+#### Phase B: Enable CloudFront on staging
 
 1. In `terraform/staging/terraform.tfvars`, set:
-   - `lightsail_origin_dns = "<staging-static-ip>.nip.io"`
+   - `lightsail_origin_dns = "34.192.250.246.nip.io"`
    - `enable_cloudfront = true`
 
-2. Run:
-   - `cd terraform/staging`
-   - `terraform plan -out=tfplan`
-   - `terraform apply tfplan`
+2. Plan and review:
 
-3. Record:
-   - `terraform output cloudfront_domain`
-   - `terraform output cloudfront_distribution_id`
+```bash
+cd terraform/staging
+terraform plan -out=tfplan
+```
 
-4. Wait until the distribution status is `Deployed`.
+Expect: 2 resources to add (`aws_cloudfront_distribution.main[0]` and `aws_cloudwatch_metric_alarm.cloudfront_5xx[0]`), 0 to change, 0 to destroy. The dashboard resource will show as changed (it picks up the new distribution ID in its widget JSON).
 
-5. Update `/srv/footbag/env` on the host so `PUBLIC_BASE_URL` points at the CloudFront URL.
+3. Apply:
 
-6. Restart `footbag`.
+```bash
+terraform apply tfplan
+terraform output cloudfront_domain
+terraform output cloudfront_distribution_id
+```
 
-7. Verify the origin first, then verify CloudFront with `BASE_URL=https://<cloudfront-domain> bash scripts/smoke-local.sh`.
+Save both outputs. The domain will be something like `d1234abcdef8.cloudfront.net`.
 
-After CloudFront exists, continue with the remaining public-edge hardening:
+4. Wait for CloudFront to deploy (15 to 30 minutes):
+
+```bash
+CF_ID=$(terraform output -raw cloudfront_distribution_id)
+aws cloudfront get-distribution \
+  --id "$CF_ID" \
+  --query 'Distribution.Status' \
+  --output text
+```
+
+Repeat until it returns `Deployed`.
+
+#### Phase C: Update host config
+
+SSH to staging and update `PUBLIC_BASE_URL` to the CloudFront domain:
+
+```bash
+ssh footbag-staging
+sudo sed -i 's|PUBLIC_BASE_URL=.*|PUBLIC_BASE_URL=https://<cloudfront-domain>|' /srv/footbag/env
+sudo systemctl restart footbag
+```
+
+Verify containers came back:
+
+```bash
+docker ps
+curl -s http://localhost/health/ready | head
+```
+
+Then exit the SSH session.
+
+#### Phase D: Smoke test through CloudFront
+
+Replace `<cf>` with the actual CloudFront domain in all commands below.
+
+**D1. Automated smoke check:**
+
+```bash
+BASE_URL=https://<cf> bash scripts/smoke-local.sh
+```
+
+All checks should pass.
+
+**D2. Static asset caching:**
+
+```bash
+curl -I https://<cf>/css/style.css
+curl -I https://<cf>/js/clubs-map.js
+curl -I https://<cf>/img/world-map.svg
+```
+
+Expect 200 with `X-Cache` header. On repeat requests, `Age` header should increase (assets cache for up to 1 day).
+
+**D3. Health endpoint (no caching):**
+
+```bash
+curl -I https://<cf>/health/ready
+```
+
+`Age` header should always be 0 or absent (`/health/*` TTL is 0).
+
+**D4. Browser tests (manual):**
+
+Open `https://<cf>/` in a browser.
+
+1. Navigate public pages (home, events, clubs, players). Confirm pages render correctly.
+2. Go to `/login`. Log in with the test account. Confirm:
+   - Login POST succeeds (not 405 or 403)
+   - Redirect lands on the member dashboard
+   - In browser dev tools, the `footbag_session` cookie has the `Secure` flag set
+3. Test `returnTo`: visit `/login?returnTo=/members/footbag_hacky`. After login, confirm redirect goes to the profile page.
+4. Test avatar: go to profile edit, upload an avatar. Confirm it saves and displays.
+5. Log out. Confirm logout POST works and session clears.
+
+**D5. Verify direct IP still works:**
+
+```bash
+curl -I http://34.192.250.246/
+```
+
+Should still return 200. Direct access is not blocked until 1-F (X-Origin-Verify).
+
+#### Phase E: Update local records
+
+Update `AWS_PROJECT_SPECIFICS.md` (local only, gitignored):
+
+- Section 5: update tfvars values (`enable_cloudfront = true`, `lightsail_origin_dns`)
+- Section 6: add `aws_cloudfront_distribution.main` to resources in state
+- Section 6 outputs table: fill in `cloudfront_domain` and `cloudfront_distribution_id`
+- Section 8: update status from "NOT YET CREATED" to "ACTIVE" with the domain
+- Section 13: move CloudFront pass 2 from "Still outstanding" to "Complete"
+
+#### Rollback
+
+If anything breaks, disable CloudFront and revert the host config:
+
+```bash
+# Edit terraform/staging/terraform.tfvars: set enable_cloudfront = false
+cd terraform/staging
+terraform plan -out=tfplan
+terraform apply tfplan
+```
+
+Then revert PUBLIC_BASE_URL on the host:
+
+```bash
+ssh footbag-staging
+sudo sed -i 's|PUBLIC_BASE_URL=.*|PUBLIC_BASE_URL=http://34.192.250.246|' /srv/footbag/env
+sudo systemctl restart footbag
+```
+
+#### Remaining public-edge hardening (after CloudFront exists)
+
+After CloudFront is active and validated, continue with:
 
 - attach the final custom domain and ACM certificate
 - add Route 53 records
 - update `PUBLIC_BASE_URL` to the final public URL
-- implement a real maintenance path:
+- implement origin-bypass protection and maintenance path:
   - generate a shared secret: `openssl rand -hex 32`
-  - store it in SSM at `/footbag/staging/secrets/origin_verify_secret`
-  - S3-hosted maintenance page with CloudFront Origin Access Control
-  - `ordered_cache_behavior` for `/maintenance.html`
-  - `X-Origin-Verify` secret enforced in nginx between CloudFront and the origin
-  - direct-origin bypass blocked unless the secret header is present
+  - add the secret as a `custom_header` (`X-Origin-Verify`) on the CloudFront origin in `cloudfront.tf`
+  - add the secret to `/srv/footbag/env` on the host (Lightsail cannot use SSM at runtime; the env file is the runtime source of truth)
+  - optionally store a copy in SSM at `/footbag/staging/secrets/origin_verify_secret` for reference only
+  - enforce the header in `docker/nginx/nginx.conf`: reject requests that lack the correct `X-Origin-Verify` value (blocks direct-to-origin bypass)
+  - S3-hosted maintenance page with CloudFront Origin Access Control (OAC)
+  - `ordered_cache_behavior` for `/maintenance.html` routing to the S3 origin
 
 Until that is complete, do not rely on the maintenance page as a graceful-downtime path.
 

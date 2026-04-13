@@ -20,10 +20,10 @@ Legacy site (HTTP only): [http://www.footbag.org/](http://www.footbag.org/)
 
 Some functionality is done and deployed on AWS. This is the baseline for ongoing work.
 
-Sneak Preview: [http://34.192.250.246/events/event_2025_beaver_open](http://34.192.250.246/events/event_2025_beaver_open)
+Sneak Preview: [https://doye1nvv64qep.cloudfront.net/events/event_2025_beaver_open](https://doye1nvv64qep.cloudfront.net/events/event_2025_beaver_open)
 
 - Some legacy migration tooling is done, including a full mirror of the current live footbag.org.
-- Historical data processing scripts under active development.
+- Historical data processing scripts under development. Legacy event-results data cleanup is done, club data processing is underway.
 - The current implemented slice is evolving. For the authoritative current scope, implemented routes, and known accepted gaps, see `IMPLEMENTATION_PLAN.md`.
 - Official rule/policy simplification proposals approved by IFPA Board Decision; awaiting final IFPA language.
 

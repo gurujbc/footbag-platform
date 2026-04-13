@@ -362,7 +362,7 @@ Break-glass rules:
 
 1. Viewer traffic terminates at CloudFront.
 2. CloudFront serves cached static assets and forwards dynamic requests to the Lightsail origin.
-3. If the origin returns configured 5xx responses or is unreachable, CloudFront serves the maintenance page.
+3. If the origin returns configured 5xx responses or is unreachable, CloudFront serves the maintenance page. *(Not yet functional: S3 OAC and `ordered_cache_behavior` for `/maintenance.html` are deferred to 1-F. See §8.3.)*
 4. The origin runs nginx, which proxies to the Node.js web application.
 5. The worker container executes background jobs and operational tasks.
 6. Media is served from S3/CloudFront according to the configured media path.
@@ -372,7 +372,7 @@ Important limitation: browsing traffic gets the maintenance page during origin f
 ### 4.2 Networking and TLS
 
 - viewer TLS terminates at CloudFront
-- Route 53 points public DNS at the CloudFront distribution
+- Route 53 points public DNS at the CloudFront distribution (deferred in staging; see note below)
 - custom domains and certificates must be managed as infrastructure
 - origin exposure should be minimized; direct origin access is not the user-facing path
 - use WAF at CloudFront for basic managed-rule protection and IP-based emergency blocking when required
@@ -1621,12 +1621,14 @@ in `cloudwatch.tf`). Does not exist after pass 1. Created in pass 2 alongside th
 
 | Item | Value |
 |------|-------|
-| Distribution | Terraform-managed (`count = var.enable_cloudfront ? 1 : 0`) |
-| Origin | `var.lightsail_origin_dns` — nip.io hostname for staging; real DNS A record for production |
-| Domain | Default `*.cloudfront.net` URL (custom domain deferred) |
-| HTTPS | CloudFront default certificate only (ACM cert deferred) |
-| Maintenance mode | Not functional — S3 OAC and `ordered_cache_behavior` not yet implemented (accepted temporary deviation) |
-| Origin bypass protection | Not implemented — `X-Origin-Verify` header omitted from `cloudfront.tf` (accepted temporary deviation) |
+| Distribution | `E1SJIAXV0H24H2` — Terraform-managed, active on staging |
+| Origin | `34.192.250.246.nip.io` (staging); real DNS A record for production |
+| Domain | `doye1nvv64qep.cloudfront.net` (custom domain deferred to 1-F) |
+| HTTPS | CloudFront default certificate (ACM cert deferred to 1-F) |
+| Protocol forwarding | `CloudFront-Forwarded-Proto` whitelisted and mapped to `X-Forwarded-Proto` in nginx |
+| Cache behaviors | Default (all methods, `footbag_session` cookie, query strings), `/css/*` `/js/*` `/img/*` (long TTL), `/health/*` (pass-through) |
+| Maintenance mode | Not functional — S3 OAC and `ordered_cache_behavior` not yet implemented (deferred to 1-F) |
+| Origin bypass protection | Not implemented — `X-Origin-Verify` header deferred to 1-F |
 
 ---
 
@@ -1842,8 +1844,7 @@ Not yet provisioned (deferred):
 /footbag/staging/secrets/origin_verify_secret
 ```
 
-**The running app reads `/srv/footbag/env`, not SSM.** Updating Parameter Store does not
-change the running app — update `/srv/footbag/env` and restart the service to apply changes.
+**The running app reads `/srv/footbag/env`, not SSM.** Lightsail does not support EC2 instance profiles, so the app cannot call SSM at runtime. Updating Parameter Store does not change the running app. Update `/srv/footbag/env` and restart the service to apply changes. When `origin_verify_secret` is implemented (1-F), the secret must go in `/srv/footbag/env` for nginx to use and optionally in SSM for reference.
 
 ---
 

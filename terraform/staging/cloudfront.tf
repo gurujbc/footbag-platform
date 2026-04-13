@@ -49,13 +49,17 @@ resource "aws_cloudfront_distribution" "main" {
   default_cache_behavior {
     target_origin_id       = "lightsail-origin"
     viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
     forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
+      query_string = true
+      headers      = ["CloudFront-Forwarded-Proto", "Host"]
+      cookies {
+        forward           = "whitelist"
+        whitelisted_names = ["footbag_session"]
+      }
     }
 
     # Short TTL — server-rendered HTML should not be cached aggressively
@@ -67,6 +71,44 @@ resource "aws_cloudfront_distribution" "main" {
   # ── Static assets — longer cache ─────────────────────────────────────────
   ordered_cache_behavior {
     path_pattern           = "/css/*"
+    target_origin_id       = "lightsail-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    forwarded_values {
+      query_string = false
+      cookies { forward = "none" }
+    }
+
+    min_ttl     = 0
+    default_ttl = 86400   # 1 day
+    max_ttl     = 2592000 # 30 days
+  }
+
+  # ── JavaScript — longer cache ──────────────────────────────────────────
+  ordered_cache_behavior {
+    path_pattern           = "/js/*"
+    target_origin_id       = "lightsail-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    forwarded_values {
+      query_string = false
+      cookies { forward = "none" }
+    }
+
+    min_ttl     = 0
+    default_ttl = 86400   # 1 day
+    max_ttl     = 2592000 # 30 days
+  }
+
+  # ── Images — longer cache ────────────────────────────────────────────
+  ordered_cache_behavior {
+    path_pattern           = "/img/*"
     target_origin_id       = "lightsail-origin"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD"]

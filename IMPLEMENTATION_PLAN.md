@@ -130,7 +130,7 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 
 | # | Task | Size | Unblocks | Dependencies |
 |---|------|------|----------|-------------|
-| 1-E | CloudFront pass 2: enable on staging, validate, enable on production | M | 1-F security hardening, production deploy, maintenance failover | None |
+| ~~1-E~~ | ~~CloudFront pass 2: enable on staging, validate, enable on production~~ | ~~M~~ | ~~1-F security hardening, production deploy, maintenance failover~~ | **DONE** (April 2026) |
 | 4-A' | Auth hardening: JWT cookie, per-request DB state check, CSRF, password-version session invalidation | L | Organizer write flows, admin work queue, all state-changing routes | None |
 | 4-D | Email outbox worker: activate `worker.ts` for outbox_emails via SES | L | Email verification (4-E), password reset (4-G), legacy claim rewrite (4-F'), mailing lists | SES configured (already Terraformed) |
 
@@ -139,7 +139,7 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 - 1-E, 4-A', and 4-D have no dependencies on each other; all three can proceed in parallel.
 - 4-A' is the highest-risk deviation: all future state-changing routes depend on CSRF and session invalidation being in place.
 - 4-D activates the worker stub that is already scaffolded; SES domain verification is already Terraformed.
-- 1-E is the smallest item and the prerequisite for the rest of the Phase 1 infrastructure chain (1-F, 1-G).
+- 1-E is complete. Distribution `E1SJIAXV0H24H2` active at `doye1nvv64qep.cloudfront.net`. Cache behaviors fixed (all methods, cookie/query forwarding, static asset caching). `CloudFront-Forwarded-Proto` mapped in nginx for session cookie `Secure` flag. 1-F and 1-G are now unblocked.
 
 ### Tier 2 items (queue after Tier 1, or in parallel where independent)
 
@@ -148,7 +148,7 @@ Not yet covered by tests: 500 error handler, world-record routes, honor-roll rou
 
 ### Acceptance criteria
 
-- 1-E: CloudFront active on staging with valid HTTPS; origin still reachable for health checks; `npm test` and manual staging verification pass
+- ~~1-E: CloudFront active on staging with valid HTTPS; origin still reachable for health checks; `npm test` and manual staging verification pass~~ **MET** — all smoke checks pass, login/auth verified through CloudFront, `Secure` cookie flag confirmed, direct IP still reachable
 - 4-A': JWT-based session cookie with per-request DB state check; CSRF token on all state-changing forms; password change invalidates existing sessions; all existing integration tests pass plus new tests for session invalidation and CSRF rejection
 - 4-D: Worker processes outbox_emails rows; SES sends in staging (sandbox mode acceptable); dead-letter / retry semantics defined; integration test for outbox processing
 
@@ -330,11 +330,11 @@ These are known, intentional shortcuts. Each has an explicit unblock condition. 
 
 5. **No closed backup/restore workflow.** S3 bucket is scaffolded; no backup producer exists; no restore drill run. `/health/ready` is a DB-probe only. Unblock: implement backup job in worker and run a restore rehearsal before any production data is at risk.
 
-6. **Maintenance mode is not production-grade.** CloudFront maintenance-origin/error behavior is omitted from Terraform; direct-origin failover not implemented. Unblock: Phase 1-E CloudFront pass 2. **Partially addressed: next sprint, task 1-E enables CloudFront; maintenance page deferred to 1-F.**
+6. **Maintenance mode is not production-grade.** CloudFront is active but maintenance-origin/error behavior is not implemented. S3 maintenance page, OAC, and `ordered_cache_behavior` for `/maintenance.html` still needed. Unblock: Phase 1-F security hardening. **1-E complete; maintenance page deferred to 1-F.**
 
 7. **CloudFront hardening incomplete.** X-Origin-Verify header absent from Nginx; OAC/ordered-cache controls deferred; direct-origin bypass unprotected. Unblock: Phase 1-F security hardening.
 
-8. **CI/CD pipeline is partial.** App CI is active (`.github/workflows/ci.yml` runs build + test + terraform fmt/validate). Three deploy scripts: `deploy-code.sh` (code-only), `deploy-rebuild.sh` (destructive DB rebuild), `deploy-migrate.sh` (stub, not yet implemented). Remaining: CloudFront (1-E), security hardening (1-F), CloudWatch agent (1-G). **Partially addressed: next sprint, task 1-E.**
+8. **CI/CD pipeline is partial.** App CI is active (`.github/workflows/ci.yml` runs build + test + terraform fmt/validate). Three deploy scripts: `deploy-code.sh` (code-only), `deploy-rebuild.sh` (destructive DB rebuild), `deploy-migrate.sh` (stub, not yet implemented). Remaining: security hardening (1-F), CloudWatch agent (1-G). **1-E complete.**
 
 9. **Monitoring is partial and intentionally gated.** CloudWatch log groups and alarms Terraformed; agent install TODO; monitoring gates default false; backup freshness metric has no producer. Unblock: Phase 1-G.
 
@@ -372,13 +372,13 @@ legacy member import + claim flow
   ← James's historical pipeline (clubs + club-only persons)
 
 CI/CD — COMPLETE (app CI + deploy scripts)
-  remaining: 1-E CloudFront, 1-F security hardening, 1-G CloudWatch agent
+  remaining: 1-F security hardening, 1-G CloudWatch agent (1-E CloudFront DONE)
 ```
 
 ### Infrastructure dependency chain
 ```
 production deploy
-  ← staging validated + CloudFront active
+  ← staging validated + CloudFront active (DONE — 1-E complete)
     ← host bootstrap (DONE)
 
 email delivery
@@ -407,11 +407,11 @@ IFPA rules integration planning can continue, but implementation must wait for J
 
 | # | Task | Size | Dependency |
 |---|------|------|-----------|
-| 1-E | CloudFront pass 2: enable in Terraform, apply to staging | M | Phase 0 gate |
-| 1-F | Security hardening: X-Origin-Verify header, S3 OAC | M | 1-E |
+| ~~1-E~~ | ~~CloudFront pass 2: enable in Terraform, apply to staging~~ | ~~M~~ | **DONE** (April 2026) |
+| 1-F | Security hardening: X-Origin-Verify header, S3 OAC | M | ~~1-E~~ (unblocked) |
 | 1-G | CloudWatch agent install on host | S | Phase 0 gate |
 
-**Gate:** PARTIAL. App CI green, deploy scripts exist. Remaining: CloudFront (1-E), CloudWatch (1-G).
+**Gate:** PARTIAL. App CI green, deploy scripts exist, CloudFront active. Remaining: security hardening (1-F), CloudWatch (1-G).
 
 ### Phase 2 — Legacy data import
 **Goal:** Real historical data visible on public site. No migration framework; schema changes require DB rebuild.
