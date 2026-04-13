@@ -90,10 +90,10 @@ export const consecutiveService = {
     return {
       seo:  { title: 'Consecutive Kicks Records' },
       page: {
-        sectionKey: 'consecutive',
+        sectionKey: 'records',
         pageKey:    'consecutive_records',
         title:      'Consecutive Kicks Records',
-        intro:      'Official WFA-sanctioned consecutive kicks world records and historical elite scores.',
+        intro:      'Consecutive kicks world records, highest scores, and milestones.',
       },
       content: {
         worldRecords:  worldRows.map(shapeRow),

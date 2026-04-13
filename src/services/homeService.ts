@@ -86,11 +86,16 @@ export const homeService = {
           href: '/members',
           description: 'Manage your profile and participate in the footbag community.',
         },
+        {
+          label: 'Freestyle',
+          href: '/freestyle',
+          description: 'Tricks, combos, and choreographed routines set to music.',
+        },
       ],
       comingSoonSections: [
-        { heading: 'Media Gallery', body: 'Browse photos and videos by hashtag, member, event, and club galleries.' },
         { heading: 'Net', body: 'Fast-paced volleyball-style play over a 5-foot net.' },
-        { heading: 'Freestyle', body: 'Tricks, combos, and choreographed routines set to music.' },
+        { heading: 'Records', body: 'Consecutive kicks world records, highest scores, and milestones.' },
+        { heading: 'Media Gallery', body: 'Browse photos and videos by hashtag, member, event, and club galleries.' },
         { heading: 'Sideline Events', body: 'Golf, 2-Square, 4-Square, Consecutive Kicks, and Circle Kicking (old-school Hack).' },
         { heading: 'Tutorials', body: 'Rules, how-to guides, and reference material for all levels.' },
       ],

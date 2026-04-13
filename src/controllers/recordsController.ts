@@ -7,14 +7,14 @@ import { logger } from '../config/logger';
  * Thin controller for public consecutive kicks routes.
  * Business logic and page shaping live in consecutiveService.
  */
-export const consecutiveController = {
-  /** GET /consecutive */
+export const recordsController = {
+  /** GET /records */
   records(_req: Request, res: Response, next: NextFunction): void {
     try {
       const vm = consecutiveService.getRecordsPage();
-      res.render('consecutive/records', vm);
+      res.render('records/records', vm);
     } catch (err) {
-      consecutiveController._handleError(err, res, next);
+      recordsController._handleError(err, res, next);
     }
   },
 
@@ -26,7 +26,7 @@ export const consecutiveController = {
       });
       return;
     }
-    logger.error('unexpected error in consecutive controller', {
+    logger.error('unexpected error in records controller', {
       error: err instanceof Error ? err.message : String(err),
     });
     next(err);

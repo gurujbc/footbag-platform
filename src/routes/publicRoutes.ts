@@ -8,7 +8,7 @@ import { claimController } from '../controllers/claimController';
 import { authController } from '../controllers/authController';
 import { hofController } from '../controllers/hofController';
 import { freestyleController } from '../controllers/freestyleController';
-import { consecutiveController } from '../controllers/consecutiveController';
+import { recordsController } from '../controllers/recordsController';
 import { netController } from '../controllers/netController';
 import { requireAuth } from '../middleware/authStub';
 
@@ -32,7 +32,7 @@ publicRouter.get('/freestyle/insights',    freestyleController.insights);
 publicRouter.get('/freestyle/tricks/:slug', freestyleController.trick);
 publicRouter.get('/freestyle',             freestyleController.landing);
 
-publicRouter.get('/consecutive', consecutiveController.records);
+publicRouter.get('/records', recordsController.records);
 
 // IMPORTANT: /net must be registered before all /net/* sub-routes
 publicRouter.get('/net',                  netController.homePage);

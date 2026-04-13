@@ -125,7 +125,7 @@ export function createApp(): express.Application {
       : req.path.startsWith('/clubs') ? 'clubs'
       : req.path.startsWith('/hof') ? 'hof'
       : req.path.startsWith('/freestyle') ? 'freestyle'
-      : req.path.startsWith('/consecutive') ? 'consecutive'
+      : req.path.startsWith('/records') ? 'records'
       : req.path.startsWith('/net') ? 'net'
       : '';
     res.locals.isAuthenticated = req.isAuthenticated;

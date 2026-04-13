@@ -1254,9 +1254,7 @@ export const freestyleService = {
         sectionKey: 'freestyle',
         pageKey:    'freestyle_landing',
         title:      'Freestyle Footbag',
-        intro:
-          'Competition history, passback records, trick dictionary, and the story of how the ' +
-          'sport evolved from clipper basics to 6-ADD modifier stacking.',
+        intro: 'Tricks, combos, and choreographed routines set to music.',
       },
       content: {
         totalRecords,

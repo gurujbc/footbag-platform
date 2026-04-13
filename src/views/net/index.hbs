@@ -3,7 +3,7 @@
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
-    <p class="hero-subtitle">Historical footbag net doubles results from IFPA competitions, 1981&ndash;present.</p>
+    <p class="hero-subtitle">Fast-paced volleyball-style play over a 5-foot net.</p>
   </div>
 </div>
 
@@ -13,10 +13,7 @@
   {{#if content.notablePartnerships.length}}
   {{#each content.notablePartnerships}}
   <section class="content-section">
-    <div class="section-heading">
-      <h2>{{title}}</h2>
-      {{#if @first}}<a href="/net/partnerships" class="section-link">All partnerships &rarr;</a>{{/if}}
-    </div>
+    <h2>{{title}}</h2>
     <div class="records-table-wrap">
       <table class="records-table">
         <thead>
@@ -49,9 +46,7 @@
   {{#if content.notablePlayers.length}}
   {{#each content.notablePlayers}}
   <section class="content-section">
-    <div class="section-heading">
-      <h2>{{title}}</h2>
-    </div>
+    <h2>{{title}}</h2>
     <div class="records-table-wrap">
       <table class="records-table">
         <thead>
@@ -84,23 +79,29 @@
 
   {{! ── Explore ───────────────────────────────────────────────────── }}
   <section class="content-section">
-    <div class="section-heading">
-      <h2>Explore</h2>
+    <div class="card-grid card-grid-3col">
+      <div class="card card-coming-soon">
+        <div class="card-title">Partnerships</div>
+        <p>Browse all net doubles partnerships and their results.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Teams</div>
+        <p>View team rosters and competitive records.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
+      <div class="card card-coming-soon">
+        <div class="card-title">Events</div>
+        <p>Full archive of net doubles competitions.</p>
+        <span class="badge badge-coming-soon">Coming soon</span>
+      </div>
     </div>
-    <p>
-      <a href="/net/partnerships">All partnerships</a> &middot;
-      <a href="/net/teams">All teams</a> &middot;
-      <a href="/net/events">All events</a>
-    </p>
   </section>
 
   {{! ── Recent Events ────────────────────────────────────────────── }}
   {{#if content.recentEvents}}
   <section class="content-section">
-    <div class="section-heading">
-      <h2>Recent Events</h2>
-      <a href="/net/events" class="section-link">All events &rarr;</a>
-    </div>
+    <h2>Recent Events</h2>
     <div class="records-table-wrap">
       <table class="records-table">
         <thead>

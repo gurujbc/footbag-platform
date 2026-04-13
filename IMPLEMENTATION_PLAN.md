@@ -261,11 +261,11 @@ Current route split (implemented): `/history` and `/history/:personId` are histo
 
 ### World records page — blocked on James
 
-Blocked on James providing the records CSV file. Route: `/records` (new public page). Sequencing: extend-service-contract → add-public-page → write-tests → doc-sync.
+Blocked on James providing the records CSV file. Route `/records` is live (renamed from `/consecutive`); page renders but has no data until CSV is loaded. Controller: `src/controllers/recordsController.ts`, service: `src/services/consecutiveService.ts`, view: `src/views/records/records.hbs`. Integration tests pass at `tests/integration/records.routes.test.ts`.
 
-- `src/services/recordsService.ts`, `src/controllers/recordsController.ts`, `src/views/public/records.hbs` (new)
-- Add `/records` to nav and routes
-- Integration tests for GET `/records`
+Remaining:
+- Load CSV data into `consecutive_kicks_records` table
+- Verify page renders with real data
 
 ### BAP honor-roll pages — deferred
 

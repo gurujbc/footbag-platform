@@ -2,7 +2,7 @@
  * Integration tests for the consecutive kicks records public route.
  *
  * Covers:
- *   GET /consecutive — consecutive kicks records page
+ *   GET /records — consecutive kicks records page
  *
  * Verifies:
  *   - world records section renders
@@ -117,35 +117,35 @@ afterAll(() => cleanupTestDb(dbPath));
 
 // ---------------------------------------------------------------------------
 
-describe('GET /consecutive', () => {
+describe('GET /records', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.status).toBe(200);
   });
 
   it('renders the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Consecutive Kicks Records');
   });
 
   it('shows Current World Records section', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Current World Records');
   });
 
   it('shows Ted Martin world record with score', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Ted Martin');
     expect(res.text).toContain('63,326');
   });
 
   it('shows doubles holders joined with &', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Gary Lautt');
     expect(res.text).toContain('Tricia George');
     expect(res.text).toContain('132,011');
@@ -153,41 +153,41 @@ describe('GET /consecutive', () => {
 
   it('shows Highest Official Scores section', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Highest Official Scores');
     expect(res.text).toContain('Singles Consecutive 20000+ Club');
   });
 
   it('shows Constance Constable in scores list', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Constance Constable');
     expect(res.text).toContain('24,713');
   });
 
   it('shows World Record Progression section', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('World Record Progression');
     expect(res.text).toContain('Open Singles Consecutive');
   });
 
   it('shows year column in progression table', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('1997');
   });
 
   it('shows Milestone Firsts section', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('Milestone Firsts');
     expect(res.text).toContain('Singles milestone first');
   });
 
   it('shows WFA source attribution', async () => {
     const app = createApp();
-    const res = await request(app).get('/consecutive');
+    const res = await request(app).get('/records');
     expect(res.text).toContain('World Footbag Association');
   });
 });

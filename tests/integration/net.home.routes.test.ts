@@ -202,14 +202,13 @@ describe('GET /net', () => {
     expect(res.text).toContain('Multi-stage');
   });
 
-  it('shows the Explore section with discovery links', async () => {
+  it('shows discovery cards as coming soon', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('Explore');
-    expect(res.text).toContain('/net/partnerships');
-    expect(res.text).toContain('/net/teams');
-    expect(res.text).toContain('/net/events');
-    expect(res.text).toContain('/net/events');
+    expect(res.text).toContain('Partnerships');
+    expect(res.text).toContain('Teams');
+    expect(res.text).toContain('Events');
+    expect(res.text).toContain('Coming soon');
   });
 
   it('does not show rankings, win/loss, or head-to-head stats', async () => {
@@ -221,11 +220,10 @@ describe('GET /net', () => {
     expect(lower).not.toContain('head-to-head');
   });
 
-  it('nav "Net" link points to /net', async () => {
+  it('renders the /net page', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    // The nav and footer should link to /net (not /net/teams)
-    expect(res.text).toContain('href="/net"');
+    expect(res.status).toBe(200);
   });
 });
 
@@ -269,11 +267,10 @@ describe('GET /net — Notable Partnerships', () => {
     expect(res.text).toContain(`/net/partnerships/${TEAM_AB}`);
   });
 
-  it('shows "All partnerships" link', async () => {
+  it('shows partnership data in notable section', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
     expect(res.text).toContain('/net/partnerships');
-    expect(res.text).toContain('All partnerships');
   });
 
   it('shows win and podium counts in notable rows', async () => {

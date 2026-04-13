@@ -268,7 +268,7 @@ describe('GET /freestyle — 4-pillar portal landing', () => {
     expect(res.text).toContain('Competition');
     expect(res.text).toContain('Passback Records');
     expect(res.text).toContain('Trick Dictionary');
-    expect(res.text).toContain('History');
+    expect(res.text).toContain('Insights');
   });
 
   it('links to all four pillar pages', async () => {

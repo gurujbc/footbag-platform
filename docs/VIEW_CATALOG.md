@@ -163,7 +163,7 @@ Every public page except Home (see §3.5) must render from the same top-level co
   - `title` — tab suffix (e.g. `"Events"`, `"2025 Events"`, `"Alice Footbag"`); the layout renders `Footbag {seo.title}` in the `<title>` tag; never include the word "Footbag" in this value
   - optional `description` — meta description for future SEO use
 - `page`
-  - `sectionKey` — nav section identifier (`'events'`, `'members'`, `'clubs'`, `'hof'`, or `''` for login/error pages)
+  - `sectionKey` — nav section identifier (`'events'`, `'members'`, `'clubs'`, `'hof'`, `'freestyle'`, `'records'`, `'net'`, or `''` for login/error pages)
   - `pageKey` — unique page identifier (`'events_index'`, `'event_detail'`, `'member_history_detail'`, etc.)
   - `title` — displayed h1 text
   - optional `eyebrow` — small label rendered above h1
@@ -416,7 +416,7 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /freestyle/about` | Freestyle about | Freestyle discipline overview | Current |
 | `GET /freestyle/moves` | Freestyle moves | Freestyle moves reference | Current |
 | `GET /freestyle/tricks/:slug` | Freestyle trick detail | Detail page for a single freestyle trick | Current |
-| `GET /consecutive` | Consecutive records | Consecutive kicks world records | Current |
+| `GET /records` | Consecutive records | Consecutive kicks world records | Current |
 | `GET /net/teams` | Net teams list | Doubles net team list ordered by appearance count | Current |
 | `GET /net/teams/:teamId` | Net team detail | Doubles net team competition history | Current |
 | `GET /health/live` | Operational endpoint | Liveness check | Not a cataloged page |
@@ -443,7 +443,7 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /register` is the member registration route. `POST /register` is its form-action handler and is not a separate cataloged page.
 - `GET /hof` is the canonical HoF section entry route.
 - `GET /freestyle` is the canonical freestyle section entry route. Sub-routes `/freestyle/records`, `/freestyle/leaders`, `/freestyle/about`, `/freestyle/moves`, and `/freestyle/tricks/:slug` are all public and unauthenticated.
-- `GET /consecutive` is the canonical consecutive section entry route and the single page in the consecutive section.
+- `GET /records` is the canonical records section entry route and the single page in the records section.
 - `GET /net/teams` is the canonical net section entry route; lists doubles teams ordered by appearance count. `GET /net/teams/:teamId` is the team detail route; returns 404 for unknown team IDs. Both pages always render the disclaimer: "Team identities are algorithmically constructed from placement data and may not reflect official partnerships."
 - health routes are operational and are outside the cataloged page system.
 
@@ -473,7 +473,7 @@ This page consumes the generic public rendering standard's shared frame, shared 
 
 - welcome visitors to IFPA Footbag
 - establish the site's overall look and feel
-- provide strong entry points into Events, Members, and Clubs
+- provide strong entry points into Events, Members, Clubs, and Freestyle
 - support richer editorial/media presentation than ordinary list/detail pages
 - remain compatible with future designer-led landing-page enhancements without requiring a new front-end architecture
 
