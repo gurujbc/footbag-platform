@@ -8,12 +8,53 @@
   </div>
   {{/if}}
 
+  {{#if content.bapNickname}}
+  <p class="detail-muted" style="text-align:center; margin-top:-16px; margin-bottom:16px">
+    BAP nickname: <strong>"{{content.bapNickname}}"</strong>
+  </p>
+  {{/if}}
+
+  {{! ── Career Summary ──────────────────────────────────────────── }}
+  {{#if content.hasCareerStats}}
+  <div class="records-table-wrap" style="margin-bottom:24px">
+    <table class="records-table records-table-sm">
+      <thead>
+        <tr>
+          <th>Discipline</th>
+          <th class="col-num">Appearances</th>
+          <th class="col-num">Wins</th>
+          <th class="col-num">Podiums</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each content.careerStats}}
+        <tr>
+          <td>{{label}}</td>
+          <td class="col-num">{{appearances}}</td>
+          <td class="col-num">{{wins}}</td>
+          <td class="col-num">{{podiums}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{/if}}
+
   {{#unless content.hofMember}}{{#unless content.bapMember}}
   <div class="card mb-4">
-    <p class="card-description">This is a historical record linked to competitive footbag results. It is not a current member account.</p>
+    <p class="card-description">
+      {{#if content.hasCompetitionResults}}
+      This is a historical record linked to competitive footbag results. It is not a current member account.
+      {{else if content.hasRecords}}
+      This player appears in the freestyle passback record archive but has no documented competition results.
+      {{else}}
+      This is a historical record. It is not a current member account.
+      {{/if}}
+    </p>
   </div>
   {{/unless}}{{/unless}}
 
+  {{#if content.hasCompetitionResults}}
   <section>
     {{#each navigation.contextLinks}}
       <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
@@ -21,10 +62,20 @@
 
     {{> player-results eventGroups=content.eventGroups}}
   </section>
+  {{else}}
+  <section>
+    {{#each navigation.contextLinks}}
+      <a href="{{href}}" class="back-link">&#8592; {{label}}</a>
+    {{/each}}
+  </section>
+  {{/if}}
 
   {{#if content.freestyleRecords.length}}
   <section class="player-freestyle-records">
     <h2 class="section-heading">Freestyle Records</h2>
+    {{#unless content.hasCompetitionResults}}
+    <p class="detail-muted">This player is documented through freestyle records. No competition results are currently available.</p>
+    {{/unless}}
     <table class="results-table">
       <thead>
         <tr>
@@ -39,7 +90,7 @@
         {{#each content.freestyleRecords}}
         <tr>
           <td>
-            <span class="trick-name">{{trickName}}</span>
+            {{#if trickHref}}<a href="{{{trickHref}}}"><span class="trick-name">{{trickName}}</span></a>{{else}}<span class="trick-name">{{trickName}}</span>{{/if}}
             {{#if sortName}}<span class="trick-sort-name">{{sortName}}</span>{{/if}}
           </td>
           <td class="col-num">{{valueNumeric}}</td>
@@ -69,6 +120,37 @@
       Records sourced from the freestyle passback video archive.
       <a href="/freestyle/records">View all freestyle records</a>
     </p>
+  </section>
+  {{/if}}
+
+  {{! ── Top Partnerships ────────────────────────────────────────── }}
+  {{#if content.hasPartnerships}}
+  <section class="content-section">
+    <h2 class="section-heading">Top Partnerships</h2>
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th>Discipline</th>
+            <th class="col-num">Together</th>
+            <th class="col-num">Wins</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.partnerships}}
+          <tr>
+            <td><a href="{{{partnerHref}}}">{{partnerName}}</a></td>
+            <td>{{categoryLabel}}</td>
+            <td class="col-num">{{appearances}}</td>
+            <td class="col-num">{{wins}}</td>
+            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   </section>
   {{/if}}
 

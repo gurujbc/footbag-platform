@@ -1,0 +1,74 @@
+canonical_name,slug,aliases,adds,category,trick_family
+clipper,clipper,,2,dex,clipper
+mirage,mirage,,2,dex,mirage
+legover,legover,leg over,2,dex,legover
+pickup,pickup,,2,dex,pickup
+guay,guay,,2,dex,guay
+illusion,illusion,,2,dex,illusion
+pixie,pixie,,2,set,pixie
+fairy,fairy,,2,set,fairy
+around the world,around-the-world,atw; around-the-world,2,body,atw
+reverse around the world,reverse-around-the-world,reverse atw; ratw,2,body,atw
+double around the world,double-around-the-world,double atw; datw,3,body,atw
+whirl,whirl,,3,dex,whirl
+butterfly,butterfly,,3,compound,butterfly
+swirl,swirl,reverse swirl,3,dex,swirl
+osis,osis,,3,compound,osis
+eclipse,eclipse,catwalk,3,compound,eclipse
+eggbeater,eggbeater,illusioning legover; egg beater,3,compound,legover
+drifter,drifter,miraging clipper,3,compound,clipper
+barfly,barfly,double infinity; bar fly,4,compound,infinity
+smear,smear,pixie mirage,3,compound,mirage
+flurry,flurry,barraging legover,3,compound,legover
+dimwalk,dimwalk,pixie butterfly; dim walk,4,compound,butterfly
+parkwalk,parkwalk,pixie ss butterfly; park walk,4,compound,butterfly
+torque,torque,,4,compound,osis
+ripwalk,ripwalk,blurry butterfly,4,compound,butterfly
+blur,blur,blurry mirage,4,compound,mirage
+atom smasher,atom-smasher,atomsmasher; atomic mirage; atom-smasher,4,compound,mirage
+blender,blender,whirling osis,4,compound,osis
+ducking clipper,ducking-clipper,,3,compound,clipper
+spinning clipper,spinning-clipper,,3,compound,clipper
+ducking butterfly,ducking-butterfly,,4,compound,butterfly
+spinning butterfly,spinning-butterfly,,4,compound,butterfly
+symposium whirl,symposium-whirl,symposium wirl,4,compound,whirl
+ducking whirl,ducking-whirl,,4,compound,whirl
+stepping whirl,stepping-whirl,,4,compound,whirl
+paradox whirl,paradox-whirl,pdx whirl; p-whirl; p. whirl,4,compound,whirl
+paradox drifter,paradox-drifter,pdx drifter; p. drifter,4,compound,drifter
+paradox mirage,paradox-mirage,pdx mirage; p. mirage; pdx mirage,3,compound,mirage
+paradox blender,paradox-blender,pdx blender; p. blender,5,compound,blender
+paradox torque,paradox-torque,pdx torque; p torque; p. torque; paradox t,5,compound,torque
+blurry whirl,blurry-whirl,bw; blurry w,5,compound,whirl
+blurriest,blurriest,blurry barfly; blurr-iest,5,compound,barfly
+fog,fog,blurry dlo; blurry dim walk,5,compound,legover
+mobius,mobius,gyro torque; möbius; moebius,5,compound,torque
+fusion,fusion,atomic dod; atomic down-over-down,5,compound,dod
+tomahawk,tomahawk,ducking paradox whirl,5,compound,whirl
+superfly,superfly,super fly; symposium barfly; superfly,5,compound,barfly
+spinning whirl,spinning-whirl,,5,compound,whirl
+paradox symposium whirl,paradox-symposium-whirl,ps whirl; pdx symposium whirl,5,compound,whirl
+food processor,food-processor,blurry blender; foot processor,6,compound,blender
+blurry torque,blurry-torque,,6,compound,torque
+atomic torque,atomic-torque,silo,6,compound,torque
+spinning torque,spinning-torque,marius,6,compound,torque
+spinning symposium whirl,spinning-symposium-whirl,whirlwind; spinning symposium wirl,6,compound,whirl
+rev whirl,rev-whirl,reverse whirl; revwhirl,3,dex,whirl
+rev up,rev-up,revup; rev-up,3,dex,whirl
+spinning osis,spinning-osis,,4,compound,osis
+ducking osis,ducking-osis,,4,compound,osis
+stepping osis,stepping-osis,,4,compound,osis
+tapping whirl,tapping-whirl,,4,compound,whirl
+barraging osis,barraging-osis,baroque,5,compound,osis
+atomic butterfly,atomic-butterfly,leg beater; legbeater,4,compound,butterfly
+ducking,ducking,,,modifier,
+spinning,spinning,,,modifier,
+paradox,paradox,,,modifier,
+symposium,symposium,,,modifier,
+atomic,atomic,,,modifier,
+stepping,stepping,,,modifier,
+gyro,gyro,,,modifier,
+tapping,tapping,,,modifier,
+blazing,blazing,,,modifier,
+barraging,barraging,,,modifier,
+atomsmasher,atomsmasher,atom smasher; atomic mirage; atom-smasher,4,compound,mirage

@@ -1,0 +1,11 @@
+source_id,source_name,source_type,url,creator,description,trick_count_estimate,notes
+tt1,Tricks of the Trade 1,dvd,https://worldfootbag.com/product/tt1-tricks-of-the-trade-dvd-for-hacky-sack-footbag/,Kenny Shults,40-min instructional DVD covering 40+ freestyle tricks with slow-motion and freeze-frame,40,Need trick-by-trick inventory — ask Kenny or Dave
+tt2,Tricks of the Trade 2,dvd,https://worldfootbag.com/product/tt2-tricks-of-the-trade-2-video/,Kenny Shults + 14 players,90-min DVD with 125+ advanced tricks,125,Need trick-by-trick inventory
+footbagspot_tutorials,Footbag Spot Tutorials,website,https://footbagspot.com/tutorials,,Tutorial portal with individual trick lesson pages,,Individual pages for clipper/osis/ATW etc.
+passback_records,PassBack Freestyle Records,database,,Various,Video-verified passback records already in freestyle_records table,162,Already seeded into video_coverage.csv
+footbagspot_passback,PassBack Freestyle Tutorials,website,https://footbagspot.com/tutorials/passback,,PassBack guided levels (1-5) covering kicks/stalls/ATW/clipper/BOPs,,Level-structured curriculum
+everything_footbag,Everything Footbag Channel,youtube,,,Educational footbag content,,Referenced on Footbag Spot
+shred_global,Shred Global,youtube,,,Trick tutorials by top players,,Osis tutorial by Zac Miley found
+polini_pointers,Polini's Pointers,youtube,,,Trick tutorials by Nick Polini,,Osis tutorial found
+anz_trikz,Anz' Trikz,youtube,,,ATW/Orbit and drill tutorials,,
+footbag_foundations,Footbag Foundations,website,http://footbagfoundations.erikchan.ca/,Erik Chan,Beginner/intermediate trick guides with descriptions,,No video but good trick descriptions

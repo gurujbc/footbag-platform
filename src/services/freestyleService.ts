@@ -1,7 +1,9 @@
 import {
   FreestyleLeaderRow, FreestyleRecordRow, FreestyleTrickRow, FreestyleTrickModifierRow,
   FreestyleCompetitorRow, FreestyleEraRow, FreestyleRecentEventRow,
+  FreestylePartnershipRow,
   freestyleRecords, freestyleTricks, freestyleTrickModifiers, freestyleCompetition,
+  freestylePartnerships,
 } from '../db/db';
 import { runSqliteRead } from './sqliteRetry';
 import { NotFoundError } from './serviceErrors';
@@ -270,6 +272,35 @@ export interface FreestyleCompetitionContent {
   recentEvents:    FreestyleRecentEventViewModel[];
   totalEvents:     number;
   dataNote:        string;
+}
+
+// ---------------------------------------------------------------------------
+// Partnerships content types
+// ---------------------------------------------------------------------------
+
+export interface FreestylePartnershipViewModel {
+  personIdA:       string;
+  personNameA:     string;
+  hrefA:           string;
+  personIdB:       string;
+  personNameB:     string;
+  hrefB:           string;
+  appearanceCount: number;
+  winCount:        number;
+  podiumCount:     number;
+  yearSpan:        string | null;
+}
+
+export interface FreestylePartnershipBucket {
+  title:        string;
+  partnerships: FreestylePartnershipViewModel[];
+}
+
+export interface FreestylePartnershipsContent {
+  buckets:      FreestylePartnershipBucket[];
+  allRanked:    FreestylePartnershipViewModel[];
+  totalShown:   number;
+  dataNote:     string;
 }
 
 // ---------------------------------------------------------------------------
@@ -984,6 +1015,75 @@ export const freestyleService = {
         totalEvents,
         dataNote: 'Freestyle singles only. Includes Open, Intermediate, and Women\'s divisions. ' +
                   'Data from canonical event results — all placements are sourced directly from documented competition records.',
+      },
+    };
+  },
+
+  getFreestylePartnershipsPage(): PageViewModel<FreestylePartnershipsContent> {
+    const rows = runSqliteRead('freestylePartnerships.listTopPartnerships', () =>
+      freestylePartnerships.listTopPartnerships.all() as FreestylePartnershipRow[],
+    );
+
+    function shapePartnership(r: FreestylePartnershipRow): FreestylePartnershipViewModel {
+      const first = r.first_year;
+      const last = r.last_year;
+      let span: string | null = null;
+      if (first !== null && last !== null) {
+        span = first === last ? String(first) : `${first}–${last}`;
+      }
+      return {
+        personIdA:       r.person_id_a,
+        personNameA:     r.person_name_a,
+        hrefA:           `/history/${r.person_id_a}`,
+        personIdB:       r.person_id_b,
+        personNameB:     r.person_name_b,
+        hrefB:           `/history/${r.person_id_b}`,
+        appearanceCount: r.appearance_count,
+        winCount:        r.win_count,
+        podiumCount:     r.podium_count,
+        yearSpan:        span,
+      };
+    }
+
+    const allRanked = rows.map(shapePartnership);
+
+    // Build notable buckets (same pattern as net)
+    const BUCKET_SIZE = 5;
+
+    const byWins = [...rows].sort((a, b) =>
+      b.win_count - a.win_count || b.podium_count - a.podium_count || b.appearance_count - a.appearance_count);
+    const byPodiums = [...rows].sort((a, b) =>
+      b.podium_count - a.podium_count || b.win_count - a.win_count || b.appearance_count - a.appearance_count);
+    const bySpan = [...rows].sort((a, b) => {
+      const sa = (a.last_year ?? 0) - (a.first_year ?? 0);
+      const sb = (b.last_year ?? 0) - (b.first_year ?? 0);
+      return sb - sa || b.appearance_count - a.appearance_count;
+    });
+
+    const buckets: FreestylePartnershipBucket[] = [];
+    const wB = byWins.slice(0, BUCKET_SIZE).map(shapePartnership);
+    if (wB.length) buckets.push({ title: 'Most Wins', partnerships: wB });
+    const pB = byPodiums.slice(0, BUCKET_SIZE).map(shapePartnership);
+    if (pB.length) buckets.push({ title: 'Most Podium Finishes', partnerships: pB });
+    const sB = bySpan.slice(0, BUCKET_SIZE).map(shapePartnership);
+    if (sB.length) buckets.push({ title: 'Longest Spans', partnerships: sB });
+
+    return {
+      seo: {
+        title: 'Freestyle Partnerships',
+        description: 'Top freestyle doubles partnerships in footbag history.',
+      },
+      page: {
+        sectionKey: 'freestyle',
+        pageKey:    'freestyle_partnerships',
+        title:      'Freestyle Partnerships',
+        intro:      'The most significant doubles partnerships in freestyle footbag, ranked by competitive appearances.',
+      },
+      content: {
+        buckets,
+        allRanked,
+        totalShown: allRanked.length,
+        dataNote: 'Freestyle doubles and team routines only. Trick contests, shred, and circle events are excluded.',
       },
     };
   },

@@ -24,7 +24,8 @@ publicRouter.get('/hof',   hofController.index);
 // and before /freestyle itself.
 publicRouter.get('/freestyle/records',     freestyleController.records);
 publicRouter.get('/freestyle/leaders',     freestyleController.leaders);
-publicRouter.get('/freestyle/competition', freestyleController.competition);
+publicRouter.get('/freestyle/competition',   freestyleController.competition);
+publicRouter.get('/freestyle/partnerships',  freestyleController.partnerships);
 publicRouter.get('/freestyle/history',     freestyleController.history);
 publicRouter.get('/freestyle/about',       freestyleController.about);
 publicRouter.get('/freestyle/moves',       freestyleController.moves);

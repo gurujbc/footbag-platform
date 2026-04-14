@@ -65,6 +65,16 @@ export const freestyleController = {
     }
   },
 
+  /** GET /freestyle/partnerships */
+  partnerships(_req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = freestyleService.getFreestylePartnershipsPage();
+      res.render('freestyle/partnerships', vm);
+    } catch (err) {
+      freestyleController._handleError(err, res, next);
+    }
+  },
+
   /** GET /freestyle/history */
   history(_req: Request, res: Response, next: NextFunction): void {
     try {

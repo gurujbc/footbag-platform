@@ -181,6 +181,26 @@ export interface PublicPlayerResultRow {
   event_tag_normalized: string;
 }
 
+export interface PlayerCareerStatRow {
+  category:    string;
+  events:      number;
+  wins:        number;
+  podiums:     number;
+  appearances: number;
+}
+
+export interface PlayerPartnerRow {
+  partner_person_id: string;
+  partner_name:      string;
+  partner_country:   string | null;
+  category:          string;
+  appearances:       number;
+  wins:              number;
+  podiums:           number;
+  first_year:        number | null;
+  last_year:         number | null;
+}
+
 export interface HealthReadyRow {
   is_ready: number;
 }
@@ -553,6 +573,50 @@ export const publicPlayers = {
       AND source_scope = 'CANONICAL'
     LIMIT 1
   `),
+
+  /** Career stats by discipline category for a person. */
+  listCareerStatsByCategory: db.prepare(`
+    SELECT
+      ed.discipline_category AS category,
+      COUNT(DISTINCT ere.event_id) AS events,
+      SUM(CASE WHEN ere.placement = 1 AND erp.participant_order = 1 THEN 1 ELSE 0 END) AS wins,
+      SUM(CASE WHEN ere.placement <= 3 AND erp.participant_order = 1 THEN 1 ELSE 0 END) AS podiums,
+      COUNT(DISTINCT erp.result_entry_id) AS appearances
+    FROM event_result_entry_participants erp
+    JOIN event_result_entries ere ON ere.id = erp.result_entry_id
+    JOIN event_disciplines ed ON ed.id = ere.discipline_id
+    WHERE erp.historical_person_id = ?
+    GROUP BY ed.discipline_category
+    ORDER BY appearances DESC
+  `),
+
+  /** Top partnerships (doubles) for a person across all disciplines. */
+  listTopPartnersByPersonId: db.prepare(`
+    SELECT
+      hp_partner.person_id   AS partner_person_id,
+      hp_partner.person_name AS partner_name,
+      hp_partner.country     AS partner_country,
+      ed.discipline_category AS category,
+      COUNT(DISTINCT erp_me.result_entry_id) AS appearances,
+      SUM(CASE WHEN ere.placement = 1 THEN 1 ELSE 0 END) AS wins,
+      SUM(CASE WHEN ere.placement <= 3 THEN 1 ELSE 0 END) AS podiums,
+      MIN(CAST(SUBSTR(e.start_date, 1, 4) AS INTEGER)) AS first_year,
+      MAX(CAST(SUBSTR(e.start_date, 1, 4) AS INTEGER)) AS last_year
+    FROM event_result_entry_participants erp_me
+    JOIN event_result_entries ere ON ere.id = erp_me.result_entry_id
+    JOIN event_disciplines ed ON ed.id = ere.discipline_id
+    JOIN events e ON e.id = ere.event_id
+    JOIN event_result_entry_participants erp_partner
+      ON erp_partner.result_entry_id = erp_me.result_entry_id
+      AND erp_partner.id != erp_me.id
+    JOIN historical_persons hp_partner ON hp_partner.person_id = erp_partner.historical_person_id
+    WHERE erp_me.historical_person_id = ?
+      AND ed.team_type = 'doubles'
+      AND hp_partner.person_name != 'Unknown'
+    GROUP BY hp_partner.person_id, ed.discipline_category
+    ORDER BY appearances DESC, wins DESC
+    LIMIT 15
+  `),
 } as const;
 
 export const clubs = {
@@ -887,6 +951,75 @@ export const freestyleTrickModifiers = {
 } as const;
 
 // ---------------------------------------------------------------------------
+// freestylePartnerships
+//
+// Freestyle doubles partnership data derived from canonical result tables.
+// Filters to team_type='doubles' disciplines in the freestyle category,
+// excluding trick contests, shred, circle, and timed events.
+// ---------------------------------------------------------------------------
+
+export interface FreestylePartnershipRow {
+  person_id_a:      string;
+  person_name_a:    string;
+  country_a:        string | null;
+  person_id_b:      string;
+  person_name_b:    string;
+  country_b:        string | null;
+  appearance_count: number;
+  win_count:        number;
+  podium_count:     number;
+  first_year:       number | null;
+  last_year:        number | null;
+}
+
+export const freestylePartnerships = {
+  /** Top freestyle doubles partnerships by appearances.
+   *  Excludes trick/shred/circle contests and Unknown placeholders. */
+  listTopPartnerships: db.prepare(`
+    SELECT
+      CASE WHEN pa.person_id < pb.person_id THEN pa.person_id ELSE pb.person_id END AS person_id_a,
+      CASE WHEN pa.person_id < pb.person_id THEN pa.person_name ELSE pb.person_name END AS person_name_a,
+      CASE WHEN pa.person_id < pb.person_id THEN pa.country ELSE pb.country END AS country_a,
+      CASE WHEN pa.person_id < pb.person_id THEN pb.person_id ELSE pa.person_id END AS person_id_b,
+      CASE WHEN pa.person_id < pb.person_id THEN pb.person_name ELSE pa.person_name END AS person_name_b,
+      CASE WHEN pa.person_id < pb.person_id THEN pb.country ELSE pa.country END AS country_b,
+      COUNT(*)                                              AS appearance_count,
+      SUM(CASE WHEN re.placement = 1 THEN 1 ELSE 0 END)   AS win_count,
+      SUM(CASE WHEN re.placement <= 3 THEN 1 ELSE 0 END)  AS podium_count,
+      MIN(CAST(SUBSTR(e.start_date, 1, 4) AS INTEGER))     AS first_year,
+      MAX(CAST(SUBSTR(e.start_date, 1, 4) AS INTEGER))     AS last_year
+    FROM event_result_entries re
+    JOIN event_disciplines ed ON ed.id = re.discipline_id
+    JOIN events e ON e.id = re.event_id
+    JOIN event_result_entry_participants p1 ON p1.result_entry_id = re.id AND p1.participant_order = 1
+    JOIN event_result_entry_participants p2 ON p2.result_entry_id = re.id AND p2.participant_order = 2
+    JOIN historical_persons pa ON pa.person_id = p1.historical_person_id
+    JOIN historical_persons pb ON pb.person_id = p2.historical_person_id
+    WHERE ed.discipline_category = 'freestyle'
+      AND ed.team_type = 'doubles'
+      AND LOWER(ed.name) NOT LIKE '%sick%'
+      AND LOWER(ed.name) NOT LIKE '%big trick%'
+      AND LOWER(ed.name) NOT LIKE '%huge%'
+      AND LOWER(ed.name) NOT LIKE '%combo%'
+      AND LOWER(ed.name) NOT LIKE '%rewind%'
+      AND LOWER(ed.name) NOT LIKE '%ironman%'
+      AND LOWER(ed.name) NOT LIKE '%battle%'
+      AND LOWER(ed.name) NOT LIKE '%circle%'
+      AND LOWER(ed.name) NOT LIKE '%shred%'
+      AND LOWER(ed.name) NOT LIKE '%30 second%'
+      AND LOWER(ed.name) NOT LIKE '%timed consecutive%'
+      AND LOWER(ed.name) NOT LIKE '%5-minute%'
+      AND pa.person_name != 'Unknown'
+      AND pb.person_name != 'Unknown'
+      AND pa.person_id != pb.person_id
+    GROUP BY person_id_a, person_id_b
+    HAVING COUNT(*) >= 2
+    ORDER BY appearance_count DESC, win_count DESC, last_year DESC
+    LIMIT 50
+  `),
+} as const;
+
+// ---------------------------------------------------------------------------
 // freestyleCompetition
 //
 // Results-derived freestyle competition data. Queries canonical tables only —
@@ -1109,6 +1242,7 @@ export const netTeams = {
     FROM net_team t
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     ORDER BY t.appearance_count DESC, t.last_year DESC, pa.person_name ASC
   `),
 
@@ -1196,6 +1330,7 @@ export const netPartnerships = {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     HAVING COUNT(*) >= 2
     ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
@@ -1231,6 +1366,7 @@ export const netPartnerships = {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     HAVING COUNT(*) >= 3
     ORDER BY appearance_count DESC
@@ -1264,6 +1400,10 @@ export function queryFilteredPartnerships(filters: {
     const like = `%${filters.search}%`;
     params.push(like, like);
   }
+
+  // Always exclude Unknown placeholder
+  conditions.push("pa.person_name != 'Unknown'");
+  conditions.push("pb.person_name != 'Unknown'");
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
@@ -1881,6 +2021,7 @@ export const netHome = {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     ORDER BY t.appearance_count DESC, t.last_year DESC
     LIMIT 10
@@ -1945,6 +2086,7 @@ export const netHome = {
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
     WHERE t.first_year IS NOT NULL AND t.last_year IS NOT NULL
+      AND pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     ORDER BY year_span_length DESC, win_count DESC, best_placement ASC
     LIMIT 10

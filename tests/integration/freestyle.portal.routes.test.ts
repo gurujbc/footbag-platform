@@ -79,10 +79,24 @@ beforeAll(async () => {
     city: 'Vienna',
     country: 'AT',
   });
-  const disc3Id  = insertDiscipline(db, event3Id, { name: 'Open Doubles Freestyle' });
+  const disc3Id  = insertDiscipline(db, event3Id, { name: 'Open Doubles Freestyle', team_type: 'doubles', discipline_category: 'freestyle' });
   const upload3  = insertResultsUpload(db, event3Id, memberId);
   const entry3   = insertResultEntry(db, event3Id, upload3, disc3Id, { placement: 1 });
-  insertResultParticipant(db, entry3, 'Vera Champion', { historical_person_id: PERSON_A });
+  insertResultParticipant(db, entry3, 'Vera Champion', { historical_person_id: PERSON_A, participant_order: 1 });
+  insertResultParticipant(db, entry3, 'Tom Runner', { historical_person_id: PERSON_B, participant_order: 2 });
+
+  // Second doubles entry at a different event (gives Vera+Tom >=2 appearances)
+  const event4Id = insertEvent(db, {
+    title: 'Test Doubles Cup',
+    start_date: '2019-07-01',
+    city: 'Prague',
+    country: 'CZ',
+  });
+  const disc4Id  = insertDiscipline(db, event4Id, { name: 'Open Doubles Freestyle', team_type: 'doubles', discipline_category: 'freestyle' });
+  const upload4  = insertResultsUpload(db, event4Id, memberId);
+  const entry4   = insertResultEntry(db, event4Id, upload4, disc4Id, { placement: 2 });
+  insertResultParticipant(db, entry4, 'Vera Champion', { historical_person_id: PERSON_A, participant_order: 1 });
+  insertResultParticipant(db, entry4, 'Tom Runner', { historical_person_id: PERSON_B, participant_order: 2 });
 
   // Trick and passback record for the landing
   insertFreestyleTrick(db, {
@@ -293,5 +307,62 @@ describe('GET /freestyle — 4-pillar portal landing', () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
     expect(res.text).toContain('/freestyle/history');
+  });
+
+  it('shows link to partnerships page', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('/freestyle/partnerships');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GET /freestyle/partnerships
+// ---------------------------------------------------------------------------
+
+describe('GET /freestyle/partnerships', () => {
+  it('returns 200', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.status).toBe(200);
+  });
+
+  it('shows the page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.text).toContain('Freestyle Partnerships');
+  });
+
+  it('shows partnership with both partner names', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    // Vera + Tom have 2 doubles appearances → should appear
+    expect(res.text).toContain('Vera Champion');
+    expect(res.text).toContain('Tom Runner');
+  });
+
+  it('links partner names to history pages', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.text).toContain(`/history/${PERSON_A}`);
+    expect(res.text).toContain(`/history/${PERSON_B}`);
+  });
+
+  it('shows appearances count', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.text).toContain('Appearances');
+  });
+
+  it('shows data note', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.text).toContain('Freestyle doubles and team routines only');
+  });
+
+  it('shows All Partnerships section', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle/partnerships');
+    expect(res.text).toContain('All Partnerships');
   });
 });

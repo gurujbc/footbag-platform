@@ -1,0 +1,93 @@
+{{! /freestyle/partnerships — freestyle doubles partnerships }}
+
+<div class="hero hero-sm">
+  <div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/freestyle">Freestyle</a> <span class="breadcrumb-sep">/</span>
+      <span>Partnerships</span>
+    </nav>
+    <h1>{{page.title}}</h1>
+    {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
+    {{#if content.totalShown}}
+    <div class="hero-stats">
+      <span>{{content.totalShown}} partnerships shown</span>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── Notable Buckets ──────────────────────────────────────────── }}
+  {{#if content.buckets.length}}
+  {{#each content.buckets}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>{{title}}</h2>
+    </div>
+    <div class="records-table-wrap">
+      <table class="records-table">
+        <thead>
+          <tr>
+            <th>Partnership</th>
+            <th class="col-num">Apps</th>
+            <th class="col-rank">Wins</th>
+            <th class="col-rank">Podiums</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each partnerships}}
+          <tr>
+            <td><a href="{{{hrefA}}}">{{personNameA}}</a> / <a href="{{{hrefB}}}">{{personNameB}}</a></td>
+            <td class="col-num">{{appearanceCount}}</td>
+            <td class="col-rank">{{winCount}}</td>
+            <td class="col-rank">{{podiumCount}}</td>
+            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {{/each}}
+  {{/if}}
+
+  {{! ── Full Ranked List ─────────────────────────────────────────── }}
+  {{#if content.allRanked.length}}
+  <section class="content-section">
+    <div class="section-heading">
+      <h2>All Partnerships</h2>
+    </div>
+    <div class="records-table-wrap">
+      <table class="records-table">
+        <thead>
+          <tr>
+            <th class="col-rank">#</th>
+            <th>Partnership</th>
+            <th class="col-num">Appearances</th>
+            <th class="col-num">Wins</th>
+            <th class="col-num">Podiums</th>
+            <th>Years</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.allRanked}}
+          <tr>
+            <td class="col-rank">{{add @index 1}}</td>
+            <td><a href="{{{hrefA}}}">{{personNameA}}</a> / <a href="{{{hrefB}}}">{{personNameB}}</a></td>
+            <td class="col-num">{{appearanceCount}}</td>
+            <td class="col-num">{{winCount}}</td>
+            <td class="col-num">{{podiumCount}}</td>
+            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {{/if}}
+
+  <p class="source-note">{{content.dataNote}}</p>
+
+</div>

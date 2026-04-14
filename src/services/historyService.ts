@@ -1,4 +1,5 @@
-import { PublicPlayerResultRow, FreestyleRecordRow, publicPlayers, freestyleRecords, account } from '../db/db';
+import { PublicPlayerResultRow, FreestyleRecordRow, PlayerCareerStatRow, PlayerPartnerRow,
+         publicPlayers, freestyleRecords, account } from '../db/db';
 import { NotFoundError } from './serviceErrors';
 import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
@@ -22,15 +23,40 @@ interface HistoricalPlayer {
   eventGroups: PlayerEventGroup[];
 }
 
+interface CareerCategoryStat {
+  category: string;
+  label: string;
+  appearances: number;
+  wins: number;
+  podiums: number;
+}
+
+interface PartnershipViewModel {
+  partnerName: string;
+  partnerHref: string;
+  category: string;
+  categoryLabel: string;
+  appearances: number;
+  wins: number;
+  yearSpan: string | null;
+}
+
 export interface HistoryDetailContent {
   personId: string;
   displayName: string;
   hofMember: boolean;
   bapMember: boolean;
+  bapNickname: string | null;
   avatarThumbUrl: string | null;
   heroData: PlayerHeroData;
+  careerStats: CareerCategoryStat[];
+  hasCareerStats: boolean;
+  hasCompetitionResults: boolean;
+  hasRecords: boolean;
   eventGroups: PlayerEventGroup[];
   freestyleRecords: FreestyleRecordViewModel[];
+  partnerships: PartnershipViewModel[];
+  hasPartnerships: boolean;
 }
 
 export type HistoryDetailResult =
@@ -115,6 +141,45 @@ export const historyService = {
       isHistoricalOnly: true,
     };
 
+    // Career stats by discipline category
+    const CATEGORY_LABELS: Record<string, string> = {
+      freestyle: 'Freestyle', net: 'Net', golf: 'Golf', sideline: 'Sideline',
+    };
+    const careerStatRows = runSqliteRead('listCareerStatsByCategory', () =>
+      publicPlayers.listCareerStatsByCategory.all(personId),
+    ) as PlayerCareerStatRow[];
+    const careerStats: CareerCategoryStat[] = careerStatRows
+      .filter(r => r.category && CATEGORY_LABELS[r.category])
+      .map(r => ({
+        category:    r.category,
+        label:       CATEGORY_LABELS[r.category] ?? r.category,
+        appearances: r.appearances,
+        wins:        r.wins,
+        podiums:     r.podiums,
+      }));
+
+    // Top partnerships
+    const partnerRows = runSqliteRead('listTopPartnersByPersonId', () =>
+      publicPlayers.listTopPartnersByPersonId.all(personId),
+    ) as PlayerPartnerRow[];
+    const partnerships: PartnershipViewModel[] = partnerRows.map(r => {
+      const first = r.first_year;
+      const last = r.last_year;
+      let yearSpan: string | null = null;
+      if (first !== null && last !== null) {
+        yearSpan = first === last ? String(first) : `${first}–${last}`;
+      }
+      return {
+        partnerName:   r.partner_name,
+        partnerHref:   `/history/${r.partner_person_id}`,
+        category:      r.category,
+        categoryLabel: CATEGORY_LABELS[r.category] ?? r.category,
+        appearances:   r.appearances,
+        wins:          r.wins,
+        yearSpan,
+      };
+    });
+
     return {
       action: 'render',
       vm: {
@@ -132,10 +197,17 @@ export const historyService = {
           displayName:   player.personName,
           hofMember:     player.hofMember,
           bapMember:     player.bapMember,
+          bapNickname:   player.bapNickname,
           avatarThumbUrl,
           heroData,
-          eventGroups:      player.eventGroups,
-          freestyleRecords: freestyleRows.map(shapeFreestyleRecord),
+          careerStats,
+          hasCareerStats:        careerStats.length > 0,
+          hasCompetitionResults: player.eventGroups.length > 0,
+          hasRecords:            freestyleRows.length > 0,
+          eventGroups:           player.eventGroups,
+          freestyleRecords:      freestyleRows.map(shapeFreestyleRecord),
+          partnerships,
+          hasPartnerships:       partnerships.length > 0,
         },
       },
     };
