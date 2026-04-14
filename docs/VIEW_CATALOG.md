@@ -329,6 +329,14 @@ The CSS vocabulary is split into two tiers.
 - Disciplines: `.disciplines-list`, `.discipline-tag`
 - Results: `.results-section`, `.results-section-header`, `.discipline-meta`, `.results-table`, `.placement-num`, `.participants-list`, `.score-text`, `.no-results-notice`
 
+**Freestyle section — required within freestyle pages only:**
+
+- Landing wrapper scope: `.freestyle-landing`
+- Hero with mascot: `.hero-with-mascot`, `.hero-mascot`
+- Get-started tiles and format cards: `.card-tile`, `.format-card`
+- Embedded video wrapper (16:9 responsive iframe): `.video-embed`
+- Stats strip (standalone hero-stats outside the hero): `.stats-strip`
+
 ### 4.4 Implementation rules
 
 The standard must be implemented through reusable code.

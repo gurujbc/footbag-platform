@@ -269,23 +269,71 @@ describe('GET /freestyle/history', () => {
 
 // ---------------------------------------------------------------------------
 
-describe('GET /freestyle — 4-pillar portal landing', () => {
+describe('GET /freestyle — onboarding + portal landing', () => {
   it('returns 200', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
     expect(res.status).toBe(200);
   });
 
-  it('shows all four pillar cards', async () => {
+  it('shows mascot image', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('/img/freestyle-mascot.svg');
+    expect(res.text).toContain('Freestyle footbag mascot icon');
+  });
+
+  it('shows onboarding explainer heading and narrative', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('What is Freestyle Footbag?');
+    // narrative covers the kicking-circle origin, ADD system, and beginner gear advice
+    expect(res.text).toContain('Hacky Sack');
+    expect(res.text).toContain('Additional Degree of Difficulty');
+    expect(res.text).toContain('1970s');
+  });
+
+  it('shows three placeholder get-started tiles', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('Where to buy footbags');
+    expect(res.text).toContain('Where to buy shoes');
+    expect(res.text).toContain('Beginner tutorials');
+    // all three use the coming-soon badge
+    const badgeCount = res.text.split('badge-coming-soon').length - 1;
+    expect(badgeCount).toBeGreaterThanOrEqual(3);
+  });
+
+  it('shows Competition Formats section with all four formats', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('Competition Formats');
+    expect(res.text).toContain('Routine');
+    expect(res.text).toContain('Circle');
+    expect(res.text).toContain('Sick 3');
+    expect(res.text).toContain('Shred 30');
+  });
+
+  it('embeds the four reference competition-format videos', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('https://www.youtube.com/embed/Z-KkyOpoBhM');
+    expect(res.text).toContain('https://www.youtube.com/embed/aMr5e5wlgeE');
+    expect(res.text).toContain('https://www.youtube.com/embed/h6F0aPIpC1o');
+    expect(res.text).toContain('https://www.youtube.com/embed/wb75xzvAs68');
+  });
+
+  it('shows portal cards including new History & ADD System card', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('History &amp; ADD System');
     expect(res.text).toContain('Competition');
     expect(res.text).toContain('Passback Records');
     expect(res.text).toContain('Trick Dictionary');
     expect(res.text).toContain('Insights');
   });
 
-  it('links to all four pillar pages', async () => {
+  it('links to all portal pillar pages', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
     expect(res.text).toContain('/freestyle/competition');
@@ -294,10 +342,9 @@ describe('GET /freestyle — 4-pillar portal landing', () => {
     expect(res.text).toContain('/freestyle/history');
   });
 
-  it('shows hero stats with event and record counts', async () => {
+  it('shows stats strip with event and record counts', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
-    // events from canonical results, records from freestyle_records
     expect(res.text).toContain('events');
     expect(res.text).toContain('records');
   });

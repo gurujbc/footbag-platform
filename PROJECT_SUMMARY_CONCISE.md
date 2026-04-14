@@ -8,7 +8,7 @@ Use this file for quick orientation and document routing.
 
 For non-trivial work, read the top active-slice/status block in `IMPLEMENTATION_PLAN.md`. The plan is active during normal repo work and governs the current slice.
 
-See `IMPLEMENTATION_PLAN.md` active-slice block for the current sprint focus.
+See `IMPLEMENTATION_PLAN.md` active-slice block for the current implementation focus.
 
 `docs/USER_STORIES.md` is the functional source of truth.
 

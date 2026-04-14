@@ -1456,6 +1456,9 @@ section.home-media { padding-top: 0; }
   .member-search-section { flex-direction: column; align-items: stretch; }
   .member-search-form { flex-direction: column; }
   .member-search-input { max-width: none; }
+  .hero.hero-with-mascot { flex-direction: column; text-align: center; gap: 16px; }
+  .hero.hero-with-mascot .hero-text { max-width: none; }
+  .hero-mascot { width: 110px; height: 110px; }
 }
 
 @media (max-width: 480px) {
@@ -1712,4 +1715,84 @@ section.home-media { padding-top: 0; }
 }
 .filter-bar .btn-link {
   font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Freestyle landing — onboarding layout
+   ========================================================================== */
+
+/* Hero with mascot: text left, mascot right */
+.hero.hero-with-mascot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  text-align: left;
+}
+.hero.hero-with-mascot .hero-text { max-width: 640px; }
+.hero-mascot {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+
+/* Get-started tiles: clickable card variant */
+.card-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  min-height: 120px;
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-decoration: none;
+  color: var(--primary);
+}
+.card-tile.card-coming-soon { cursor: default; }
+.card-tile.card-coming-soon:hover { transform: none; box-shadow: none; color: var(--text-muted); }
+
+/* 16:9 responsive YouTube embed inside a card */
+.video-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 12px 0;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Format card: flex column so Rules button stays at the bottom */
+.format-card { display: flex; flex-direction: column; }
+.format-card .card-actions { margin-top: auto; }
+
+/* Landing-scoped spacing: tighten gaps between explainer sections */
+.freestyle-landing .content-section { margin: 0; }
+.freestyle-landing section { padding: 16px 0; }
+.freestyle-landing section + section { border-top: none; }
+.freestyle-landing .content-section p { margin: 0 0 10px; }
+.freestyle-landing h2 { margin-top: 0; margin-bottom: 10px; }
+
+/* Standalone stats strip (outside the hero): neutral pill styling */
+.stats-strip { padding: 16px 0; }
+.stats-strip .hero-stats { margin-top: 0; }
+.stats-strip .hero-stats span {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  color: var(--text);
 }

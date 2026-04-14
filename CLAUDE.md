@@ -48,15 +48,16 @@ Read the minimum the task requires. Default: active-slice block + code. Load doc
 2. Never take a destructive or risky action without explicit human approval.
 3. When asking the human a question, always provide context so the human can understand clearly.
 4. Refer to appropriate Claude skills whenever appropriate for the task at hand.
-5. If unclear, escalate to the human. Never guess.
+5. If unclear, escalate to the human. Never guess or silently choose among materially different interpretations.
 6. Never add schema, service methods, or behavioral code without grounding in a user story, design decision, or explicit human direction in the current task. If no acceptance criteria or human approval exist for the behavior, stop and ask.
 
 ## Workflow rules
 
 - Long-term docs describe design intent, not implementation status. See doc-sync skill for governance details.
-- Use Plan Mode when the task is primarily about sequencing, dependency ordering, or phased planning. For normal implementation work, the top active-slice/status block in `IMPLEMENTATION_PLAN.md` is sufficient.
-- Verification defaults: prefer route/integration verification first. Canonical commands: `npm test` and `npm run build`.
+- Use Plan Mode when the task is primarily about sequencing, dependency ordering, phased planning, or architectural tradeoffs. For normal implementation work, the top active-slice/status block in `IMPLEMENTATION_PLAN.md` is sufficient.
+- Verification defaults: confirm what success looks like for the task, prefer route/integration verification first, and verify with `npm test` and `npm run build`.
 - Do not use browser automation or MCP tools unless the human explicitly asks for browser testing or verification.
+- Make surgical changes scoped to the current slice: no speculative abstraction, flexibility, or scope creep; no refactoring unrelated code, unnecessary formatting or comment changes, or moving logic across layers unless explicitly required.
 - Use the Explore sub-agent for broad codebase searches; use the Plan sub-agent for sequencing or architecture tasks. Both protect the main context window.
 
 ## Skills

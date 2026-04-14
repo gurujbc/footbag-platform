@@ -82,7 +82,31 @@ export interface FreestyleLeadersContent {
   totalRecords: number;
 }
 
+export interface FreestyleLandingExplainer {
+  heading: string;
+  paragraphs: string[];
+}
+
+export interface FreestyleGetStartedTile {
+  label: string;
+  href: string;
+  comingSoon: boolean;
+}
+
+export interface FreestyleCompetitionFormat {
+  slug: string;
+  title: string;
+  paragraph: string;
+  videoEmbedUrl: string;
+  videoTitle: string;
+}
+
 export interface FreestyleLandingContent {
+  mascotSrc: string;
+  mascotAlt: string;
+  intro: FreestyleLandingExplainer;
+  getStartedTiles: FreestyleGetStartedTile[];
+  competitionFormats: FreestyleCompetitionFormat[];
   totalRecords: number;
   recordTypes: number;
   topHolders: FreestyleLeaderViewModel[];
@@ -1357,6 +1381,53 @@ export const freestyleService = {
         intro: 'Tricks, combos, and choreographed routines set to music.',
       },
       content: {
+        mascotSrc: '/img/freestyle-mascot.svg',
+        mascotAlt: 'Freestyle footbag mascot icon',
+        intro: {
+          heading: 'What is Freestyle Footbag?',
+          paragraphs: [
+            'Freestyle footbag began with informal Hacky Sack kicking circles in the 1970s and 1980s, evolving from casual fun exercise into a technical sport. It is a discipline built on creativity, technical difficulty, and individual style. Freestyle footbag is a great way to exercise due to its versatility and fun, cooperative flow, plus it can be practiced anywhere and anytime.',
+            'Players show off their skills by performing sequences of tricks, combining components such as spinning the body, ducking the bag with the head and neck, and dexterities (circling the bag with a leg).',
+            'Tricks are linked naturally from one to the next to create flowing, free-form, and expressive strings and combos. The list of tricks is nearly endless and can be combined in any order, leading to a huge variety of combos and styles.',
+            'The ADD (Additional Degree of Difficulty) system assigns a numerical value to each trick, enabling objective difficulty scoring alongside subjective execution judging. The core vocabulary was established by the early 1990s and it continues to evolve as players innovate.',
+            'Practicing freestyle footbag is like having a gym in your pocket! When first learning the basics, all you need is casual clothes, shoes, and a footbag. Once you gain experience and begin to learn more difficult tricks, athletic clothes and a professional footbag with purpose-built shoes will help you play your best.',
+          ],
+        },
+        getStartedTiles: [
+          { label: 'Where to buy footbags', href: '#', comingSoon: true },
+          { label: 'Where to buy shoes',    href: '#', comingSoon: true },
+          { label: 'Beginner tutorials',    href: '#', comingSoon: true },
+        ],
+        competitionFormats: [
+          {
+            slug: 'routine',
+            title: 'Routine',
+            paragraph: 'Routine is a timed event in which players choreograph a freestyle footbag performance to music. Competitors are judged on both their artistic and technical abilities.',
+            videoEmbedUrl: 'https://www.youtube.com/embed/Z-KkyOpoBhM',
+            videoTitle: 'Yoshihito Yamamoto — Worlds Online 2020 Qualification Routine',
+          },
+          {
+            slug: 'circle',
+            title: 'Circle',
+            paragraph: 'Circle takes the traditional way that freestyle footbag is played with a group and puts a competitive spin on it. Players take turns with the bag to show off their technical skills in direct competition with each other.',
+            videoEmbedUrl: 'https://www.youtube.com/embed/aMr5e5wlgeE',
+            videoTitle: 'Worlds 2017 Open Circle Finals',
+          },
+          {
+            slug: 'sick3',
+            title: 'Sick 3',
+            paragraph: "Sick 3 is freestyle footbag's version of a best-trick competition. Players combine their three best tricks and are judged on difficulty, variety, and execution.",
+            videoEmbedUrl: 'https://www.youtube.com/embed/h6F0aPIpC1o',
+            videoTitle: 'World Footbag Championships 2022 — Sick 3',
+          },
+          {
+            slug: 'shred30',
+            title: 'Shred 30',
+            paragraph: "Shred 30 is a short, timed, scored event which tests competitors' abilities to quickly link together as many difficult tricks as they can before their time is up.",
+            videoEmbedUrl: 'https://www.youtube.com/embed/wb75xzvAs68',
+            videoTitle: 'Taishi Ishida — World Footbag Championships 2020 Shred 30',
+          },
+        ],
         totalRecords,
         recordTypes:   typeCounts.length,
         topHolders:    shapeLeaders(leaderRows).slice(0, 5),

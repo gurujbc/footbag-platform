@@ -1346,12 +1346,16 @@ Decision:
 
 The platform uses a small, enumerated set of `@footbag.org` addresses with distinct, non-overlapping purposes. All platform code, documentation, and terraform configuration references these canonical addresses. New email addresses are added to this list before they are introduced into the codebase.
 
+Outbound send is handled by AWS SES (see §5.4). Inbound receive for all role addresses is handled by Cloudflare Email Routing, which forwards each address to an operator-designated personal or ops inbox. SES is not used for inbound ingestion.
+
 | Address | Purpose | Direction | Used by |
 |---|---|---|---|
 | `admin@footbag.org` | Legal, administrative, privacy, copyright, and trademark contact for members and the public | Receives | `/legal` page (Privacy, Terms, Copyright sections); operator of record contact |
 | `announce@footbag.org` | IFPA community announce list; a Tier 2+ member may send here; used as both sender and recipient for archived community announcements | Sends + Receives | `CommunicationService.sendAnnounceEmail` (`M_Send_Announce_Email`) |
+| `directors@footbag.org` | IFPA Board of Directors contact for governance, board inquiries, and director correspondence | Receives | Carried over from the legacy site; in-use public contact for the Board |
 | `noreply@footbag.org` | Transactional sender (account verification, password reset, receipts, system notifications); never monitored, never a reply target | Sends | `CommunicationService.processSendQueue` via SES |
 | `ops-alert@footbag.org` | Operational alarm recipient (system health, backup failures, worker errors, SES bounce/complaint thresholds) | Receives | Terraform alarms (CloudWatch), `OperationsPlatformService` alarm flows |
+| `sanctioning@footbag.org` | Event sanctioning contact for organizers applying for IFPA-sanctioned events and related correspondence | Receives | Carried over from the legacy site; in-use public contact for event sanctioning |
 
 Rationale:
 
@@ -1362,7 +1366,7 @@ Rationale:
 
 Trade-offs:
 
-- Additional mailbox or alias configuration at the mail provider level (four addresses rather than one catch-all).
+- Additional alias configuration at Cloudflare Email Routing (one forwarding rule per receive address rather than one catch-all). Cloudflare Email Routing provides forwarding only, with no hosted mailboxes or shared web UI; if a role address later needs collaborative shared-inbox workflows, a hosted provider (for example Google Workspace, Fastmail, Zoho Mail) may replace Cloudflare for that specific address without changing the canonical list.
 - Requires discipline in code review to avoid introducing new addresses without updating this list.
 
 Impact:
@@ -1370,6 +1374,7 @@ Impact:
 - `admin@footbag.org` is named in the `/legal` page Privacy, Terms, and Copyright sections as the legal/administrative contact.
 - `announce@footbag.org` is documented in `docs/USER_STORIES.md` (`M_Send_Announce_Email`, Tier 2 benefits) and `docs/SERVICE_CATALOG.md` (`CommunicationService.sendAnnounceEmail`).
 - `noreply@footbag.org` and `ops-alert@footbag.org` are referenced as TODO values in `terraform/staging/ssm.tf`, `terraform/production/ssm.tf`, and `terraform/production/terraform.tfvars.example`; activation of these addresses is part of the Phase 4 email activation work.
+- Cloudflare Email Routing is configured with one forwarding rule per receive address (`admin@`, `announce@` inbound, `directors@`, `ops-alert@`, `sanctioning@`) pointing to an operator-designated destination inbox. `directors@` and `sanctioning@` are in-use contacts carried over from the legacy site and must be routed at cutover so no mail is lost.
 - Any additional address (e.g., `privacy@`, `legal@`, `support@`, `info@`) must be justified against this list and added here before it is introduced. The default is to route new purposes to `admin@footbag.org` unless volume or scope warrants a split.
 - Handover to IFPA: ownership of these addresses transfers as part of the operational handover; the addresses themselves and their purposes do not change.
 

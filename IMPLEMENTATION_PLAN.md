@@ -122,6 +122,7 @@ James has merged his footbag-results pipeline into this repo under `legacy_data/
 8. **Extend `legacy_data/CLAUDE.md`**: add sections for clubs, classification, bootstrap, records, variants, `docs/MIGRATION_PLAN.md` refs.
 9. **Integrate into `run_pipeline.sh complete`**: today `complete` stops at events/results/persons; extend to produce clubs (classified), bootstrap leaders, club-only persons, variants, records. `scripts/reset-local-db.sh` then collapses to a one-liner.
 10. **Data review sign-off**: confirm legacy data is complete and member-list presentation is reviewed.
+11. **Freestyle rules pages**: content for the four competition formats (Routine, Circle, Sick 3, Shred 30) — template(s) and route(s) for `/freestyle/rules` (single page with anchors, or per-format paths). Unblocks re-enabling the "Rules" buttons that were dropped from `/freestyle` landing competition-format cards.
 
 ### Deliverables (remaining)
 

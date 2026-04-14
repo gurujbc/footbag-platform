@@ -1,36 +1,61 @@
 {{! /freestyle — portal landing page }}
 
-<div class="hero hero-sm">
-  <div>
+<div class="hero hero-sm hero-with-mascot">
+  <div class="hero-text">
     <h1>{{page.title}}</h1>
     {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
-    {{#if content.totalRecords}}
+  </div>
+  <img class="hero-mascot" src="{{content.mascotSrc}}" alt="{{content.mascotAlt}}" width="150" height="150">
+</div>
+
+<div class="wrapper freestyle-landing">
+
+  {{! ── What is Freestyle Footbag? (single narrative section) ──────────────── }}
+  <section class="content-section">
+    <h2>{{content.intro.heading}}</h2>
+    {{#each content.intro.paragraphs}}
+    <p>{{this}}</p>
+    {{/each}}
+  </section>
+
+  {{! ── Competition Formats ────────────────────────────────────────────────── }}
+  <section class="content-section">
+    <h2>Competition Formats</h2>
+    <div class="card-grid card-grid-2col">
+      {{#each content.competitionFormats}}
+      <div class="card format-card">
+        <div class="card-title">{{title}}</div>
+        <p>{{paragraph}}</p>
+        <div class="video-embed">
+          <iframe src="{{videoEmbedUrl}}" title="{{videoTitle}}" loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{! ── Stats strip (transition into the data portal) ──────────────────────── }}
+  {{#if content.totalRecords}}
+  <section class="content-section stats-strip">
     <div class="hero-stats">
       <span>{{content.totalEvents}} events</span>
       <span>{{content.totalRecords}} passback records</span>
       <span>{{content.totalTricks}} documented tricks</span>
     </div>
-    {{/if}}
-  </div>
-</div>
+  </section>
+  {{/if}}
 
-<div class="wrapper">
-
-  {{! ── About + Four pillars ──────────────────────────────────────────────── }}
+  {{! ── Portal cards (existing five) ───────────────────────────────────────── }}
   <section class="content-section">
     <div class="card-grid card-grid-2col">
 
-      <div class="card" style="grid-column: 1 / -1;">
-        <div class="card-title">About Freestyle Footbag</div>
+      <div class="card">
+        <div class="card-title">History &amp; ADD System</div>
         <p>
-          Freestyle footbag is a discipline built on creativity, technical difficulty, and
-          individual style. Unlike net footbag, which is scored on rallies and placement,
-          freestyle rewards trick diversity, add difficulty, and sequence length.
-        </p>
-        <p>
-          The ADD (Additional Degree of Difficulty) system assigns a numerical value to each trick,
-          enabling objective difficulty scoring alongside subjective execution judging. The core vocabulary
-          was established by the early 1990s; modifier stacking extended it through the 2000s.
+          ADD (Additional Degree of Difficulty) scoring and the evolution of freestyle
+          vocabulary from the 1980s foundation through modifier stacking in the 2000s.
         </p>
         <div class="card-actions">
           <a href="/freestyle/history" class="btn btn-outline">Full history &rarr;</a>
@@ -181,7 +206,7 @@
               {{#if videoUrl}}
                 <a href="{{videoUrl}}" class="video-link" target="_blank" rel="noopener noreferrer"
                    aria-label="Watch {{holderName}} {{trickName}} record video">
-                  ▶{{#if videoTimecode}} {{videoTimecode}}{{/if}}
+                  &#9654;{{#if videoTimecode}} {{videoTimecode}}{{/if}}
                 </a>
               {{else}}
                 &mdash;
@@ -195,5 +220,18 @@
     <p class="source-note"><a href="/freestyle/records">All records &rarr;</a></p>
   </section>
   {{/if}}
+
+  {{! ── Get started tiles (placeholders) ───────────────────────────────────── }}
+  <section class="content-section">
+    <h2>Get Started</h2>
+    <div class="card-grid card-grid-3col get-started-tiles">
+      {{#each content.getStartedTiles}}
+      <a class="card card-tile{{#if comingSoon}} card-coming-soon{{/if}}" href="{{href}}">
+        <div class="card-title">{{label}}</div>
+        {{#if comingSoon}}<span class="badge badge-coming-soon">Coming soon</span>{{/if}}
+      </a>
+      {{/each}}
+    </div>
+  </section>
 
 </div>
