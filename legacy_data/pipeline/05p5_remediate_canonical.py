@@ -838,6 +838,18 @@ if TEAM_CORRECTIONS.exists():
             if not (p["event_key"] == ek and p["discipline_key"] == dk and p["placement"] == pl)
         ]
 
+        # Also remove from results if this is a PHANTOM_ROW deletion
+        if pa == "__REMOVE__":
+            before_res = len(results)
+            results[:] = [
+                r for r in results
+                if not (r["event_key"] == ek and r["discipline_key"] == dk and r["placement"] == pl)
+            ]
+            removed_res = before_res - len(results)
+            _tc_applied += 1
+            print(f"  REMOVED  ({ek}, {dk}, P{pl})  phantom row ({len(matching)} participants, {removed_res} results)")
+            continue
+
         # Add corrected rows
         base = dict(matching[0])  # copy metadata from first existing row
         row_a = dict(base)

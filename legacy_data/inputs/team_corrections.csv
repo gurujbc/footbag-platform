@@ -24,3 +24,93 @@ event_key,discipline_key,placement,original_display,corrected_player_a,corrected
 1998_worlds_montreal,womens_open_doubles_distance_one_pass,3,"Tina Lewis (Austin / Texas",Tina Lewis,Kelley Kelly,SPLIT_PARSING_ERROR,Mirror source: Tina Lewis and Kelley Kelly,1,source_verified,,HIGH
 1998_worlds_montreal,intermediate_doubles_footbag_net,2,"Iain McKechnie (San Rafael / California",Iain McKechnie,Christopher Young,SPLIT_PARSING_ERROR,Mirror source: Iain McKechnie and Christopher Young,1,source_verified,,HIGH
 1998_worlds_montreal,intermediate_doubles_footbag_net,3,"Dan Botkin (Gill / Massachusetts",Dan Botkin,Jack Lentz,SPLIT_PARSING_ERROR,Mirror source: Dan Botkin and Jack Lentz,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,1,,Karim Daouk,Arthur Ledain,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,2,,Wiktor Debski,Wojciech Jamski,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,3,,Eurik Lindner,Andreas Wolff,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,4,,Sébastien Maillet,Radoslav Rusev,MISSING_PARTNER,Mirror source (mojibake: bastien),1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,5,,Yassin Khateeb,Chris Larndorfer,MISSING_PARTNER,Mirror source (truncated: Chris L),1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,6,,Felix Ostwaldt,Grischa Tellenbach,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,8,,Manuel Kruse,Simon Voss,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,9,,Rosen Kyrta,Ivan Stanev,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,10,,Joschka Sebrandtke,Hendrik Simon,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,11,,Sam Maleki,Maciej Samborowski,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,12,,Jakub Grabarczyk,Plamena Ivanova,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,13,,Benjamin Kanske,Tammo Rockel,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,14,,Yves Mingard,Renato Zülli,MISSING_PARTNER,Mirror source (mojibake: Renato Z),1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,15,,Julien Coblence,Quentin Isackson,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,16,,Nicholas Janin,David Rambaud,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,17,,Michal Klimczak,Michal Rog,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,18,,Santeri Karvinen,Tuomas Riisalo,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,19,,Steve Kuntze,Robin Püchel,MISSING_PARTNER,Mirror source (mojibake: Robin P chel),1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,20,,David Chabannes,Silwan Daouk,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,21,,Anthony Arnaud,Sven Depoilly,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,23,,Timothée Lerolle,Barthélémy Meridjen,MISSING_PARTNER,Mirror source (mojibake both names),1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,25,,Eduardo Frenzel Martinez,Darwins Mora,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,26,,Kristiyan Dimitrov,Zdravko Doichev,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2017_eurochamp_aranjuez,open_doubles_net,27,,Jari John,Janis Thal,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,1,,Andy Ronald,Thomas Loria,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,2,,Jake Leong,Yossarian Kelley,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,3,,Jim Derricott,Crass Eddicott,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,4,,Iain McKechnie,Jim Cobb,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,5,,Pat Quinn,Ben Cochrane,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,6,,André Lemaire,Jon Hayduk,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,7,,Maude Landreville,Katia Couture,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,8,,Rick Bates,Chard Cook,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,9,,Steve Dusablon,Kimball Isaacson,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,10,,Jan Zimmermann,Patrick Schrickel,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,11,,Jared Clark,Jody Rusnak,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,open_doubles_net,12,,Simon Hearsey,Mike Stefanelli,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,mixed_doubles_net,1,,Maude Landreville,Andy Ronald,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,mixed_doubles_net,2,,Katia Couture,James Holkko,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,mixed_doubles_net,3,,Leanne Makcrow,Iain McKechnie,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,mixed_doubles_net,4,,Darlene Goodridge,Jim Derricott,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,intermediate_doubles_net,1,,Darlene Goodridge,Francois Leh,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,intermediate_doubles_net,2,,Leanne Makcrow,Marc Studhalter,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2001_vancouver,intermediate_doubles_net,3,,Tetsu Hiruta,Reaon Ford,MISSING_PARTNER,Mirror source,1,source_verified,,HIGH
+2024_worlds_montreal,mixed_doubles_net,7,,Grischa Tellenbach,Audrey Tumelin,MISSING_PARTNER,User confirmed + co-occurrence (27x),1,human_verified,,HIGH
+2022_worlds_krakow,open_doubles_net,6,,Chris Seibert,Grischa Tellenbach,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2015_worlds_copenhagen,open_doubles_net,10,,Jyri Ilama,Jean-Francois Lemieux,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2015_worlds_copenhagen,open_doubles_net,32,,Boris Ollivier,Jean-Marie Letort,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2015_worlds_copenhagen,open_mixed_doubles_net,7,,Emmanuelle Vincendeau,Jean-Francois Lemieux,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2015_worlds_copenhagen,open_mixed_doubles_net,10,,Tammo Rockel,Marie-Lou Roy,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2015_worlds_copenhagen,womens_doubles_net,4,,Marilyn Demuy,Marie-Lou Roy,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2014_worlds_paris,open_doubles_net,15,,Sébastien Maillet,Jean-Francois Lemieux,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2013_worlds_montreal,open_doubles_net,22,,Yves Archambault,Carl-Antoine Boulay,MISSING_PARTNER,Yves Archambault confirmed,1,human_verified,Yves Archambault,HIGH
+2013_worlds_montreal,open_doubles_net,31,,Jack Lentz,Pierre-Jacques Daigle,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2013_worlds_montreal,open_mixed_doubles_net,7,,Dominic O'Brien,Marie-Lou Roy,MISSING_PARTNER,User confirmed,1,human_verified,,HIGH
+2012_worlds_warsaw,open_doubles_routines,6,,Julian Sinnl / [UNKNOWN PARTNER],__REMOVE__,__REMOVE__,PHANTOM_ROW,Mirror source has only 5 placements — P6 does not exist,1,source_verified,,HIGH
+2012_worlds_warsaw,open_doubles_routines,7,,Theodore Fritsch / [UNKNOWN PARTNER],__REMOVE__,__REMOVE__,PHANTOM_ROW,Mirror source has only 5 placements — P7 does not exist,1,source_verified,,HIGH
+2008_worlds_prague,masters_doubles_net,5,,Steve Goldberg,Michael Stefanelli,MISSING_PARTNER,Mirror source: (scratched) Michael Stefanelli / Steve Goldberg,1,source_verified,,HIGH
+2006_worlds_frankfurt,open_doubles_net,3,,Yves Archambault,Jean-Francois Lemieux,MISSING_PARTNER,Yves Archambault confirmed,1,human_verified,Yves Archambault,HIGH
+2003_worlds_prague,intermediate_doubles_net,9,,Zahrer,Waldispuhl,MISSING_PARTNER,Mirror source: 9th ties — last names only,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,10,,Alexander Smirnov,Yulia Tikhomirova,MISSING_PARTNER,Mirror source: Smirnov/Tikhomirova — resolved from event context,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,11,,Oton Copi,Bostjan Kobe,MISSING_PARTNER,Mirror source: Copi/Kobe — resolved from PT,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,12,,Eurik Lindner,Markus Kapszak,MISSING_PARTNER,Mirror source: Lindner/Kaspczak — 29x co-occurrence confirms,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,13,,Ole Schnack,Vincent Rousseau,MISSING_PARTNER,Mirror source: Schnack/Rousseau — resolved from event context,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,14,,Johannes Korff,Hofer,MISSING_PARTNER,Mirror source: Korff/Hofer — Korff resolved from PT,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,15,,Ale Pelko,Kralj,MISSING_PARTNER,Mirror source: Pelko/Kralj — Pelko resolved from event,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,16,,Grega Morel,Dolinar,MISSING_PARTNER,Mirror source: Morel/Dolinar — Morel resolved from PT,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,17,,Antek Szczeniowski,Damian Budzik,MISSING_PARTNER,Mirror source: Sceniowski/Budzik — resolved from PT,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,18,,Schmidt,Yves Kreil,MISSING_PARTNER,Mirror source: Schmidt/Kreil — Kreil resolved from PT,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,19,,Fabien Riffaud,Marc Brunet,MISSING_PARTNER,Mirror source: Riffaud/Brunet — 4x co-occurrence,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,20,,Eric Dargent,Jono Heyes,MISSING_PARTNER,Mirror source: Dargent/Heyes — resolved from PT,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,21,,Jules Meneboo,Lamps,MISSING_PARTNER,Mirror source: Meneboo/Lamps — Meneboo resolved from PT,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,22,,Schlapfer,Christian Dubuis,MISSING_PARTNER,Mirror source: Schlapfer/Dubuis — Dubuis resolved from PT,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,23,,Zdnidarsic,Majerhold,MISSING_PARTNER,Mirror source: last names only from Slovenian players,1,source_verified,,MEDIUM
+2003_worlds_prague,intermediate_doubles_net,24,,Fred Touzelet,Arnaud Donnat,MISSING_PARTNER,Mirror source: Touzelet/Donnat — resolved from PT,1,source_verified,,HIGH
+2003_worlds_prague,intermediate_doubles_net,25,,Hanz Freller,Baker,MISSING_PARTNER,Mirror source: Freller/Baker — Freller resolved from PT,1,source_verified,,MEDIUM
+1998_vancouver,advanced_doubles_net,1,,Paul Constantin,Scott Heffernan,MISSING_PARTNER,Mirror source: Paul Constantin (AB) Scott Heffernan (AB),1,source_verified,,HIGH
+1998_vancouver,advanced_doubles_net,2,,Tara Wolczuk,Omaha,MISSING_PARTNER,Mirror source: Tara Wolczuk (BC) Omaha (BC) — Omaha is person name/nickname,1,source_verified,,HIGH
+1998_vancouver,advanced_doubles_net,3,,François Leh,Kevin Jenkins,MISSING_PARTNER,Mirror source: Francois Leh (BC) Kevin Jenkins (BC),1,source_verified,,HIGH
+1998_vancouver,mixed_doubles_net,2,,Lisa McDaniel Jones,P.T. Lovern,MISSING_PARTNER,Mirror source: Lisa McDaniel (CA) P.T. Lovern (CA),1,source_verified,,HIGH
+1998_vancouver,mixed_doubles_net,3,,Julie Symons,Yossarian Kelley,MISSING_PARTNER,Mirror source: Julie Symons (CA) Yossarian Kelley (WA),1,source_verified,,HIGH
+1998_vancouver,open_doubles_golf,1,,Jim Fitzgerald,Adam Hutchinson,MISSING_PARTNER,Mirror source: Jim Fitzgerald (OR) Adam Hutchinson (CA),1,source_verified,,HIGH
+1998_vancouver,open_doubles_golf,2,,Scott Milne,Chard Cook,MISSING_PARTNER,Mirror source: Scott Milne (BC) Chard Cook (BC),1,source_verified,,HIGH
+1998_vancouver,open_doubles_golf,3,,Jon Hayduk,Sean Flynn,MISSING_PARTNER,Mirror source: Jon Hayduk (BC) Sean Flynn (AZ) — TIE with Geoff Hand/Jim Derricott not captured by parser,1,source_verified,,HIGH
+1998_vancouver,open_doubles_net,1,,Dave Bernard,Chris Routh,MISSING_PARTNER,Mirror source: Dave Bernard (OR) Chris Routh (AZ),1,source_verified,,HIGH
+1998_vancouver,open_doubles_net,2,,Hung Chang,P.T. Lovern,MISSING_PARTNER,Mirror source: Hung Chang (CA) P.T. Lovern (CA),1,source_verified,,HIGH
+1998_vancouver,open_doubles_net,3,,Scott Milne,Jim Derricott,MISSING_PARTNER,Mirror source: Scott Milne (BC) Jim Derricott (BC),1,source_verified,,HIGH
+1998_vancouver,womens_doubles_net,2,,Lisa McDaniel Jones,Evanne LaMarche,MISSING_PARTNER,Mirror source: Lisa McDaniel (CA) Evanne Lamarche (AZ),1,source_verified,,HIGH
+1998_vancouver,womens_doubles_net,3,,Vera DeBaere,Ann Lasken,MISSING_PARTNER,Mirror source: Vera DeBaere (BC) Ann Lasken (DC),1,source_verified,,HIGH
+2013_footbagjam_burgas,open_doubles_net,3,,Benjamin Kanske,Stoyan Tsonev,MISSING_PARTNER,Mirror manual results: Benjamin Kanske/Stoyan Tsonev — structured HTML had PHP errors hiding partner,1,source_verified,,HIGH
+2013_footbagjam_burgas,open_doubles_net,4,,Dinko Dimitrov,Ivailo Yordanov,MISSING_PARTNER,Mirror manual results: Dinko Dimitrov/Ivailo Yordanov — structured HTML had PHP errors hiding partner,1,source_verified,,HIGH

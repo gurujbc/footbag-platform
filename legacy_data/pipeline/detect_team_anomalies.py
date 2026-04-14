@@ -69,6 +69,11 @@ def _event_importance(etype: str) -> int:
     return _EVENT_IMPORTANCE.get(etype, 1)
 
 
+def _slug(s: str) -> str:
+    s = s.replace("'", "").replace("\u2019", "")
+    return re.sub(r"[^a-z0-9]+", "_", s.lower().strip()).strip("_")
+
+
 # ---------------------------------------------------------------------------
 # Detection rules
 # ---------------------------------------------------------------------------
@@ -207,6 +212,92 @@ def detect_canonical_anomalies(
     return anomalies
 
 
+def filter_pbp_false_positives(
+    pbp_anomalies: list[dict],
+    participants_path: Path,
+    disciplines_path: Path,
+    event_meta: dict[str, dict],
+) -> list[dict]:
+    """Remove PBP SPLIT_PARSING_ERROR anomalies where canonical data is already correct.
+
+    A PBP entry may show 'Name (Location / State)' due to frozen identity lock display,
+    but the canonical participant data may already have the correct name without the
+    location artifact. Cross-check and suppress false positives.
+    """
+    # Load discipline team_type
+    disc_team_type: dict[tuple[str, str], str] = {}
+    with open(disciplines_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            disc_team_type[(row["event_key"], row["discipline_key"])] = row.get("team_type", "")
+
+    # Load canonical participants grouped by (event_key, discipline_key, placement)
+    # Store as list of (participant_order, display_name) tuples
+    canon_parts: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
+    with open(participants_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            name = row["display_name"].strip()
+            order = row.get("participant_order", "1")
+            key = (row["event_key"], row["discipline_key"], row["placement"])
+            canon_parts[key].append((order, name))
+
+    kept = []
+    suppressed = 0
+    for a in pbp_anomalies:
+        if a["anomaly_type"] != "SPLIT_PARSING_ERROR":
+            kept.append(a)
+            continue
+
+        # Resolve event_key from event_id (PBP uses legacy_event_id)
+        eid = a["event_id"]
+        ev = event_meta.get(eid, {})
+        ek = ev.get("event_key", eid)
+
+        # Normalize discipline to match canonical keys
+        disc_slug = _slug(a["discipline"])
+
+        # Find matching canonical discipline (exact slug, then prefix/substring fallback)
+        matching_dk = None
+        for (cek, cdk), tt in disc_team_type.items():
+            if cek == ek and _slug(cdk) == disc_slug:
+                matching_dk = cdk
+                break
+        if matching_dk is None:
+            # Fallback: PBP slug might be a prefix of canonical key (e.g. "novice" → "novice_net")
+            for (cek, cdk), tt in disc_team_type.items():
+                if cek == ek and (_slug(cdk).startswith(disc_slug) or disc_slug.startswith(_slug(cdk))):
+                    matching_dk = cdk
+                    break
+
+        if matching_dk is None:
+            kept.append(a)
+            continue
+
+        tt = disc_team_type.get((ek, matching_dk), "")
+        pl = a["placement"]
+        parts = canon_parts.get((ek, matching_dk, pl), [])
+        real_p1 = [name for order, name in parts
+                   if order == "1" and name.strip().lower() not in _SKIP_NAMES]
+        all_real = [name for _, name in parts if name.strip().lower() not in _SKIP_NAMES]
+
+        # Singles with a real participant_order=1 → canonical is clean
+        # (extra participant_order=2 from parser location splits are harmless artifacts)
+        if tt == "singles" and len(real_p1) >= 1:
+            suppressed += 1
+            continue
+
+        # Doubles with 2 real participants → canonical is clean
+        if tt == "doubles" and len(all_real) == 2:
+            suppressed += 1
+            continue
+
+        kept.append(a)
+
+    if suppressed:
+        print(f"  Suppressed {suppressed} PBP false positives (canonical data is clean)")
+
+    return kept
+
+
 def suggest_partners(anomalies: list[dict], participants_path: Path) -> None:
     """For MISSING_PARTNER anomalies, suggest likely partners based on
     co-occurrence patterns in other events."""
@@ -267,9 +358,6 @@ def main() -> None:
 
     # Load existing corrections to exclude.
     # Normalize discipline keys for matching (PBP uses raw names, corrections use slugs).
-    def _slug(s: str) -> str:
-        s = s.replace("'", "").replace("\u2019", "")
-        return re.sub(r"[^a-z0-9]+", "_", s.lower().strip()).strip("_")
 
     corrected: set[tuple[str, str, str]] = set()
     if CORRECTIONS_CSV.exists():
@@ -292,6 +380,11 @@ def main() -> None:
     print("Scanning PBP for split/missing errors...")
     pbp_anomalies = detect_pbp_split_errors(PBP_CSV)
     print(f"  Found: {len(pbp_anomalies)}")
+
+    # Cross-check PBP anomalies against canonical — suppress false positives
+    pbp_anomalies = filter_pbp_false_positives(
+        pbp_anomalies, PARTICIPANTS_CSV, DISCIPLINES_CSV, event_meta,
+    )
 
     print("Scanning canonical for doubles anomalies...")
     canon_anomalies = detect_canonical_anomalies(PARTICIPANTS_CSV, DISCIPLINES_CSV)
