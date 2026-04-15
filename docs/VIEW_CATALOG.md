@@ -431,6 +431,7 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /freestyle/moves` | Freestyle moves | Freestyle moves reference | Current |
 | `GET /freestyle/tricks/:slug` | Freestyle trick detail | Detail page for a single freestyle trick | Current |
 | `GET /records` | Consecutive records | Consecutive kicks world records | Current |
+| `GET /net` | Footbag Net landing | Footbag Net section entry page (hero with mascot, "What is Footbag Net?" narrative, Singles/Doubles competition-format cards, Explore cards into teams/partnerships/events, notable partnerships, notable players, recent events) | Current |
 | `GET /net/teams` | Net teams list | Doubles net team list ordered by appearance count | Current |
 | `GET /net/teams/:teamId` | Net team detail | Doubles net team competition history | Current |
 | `GET /legal` | Legal | Privacy, Terms of Use, and Copyright & Trademarks on a single page with anchored sections | Current |
@@ -459,7 +460,7 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /hof` is the canonical HoF section entry route.
 - `GET /freestyle` is the canonical freestyle section entry route. Sub-routes `/freestyle/records`, `/freestyle/leaders`, `/freestyle/about`, `/freestyle/moves`, and `/freestyle/tricks/:slug` are all public and unauthenticated.
 - `GET /records` is the canonical records section entry route and the single page in the records section.
-- `GET /net/teams` is the canonical net section entry route; lists doubles teams ordered by appearance count. `GET /net/teams/:teamId` is the team detail route; returns 404 for unknown team IDs. Both pages always render the disclaimer: "Team identities are algorithmically constructed from placement data and may not reflect official partnerships."
+- `GET /net` is the canonical net section entry route; a portal landing with hero, mascot, "What is Footbag Net?" narrative, Singles/Doubles competition-format cards, and pathways into the data sub-routes. `GET /net/teams` lists doubles teams ordered by appearance count; `GET /net/teams/:teamId` is the team detail route, returning 404 for unknown team IDs. All team-data pages render the disclaimer: "Team identities are algorithmically constructed from placement data and may not reflect official partnerships."
 - `GET /legal` is the canonical legal page. It is a public, unauthenticated single page that composes Privacy, Terms of Use, and Copyright & Trademarks as three anchored sections (`#privacy`, `#terms`, `#copyright`). Footer links across the site deep-link to these anchors.
 - health routes are operational and are outside the cataloged page system.
 

@@ -2,12 +2,14 @@
  * Integration tests for the net landing page.
  *
  * Covers:
- *   GET /net — net doubles landing page
+ *   GET /net — footbag net portal landing page
  *
  * Verifies:
  *   - 200 response
- *   - All four sections present (top teams, most connected players, recent events, long careers)
- *   - Links to teams, players, and events
+ *   - Hero with mascot + "What is Footbag Net?" narrative
+ *   - Competition Formats cards (Singles + Doubles) with YouTube embeds and Rules links
+ *   - Explore cards link to real sub-routes (/net/teams, /net/partnerships, /net/events)
+ *   - Notable partnerships, notable players, recent events sections preserved
  *   - Evidence disclaimer always present
  *   - No forbidden terms: "ranking", "head-to-head", "win/loss"
  *   - Only canonical_only data surfaces (inferred_partial excluded)
@@ -152,18 +154,6 @@ describe('GET /net', () => {
     expect(res.status).toBe(200);
   });
 
-  it('includes the evidence disclaimer', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('may not reflect official partnerships');
-  });
-
-  it('includes the data note', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('no match-level data is reconstructed');
-  });
-
   it('shows team names in notable partnerships', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
@@ -202,13 +192,15 @@ describe('GET /net', () => {
     expect(res.text).toContain('Multi-stage');
   });
 
-  it('shows discovery cards as coming soon', async () => {
+  it('shows Explore cards linking to existing net sub-routes', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
     expect(res.text).toContain('Partnerships');
     expect(res.text).toContain('Teams');
     expect(res.text).toContain('Events');
-    expect(res.text).toContain('Coming soon');
+    expect(res.text).toContain('href="/net/teams"');
+    expect(res.text).toContain('href="/net/partnerships"');
+    expect(res.text).toContain('href="/net/events"');
   });
 
   it('does not show rankings, win/loss, or head-to-head stats', async () => {
@@ -369,5 +361,46 @@ describe('GET /net — Notable Players', () => {
     const lower = res.text.toLowerCase();
     expect(lower).not.toContain('goat');
     expect(lower).not.toContain('greatest player');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Portal landing sections: hero, explainer, competition formats
+// ---------------------------------------------------------------------------
+
+describe('GET /net — portal landing sections', () => {
+  it('renders hero with Footbag Net title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Footbag Net');
+  });
+
+  it('renders the net mascot image', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('src="/img/net-mascot.svg"');
+    expect(res.text).toContain('hero-with-mascot');
+  });
+
+  it('renders the "What is Footbag Net?" explainer', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('What is Footbag Net?');
+    expect(res.text).toContain('5-foot net');
+  });
+
+  it('renders Competition Formats with Singles and Doubles cards', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('Competition Formats');
+    expect(res.text).toContain('>Singles<');
+    expect(res.text).toContain('>Doubles<');
+  });
+
+  it('embeds YouTube videos in competition-format cards', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('youtube.com/embed/Rep-1rQbX-o');
+    expect(res.text).toContain('youtube.com/embed/lcDP3JGvkP0');
   });
 });

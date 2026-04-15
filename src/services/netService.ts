@@ -104,19 +104,74 @@ interface NotablePlayerBucketViewModel {
   players: NotablePlayerItemViewModel[];
 }
 
+interface NetLandingExplainer {
+  heading:    string;
+  paragraphs: string[];
+}
+
+interface NetCompetitionFormat {
+  slug:           'singles' | 'doubles';
+  title:          string;
+  paragraph:      string;
+  videoEmbedUrl:  string;
+  videoTitle:     string;
+}
+
+interface NetExploreCard {
+  slug:       'teams' | 'partnerships' | 'events';
+  label:      string;
+  href:       string;
+  paragraph:  string;
+  linkLabel:  string;
+  comingSoon: boolean;
+}
+
 interface NetHomePageViewModel {
   seo:     { title: string };
-  page:    { sectionKey: string; pageKey: string; title: string };
+  page:    { sectionKey: string; pageKey: string; title: string; intro: string };
   content: {
+    mascotSrc:             string;
+    mascotAlt:             string;
+    intro:                 NetLandingExplainer;
+    competitionFormats:    NetCompetitionFormat[];
+    exploreCards:          NetExploreCard[];
     topTeams:              NetHomeTopTeamViewModel[];
     topPlayers:            NetHomeTopPlayerViewModel[];
     recentEvents:          NetHomeRecentEventViewModel[];
     interestingTeams:      NetHomeInterestingTeamViewModel[];
     notablePartnerships:   NotableBucketViewModel[];
     notablePlayers:        NotablePlayerBucketViewModel[];
-    disclaimer:            string;
   };
 }
+
+// ---------------------------------------------------------------------------
+// Landing-page static content (adapted from FootbagWorldwide /games/net,
+// IFPA 2025). Held in-file so the landing stays thin and no DB call is needed.
+// ---------------------------------------------------------------------------
+const NET_LANDING_INTRO: NetLandingExplainer = {
+  heading: 'What is Footbag Net?',
+  paragraphs: [
+    'Footbag Net is an acrobatic sport played on a badminton court. Players volley the footbag back and forth using only their feet or lower leg. Similar to Sepak Takraw, footbag net blends the court strategy of beach volleyball with the jumping and kicking skills of martial arts. Players demonstrate remarkable agility by flying through the air to spike the footbag over the net, or to block that spike on defense.',
+  ],
+};
+
+const NET_COMPETITION_FORMATS: NetCompetitionFormat[] = [
+  {
+    slug:          'singles',
+    title:         'Singles',
+    paragraph:     'In singles, each player has one or two kicks to return the footbag over the net. Skilled players can often use the first kick to set up a spike with the second kick.',
+    videoEmbedUrl: 'https://www.youtube.com/embed/Rep-1rQbX-o',
+    videoTitle:    'IFPA World Footbag Championships 2019 — Open Singles Net Finals',
+  },
+  {
+    slug:          'doubles',
+    title:         'Doubles',
+    paragraph:     'In doubles, teams have three kicks total to return the footbag, and teammates must alternate kicks. Doubles opens the door to set-and-spike plays, crossing blocks, and dramatic rallies.',
+    videoEmbedUrl: 'https://www.youtube.com/embed/lcDP3JGvkP0',
+    videoTitle:    'IFPA World Footbag Championships 2019 — Mixed Doubles Net Final',
+  },
+];
+
 
 export interface NetTeamViewModel {
   teamId:          string;
@@ -1677,21 +1732,38 @@ export const netService = {
     const pcB = playerByPartners.slice(0, BUCKET_SIZE).map(shapeNotablePlayer);
     if (pcB.length) notablePlayers.push({ title: 'Most Partner Connections', players: pcB });
 
+    // Grey-out rule: an explore card is "coming soon" when its underlying
+    // data is thin enough that the linked sub-page would be an empty stub.
+    const hasTeams        = topTeamRows.length > 0;
+    const hasPartnerships = notablePartnerships.length > 0;
+    const hasEvents       = recentEventRows.length > 0;
+
+    const exploreCards: NetExploreCard[] = [
+      { slug: 'teams',        label: 'Teams',        href: '/net/teams',        paragraph: 'Doubles partnerships and their full competition record, reconstructed from placement data.', linkLabel: 'Browse teams',     comingSoon: !hasTeams },
+      { slug: 'partnerships', label: 'Partnerships', href: '/net/partnerships', paragraph: 'Notable net doubles partnerships ranked by wins, podiums, and active span.',             linkLabel: 'View partnerships', comingSoon: !hasPartnerships },
+      { slug: 'events',       label: 'Events',       href: '/net/events',       paragraph: 'Archive of net doubles competitions with per-event appearance counts.',                   linkLabel: 'Event archive',    comingSoon: !hasEvents },
+    ];
+
     return {
-      seo:  { title: 'Net Doubles' },
+      seo:  { title: 'Footbag Net' },
       page: {
         sectionKey: 'net',
         pageKey:    'net_home',
-        title:      'Net Doubles',
+        title:      'Footbag Net',
+        intro:      'Fast-paced foot volleyball over a 5-foot net.',
       },
       content: {
+        mascotSrc:           '/img/net-mascot.svg',
+        mascotAlt:           'Footbag net icon',
+        intro:               NET_LANDING_INTRO,
+        competitionFormats:  NET_COMPETITION_FORMATS,
+        exploreCards,
         topTeams:            topTeamRows.map(shapeHomeTopTeam),
         topPlayers:          topPlayerRows.map(shapeHomeTopPlayer),
         recentEvents:        recentEventRows.map(shapeHomeRecentEvent),
         interestingTeams:    interestingTeamRows.map(shapeHomeInterestingTeam),
         notablePartnerships,
         notablePlayers,
-        disclaimer:          TEAM_DISCLAIMER,
       },
     };
   },

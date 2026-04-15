@@ -51,6 +51,7 @@ Deferred candidates: avatar server-side processing (media/S3 sprint); stub pages
 - **Identity Phase 1** — Name model (real_name + display_name, surname constraint, slug at registration), person links (personHref), historical name display, `first_competition_year` and `show_competitive_results`
 - **1-E CloudFront** — staging + production active (April 2026).
 - **Legal** — `/legal` page (Privacy, Terms, Copyright & Trademarks).
+- **Net portal landing** — `/net` redesigned to mirror `/freestyle` (hero with mascot, "What is Footbag Net?" narrative, Singles/Doubles competition-format cards, data-driven Explore cards, existing notable/recent sections preserved). Cross-track: Dave (service-contract extension of `getNetHomePage`) + John (look-and-feel). Asset `src/public/img/net-mascot.svg` sourced from IFPA-owned footbagworldwide.com.
 
 ### Current gaps vs long-term user stories
 

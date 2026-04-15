@@ -1,15 +1,61 @@
-{{! /net — net doubles landing page }}
+{{! /net — net portal landing page }}
 
-<div class="hero hero-sm">
-  <div>
+<div class="hero hero-sm hero-with-mascot">
+  <div class="hero-text">
     <h1>{{page.title}}</h1>
-    <p class="hero-subtitle">Fast-paced volleyball-style play over a 5-foot net.</p>
+    {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
   </div>
+  <img class="hero-mascot" src="{{content.mascotSrc}}" alt="{{content.mascotAlt}}" width="150" height="150">
 </div>
 
-<div class="wrapper">
+<div class="wrapper net-landing">
 
-  {{! ── Notable Partnerships ──────────────────────────────────────── }}
+  {{! ── What is Footbag Net? ──────────────────────────────────────── }}
+  <section class="content-section">
+    <h2>{{content.intro.heading}}</h2>
+    {{#each content.intro.paragraphs}}
+    <p>{{this}}</p>
+    {{/each}}
+  </section>
+
+  {{! ── Competition Formats ───────────────────────────────────────── }}
+  <section class="content-section">
+    <h2>Competition Formats</h2>
+    <div class="card-grid card-grid-2col">
+      {{#each content.competitionFormats}}
+      <div class="card format-card">
+        <div class="card-title">{{title}}</div>
+        <p>{{paragraph}}</p>
+        <div class="video-embed">
+          <iframe src="{{videoEmbedUrl}}" title="{{videoTitle}}" loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{! ── Explore (portal cards into existing net sub-routes) ───────── }}
+  <section class="content-section">
+    <div class="card-grid card-grid-2col">
+      {{#each content.exploreCards}}
+      <div class="card{{#if comingSoon}} card-coming-soon{{/if}}">
+        <div class="card-title">{{label}}</div>
+        <p>{{paragraph}}</p>
+        {{#if comingSoon}}
+        <span class="badge badge-coming-soon">Coming soon</span>
+        {{else}}
+        <div class="card-actions">
+          <a href="{{href}}" class="btn btn-outline">{{linkLabel}} &rarr;</a>
+        </div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{! ── Notable Partnerships (existing real data) ─────────────────── }}
   {{#if content.notablePartnerships.length}}
   {{#each content.notablePartnerships}}
   <section class="content-section">
@@ -42,7 +88,7 @@
   {{/each}}
   {{/if}}
 
-  {{! ── Notable Players ───────────────────────────────────────────── }}
+  {{! ── Notable Players (existing real data) ──────────────────────── }}
   {{#if content.notablePlayers.length}}
   {{#each content.notablePlayers}}
   <section class="content-section">
@@ -77,28 +123,7 @@
   {{/each}}
   {{/if}}
 
-  {{! ── Explore ───────────────────────────────────────────────────── }}
-  <section class="content-section">
-    <div class="card-grid card-grid-3col">
-      <div class="card card-coming-soon">
-        <div class="card-title">Partnerships</div>
-        <p>Browse all net doubles partnerships and their results.</p>
-        <span class="badge badge-coming-soon">Coming soon</span>
-      </div>
-      <div class="card card-coming-soon">
-        <div class="card-title">Teams</div>
-        <p>View team rosters and competitive records.</p>
-        <span class="badge badge-coming-soon">Coming soon</span>
-      </div>
-      <div class="card card-coming-soon">
-        <div class="card-title">Events</div>
-        <p>Full archive of net doubles competitions.</p>
-        <span class="badge badge-coming-soon">Coming soon</span>
-      </div>
-    </div>
-  </section>
-
-  {{! ── Recent Events ────────────────────────────────────────────── }}
+  {{! ── Recent Events ─────────────────────────────────────────────── }}
   {{#if content.recentEvents}}
   <section class="content-section">
     <h2>Recent Events</h2>
@@ -124,11 +149,5 @@
     </div>
   </section>
   {{/if}}
-
-  {{! ── Data note ─────────────────────────────────────────────────── }}
-  <p class="source-note">
-    {{content.disclaimer}}
-    Results reflect placements only; no match-level data is reconstructed.
-  </p>
 
 </div>

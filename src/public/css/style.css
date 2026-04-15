@@ -1782,11 +1782,16 @@ section.home-media { padding-top: 0; }
 .format-card .card-actions { margin-top: auto; }
 
 /* Landing-scoped spacing: tighten gaps between explainer sections */
-.freestyle-landing .content-section { margin: 0; }
-.freestyle-landing section { padding: 16px 0; }
-.freestyle-landing section + section { border-top: none; }
-.freestyle-landing .content-section p { margin: 0 0 10px; }
-.freestyle-landing h2 { margin-top: 0; margin-bottom: 10px; }
+.freestyle-landing .content-section,
+.net-landing       .content-section { margin: 0; }
+.freestyle-landing section,
+.net-landing       section { padding: 16px 0; }
+.freestyle-landing section + section,
+.net-landing       section + section { border-top: none; }
+.freestyle-landing .content-section p,
+.net-landing       .content-section p { margin: 0 0 10px; }
+.freestyle-landing h2,
+.net-landing       h2 { margin-top: 0; margin-bottom: 10px; }
 
 /* Standalone stats strip (outside the hero): neutral pill styling */
 .stats-strip { padding: 16px 0; }

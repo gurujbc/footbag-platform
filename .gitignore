@@ -184,3 +184,6 @@ legacy_data/persons/provisional/out/
 
 # Keep snapshots (these ARE committed)
 !legacy_data/clubs/snapshots/
+
+# Local design mockups (never commit)
+mockups/

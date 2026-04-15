@@ -1409,7 +1409,7 @@ export const freestyleService = {
           {
             slug: 'circle',
             title: 'Circle',
-            paragraph: 'Circle takes the traditional way that freestyle footbag is played with a group and puts a competitive spin on it. Players take turns with the bag to show off their technical skills in direct competition with each other.',
+            paragraph: 'Circle takes traditional freestyle footbag and puts a competitive spin on it. Players take turns with the bag to show off their technical skills.',
             videoEmbedUrl: 'https://www.youtube.com/embed/aMr5e5wlgeE',
             videoTitle: 'Worlds 2017 Open Circle Finals',
           },
