@@ -41,7 +41,10 @@ Or via run_pipeline.sh which resolves --db automatically.
 import argparse
 import csv
 import json
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import uuid
 from pathlib import Path
 

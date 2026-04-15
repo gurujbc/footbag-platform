@@ -19,7 +19,10 @@ import argparse
 import csv
 import hashlib
 import os
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path

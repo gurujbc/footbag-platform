@@ -12,7 +12,10 @@ Usage (from legacy_data/):
 import csv
 import json
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 from pathlib import Path
 

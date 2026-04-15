@@ -23,7 +23,10 @@ import csv
 import hashlib
 import os
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 import unicodedata
 from datetime import datetime, timezone

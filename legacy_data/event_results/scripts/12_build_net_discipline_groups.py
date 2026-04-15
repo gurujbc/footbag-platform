@@ -47,7 +47,10 @@ Or via run_pipeline.sh which resolves --db automatically.
 import argparse
 import os
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone

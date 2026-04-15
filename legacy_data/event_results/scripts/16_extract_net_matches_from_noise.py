@@ -49,7 +49,10 @@ Or via run_pipeline.sh which resolves --db automatically.
 
 import argparse
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import uuid
 from pathlib import Path
 from typing import Optional

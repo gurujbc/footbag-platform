@@ -60,7 +60,10 @@ Or via run_pipeline.sh which resolves --db automatically.
 
 import argparse
 import os
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 import uuid
 from collections import defaultdict

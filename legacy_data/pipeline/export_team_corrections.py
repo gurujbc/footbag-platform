@@ -21,7 +21,10 @@ from __future__ import annotations
 
 import argparse
 import csv
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 from pathlib import Path
 

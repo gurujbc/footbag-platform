@@ -17,7 +17,10 @@ Or via run_pipeline.sh which resolves --db automatically.
 import argparse
 import csv
 import os
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))

@@ -21,7 +21,10 @@ import argparse
 import csv
 import json
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 

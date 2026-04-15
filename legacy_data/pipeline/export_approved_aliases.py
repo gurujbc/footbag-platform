@@ -23,7 +23,10 @@ from __future__ import annotations
 import argparse
 import csv
 import re
-import sqlite3
+try:
+    import pysqlite3 as sqlite3
+except ImportError:
+    import sqlite3
 import sys
 import unicodedata
 from pathlib import Path
