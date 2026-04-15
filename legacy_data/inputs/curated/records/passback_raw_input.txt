@@ -1,0 +1,208 @@
+Trick/record name        Sort-friendly Name    Record    Place    ADDs    Player    Date    Approx. Date?    Video    Time/Clip #    Notes    Sort Col 1    Sort Col 2
+2-Bag Juggle        Juggle (2-bag) (ss)    75        N/A    Taishi Ishida    5/25/2021        https://youtu.be/XeJHACfaU2Q?t=103    1:43        2-BagJuggle_    Juggle(2-bag)(ss)_
+Alpine Blurry Whirl        Stepping Whirl (op) (ducking)    4        6    David Clavens    5/11/2012        https://youtu.be/NWEsbDJw5Lc?t=136    2:16        AlpineBlurryWhirl_    SteppingWhirl(op)(ducking)_
+Alpine Magellan        Pixie Legover (ss) (diving)    15        4    Jakub Worek    5/15/2018        https://www.youtube.com/watch?v=NzTDp2IvJYE            AlpineMagellan_    PixieLegover(ss)(diving)_
+Alpine Paste        Pixie Pickup (op) (ducking)    6    1    4    Derek Littlefield    2/23/2025        https://youtu.be/UcSxoF3Moag?t=74    1:14        AlpinePaste_1    PixiePickup(op)(ducking)_1
+Alpine Paste        Pixie Pickup (op) (ducking)    4    2    4    Derek Littlefield    4/13/2022        https://www.instagram.com/p/CcTRQ0xOmLL/?img_index=3    3        AlpinePaste_2    PixiePickup(op)(ducking)_2
+Alpine Pigbeater        Pixie Eggbeager (ducking) (op)    3        5    Jakub Worek    3/1/2020        https://www.facebook.com/jakub.worek.5/videos/10213551042290800/            AlpinePigbeater_    PixieEggbeager(ducking)(op)_
+Alpine PLO        Pixie Legover (op) (ducking)    24        4    Krzysztof Sobotka    7/6/2011        https://youtu.be/JQMLJirIic0?t=11    0:11        AlpinePLO_    PixieLegover(op)(ducking)_
+Alpine Smog        Pixie DLO (op) (ducking)    3        5    Jakub Worek    6/27/2018        https://www.youtube.com/watch?v=wNuFpxbEUVA            AlpineSmog_    PixieDLO(op)(ducking)_
+Alpine Smudge        Pixie Illusion (ducking) (op)    2        4    Derek Littlefield    2/27/2025        https://www.instagram.com/p/DGlbm3quyxE/?img_index=4    4        AlpineSmudge_    PixieIllusion(ducking)(op)_
+Assassin        Pixie Mirage (op) (ducking)    14        4    Tuukka Antikainen    12/1/2011        https://youtu.be/PHA9IqbW6JA?t=260    4:20        Assassin_    PixieMirage(op)(ducking)_
+Assassin (ss)        Pixie Mirage (ss) (diving)    5        4    Derek Littlefield    10/31/2021        https://www.instagram.com/p/CVsfQXRrpOm/?img_index=8    8        Assassin(ss)_    PixieMirage(ss)(diving)_
+Atomic Legover        Atomic Legover (op)    18        3    Jay Boychuk    4/14/2012        https://youtu.be/g_Hkw6Pckvk?t=909    15:10        AtomicLegover_    AtomicLegover(op)_
+Atomic Pickup        Atomic Pickup (op)    4        3    Derek Littlefield    2/27/2925        https://www.instagram.com/p/DGlbm3quyxE/?img_index=4    5        AtomicPickup_    AtomicPickup(op)_
+Atomsmasher        Atomic Mirage (op)    28        4    Mathias Blau    10/13/2012        https://www.youtube.com/watch?v=IC7NLnIniew            Atomsmasher_    AtomicMirage(op)_
+ATW        ATW (in)    100        2    Krzysztof Sobotka    7/6/2011        https://youtu.be/zhrbljcVSvE?t=9    0:09        ATW_    ATW(in)_
+Barfly        Double down (op)    53        4    Anssi Sundberg    7/9/2013        https://www.youtube.com/watch?v=y20OHe6pqm0            Barfly_    Doubledown(op)_
+Barrage        Barrage (op)    20        3    Norek    3/17/2010        https://www.youtube.com/watch?v=1sZy4gc5rr0            Barrage_    Barrage(op)_
+Bladerunner        Atomic Eggbeater (op)    4        5    Jindra Smola    2/28/2016        https://youtu.be/qf8b2ohTcPI?t=6    0:06        Bladerunner_    AtomicEggbeater(op)_
+Blazing Butterfly        Whirling Butterfly (ss)    18        4    Jim Penske    1/14/2008        https://youtu.be/YE68rfFGI7s?t=291    4:52        BlazingButterfly_    WhirlingButterfly(ss)_
+Blender        Blender (ss)    13        4    Kenzo Ogawa    1/21/2008        https://youtu.be/HDyc0jHz5OY?t=66    1:06        Blender_    Blender(ss)_
+Blink        Swirling Toe (op) (rev)    10        2    Nick Polini    5/9/2015        https://youtu.be/vhR3eiAWeNs?t=143    2:23        Blink_    SwirlingToe(op)(rev)_
+Blurriest        Stepping Double Down (op)    16        5    David Clavens    12/20/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=539s    8:59        Blurriest_    SteppingDoubleDown(op)_
+Blurry Drifter        Stepping Drifter (op)    16        5    Nathan Pipenberg    1/26/2014        https://www.youtube.com/watch?v=CMAmLycY69k            BlurryDrifter_    SteppingDrifter(op)_
+Blurry Whirl        Stepping Whirl (op)    35        5    Norek    11/2/2009        https://www.youtube.com/watch?v=Zmv5ydko6gk            BlurryWhirl_    SteppingWhirl(op)_
+BS Magellan        Pixie Legover (ss) (symp)    15        3    Jim Penske    2/4/2019        https://www.youtube.com/watch?v=agezrN_CCpY            BSMagellan_    PixieLegover(ss)(symp)_
+BS Paste        Pixie Pickup (op) (symp)    6        3    SkyLon Smith    8/28/2014        https://www.youtube.com/watch?v=Ij-LgWB1PH8            BSPaste_    PixiePickup(op)(symp)_
+Butterfly        Butterfly (ss)    50        3    Ken Somolinos    1/6/2013        https://www.youtube.com/watch?v=etZnKP2qQJA            Butterfly_    Butterfly(ss)_
+Butterfly Swirl        Butterfly Swirl (ss)    10        4    Jakub Mosciszewski    10/7/2018        https://www.youtube.com/watch?v=Mslx_LkWFyg            ButterflySwirl_    ButterflySwirl(ss)_
+Clipper        Clipper    41        2    Ken Somolinos    2/2/2013        https://www.youtube.com/watch?v=4pBkALFaGQ4            Clipper_    Clipper_
+Clipper (ss)        Clipper (ss)    96        2    Ken Somolinos    2/2/2013        https://www.youtube.com/watch?v=E1xgRyOvHlA            Clipper(ss)_    Clipper(ss)_
+Dada Curve        Dada Curve (ss)    14        4    Anssi Sundberg    1/27/2013        https://youtu.be/EwZyd_xHMdc?t=117    1:57        DadaCurve_    DadaCurve(ss)_
+DATW        ATW (in) (double)    29        3    Norek    3/17/2010        https://www.youtube.com/watch?v=CfyBwCc1ifA            DATW_    ATW(in)(double)_
+DDD        Double down (ss)    19        4    Norek    3/17/2010        https://www.youtube.com/watch?v=iLs8jwiAdEU            DDD_    Doubledown(ss)_
+Diving Clipper        Diving Clipper (ss)    107        3    Norek    3/17/2010        https://www.youtube.com/watch?v=1M0orYIX8bA            DivingClipper_    DivingClipper(ss)_
+Diving Mirage        Mirage (diving) (ss)    15        3    SkyLon Smith    8/15/2014        https://www.youtube.com/watch?v=KXhN7tt7of0            DivingMirage_    Mirage(diving)(ss)_
+Diving Osis        Osis (diving) (ss)    11        4    Ben Skaggs    1/27/2013        https://www.youtube.com/watch?v=Q9xXlOxmiig            DivingOsis_    Osis(diving)(ss)_
+Diving Smudge        Pixie Illusion (diving) (ss)    2        4    Derek Littlefield    2/27/2925        https://www.instagram.com/p/DGlbm3quyxE/?img_index=4    6        DivingSmudge_    PixieIllusion(diving)(ss)_
+DLO        DLO (op)    26        3    Derek Littlefield    9/1/2024        https://www.instagram.com/p/C_YhxDXubde/            DLO_    DLO(op)_
+DLO (ss)        DLO (ss)    24        3    Derek Littlefield    3/3/2015        https://youtu.be/KTfIsduRCaE?t=20    0:20        DLO(ss)_    DLO(ss)_
+Double Dyno        Blender (ss) (rev) (double)    5        5    Pawel Nowak    1/28/2017        https://www.youtube.com/watch?v=paGnSIHqF3Y            DoubleDyno_    Blender(ss)(rev)(double)_
+Double Fairy        Illusion (ss) (double)    6        3    Anssi Sundberg    6/1/2010    Yes    https://www.youtube.com/watch?v=Qhf3gHqThpk&t=0s    0:00        DoubleFairy_    Illusion(ss)(double)_
+Double Orbit        ATW (out) (double)    13        3    Derek Littlefield    9/22/2024        https://www.instagram.com/p/DAOgQIjuzoG/?img_index=2    2        DoubleOrbit_    ATW(out)(double)_
+Double Spinning Butterfly        Double Spinning Butterfly (op)    4        5    SkyLon Smith    8/17/2014        https://youtu.be/zTbF0YyyIbI?t=7    0:07        DoubleSpinningButterfly_    DoubleSpinningButterfly(op)_
+Double Spinning Clipper        Double Spinning Clipper (op)    8    1    4    SkyLon Smith    8/17/2014        https://www.youtube.com/watch?v=HyfJ8ZTw4TI&list=PLT4DlJ0jRYlyxVOCKyyzhiiFwWHAXRZF3&index=3            DoubleSpinningClipper_1    DoubleSpinningClipper(op)_1
+Double Spinning Clipper        Double Spinning Clipper (op)    7    2    4    SkyLon Smith    7/28/2014        https://www.youtube.com/watch?v=8YZ6lD8OLsg        8 hit on camera, alleged slop after 7th.    DoubleSpinningClipper_2    DoubleSpinningClipper(op)_2
+Double Spinning Osis        Double Spinning Osis (op)    2        5    Nick Polini    7/6/2014        https://www.youtube.com/watch?v=oixKaJrA2Qg            DoubleSpinningOsis_    DoubleSpinningOsis(op)_
+Double Whip        Whirl (rev) (ss) (double)    6        4    Pawel Nowak    6/10/2018        https://www.youtube.com/watch?v=aQJuESP6PtM            DoubleWhip_    Whirl(rev)(ss)(double)_
+Drifter        Drifter (ss)    56    1    3    Jim Penske    7/17/2014        https://youtu.be/cZczu2TRrZw?t=29    0:29    Video glitch that cuts off part of 5 & 6, but still verified    Drifter_1    Drifter(ss)_1
+Drifter        Drifter (ss)    50    2    3    SkyLon Smith    7/17/2014        https://www.youtube.com/shorts/nLm3UtIzOc4            Drifter_2    Drifter(ss)_2
+Drifter        Drifter (ss)    32    3    3    TJ Boutorwick    6/14/2014        https://www.youtube.com/watch?v=asSDtZ9MGeo            Drifter_3    Drifter(ss)_3
+DSO        Legover (double) (op)    23    1    3    Anssi Sundberg    1/5/2008        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=11s    0:11        DSO_1    Legover(double)(op)_1
+DSO        Legover (double) (op)    23    2    3    Derek Littlefield    3/1/2021        https://www.facebook.com/100001366459443/videos/3717885388266973/            DSO_2    Legover(double)(op)_2
+Ducking Butterfly        Ducking Butterfly (op)    65        4    Norek    2/23/2010        https://www.youtube.com/watch?v=dAxf2uKDvM4            DuckingButterfly_    DuckingButterfly(op)_
+Ducking Clipper        Ducking Clipper (op)    329        3    Norek    7/7/2009        https://www.youtube.com/watch?v=Oxm5ZbCOwWk            DuckingClipper_    DuckingClipper(op)_
+Ducking Osis        Ducking Osis (op)    19        4    Honza Weber    7/3/1905        https://vimeo.com/25019188        Video unavailable; previously verified    DuckingOsis_    DuckingOsis(op)_
+Ducking Pdx Torque        Torque (ducking) (op)    3        6    SkyLon Smith    8/18/2014        https://www.youtube.com/watch?v=-onsVZOEyg4            DuckingPdxTorque_    Torque(ducking)(op)_
+Dyno        Blender (ss) (rev)    75    1    4    Pawel Nowak    10/8/2019        http://youtube.com/watch?v=8WQ_bzl2I80            Dyno_1    Blender(ss)(rev)_1
+Dyno        Blender (ss) (rev)    64    2    4    SkyLon Smith    8/5/2014        https://www.youtube.com/watch?v=vudKdNGi4TA            Dyno_2    Blender(ss)(rev)_2
+Dyno (op)        Blender (op) (rev)    15        4    Jim Penske    6/27/1905        https://youtu.be/1oWNEtnQ0ik?t=4    0:04        Dyno(op)_    Blender(op)(rev)_
+Eclipse        Eclipse (op)    32    1    3    Yosshi Yamamoto    12/6/2020        https://youtu.be/LdTt0x8TzsQ?t=29    0:29        Eclipse_1    Eclipse(op)_1
+Eclipse        Eclipse (op)    19    2    3    Ken Somolinos    1/26/2013        https://www.youtube.com/watch?v=iQXz4kGeTDI            Eclipse_2    Eclipse(op)_2
+Eclipse (ss)        Eclipse (ss)    5        3    Evan Gatesman    1/27/2013        https://youtu.be/lSXlJzQgkNI?t=4    0:04        Eclipse(ss)_    Eclipse(ss)_
+Eggbeater        Eggbeater (op)    24        3    Derek Littlefield    9/15/2024        https://youtu.be/Br69lQdbyS0?t=33    0:33        Eggbeater_    Eggbeater(op)_
+Eggbeater (ss)        Eggbeater (ss)    22        3    Derek Littlefield    10/23/2014        https://youtu.be/W1ePQDnIqA4?t=20    0:20        Eggbeater(ss)_    Eggbeater(ss)_
+Enterrage        Terraging Legover (op)    6        4    Anssi Sundberg    7/5/1905        https://youtu.be/BXeRFrEsDkQ?t=154    2:34        Enterrage_    TerragingLegover(op)_
+Fairy DLO (ss)        Fairy DLO (ss)    3        4    Evan Gatesman    1/27/2013        https://youtu.be/5O3HWZlxLMk?t=4    0:04        FairyDLO(ss)_    FairyDLO(ss)_
+Fairy Legover (ss)        Fairy Legover (ss)    20        3    Jakub Worek    5/1/2018        https://www.youtube.com/watch?v=UhjUDRN4Fe4            FairyLegover(ss)_    FairyLegover(ss)_
+Fairy Pickup (ss)        Fairy Pickup (ss)    28        3    Jakub Worek    6/17/2018        https://www.youtube.com/watch?v=x166_T11TmQ            FairyPickup(ss)_    FairyPickup(ss)_
+Flail (ss)        Illusion (ss) (symp)    18        3    Norek    4/13/2010        https://www.youtube.com/watch?v=dn11VDAIs2s            Flail(ss)_    Illusion(ss)(symp)_
+Flapper        Flapper (op)    16        3    Nick Polini    10/17/2014        https://www.youtube.com/watch?v=lInHcHngs2w            Flapper_    Flapper(op)_
+Food Processor        Stepping Blender (op)    15    1    6    Jim Penske    3/7/2025        https://youtu.be/V_N-THthxWw?t=31    0:31        FoodProcessor_1    SteppingBlender(op)_1
+Food Processor        Stepping Blender (op)    11    2    6    Jim Penske    3/3/2025        https://www.youtube.com/watch?v=i6FUONkUxlM            FoodProcessor_2    SteppingBlender(op)_2
+Food Processor        Stepping Blender (op)    9    3    6    Honza    8/1/2006    Yes    http://webslinger.cz/videos/anxiety01.mpg        Video unavailable; previously verified    FoodProcessor_3    SteppingBlender(op)_3
+Fracture        Sailing DLO (ss)    3        5    Jakub Worek    10/31/2018        https://www.youtube.com/watch?v=CBKbeZwcoUA            Fracture_    SailingDLO(ss)_
+Frantic Legover        Pixie Quantum Legover (op)    10        4    Jakub Mosciszewski    8/13/2020        https://www.youtube.com/watch?v=cfNrMlTv4EY            FranticLegover_    PixieQuantumLegover(op)_
+Genesis        Barraging Whirl (op)    3        6    Anssi Sundberg    12/13/2012        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=161s    2:41    Originally uploaded in high speed; sped back up close to normal speed as part of archiving on YouTube.    Genesis_    BarragingWhirl(op)_
+Grifter        Grifter (ss)    30    1    3    Anssi Sundberg    6/1/2010    Yes    https://www.youtube.com/watch?v=Qhf3gHqThpk&t=71s    1:11        Grifter_1    Grifter(ss)_1
+Grifter        Grifter (ss)    12    2    3    Anssi Sundberg    1/16/2008        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=45s    0:45        Grifter_2    Grifter(ss)_2
+Gyro Clipper        Spinning Clipper (ss)    94    1    3    SkyLon Smith    8/15/2014        https://www.youtube.com/watch?v=DaDOV-7fIk0            GyroClipper_1    SpinningClipper(ss)_1
+Gyro Clipper        Spinning Clipper (ss)    31    2    3    Byrin Wylie    6/2/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=272s    4:32        GyroClipper_2    SpinningClipper(ss)_2
+Gyro Osis        Spinning Osis (ss)    23        4    Brian Sherrill    9/9/2010        https://youtu.be/xAX8VwFzaXE?t=138    2:18    35 on camera but disputed    GyroOsis_    SpinningOsis(ss)_
+Gyro Symp Swirl        Spinning Swirl (ss) (symp)    4        4    Evan Gatesman    1/27/2013        https://youtu.be/mxVw0m5hD6Q?t=4    0:04        GyroSympSwirl_    SpinningSwirl(ss)(symp)_
+Gyro Toe        Gyro Toe (op)    10        2    Jakub Mosciszewski    8/23/2020        https://www.youtube.com/watch?v=tgLpTopvEo8            GyroToe_    GyroToe(op)_
+Gyro Whirling Swirl        Spinning Whirling Swirl (ss)    3        4    Evan Gatesman    2/3/2016        https://www.instagram.com/p/BBWche2A_4wRda3-3gHsWvpPdMnBLuWDLEj5Hs0/            GyroWhirlingSwirl_    SpinningWhirlingSwirl(ss)_
+Hatchet        Diving Whirl (ss)    5        4    Ken Somolinos    12/22/2012        https://www.youtube.com/watch?v=_Oh_4ZoRKc0            Hatchet_    DivingWhirl(ss)_
+Infinity        Butterfly (op)    118        3    Ken Somolinos    6/17/2009        https://www.youtube.com/watch?v=rgGNsy-7Vi4            Infinity_    Butterfly(op)_
+Infinity Swirl        Butterfly Swirl (op)    9        4    Evan Gatesman    11/22/2014        https://youtu.be/G3tDw8fsX4Y?t=4    0:04        InfinitySwirl_    ButterflySwirl(op)_
+Inspinning Clipper        Inspinning Clipper (op)    4        4    Nate Linscott    10/28/2006        https://youtu.be/nx3i657kUa8?t=163    2:43        InspinningClipper_    InspinningClipper(op)_
+Inspinning Osis        Inspinning Osis (op)    10        4    SkyLon Smith    8/18/2014        https://www.youtube.com/watch?v=D4R2tViZDSY            InspinningOsis_    InspinningOsis(op)_
+Janiwalker        Barraging Butterfly (op)    15    1    5    Jim Penske    5/18/2015        https://www.youtube.com/watch?v=Y5rTAwH3C-Y            Janiwalker_1    BarragingButterfly(op)_1
+Janiwalker        Barraging Butterfly (op)    14    2    5    David Clavens    7/29/2006        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=475s    7:55        Janiwalker_2    BarragingButterfly(op)_2
+Legover        Legover (op)    198        2    Derek Littlefield    6/21/2016        https://youtu.be/gRCnEq_QZ6o?t=10    0:10        Legover_    Legover(op)_
+Locomotion        Stepping Motion (far)    8    1    6    Jim Penske    9/29/2017        https://youtu.be/ntyOMnGgXs8?t=14    0:14        Locomotion_1    SteppingMotion(far)_1
+Locomotion        Stepping Motion (far)    7    2    6    Pawel Nowak    6/10/2018        https://www.youtube.com/watch?v=xttFhB3-6Dk            Locomotion_2    SteppingMotion(far)_2
+Magellan        Pixie Legover (ss)    65        3    Jakub Worek    6/17/2018        https://www.youtube.com/watch?v=cKQFZsPLgME            Magellan_    PixieLegover(ss)_
+Matador        Nuclear Butterfly (op)    7        5    Mateusz Janicki    4/21/2010        https://www.youtube.com/watch?v=cFxnGWdohME            Matador_    NuclearButterfly(op)_
+Merlin        Miraging Symp Mirage (op)    10        4    Jakub Mosciszewski    10/3/2018        https://www.youtube.com/watch?v=YIpl077P2HI            Merlin_    MiragingSympMirage(op)_
+Mirage        Mirage (op)    100        2    Ken Somolinos    1/20/2013        https://www.youtube.com/watch?v=eTW2NwlD0sE            Mirage_    Mirage(op)_
+Mobius        Spinning Torque (ss)    11        5    Evan Gatesman    9/28/2014        https://www.youtube.com/watch?v=YiheEeHc9Fs            Mobius_    SpinningTorque(ss)_
+Montage        Spinning Whirl (op) (symp) (ducking)    3        7    David Clavens    5/25/2008        https://www.youtube.com/watch?v=BYi503YHpZg        Video unavailable; previously verified    Montage_    SpinningWhirl(op)(symp)(ducking)_
+Motion        Motion (op)    19    1    5    Jim Penske    3/7/2025        https://www.youtube.com/watch?v=V_N-THthxWw    0:00        Motion_1    Motion(op)_1
+Motion        Motion (op)    16    2    5    Jim Penske    3/12/2023        https://youtu.be/iSp3-yXIOA4?t=200    3:20        Motion_2    Motion(op)_2
+Motion        Motion (op)    9    3    5    Honza Weber    7/11/2004        https://youtu.be/ABezmw88DU8?t=393    6:32        Motion_3    Motion(op)_3
+Mullet        Whirl (op) (ducking) (symp)    3    1    6    Norek    3/17/2010        https://www.youtube.com/watch?v=g6XgA7yMvDQ            Mullet_1    Whirl(op)(ducking)(symp)_1
+Mullet        Whirl (op) (ducking) (symp)    3    2    6    Ken Somolinos    2/26/2012        https://youtu.be/xPTjAKS7Pu8?t=4    0:04    mid-combo    Mullet_2    Whirl(op)(ducking)(symp)_2
+Nemesis        Barraging Double Down (op)    3        6    David Clavens    12/27/2008        https://www.youtube.com/watch?v=Dmr7zj_c7cY#t=2m05s        Video unavailable; previously verified    Nemesis_    BarragingDoubleDown(op)_
+Omelette        Atomic Illusion (op)    10        4    Derek Littlefield    8/15/2024        https://www.instagram.com/p/C-tI87cuxoZ    3        Omelette_    AtomicIllusion(op)_
+Osis        Osis (ss)    256    2    3    Maruisz Wilk    7/7/2009        https://www.youtube.com/watch?v=eAHKpV-t_04            Osis_2    Osis(ss)_2
+Paste        Pixie Pickup (op)    42    1    3    Jakub Mosciszewski    3/5/2025        https://youtu.be/xVl9Fyc4ino?t=35            Paste_1    PixiePickup(op)_1
+Paste        Pixie Pickup (op)    30    2    3    Derek Littlefield    2/23/2025        https://youtu.be/UcSxoF3Moag?t=4    0:04        Paste_2    PixiePickup(op)_2
+Paste (ss)        Pixie Pickup (ss)    43        3    Krzysztof Sobotka    3/14/2010        https://www.youtube.com/watch?v=haZxU-MjdVY            Paste(ss)_    PixiePickup(ss)_
+Pdx Blender        Blender (op)    20    1    5    Jim Penske    9/14/2014        https://www.youtube.com/watch?v=om4wz1nxVqM            PdxBlender_1    Blender(op)_1
+Pdx Blender        Blender (op)    11    2    5    Evan Gatesman    1/27/2013        https://www.youtube.com/watch?v=LsUHxgbqamE            PdxBlender_2    Blender(op)_2
+Pdx Drifter        Drifter (far)    32    1    4    Jim Penske    12/9/2020        https://www.youtube.com/watch?v=-yZ4o7cnCdk            PdxDrifter_1    Drifter(far)_1
+Pdx Drifter        Drifter (far)    26    2    4    Norek    4/13/2010        https://www.youtube.com/watch?v=7V91IZM8kNI            PdxDrifter_2    Drifter(far)_2
+Pdx Torque        Torque (op)    23    1    5    SkyLon Smith    10/6/2016        https://www.youtube.com/watch?v=eFFO4FrZzw8            PdxTorque_1    Torque(op)_1
+Pdx Torque        Torque (op)    14    2    5    SkyLon Smith    8/14/2014        https://www.youtube.com/watch?v=e8EQmVtrRl8            PdxTorque_2    Torque(op)_2
+Pickup (ss)        Pickup (ss)    42        2    Patryk Tenderenda    11/2/2011        https://www.youtube.com/watch?v=LR-IY5A44BI            Pickup(ss)_    Pickup(ss)_
+Pigbeater        Pixie Eggbeater    16        4    Jakub Worek    6/17/2018        https://www.youtube.com/watch?v=4KsXDNOV4RM            Pigbeater_    PixieEggbeater_
+Pigbeater (ss)        Pixie Eggbeater (ss)    10        4    Jakub Mosciszewski    12/19/2024        https://youtu.be/8TnwHZCsXWU?t=63    1:03        Pigbeater(ss)_    PixieEggbeater(ss)_
+Pixie Double Pickup (ss)        Pixie Double Pickup (ss)    3        4    Jindra Smola    3/2/2016        https://youtu.be/Nz5l6CFyDYc?t=6    0:06        PixieDoublePickup(ss)_    PixieDoublePickup(ss)_
+Pixie DSO        Pixie DSO (op)    5        4    Jakub Mosciszewski    11/28/2017        https://www.youtube.com/watch?v=M8bFCczr9rQ            PixieDSO_    PixieDSO(op)_
+Pixie DSO (ss)        Pixie DSO (ss)    4        4    Jakub Worek    7/1/2020    Yes    https://youtu.be/gksYcNKy6HU?t=1583    26:23:00        PixieDSO(ss)_    PixieDSO(ss)_
+PLO        Pixie Legover (op)    123        3    Jakub Worek    5/1/2018        https://www.youtube.com/watch?v=DQ0T2RHrLC0            PLO_    PixieLegover(op)_
+PS Whirl        Whirl (op) (symp)    31    1    5    Jim Penske    3/1/2023        https://www.youtube.com/watch?v=CaHJLHKEzuo            PSWhirl_1    Whirl(op)(symp)_1
+PS Whirl        Whirl (op) (symp)    26    2    5    Norek    8/23/2010        https://www.youtube.com/watch?v=pwrNDlxqqio            PSWhirl_2    Whirl(op)(symp)_2
+Reverse Swirl        Swirl (rev) (ss)    50        3    Norek    3/17/2010        https://www.youtube.com/watch?v=WerCXKoXEEw            ReverseSwirl_    Swirl(rev)(ss)_
+Ripped Warrior        Stepping Butterfly (ducking) (op)    24        5    David Clavens    7/1/2010    Yes    https://youtu.be/_Kdgzd_cI4U?t=37    0:37        RippedWarrior_    SteppingButterfly(ducking)(op)_
+Ripstein        Swirl (ss) (double)    22    1    4    Evan Gatesman    1/2/2015        https://youtu.be/nE12ACkE0QA?t=231    3:51        Ripstein_1    Swirl(ss)(double)_1
+Ripstein        Swirl (ss) (double)    8    2    4    Evan Gatesman    1/27/2013        https://youtu.be/YSNAY8Ho-18?t=6    0:06        Ripstein_2    Swirl(ss)(double)_2
+Ripwalk        Stepping Butterfly (op)    106        4    Norek    2/23/2010        https://www.youtube.com/watch?v=bpDzW-WCvkg            Ripwalk_    SteppingButterfly(op)_
+Scorpion's Tail        Spinning Double Down (op)    7        5    Jim Penske    11/15/2006        https://youtu.be/KPkQY4_jtJA?t=188    3:08        Scorpion'sTail_    SpinningDoubleDown(op)_
+Sidewalk        Stepping Butterfly (ss)    72        4    Norek    7/7/2009        https://www.youtube.com/watch?v=8cQO9yV-g1o            Sidewalk_    SteppingButterfly(ss)_
+Smear        Pixie Mirage (op)    57        3    Bartosz Bubula    2/15/2010        https://www.youtube.com/watch?v=21jCqlE8yeM            Smear_    PixieMirage(op)_
+Smear (ss)        Pixie Mirage (ss)    22        3    Derek Littlefield    8/31/2024        https://youtu.be/QnFUp1BqHyI?t=167    2:47        Smear(ss)_    PixieMirage(ss)_
+Smog        Pixie DLO (op)    19        4    Damian Gielnicki    3/14/2012        https://youtu.be/N8xC15b3ytg?t=9    0:09        Smog_    PixieDLO(op)_
+Smog (ss)        Pixie DLO (ss)    12    1    4    SkyLon Smith    8/17/2014        https://www.youtube.com/watch?v=AQ-gJtDcudE            Smog(ss)_1    PixieDLO(ss)_1
+Smog (ss)        Pixie DLO (ss)    5    2    4    Derek Littlefield    3/3/2015        https://www.youtube.com/watch?v=KTfIsduRCaE            Smog(ss)_2    PixieDLO(ss)_2
+Smudge        Pixie Illusion (op)    43        3    Byrin Wylie    6/2/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=383s    6:23        Smudge_    PixieIllusion(op)_
+Smudge (ss)        Pixie Illusion (ss)    40        3    Byrin Wylie    6/2/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=314s    5:14        Smudge(ss)_    PixieIllusion(ss)_
+Solestice        Osis Flapper    6        4    Nick Polini    6/28/2015        https://www.youtube.com/watch?v=wUtrai2YRJo            Solestice_    OsisFlapper_
+Spanishfly        Ducking Double Down (op)    5        5    Anssi Sundberg    12/10/2011        https://youtu.be/y78OOFDKhZY?t=168    2:48        Spanishfly_    DuckingDoubleDown(op)_
+Spender        Spinning Blender (op)    10    1    6    Nick Landes    4/16/2015        https://youtu.be/h4jXISlPecI?t=36    0:36        Spender_1    SpinningBlender(op)_1
+Spender        Spinning Blender (op)    3    2    6    David Clavens    12/31/2007        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=558s    9:18        Spender_2    SpinningBlender(op)_2
+Spinning Butterfly        Spinning Butterfly (op)    40        4    Damian Gielnicki    7/7/2009        https://www.youtube.com/watch?v=yPi4k_rkUJ8            SpinningButterfly_    SpinningButterfly(op)_
+Spinning Clipper        Spinning Clipper (op)    32        3    Byrin Wylie    6/2/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=429s    7:09        SpinningClipper_    SpinningClipper(op)_
+Spinning Ducking Butterfly        Spinning Butterfly (op) (ducking)    6        5    SkyLon Smith    8/28/2014        https://www.youtube.com/watch?v=LArkGz4HfpQ            
+SpinningDuckingButterfly_
+SpinningButterfly(op)(ducking)_
+Spinning Ducking Osis        Spinning Osis (ducking) (op)    16        5    Brian Sherrill    7/20/2014        https://www.youtube.com/watch?v=6rpKqDRLgRA            SpinningDuckingOsis_    SpinningOsis(ducking)(op)_
+Spinning Osis        Spinning Osis (op)    84        4    Brian Sherrill    7/20/2014        https://youtu.be/-aT1G5R6fyY?t=25    0:25    mid-combo, after a ducking clipper    SpinningOsis_    SpinningOsis(op)_
+Spinning Osis        Spinning Osis (op)    35        4    Nick Polini    1/12/2014        https://youtu.be/gZzHutLCa0o?t=9    0:09        SpinningOsis_    SpinningOsis(op)_
+Spinning Symp Swirl        Spinning Swirl (op) (symp)    8        4    Aleksi Airinen    2/1/2013        https://youtu.be/0Ex4fuikQj4?t=12    0:12        SpinningSympSwirl_    SpinningSwirl(op)(symp)_
+Spinning Whirl        Spinning Whirl (op)    25    1    5    SkyLon Smith    11/3/2015        https://youtu.be/aYV562tQDBM?t=360    6:00    #23 is off camera, but we're assuming it's clean. the 22 on camera would also be the WR    SpinningWhirl_1    SpinningWhirl(op)_1
+Spinning Whirl        Spinning Whirl (op)    18    2    5    Evan Gatesman    1/27/2013        https://www.youtube.com/watch?v=Lxbt8nxeLRk            SpinningWhirl_2    SpinningWhirl(op)_2
+Spinning Whirl        Spinning Whirl (op)    18    3    5    Jim Penske    9/9/2014        https://www.youtube.com/watch?v=d1Uy768K3cA            SpinningWhirl_3    SpinningWhirl(op)_3
+Stepping Clipper        Stepping Clipper (ss)    27        3    Josh Munstermann    6/8/2009        https://www.youtube.com/watch?v=7LpkJFmYo7k            SteppingClipper_    SteppingClipper(ss)_
+Stepping Ducking Osis        Stepping Osis (op) (ducking)    5        5    Maruisz Wilk    3/14/2010        https://www.youtube.com/watch?v=4wxlFGXA7G8            SteppingDuckingOsis_    SteppingOsis(op)(ducking)_
+Stepping Osis        Stepping Osis (ss)    12        4    Evan Gatesman    1/27/2013        https://www.youtube.com/watch?v=yYdCrAcR_GI            SteppingOsis_    SteppingOsis(ss)_
+Superfly        Double Down (op) (symp)    10        5    Anssi Sundberg    2/18/2013        https://youtu.be/6h7yJJoir4s?t=92    1:32        Superfly_    DoubleDown(op)(symp)_
+Swifter        Stepping Swirl (op)    5    1    4    Jim Penske    5/8/2020        https://www.youtube.com/watch?v=misRIkKeX24            Swifter_1    SteppingSwirl(op)_1
+Swifter        Stepping Swirl (op)    4    2    4    Evan Gatesman    1/27/2013        https://www.youtube.com/watch?v=CsYWfEniX5s            Swifter_2    SteppingSwirl(op)_2
+Swirl        Swirl (ss)    84    1    3    Jim Penske    11/24/2013        https://youtu.be/VMIUPcyyAz0?t=6    0:06        Swirl_1    Swirl(ss)_1
+Swirl        Swirl (ss)    42    2    3    Evan Gatesman    5/10/2007        https://youtu.be/x8ruLjlx73M?t=259    4:19        Swirl_2    Swirl(ss)_2
+Symp Eggbeater        Eggbeater (op) (symp)    9    1    4    Jakub Worek    7/14/2009        https://youtu.be/WBLP77dwvgw?t=6    0:06        SympEggbeater_1    Eggbeater(op)(symp)_1
+Symp Eggbeater        Eggbeater (op) (symp)    4    2    4    Byrin Wylie    6/2/2009        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=467s    7:47        SympEggbeater_2    Eggbeater(op)(symp)_2
+Symp Mirage        Mirage (op) (symp)    20        3    Ken Somolinos    6/17/2009        https://www.youtube.com/watch?v=0qpRaqg0OXU            SympMirage_    Mirage(op)(symp)_
+Symp Mirage (ss)        Mirage (ss) (symp)    29        3    Ken Somolinos    6/18/2009        https://www.youtube.com/watch?v=Y7t-kl3dA-k            SympMirage(ss)_    Mirage(ss)(symp)_
+Symp Swirl (op)        Swirl (symp) (op)    12        3    Jim Penske    5/27/2020        https://www.youtube.com/watch?v=rh9pQwhjAio            SympSwirl(op)_    Swirl(symp)(op)_
+Symp Whirl        Whirl (ss) (symp)    19        4    Norek    11/2/2009        https://www.youtube.com/watch?v=P5CD1-3TTZ8            SympWhirl_    Whirl(ss)(symp)_
+Symp Whirling Swirl        Whirling Swirl (ss) (symp)    7        5    Jim Penske    12/8/2013        https://youtu.be/PBTH9Iqerow?t=73    1:13        SympWhirlingSwirl_    WhirlingSwirl(ss)(symp)_
+Tap        Atomic Mirage (ss)    27        3    Przemysław Pietrzycki    6/17/2008        https://youtu.be/NrXz5dZLioQ?t=8    0:08        Tap_    AtomicMirage(ss)_
+Tapping Legover        Atomic Legover (ss)    17        3    Derek Littlefield    4/13/2022        https://youtu.be/UcSxoF3Moag?t=54    0:54        TappingLegover_    AtomicLegover(ss)_
+Tapping Pickup        Atomic Pickup (ss)    20        3    SkyLon Smith    2/20/2021        https://www.youtube.com/watch?v=nVZu4_TdxbU            TappingPickup_    AtomicPickup(ss)_
+Terrage        Terrage (ss)    32        3    Anssi Sundberg    1/5/2008        https://www.youtube.com/watch?v=Qhf3gHqThpk&t=108s    1:48        Terrage_    Terrage(ss)_
+Toe Blur        Quantum Mirage (op)    12        4    Anssi Sundberg    3/1/2013        https://youtu.be/_Q6sz9i1OoI?t=109    1:49        ToeBlur_    QuantumMirage(op)_
+Toe Ducking Legover        Toe Ducking Legover (op)    34        3    Jakub Worek    10/28/2017        https://www.youtube.com/watch?v=6C5Rsk3YO8M            ToeDuckingLegover_    ToeDuckingLegover(op)_
+Toe Gyro Mirage        Toe Spinning Mirage (ss)    4        3    Ken Somolinos    1/6/2013        https://www.youtube.com/watch?v=5Wyx-Of1qsw            ToeGyroMirage_    ToeSpinningMirage(ss)_
+Toe Spinning Toe        Toe Spinning Toe (op)    10        2    Krzysztof Sobotka    3/14/2010        https://www.youtube.com/watch?v=v4cdKsy8c1I        Video unavailable; previously verified    ToeSpinningToe_    ToeSpinningToe(op)_
+Tomahawk        Whirl (op) (ducking)    20        5    Norek    11/2/2009        https://www.youtube.com/watch?v=1n3Agt8IbPw            Tomahawk_    Whirl(op)(ducking)_
+Tombstone        Stepping Drifter (ss)    8        4    Nathan Pipenberg    12/10/2013        https://www.youtube.com/watch?v=jogQ-qUrku0#t=3m51s        Video unavailable; previously verified    Tombstone_    SteppingDrifter(ss)_
+Torque        Torque (ss)    26    1    4    Jim Penske    8/1/2019        https://www.youtube.com/watch?v=-Q0bJAmbe_Q            Torque_1    Torque(ss)_1
+Torque        Torque (ss)    14    2    4    Ryan Thomas    5/31/2009        https://www.youtube.com/watch?v=Ei2DnRCZJBU            Torque_2    Torque(ss)_2
+Triple Orbit        ATW (out) (triple)    2        4    Ales Zelinka    6/1/2005    Yes    https://youtu.be/eW-ZyQmw7qM?t=1557    25:57:00        TripleOrbit_    ATW(out)(triple)_
+Unique 3-Dex        Unique 3-Dex    13    1    N/A    Aleksi Airinen    12/31/2011    Yes    https://www.youtube.com/watch?v=Qhf3gHqThpk&t=563s    9:23        Unique3-Dex_1    Unique3-Dex_1
+Unique 3-Dex        Unique 3-Dex    12    2    N/A    David Clavens    9/1/2010    Yes    https://youtu.be/NDj5xn8-VWE?t=244    4:04        Unique3-Dex_2    Unique3-Dex_2
+Unique Beastly        Unique 6-ADD    9        6    Jim Penske    9/7/2015        https://youtu.be/xo1FM0Ay4B0?t=1219    20:19        UniqueBeastly_    Unique6-ADD_
+Unique Fearless        Unique 5-ADD    25    1    5    Jim Penske    7/23/2023        https://www.youtube.com/watch?v=uSBHfyY5tOE            UniqueFearless_1    Unique5-ADD_1
+Unique Fearless        Unique 5-ADD    22    2    5    Jim Penske    2/1/2017        https://www.youtube.com/watch?v=Hg2g4bNzP8k            UniqueFearless_2    Unique5-ADD_2
+Unique Fearless        Unique 5-ADD    21    3    5    David Clavens    1/1/2014        https://youtu.be/loO-z2neJ2M?t=51    0:51        UniqueFearless_3    Unique5-ADD_3
+Unique Fearless        Unique 5-ADD    20    4    5    David Clavens    6/1/2006    Yes    https://youtu.be/0iIEgusNBBc?t=85    1:25        UniqueFearless_4    Unique5-ADD_4
+Unique Fearless        Unique 5-ADD    19    5    5    Vasek Klouda    6/1/2005    Yes    Feet on Fire        DVD released in 2007 (after the 2006 record), but was technically the filmed record at the time    UniqueFearless_5    Unique5-ADD_5
+Void        Spinning Drifter (op)    13    1    5    Nick Landes    4/16/2015        https://www.youtube.com/watch?v=h4jXISlPecI            Void_1    SpinningDrifter(op)_1
+Void        Spinning Drifter (op)    5    2    5    Nick Landes    2/15/2010        https://youtu.be/O7NNRmXjQYw?t=359    5:59        Void_2    SpinningDrifter(op)_2
+Vortex        Spinning Drifter (ss)    13        4    Evan Gatesman    11/15/2014        https://youtu.be/G3tDw8fsX4Y?t=52    0:52        Vortex_    SpinningDrifter(ss)_
+Weaving Magellan        Pixie Legover (ducking) (ss)    2        4    Derek Littlefield    2/27/2025        https://www.instagram.com/p/DGlbm3quyxE/    3        WeavingMagellan_    PixieLegover(ducking)(ss)_
+Weaving Pigbeater        Pixie Eggbeater (ducking) (ss)    2        5    Derek Littlefield    12/22/2024        https://youtu.be/7wKBeMg5OkQ?t=378    6:18        WeavingPigbeater_    PixieEggbeater(ducking)(ss)_
+Whip        Whirl (rev) (ss)    61        3    Norek    11/2/2009        https://youtu.be/LDnSwsn_820?t=23    0:23        Whip_    Whirl(rev)(ss)_
+Whip (op)        Whirl (rev) (op)    56        3    SkyLon Smith    8/27/2014        https://youtu.be/-QjtgUc1Z9c?t=15    0:15        Whip(op)_    Whirl(rev)(op)_
+Whirl        Whirl (ss)    41        3    Ken Somolinos    11/14/2012        https://youtu.be/YlRRABchDVw?t=7    0:07    after 2-bag juggling    Whirl_    Whirl(ss)_
+Whirling Swirl        Whirling Swirl (ss)    12        4    Norek    3/17/2010        https://www.youtube.com/watch?v=PhTKzs-elF0            WhirlingSwirl_    WhirlingSwirl(ss)_
+Whirlwind        Spinning Whirl (op) (symp)    5        6    David Clavens    12/27/2008        https://www.youtube.com/watch?v=Dmr7zj_c7cY        Video unavailable; previously verified    Whirlwind_    SpinningWhirl(op)(symp)_
+Whirlygig        Stepping Whirl (op) (symp)    9        6    David Clavens    9/1/2010    Yes    https://youtu.be/NDj5xn8-VWE?t=430    7:10        Whirlygig_    SteppingWhirl(op)(symp)_
+Whirr        Whirl (ss) (double)    20    1    4    Jim Penske    9/8/2018        https://www.youtube.com/watch?v=5oo3OOCu08I            Whirr_1    Whirl(ss)(double)_1
+Whirr        Whirl (ss) (double)    16    2    4    Evan Gatesman    1/27/2013        https://www.youtube.com/watch?v=bcnLyQvneuE            Whirr_2    Whirl(ss)(double)_2
+Zulu Clipper        Diving Clipper (op)    60    1    3    Jakub Mosciszewski    9/29/2018        https://www.youtube.com/watch?v=cJcMH90zcj4            ZuluClipper_1    DivingClipper(op)_1
+Zulu Clipper        Diving Clipper (op)    40    2    3    TJ Boutorwick    11/28/2013        https://www.youtube.com/watch?v=JvvHWZ-1Q-A            ZuluClipper_2    DivingClipper(op)_2
