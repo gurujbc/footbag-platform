@@ -101,10 +101,18 @@ export interface FreestyleCompetitionFormat {
   videoTitle: string;
 }
 
+export interface FreestyleDemoVideo {
+  webmUrl: string;
+  mp4Url: string;
+  posterUrl: string;
+  caption: string;
+}
+
 export interface FreestyleLandingContent {
   mascotSrc: string;
   mascotAlt: string;
   intro: FreestyleLandingExplainer;
+  demoVideo: FreestyleDemoVideo;
   getStartedTiles: FreestyleGetStartedTile[];
   competitionFormats: FreestyleCompetitionFormat[];
   totalRecords: number;
@@ -1392,6 +1400,12 @@ export const freestyleService = {
             'The ADD (Additional Degree of Difficulty) system assigns a numerical value to each trick, enabling objective difficulty scoring alongside subjective execution judging. The core vocabulary was established by the early 1990s and it continues to evolve as players innovate.',
             'Practicing freestyle footbag is like having a gym in your pocket! When first learning the basics, all you need is casual clothes, shoes, and a footbag. Once you gain experience and begin to learn more difficult tricks, athletic clothes and a professional footbag with purpose-built shoes will help you play your best.',
           ],
+        },
+        demoVideo: {
+          webmUrl: '/media/demo-freestyle.webm',
+          mp4Url: '/media/demo-freestyle.mp4',
+          posterUrl: '/media/demo-freestyle-poster.jpg',
+          caption: 'Demonstration of freestyle footbag',
         },
         getStartedTiles: [
           { label: 'Where to buy footbags', href: '#', comingSoon: true },

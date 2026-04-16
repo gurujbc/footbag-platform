@@ -1781,6 +1781,28 @@ section.home-media { padding-top: 0; }
 .format-card { display: flex; flex-direction: column; }
 .format-card .card-actions { margin-top: auto; }
 
+/* Ambient demo clip shown under the intro heading on portal landing pages */
+.demo-video {
+  margin: 0 auto 16px;
+  max-width: 640px;
+  width: 100%;
+}
+.demo-video video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border-radius: 8px;
+  background: var(--bg-light);
+  object-fit: cover;
+}
+.demo-video figcaption {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 /* Landing-scoped spacing: tighten gaps between explainer sections */
 .freestyle-landing .content-section,
 .net-landing       .content-section { margin: 0; }

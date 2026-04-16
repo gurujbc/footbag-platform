@@ -454,6 +454,21 @@ describe('GET /events/:eventKey', () => {
     expect(res.text).toContain('Results are not yet available');
   });
 
+  it('shows the sparse-data notice on an event with fewer than 3 disciplines or 10 placements', async () => {
+    // Beaver Open has 2 disciplines and 3 placements — qualifies as sparse.
+    const app = createApp();
+    const res = await request(app).get(`/events/${BEAVER_OPEN_KEY}`);
+    expect(res.status).toBe(200);
+    expect(res.text).toContain("We know the data from this event is incomplete but we're showing what we have anyway.");
+  });
+
+  it('does not show the sparse-data notice when the event has no results', async () => {
+    // Quiet Open has no results; sparse notice is suppressed in favor of the no-results message.
+    const app = createApp();
+    const res = await request(app).get(`/events/${QUIET_OPEN_KEY}`);
+    expect(res.text).not.toContain("We know the data from this event is incomplete");
+  });
+
   it('returns 200 for upcoming published event', async () => {
     const app = createApp();
     const res = await request(app).get(`/events/${SPRING_CLASSIC_KEY}`);

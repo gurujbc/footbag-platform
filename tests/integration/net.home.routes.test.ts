@@ -7,12 +7,11 @@
  * Verifies:
  *   - 200 response
  *   - Hero with mascot + "What is Footbag Net?" narrative
+ *   - Demo video (self-hosted webm/mp4) renders in intro section
  *   - Competition Formats cards (Singles + Doubles) with YouTube embeds
  *   - Explore cards link to real sub-routes (/net/teams, /net/partnerships, /net/events)
- *   - Notable partnerships, notable players, recent events sections preserved
+ *   - No stats on the landing: no partnership/player/event tables
  *   - No forbidden terms: "ranking", "head-to-head", "win/loss"
- *   - Only canonical_only data surfaces (inferred_partial excluded)
- *   - Multi-stage QC badge appears when hint is set
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
@@ -153,44 +152,6 @@ describe('GET /net', () => {
     expect(res.status).toBe(200);
   });
 
-  it('shows team names in notable partnerships', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Home Alpha');
-    expect(res.text).toContain('Home Beta');
-  });
-
-  it('links partnerships to partnership detail pages', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain(`/net/partnerships/${TEAM_AB}`);
-  });
-
-  it('links players to player pages', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain(`/net/players/${PERSON_A}`);
-  });
-
-  it('shows the Recent Events section', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Recent Events');
-    expect(res.text).toContain('Home Open 2020');
-  });
-
-  it('links from recent events to net event detail pages', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('/net/events/event-hm-2020');
-  });
-
-  it('shows multi-stage QC badge for ev2020', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Multi-stage');
-  });
-
   it('shows Explore cards linking to existing net sub-routes', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
@@ -211,160 +172,21 @@ describe('GET /net', () => {
     expect(lower).not.toContain('head-to-head');
   });
 
-  it('renders the /net page', async () => {
+  it('does not render notable partnership, notable player, or recent event tables', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.status).toBe(200);
+    expect(res.text).not.toContain('Most Wins');
+    expect(res.text).not.toContain('Longest Spans');
+    expect(res.text).not.toContain('Most Podium Finishes');
+    expect(res.text).not.toContain('Longest Active Spans');
+    expect(res.text).not.toContain('Most Partner Connections');
+    expect(res.text).not.toContain('Recent Events');
+    expect(res.text).not.toContain('records-table-wrap');
   });
 });
 
 // ---------------------------------------------------------------------------
-// Notable Partnerships section on /net
-// ---------------------------------------------------------------------------
-
-describe('GET /net — Notable Partnerships', () => {
-  it('renders Most Wins bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Team AB has 2 wins — should appear in Most Wins bucket
-    expect(res.text).toContain('Most Wins');
-  });
-
-  it('renders Most Podium Finishes bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Most Podium Finishes');
-  });
-
-  it('renders Longest Spans bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Longest Spans');
-  });
-
-  it('shows Team AB (Home Alpha / Home Beta) in notable section', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Team AB qualifies (3 appearances, 2 wins, 10-year span)
-    // Should appear in at least one notable bucket
-    const notableSection = res.text.substring(res.text.indexOf('Most Wins'));
-    expect(notableSection).toContain('Home Alpha');
-    expect(notableSection).toContain('Home Beta');
-  });
-
-  it('links partnership names to partnership detail page', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain(`/net/partnerships/${TEAM_AB}`);
-  });
-
-  it('shows partnership data in notable section', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('/net/partnerships');
-  });
-
-  it('shows win and podium counts in notable rows', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Wins');
-    expect(res.text).toContain('Podiums');
-  });
-
-  it('shows year span in notable rows', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Team AB spans 2010–2020
-    expect(res.text).toContain('2010');
-    expect(res.text).toContain('2020');
-  });
-
-  it('does not show teams with fewer than 3 appearances in notable', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Team CD has only 1 appearance — should not appear in notable section
-    const afterNotable = res.text.substring(res.text.indexOf('Most Wins'));
-    const beforeRecent = afterNotable.substring(0, afterNotable.indexOf('Recent Events') || afterNotable.length);
-    expect(beforeRecent).not.toContain('Home Delta');
-  });
-
-  it('does not use overstated language', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    const lower = res.text.toLowerCase();
-    expect(lower).not.toContain('greatest');
-    expect(lower).not.toContain('best of all time');
-    expect(lower).not.toContain('dominant');
-    expect(lower).not.toContain('dynasty');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Notable Players section on /net
-// ---------------------------------------------------------------------------
-
-describe('GET /net — Notable Players', () => {
-  it('renders Most Wins player bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Team AB has 3 appearances (2 wins) — both Alpha and Beta qualify
-    // "Most Wins" bucket title appears for players
-    // (also appears for partnerships, so check the Players table has person links)
-    const text = res.text;
-    // At least one notable player bucket should render with person links
-    expect(text).toContain('Partners');  // column header in notable players table
-  });
-
-  it('renders Longest Active Spans player bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Longest Active Spans');
-  });
-
-  it('renders Most Partner Connections player bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Most Partner Connections');
-  });
-
-  it('renders Most Podium Finishes player bucket', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain('Most Podium Finishes');
-  });
-
-  it('shows Home Alpha in notable players (3 total appearances)', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Alpha has 3 appearances (AB:3) + 1 appearance (AC:1) = 4 total via canonical view
-    // Both AB and AC teams → Alpha qualifies for notable
-    expect(res.text).toContain('Home Alpha');
-  });
-
-  it('links player names to player pages', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    expect(res.text).toContain(`/net/players/${PERSON_A}`);
-  });
-
-  it('shows partner count in notable player rows', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    // Home Alpha has 2 partners (Bob and Carol) — should show partner count
-    expect(res.text).toContain('Partners');
-  });
-
-  it('does not use overstated language in player section', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net');
-    const lower = res.text.toLowerCase();
-    expect(lower).not.toContain('goat');
-    expect(lower).not.toContain('greatest player');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Portal landing sections: hero, explainer, competition formats
+// Portal landing sections: hero, explainer, demo video, competition formats
 // ---------------------------------------------------------------------------
 
 describe('GET /net — portal landing sections', () => {
@@ -385,7 +207,18 @@ describe('GET /net — portal landing sections', () => {
     const app = createApp();
     const res = await request(app).get('/net');
     expect(res.text).toContain('What is Footbag Net?');
-    expect(res.text).toContain('5-foot net');
+  });
+
+  it('renders the self-hosted demo video with webm/mp4 sources and poster', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net');
+    expect(res.text).toContain('class="demo-video"');
+    expect(res.text).toContain('/media/demo-net.webm');
+    expect(res.text).toContain('/media/demo-net.mp4');
+    expect(res.text).toContain('/media/demo-net-poster.jpg');
+    expect(res.text).toContain('Demonstration of footbag net');
+    expect(res.text).toContain('autoplay');
+    expect(res.text).toContain('playsinline');
   });
 
   it('renders Competition Formats with Singles and Doubles cards', async () => {

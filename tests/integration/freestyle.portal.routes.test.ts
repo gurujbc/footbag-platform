@@ -342,11 +342,24 @@ describe('GET /freestyle — onboarding + portal landing', () => {
     expect(res.text).toContain('/freestyle/history');
   });
 
-  it('shows stats strip with event and record counts', async () => {
+  it('does not render a numeric stats strip on the landing', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
-    expect(res.text).toContain('events');
-    expect(res.text).toContain('records');
+    expect(res.text).not.toContain('stats-strip');
+    expect(res.text).not.toMatch(/\d+\s+passback records/);
+    expect(res.text).not.toMatch(/\d+\s+documented tricks/);
+  });
+
+  it('renders the self-hosted demo video with webm/mp4 sources and poster', async () => {
+    const app = createApp();
+    const res = await request(app).get('/freestyle');
+    expect(res.text).toContain('class="demo-video"');
+    expect(res.text).toContain('/media/demo-freestyle.webm');
+    expect(res.text).toContain('/media/demo-freestyle.mp4');
+    expect(res.text).toContain('/media/demo-freestyle-poster.jpg');
+    expect(res.text).toContain('Demonstration of freestyle footbag');
+    expect(res.text).toContain('autoplay');
+    expect(res.text).toContain('playsinline');
   });
 
   it('does not show old "About Freestyle Footbag" as standalone section without history context', async () => {

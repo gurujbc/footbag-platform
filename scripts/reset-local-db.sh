@@ -60,20 +60,14 @@ echo "  → Loading seed data into database..."
   --db "${DB_FILE}" \
   --seed-dir "${SEED_DIR}"
 
-<<<<<<< HEAD
-# Load freestyle records
-echo "  → Loading freestyle records into database..."
-=======
 # Load freestyle passback records
 echo "  → Loading freestyle passback records..."
->>>>>>> 7d430af ( feat: auto-resolve anomalies, viewer modernization, pipeline doc sync)
 "${PYTHON}" legacy_data/event_results/scripts/10_load_freestyle_records_to_sqlite.py \
   --db "${DB_FILE}" \
   --records-csv legacy_data/inputs/curated/records/records_master.csv
 
 # Load consecutive kicks records
-<<<<<<< HEAD
-echo "  → Loading consecutive kicks records into database..."
+echo "  → Loading consecutive kicks records..."
 "${PYTHON}" legacy_data/event_results/scripts/11_load_consecutive_records_to_sqlite.py \
   --db "${DB_FILE}"
 
@@ -91,12 +85,6 @@ echo "  → Importing net review queue..."
 "${PYTHON}" legacy_data/event_results/scripts/14_import_net_review_queue.py \
   --db "${DB_FILE}"
 
-=======
-echo "  → Loading consecutive kicks records..."
-"${PYTHON}" legacy_data/event_results/scripts/11_load_consecutive_records_to_sqlite.py \
-  --db "${DB_FILE}"
-
->>>>>>> 7d430af ( feat: auto-resolve anomalies, viewer modernization, pipeline doc sync)
 # Extract club seed data from legacy mirror
 echo "  → Extracting club seed data from mirror..."
 "${PYTHON}" legacy_data/scripts/extract_clubs.py

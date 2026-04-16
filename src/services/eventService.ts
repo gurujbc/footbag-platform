@@ -83,6 +83,7 @@ export interface PublicEventPage {
   event: PublicEvent;
   disciplines: PublicEventDiscipline[];
   hasResults: boolean;
+  isSparse: boolean;
   primarySection: 'details' | 'results';
   resultSections: PublicResultSection[];
 }
@@ -117,6 +118,7 @@ export interface EventDetailContent {
   event: PublicEvent;
   disciplines: PublicEventDiscipline[];
   hasResults: boolean;
+  isSparse: boolean;
   primarySection: 'details' | 'results';
   resultSections: PublicResultSection[];
 }
@@ -355,6 +357,11 @@ function toPublicEventPage(
 ): PublicEventPage {
   const resultSections = groupPublicResultRows(resultRows);
   const hasResults = resultSections.length > 0;
+  const placementCount = resultSections.reduce(
+    (sum, section) => sum + section.placements.length,
+    0,
+  );
+  const isSparse = hasResults && (disciplineRows.length < 3 || placementCount < 10);
 
   return {
     event: toPublicEvent(eventRow),
@@ -364,6 +371,7 @@ function toPublicEventPage(
       return aCat - bCat || aDiv - bDiv || aName.localeCompare(bName);
     }),
     hasResults,
+    isSparse,
     primarySection: hasResults ? 'results' : 'details',
     resultSections,
   };

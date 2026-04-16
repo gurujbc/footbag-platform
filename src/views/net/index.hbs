@@ -16,6 +16,16 @@
     {{#each content.intro.paragraphs}}
     <p>{{this}}</p>
     {{/each}}
+    {{#if content.demoVideo}}
+    <figure class="demo-video">
+      <video autoplay loop muted playsinline preload="metadata" poster="{{content.demoVideo.posterUrl}}">
+        <source src="{{content.demoVideo.webmUrl}}" type="video/webm">
+        <source src="{{content.demoVideo.mp4Url}}" type="video/mp4">
+        <p>{{content.demoVideo.caption}}</p>
+      </video>
+      <figcaption>{{content.demoVideo.caption}}</figcaption>
+    </figure>
+    {{/if}}
   </section>
 
   {{! ── Competition Formats ───────────────────────────────────────── }}
@@ -54,100 +64,5 @@
       {{/each}}
     </div>
   </section>
-
-  {{! ── Notable Partnerships (existing real data) ─────────────────── }}
-  {{#if content.notablePartnerships.length}}
-  {{#each content.notablePartnerships}}
-  <section class="content-section">
-    <h2>{{title}}</h2>
-    <div class="records-table-wrap">
-      <table class="records-table">
-        <thead>
-          <tr>
-            <th>Partnership</th>
-            <th class="col-num">Apps</th>
-            <th class="col-rank">Wins</th>
-            <th class="col-rank">Podiums</th>
-            <th>Years</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each partnerships}}
-          <tr>
-            <td><a href="{{{teamHref}}}">{{teamName}}</a></td>
-            <td class="col-num">{{appearanceCount}}</td>
-            <td class="col-rank">{{winCount}}</td>
-            <td class="col-rank">{{podiumCount}}</td>
-            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </section>
-  {{/each}}
-  {{/if}}
-
-  {{! ── Notable Players (existing real data) ──────────────────────── }}
-  {{#if content.notablePlayers.length}}
-  {{#each content.notablePlayers}}
-  <section class="content-section">
-    <h2>{{title}}</h2>
-    <div class="records-table-wrap">
-      <table class="records-table">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th class="col-num">Apps</th>
-            <th class="col-rank">Wins</th>
-            <th class="col-rank">Podiums</th>
-            <th>Years</th>
-            <th class="col-num">Partners</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each players}}
-          <tr>
-            <td><a href="{{{href}}}">{{personName}}</a>{{#if country}} <span class="detail-muted">{{country}}</span>{{/if}}</td>
-            <td class="col-num">{{totalAppearances}}</td>
-            <td class="col-rank">{{totalWins}}</td>
-            <td class="col-rank">{{totalPodiums}}</td>
-            <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
-            <td class="col-num">{{partnerCount}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </section>
-  {{/each}}
-  {{/if}}
-
-  {{! ── Recent Events ─────────────────────────────────────────────── }}
-  {{#if content.recentEvents}}
-  <section class="content-section">
-    <h2>Recent Events</h2>
-    <div class="records-table-wrap">
-      <table class="records-table">
-        <thead>
-          <tr>
-            <th>Event</th>
-            <th class="col-num">Results</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each content.recentEvents}}
-          <tr>
-            <td><a href="{{eventHref}}">{{eventTitle}}</a> <span class="detail-muted">{{eventYear}}</span></td>
-            <td class="col-num">{{appearanceCount}}</td>
-            <td>{{#if hasMultiStageHint}}<span class="badge badge-warn">Multi-stage</span>{{/if}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </section>
-  {{/if}}
 
 </div>

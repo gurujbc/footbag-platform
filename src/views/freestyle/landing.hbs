@@ -16,6 +16,16 @@
     {{#each content.intro.paragraphs}}
     <p>{{this}}</p>
     {{/each}}
+    {{#if content.demoVideo}}
+    <figure class="demo-video">
+      <video autoplay loop muted playsinline preload="metadata" poster="{{content.demoVideo.posterUrl}}">
+        <source src="{{content.demoVideo.webmUrl}}" type="video/webm">
+        <source src="{{content.demoVideo.mp4Url}}" type="video/mp4">
+        <p>{{content.demoVideo.caption}}</p>
+      </video>
+      <figcaption>{{content.demoVideo.caption}}</figcaption>
+    </figure>
+    {{/if}}
   </section>
 
   {{! ── Competition Formats ────────────────────────────────────────────────── }}
@@ -36,17 +46,6 @@
     </div>
   </section>
 
-  {{! ── Stats strip (transition into the data portal) ──────────────────────── }}
-  {{#if content.totalRecords}}
-  <section class="content-section stats-strip">
-    <div class="hero-stats">
-      <span>{{content.totalEvents}} events</span>
-      <span>{{content.totalRecords}} passback records</span>
-      <span>{{content.totalTricks}} documented tricks</span>
-    </div>
-  </section>
-  {{/if}}
-
   {{! ── Portal cards (existing five) ───────────────────────────────────────── }}
   <section class="content-section">
     <div class="card-grid card-grid-2col">
@@ -66,7 +65,7 @@
         <div class="card-title">Competition</div>
         <p>
           Top competitors, podium counts, and event history from
-          {{content.totalEvents}} documented freestyle events (1980 to present).
+          documented freestyle events (1980 to present).
           Derived from canonical competition records.
         </p>
         <div class="card-actions">
@@ -79,7 +78,7 @@
         <div class="card-title">Passback Records</div>
         <p>
           Per-trick consecutive completion records from the freestyle
-          passback community.{{#if content.totalRecords}} {{content.totalRecords}} records across {{content.recordTypes}} disciplines.{{/if}}
+          passback community.
         </p>
         {{#if content.totalRecords}}
         <div class="card-actions">
@@ -94,8 +93,7 @@
       <div class="card{{#unless content.totalTricks}} card-coming-soon{{/unless}}">
         <div class="card-title">Trick Dictionary</div>
         <p>
-          {{#if content.totalTricks}}Reference for {{content.totalTricks}} documented tricks: ADD{{else}}ADD{{/if}} values, categories,
-          descriptions, base components, and modifier relationships.
+          ADD values, categories, descriptions, base components, and modifier relationships.
         </p>
         {{#if content.totalTricks}}
         <div class="card-actions">
@@ -110,8 +108,8 @@
       <div class="card">
         <div class="card-title">Insights</div>
         <p>
-          Data-driven sequence analysis from 395 documented chains across the history
-          of freestyle footbag, from the foundational 1980s vocabulary to the modern European era.
+          Data-driven sequence analysis across the history of freestyle footbag,
+          from the foundational 1980s vocabulary to the modern European era.
         </p>
         <div class="card-actions">
           <a href="/freestyle/insights" class="btn btn-outline">Insights &rarr;</a>

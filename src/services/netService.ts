@@ -87,6 +87,13 @@ interface NetCompetitionFormat {
   videoTitle:     string;
 }
 
+interface NetDemoVideo {
+  webmUrl:   string;
+  mp4Url:    string;
+  posterUrl: string;
+  caption:   string;
+}
+
 interface NetExploreCard {
   slug:       'teams' | 'partnerships' | 'events';
   label:      string;
@@ -103,6 +110,7 @@ interface NetHomePageViewModel {
     mascotSrc:             string;
     mascotAlt:             string;
     intro:                 NetLandingExplainer;
+    demoVideo:             NetDemoVideo;
     competitionFormats:    NetCompetitionFormat[];
     exploreCards:          NetExploreCard[];
     recentEvents:          NetHomeRecentEventViewModel[];
@@ -1692,6 +1700,12 @@ export const netService = {
         mascotSrc:           '/img/net-mascot.svg',
         mascotAlt:           'Footbag net icon',
         intro:               NET_LANDING_INTRO,
+        demoVideo:           {
+          webmUrl:   '/media/demo-net.webm',
+          mp4Url:    '/media/demo-net.mp4',
+          posterUrl: '/media/demo-net-poster.jpg',
+          caption:   'Demonstration of footbag net',
+        },
         competitionFormats:  NET_COMPETITION_FORMATS,
         exploreCards,
         recentEvents:        recentEventRows.map(shapeHomeRecentEvent),

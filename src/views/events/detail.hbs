@@ -50,6 +50,11 @@
       <div>
         <h2>Results</h2>
         {{#if content.hasResults}}
+          {{#if content.isSparse}}
+            <div class="no-results-notice" style="margin-top:16px">
+              We know the data from this event is incomplete but we're showing what we have anyway.
+            </div>
+          {{/if}}
           <div style="margin-top:20px">
             {{#each content.resultSections}}
               {{> result-section}}
