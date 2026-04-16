@@ -16,6 +16,9 @@
         <a href="/events" {{#if (eq currentSection 'events')}}class="active"{{/if}}>Events</a>
         <a href="/members" {{#if (eq currentSection 'members')}}class="active"{{/if}}>Members</a>
         <a href="/clubs" {{#if (eq currentSection 'clubs')}}class="active"{{/if}}>Clubs</a>
+        <a href="/net" {{#if (eq currentSection 'net')}}class="active"{{/if}}>Net</a>
+        <a href="/freestyle" {{#if (eq currentSection 'freestyle')}}class="active"{{/if}}>Freestyle</a>
+        <a href="/records" {{#if (eq currentSection 'records')}}class="active"{{/if}}>Records</a>
         <a href="/hof" {{#if (eq currentSection 'hof')}}class="active"{{/if}}>HoF</a>
         {{#if isAuthenticated}}
           <a href="/members/{{currentUser.slug}}" {{#if (eq currentSection 'members')}}class="active"{{/if}}>
@@ -46,6 +49,9 @@
         <a href="/events">Events</a>
         <a href="/members">Members</a>
         <a href="/clubs">Clubs</a>
+        <a href="/net">Net</a>
+        <a href="/freestyle">Freestyle</a>
+        <a href="/records">Records</a>
         <a href="/hof">HoF</a>
       </div>
     </div>
