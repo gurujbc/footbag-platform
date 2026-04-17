@@ -24,6 +24,9 @@ Processing order
                                   effective_person_id is not yet in persons.
  5.  Blocklist removal — drop person rows whose name is a sentinel or known
                           non-person artifact; null their participant person_ids
+ 5b. Person-likeness gate — drop person rows with encoding corruption,
+                             embedded ?, bad characters; prevents junk from
+                             reaching canonical output
  6.  Name cleanup: strip "aka …" suffixes
  7.  Name cleanup: title-case fully-uppercase names (preserves initials)
  8.  Name sync: apply PT v52 person_canon override (authoritative)
@@ -70,6 +73,61 @@ _PERSONS_BLOCKLIST: set[str] = {
     "__NON_PERSON__",
     "Unknown",
     "Czech Republic",      # country artifact
+    # Encoding corruption (mojibake) — real people with garbled names;
+    # corrected aliases in overrides/person_aliases.csv merge these into the right person
+    "Marcin Ka\u00b3czor",         # → Marcin Kalczor
+    "Pawe\u00b3 Ro\u00bfek",      # → Pawel Rozek
+    "Robin P\u00b8chel",           # → Robin Puchel
+    "Szymon Ka\u00b3wak",          # → Szymon Kalwak
+    "Tomasz Kocio\u00b3kowski",    # → Tomasz Kociolkowski
+    "Tom\u00e1\u00b9 Tu\u00e8ek",  # → Tomas Tucek
+    # Incomplete names — unresolvable first-name-only with "?"
+    "Axel ?",
+    "Christian ?",
+    "Oliver ?",
+    "Pablo ?",
+    "Paty ?",
+    "R\u00e9mi ?",
+    "Stefan ?",
+    "Yan ?",
+    # Junk with embedded scores/noise
+    "Arkadiusz Dudzi\u00f1ski ? 208,13",
+    "Augustin Tiffou ? Predator",
+    "Marcin Bujko ? 243,87",
+    "Ren Rhr ? Whirr",
+    "Team S. Thomas Sustrac ? Robinson Sustrac",
+    # Multi-person / team entries (not individual persons)
+    "Anthony Intemann / Greg Nice Neumann",
+    "Homola + Hal\u00e1sz",
+    "Jazz + Juz",
+    "Kiss + Gy\u00e1ni",
+    "Szolosi + Horv\u00e1th",
+    "Michi+mr. Germany GER",
+    "Thomsenf und die 4. Dimension+",
+    # Multi-? unknowns
+    "Erik ???",
+    "Erik ?????",
+    "Reid ??",
+    # Trailing junk
+    "Patrick Keehan*",
+    # Czech mojibake (no clean version in PT)
+    "Vojt\u00ecch Kr\u00f9ta",
+    "V\u00e1\u0161ka Kouda",
+    "V\u00e1 ka Kouda",
+    # Team/club/event names / nicknames
+    "Virginia Shaolin Foot Clan",
+    "Windy City Cup Champions",
+    "Big One",
+    "PA Coalition of Kickers",
+    "Clemens Girl Friend",
+    "DC All Stars",
+    # Trick names not caught by keyword patterns
+    "Beta Fog",
+    "PS Whirl",
+    "Pixie Legover",
+    "Pixie Same",
+    "Paradon to Paradox",
+    "Mobius >",
 }
 
 _PERSONS_DROP: set[str] = {"player_ids"}   # member_id is kept
@@ -388,6 +446,229 @@ def main() -> None:
               f"nulled {n_nulled} participant reference(s)")
         for pid in sorted(blocked_pids):
             print(f"  dropped person_id={pid[:24]}...")
+
+    # ── 5a. Alias-based person merge ────────────────────────────────────────────
+    # person_aliases.csv maps variant names to canonical person_ids. The identity
+    # lock may not have resolved these, so we remap here: if a person's name
+    # matches an alias and their person_id differs from the alias target, remap
+    # the participant references and drop the duplicate person row.
+    import unicodedata as _unicodedata
+    def _norm_alias(name: str) -> str:
+        nfkd = _unicodedata.normalize("NFKD", name)
+        stripped = "".join(c for c in nfkd if not _unicodedata.combining(c))
+        return re.sub(r"\s+", " ", stripped.lower().strip())
+
+    _alias_csv = ROOT / "overrides" / "person_aliases.csv"
+    _alias_remap: dict[str, str] = {}  # norm(alias) → target person_id
+    _alias_remap_rows: list[dict] = []  # full rows for canon name lookup
+    if _alias_csv.exists():
+        with open(_alias_csv, newline="", encoding="utf-8") as _f:
+            for _row in csv.DictReader(_f):
+                _a = _row.get("alias", "").strip()
+                _tpid = _row.get("person_id", "").strip()
+                if _a and _tpid:
+                    _alias_remap[_norm_alias(_a)] = _tpid
+                    _alias_remap_rows.append(_row)
+
+    # Build pid remap: person_id → target_person_id for persons whose name is an alias.
+    # Also build a name→pid index for the current persons list so we can resolve
+    # aliases whose target_pid doesn't exist (the target was itself aliased).
+    _current_pids: set[str] = {p["person_id"] for p in persons if p.get("person_id", "").strip()}
+    _name_to_pid: dict[str, str] = {}
+    for p in persons:
+        _name_to_pid[_norm_alias(p.get("person_name", ""))] = p["person_id"]
+
+    _pid_remap: dict[str, str] = {}
+    for p in persons:
+        pname = p.get("person_name", "").strip()
+        pid = p.get("person_id", "").strip()
+        normed = _norm_alias(pname)
+        if normed in _alias_remap:
+            target = _alias_remap[normed]
+            # If the target pid doesn't exist in persons, look up the target's
+            # person_canon by name — the target may have been loaded under a
+            # different pid (e.g. Calab Abraham → Caleb Abraham).
+            if target not in _current_pids:
+                # Find the alias row's person_canon and look it up by name
+                # (scan alias CSV again for the canon name)
+                for _row2 in _alias_remap_rows:
+                    if _norm_alias(_row2.get("alias", "")) == normed:
+                        canon_name = _row2.get("person_canon", "").strip()
+                        resolved = _name_to_pid.get(_norm_alias(canon_name))
+                        if resolved:
+                            target = resolved
+                        break
+            if pid and target and pid != target and target in _current_pids:
+                _pid_remap[pid] = target
+
+    if _pid_remap:
+        # Resolve transitive chains: if A→B and B→C, make A→C
+        def _resolve_chain(pid: str) -> str:
+            visited: set[str] = set()
+            cur = pid
+            while cur in _pid_remap and cur not in visited:
+                visited.add(cur)
+                cur = _pid_remap[cur]
+            return cur
+        _pid_remap = {k: _resolve_chain(k) for k in _pid_remap}
+
+        # Remap participant person_ids
+        n_remapped_parts = 0
+        for r in participants:
+            rpid = r.get("person_id", "").strip()
+            if rpid in _pid_remap:
+                r["person_id"] = _pid_remap[rpid]
+                n_remapped_parts += 1
+        # Drop remapped person rows (their participants now point to the canonical person)
+        persons = [p for p in persons if p["person_id"] not in _pid_remap]
+        print(f"Alias merge: remapped {len(_pid_remap)} person(s), "
+              f"{n_remapped_parts} participant reference(s)")
+
+    # ── 5b. Person-likeness gate: catch encoding corruption and junk names ─────
+    # Encoding artifacts (Windows-1250 mojibake)
+    _RE_QC_MOJIBAKE = re.compile(r"[¶¦±¼¿¸¹º³]")
+    # Question mark embedded inside a word (encoding corruption)
+    _RE_QC_EMBED_Q = re.compile(r"\w\?|\?\w")
+    # Standalone question marks (incomplete/unresolved)
+    _RE_QC_STANDALONE_Q = re.compile(r"(?:^|\s)\?{1,5}(?:\s|$)")
+    # Characters that should not appear in canonical display names
+    _RE_QC_BAD_CHARS = re.compile(r"[+=\\|/]")
+    # Scoreboard codes: "IL 49", "IL 63"
+    _RE_QC_SCOREBOARD = re.compile(r"^[A-Z]{2}\s+\d+$")
+    # Embedded dollar amounts: "Name $25", "$350"
+    _RE_QC_PRIZE = re.compile(r"\$\d+")
+    # Match results: "Name 11-0 Over Name"
+    _RE_QC_MATCH_RESULT = re.compile(r"\d+-\d+\s+over\b", re.IGNORECASE)
+    # 3+ digit number tokens (IFPA IDs, scores, not person names)
+    _RE_QC_BIG_NUMBER = re.compile(r"\b\d{3,}\b")
+    # Non-person keywords (narrative, teams, tricks, event names)
+    _RE_QC_NON_PERSON = re.compile(
+        r"\b(Connection|Dimension|Footbag|Spikehammer|head-to-head|"
+        r"being determined|Freestyler|round robin|results|"
+        r"Champions|Cup\b.*\bChampions|Foot Clan|"
+        r"whirlygig|whirlwind|spinning|blender|smear|"
+        r"clipper|torque|butterfly|mirage|legbeater|ducking|"
+        r"eggbeater|ripwalk|hopover|dropless|scorpion|matador|"
+        r"symposium|swirl|drifter|vortex|superfly|"
+        r"atomic|blurry|whirl|flux|dimwalk|nemesis|bedwetter|"
+        r"pixie|rooted|sailing|diving|ripped|warrior|"
+        r"paradon|steping|pdx|mullet|"
+        r"Big Add Posse|Aerial Zone|Annual Mountain|Be Announced|"
+        r"depending|highest.placed|two footbags)\b",
+        re.IGNORECASE,
+    )
+    # Arrow/colon notation — trick sequences: "Move>Move", "Name : Move"
+    _RE_QC_TRICK_NOTATION = re.compile(r"[>]|\s:\s")
+    # Long compound token (>20 chars) — German joke names, junk
+    _RE_QC_LONG_TOKEN = re.compile(r"\S{21,}")
+    # Name with comma followed by location (city/state/country)
+    # Catches "Name, Montréal" and "Name, Wichita KS" but not "Last, First"
+    _RE_QC_COMMA_LOCATION = re.compile(
+        r",\s*(?:Montr|Wichita|Austin|Shawinigan|Massachuss|Arizona|"
+        r"Texas|Bridgewater|NJ|VA\b|KS\b)",
+        re.IGNORECASE,
+    )
+    # Pure location entries: "City, ST" or "ST, Region, State"
+    _RE_QC_LOCATION_ONLY = re.compile(
+        r'^"?[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*"?,\s+[A-Z][A-Za-z\s]+$'
+    )
+    # Entries that are entirely uppercase (> 3 chars, has space) — junk artifacts
+    # Excludes single-initial entries like "A GRAVEL" (handled as abbreviated)
+    _RE_QC_ALL_CAPS_JUNK = re.compile(
+        r"^[A-Z]{2,}[\s-]+[A-Z]{2,}(?:[\s-]+[A-Z]{2,})*$"
+    )
+    # Trailing asterisk (junk markers)
+    _RE_QC_TRAILING_JUNK = re.compile(r"[*]+$")
+    # Single-initial abbreviated: "J Smith", "A GRAVEL", "A. Dukes" — one uppercase letter (optionally with period) + space + name
+    _RE_QC_ABBREVIATED = re.compile(r"^[A-Z]\.?\s+\S")
+    # Incomplete last name: "Yassin B", "Alex G" — first + single uppercase letter
+    _RE_QC_INCOMPLETE_LAST = re.compile(r"^\S+\s+[A-Z]$")
+    # Pure initials: "F. D."
+    _RE_QC_INITIALS_ONLY = re.compile(r"^[A-Z]\.\s+[A-Z]\.$")
+    # Prize suffix: "Name-prizes", "Name prize", "Name $N"
+    _RE_QC_PRIZE_SUFFIX = re.compile(r"-prizes\b|\bprize\b", re.IGNORECASE)
+
+    def _is_person_like(name: str) -> bool:
+        s = name.strip()
+        if not s:
+            return False
+        if _RE_QC_MOJIBAKE.search(s):
+            return False
+        if _RE_QC_EMBED_Q.search(s):
+            return False
+        if _RE_QC_STANDALONE_Q.search(s):
+            return False
+        if _RE_QC_BAD_CHARS.search(s):
+            return False
+        if _RE_QC_SCOREBOARD.match(s):
+            return False
+        if _RE_QC_PRIZE.search(s):
+            return False
+        if _RE_QC_MATCH_RESULT.search(s):
+            return False
+        if _RE_QC_BIG_NUMBER.search(s):
+            return False
+        if _RE_QC_NON_PERSON.search(s):
+            return False
+        # Commas never appear in canonical person names
+        if "," in s:
+            return False
+        if _RE_QC_ALL_CAPS_JUNK.match(s):
+            return False
+        if _RE_QC_TRAILING_JUNK.search(s) and len(s.split()) >= 2:
+            return False
+        # Single-word names (no space)
+        if " " not in s and "." not in s:
+            return False
+        # Single-initial abbreviated first name
+        if _RE_QC_ABBREVIATED.match(s):
+            return False
+        # Incomplete single-character last name
+        if _RE_QC_INCOMPLETE_LAST.match(s):
+            return False
+        # Pure initials only
+        if _RE_QC_INITIALS_ONLY.match(s):
+            return False
+        # Prize suffix artifact
+        if _RE_QC_PRIZE_SUFFIX.search(s):
+            return False
+        # Arrow/colon trick notation
+        if _RE_QC_TRICK_NOTATION.search(s):
+            return False
+        # Long compound token (German joke names, junk)
+        if _RE_QC_LONG_TOKEN.search(s):
+            return False
+        # Starts with lowercase — narrative fragment, not a person name
+        if s[0].islower():
+            return False
+        # Contains "The" as a word — narrative or embedded nickname, not canonical
+        if re.search(r"\bThe\b", s):
+            return False
+        # Contains quoted nickname — "Name \"the X\" Name" — alias should resolve these
+        if '"' in s:
+            return False
+        # "VA or VT" style — contains " or " which is narrative
+        if " or " in s.lower():
+            return False
+        return True
+
+    qc_blocked_pids: set[str] = {
+        p["person_id"]
+        for p in persons
+        if not _is_person_like(p.get("person_name", ""))
+    }
+    if qc_blocked_pids:
+        n_nulled_qc = 0
+        for r in participants:
+            if r.get("person_id", "").strip() in qc_blocked_pids:
+                r["person_id"] = ""
+                n_nulled_qc += 1
+        dropped_names = [p["person_name"] for p in persons if p["person_id"] in qc_blocked_pids]
+        persons = [p for p in persons if p["person_id"] not in qc_blocked_pids]
+        print(f"Person-likeness gate: removed {len(qc_blocked_pids)} non-person-like row(s), "
+              f"nulled {n_nulled_qc} participant reference(s)")
+        for dn in sorted(dropped_names):
+            print(f"  dropped: {dn}")
 
     # ── 6. Name cleanup: strip "aka …" suffixes ────────────────────────────────
     n_aka = 0

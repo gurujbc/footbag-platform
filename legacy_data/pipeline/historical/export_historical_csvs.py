@@ -935,11 +935,17 @@ print(f"  {_pbp_total:,} placement rows, {len(pbp_by_event):,} events covered")
 # person-level country overrides (nationality corrections where event-location heuristic is wrong)
 _COUNTRY_OVERRIDES_PATH = ROOT / "inputs" / "person_country_overrides.csv"
 _person_country_overrides: dict[str, str] = {}
+_country_overrides_skipped = 0
 if _COUNTRY_OVERRIDES_PATH.exists():
     with open(_COUNTRY_OVERRIDES_PATH, newline="", encoding="utf-8") as _f:
         for _r in csv.DictReader(_f):
+            # Skip entries marked for review (not yet human-approved)
+            if _r.get("status", "").strip() == "review":
+                _country_overrides_skipped += 1
+                continue
             _person_country_overrides[_r["person_id"].strip()] = _r["country"].strip()
-    print(f"  Loaded {len(_person_country_overrides)} person country override(s)")
+    print(f"  Loaded {len(_person_country_overrides)} person country override(s)"
+          f"{f', {_country_overrides_skipped} pending review' if _country_overrides_skipped else ''}")
 
 
 # ── Build output rows ─────────────────────────────────────────────────────────

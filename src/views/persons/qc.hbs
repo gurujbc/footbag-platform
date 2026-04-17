@@ -1,0 +1,110 @@
+{{! /internal/persons/qc — historical persons data quality viewer }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      Data quality flags for historical_persons table.
+      Internal only.
+    </p>
+    <div class="hero-stats">
+      <span>{{content.totalPersons}} persons</span>
+      <span>{{content.totalFlagged}} flagged</span>
+      <span>{{content.totalIssues}} issues</span>
+      <span>{{content.totalHigh}} HIGH</span>
+      <span>{{content.totalMedium}} MEDIUM</span>
+      <span>{{content.totalLow}} LOW</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── Filters ─────────────────────────────────────────────────── }}
+  <form method="GET" action="/internal/persons/qc" class="filter-bar">
+    <label>
+      Category
+      <select name="category" onchange="this.form.submit()">
+        {{#each content.filterOptions.categories}}
+        <option value="{{value}}"{{#if (eq value ../content.activeFilters.category)}} selected{{/if}}>{{label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>
+      Source
+      <select name="source" onchange="this.form.submit()">
+        {{#each content.filterOptions.sources}}
+        <option value="{{value}}"{{#if (eq value ../content.activeFilters.source)}} selected{{/if}}>{{label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    {{#if content.activeFilters.category}}
+    <a href="/internal/persons/qc" class="btn-link">Clear</a>
+    {{else if content.activeFilters.source}}
+    <a href="/internal/persons/qc" class="btn-link">Clear</a>
+    {{/if}}
+  </form>
+
+  {{! ── Summary by category ─────────────────────────────────────── }}
+  {{#if content.countsByCategory.length}}
+  <section class="content-section">
+    <h2>Issues by Category</h2>
+    <div class="records-table-wrap">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.countsByCategory}}
+          <tr>
+            <td><a href="/internal/persons/qc?category={{category}}">{{label}}</a></td>
+            <td>{{count}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {{/if}}
+
+  {{! ── Issues table ────────────────────────────────────────────── }}
+  <section class="content-section">
+    <h2>Flagged Persons ({{content.itemCount}})</h2>
+    {{#if content.items.length}}
+    <div class="records-table-wrap" style="overflow-x:auto">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Category</th>
+            <th>Person Name</th>
+            <th>Country</th>
+            <th>Source</th>
+            <th>Aliases</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.items}}
+          <tr>
+            <td><span class="severity-{{severityClass}}">{{severity}}</span></td>
+            <td>{{categoryLabel}}</td>
+            <td><code>{{person_name}}</code></td>
+            <td>{{country}}</td>
+            <td>{{source}}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{aliases}}">{{aliases}}</td>
+            <td>{{detail}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <p class="detail-muted">No issues found matching current filters.</p>
+    {{/if}}
+  </section>
+
+</div>

@@ -1,0 +1,89 @@
+{{! /internal/persons/browse — full persons list browser }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      Browse all historical_persons. Flagged rows highlighted.
+      Internal only.
+      <a href="/internal/persons/qc">&rarr; QC Issues</a>
+    </p>
+    <div class="hero-stats">
+      <span>{{content.totalPersons}} persons</span>
+      <span>{{content.totalFlagged}} flagged</span>
+      <span>{{content.totalFiltered}} matching</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  {{! ── Filters ─────────────────────────────────────────────────── }}
+  <form method="GET" action="/internal/persons/browse" class="filter-bar">
+    <label>
+      Search
+      <input type="text" name="search" value="{{content.activeFilters.search}}" placeholder="Name..." style="width:200px" />
+    </label>
+    <label>
+      Source
+      <select name="source" onchange="this.form.submit()">
+        {{#each content.filterOptions.sources}}
+        <option value="{{value}}"{{#if (eq value ../content.activeFilters.source)}} selected{{/if}}>{{label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <button type="submit">Filter</button>
+    {{#if content.activeFilters.search}}
+    <a href="/internal/persons/browse" class="btn-link">Clear</a>
+    {{else if content.activeFilters.source}}
+    <a href="/internal/persons/browse" class="btn-link">Clear</a>
+    {{/if}}
+  </form>
+
+  {{! ── Persons table ───────────────────────────────────────────── }}
+  <section class="content-section">
+    <h2>Persons ({{content.itemCount}} on page {{content.currentPage}} of {{content.totalPages}})</h2>
+    {{#if content.items.length}}
+    <div class="records-table-wrap" style="overflow-x:auto">
+      <table class="records-table records-table-sm">
+        <thead>
+          <tr>
+            <th>Person Name</th>
+            <th>Country</th>
+            <th>Events</th>
+            <th>Placements</th>
+            <th>Source</th>
+            <th>Person ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.items}}
+          <tr{{#if flagged}} style="background:#fff3e0"{{/if}}>
+            <td>{{person_name}}</td>
+            <td>{{country}}</td>
+            <td>{{event_count}}</td>
+            <td>{{placement_count}}</td>
+            <td>{{source}}</td>
+            <td style="font-size:0.7rem;opacity:0.6">{{person_id}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{! ── Pagination ────────────────────────────────────────────── }}
+    <div style="margin:1rem 0;display:flex;gap:1rem;align-items:center">
+      {{#if content.prevPage}}
+      <a href="/internal/persons/browse?page={{content.prevPage}}{{#if content.activeFilters.search}}&search={{content.activeFilters.search}}{{/if}}{{#if content.activeFilters.source}}&source={{content.activeFilters.source}}{{/if}}">&larr; Previous</a>
+      {{/if}}
+      <span>Page {{content.currentPage}} of {{content.totalPages}}</span>
+      {{#if content.nextPage}}
+      <a href="/internal/persons/browse?page={{content.nextPage}}{{#if content.activeFilters.search}}&search={{content.activeFilters.search}}{{/if}}{{#if content.activeFilters.source}}&source={{content.activeFilters.source}}{{/if}}">Next &rarr;</a>
+      {{/if}}
+    </div>
+    {{else}}
+    <p class="detail-muted">No persons matching current filters.</p>
+    {{/if}}
+  </section>
+
+</div>

@@ -99,6 +99,90 @@ def normalize_role(role: str) -> str:
     return role.strip().replace("_", "-")
 
 
+import re as _re
+import unicodedata as _unicodedata
+
+# ── Person-likeness gate (mirrors export_canonical_platform.py step 5b) ───────
+_PL_MOJIBAKE     = _re.compile(r"[¶¦±¼¿¸¹º³]")
+_PL_EMBED_Q      = _re.compile(r"\w\?|\?\w")
+_PL_STANDALONE_Q = _re.compile(r"(?:^|\s)\?{1,5}(?:\s|$)")
+_PL_BAD_CHARS    = _re.compile(r"[+=\\|/]")
+_PL_SCOREBOARD   = _re.compile(r"^[A-Z]{2}\s+\d+$")
+_PL_PRIZE        = _re.compile(r"\$\d+")
+_PL_MATCH_RESULT = _re.compile(r"\d+-\d+\s+over\b", _re.IGNORECASE)
+_PL_BIG_NUMBER   = _re.compile(r"\b\d{3,}\b")
+_PL_NON_PERSON   = _re.compile(
+    r"\b(Connection|Dimension|Footbag|Spikehammer|head-to-head|"
+    r"being determined|Freestyler|round robin|results|"
+    r"Champions|Foot Clan|"
+    r"whirlygig|whirlwind|spinning|blender|smear|"
+    r"clipper|torque|butterfly|mirage|legbeater|ducking|"
+    r"eggbeater|ripwalk|hopover|dropless|scorpion|matador|"
+    r"symposium|swirl|drifter|vortex|superfly|"
+    r"atomic|blurry|whirl|flux|dimwalk|nemesis|bedwetter|"
+    r"pixie|rooted|sailing|diving|ripped|warrior|"
+    r"paradon|steping|pdx|mullet|"
+    r"Big Add Posse|Aerial Zone|Annual Mountain|Be Announced|"
+    r"depending|highest.placed|two footbags)\b",
+    _re.IGNORECASE,
+)
+_PL_ALL_CAPS     = _re.compile(r"^[A-Z]{2,}[\s-]+[A-Z]{2,}(?:[\s-]+[A-Z]{2,})*$")
+_PL_TRAILING_JUNK = _re.compile(r"[*]+$")
+_PL_ABBREVIATED  = _re.compile(r"^[A-Z]\.?\s+\S")
+_PL_INCOMPLETE   = _re.compile(r"^\S+\s+[A-Z]$")
+_PL_INITIALS     = _re.compile(r"^[A-Z]\.\s+[A-Z]\.$")
+_PL_PRIZE_SUFFIX = _re.compile(r"-prizes\b|\bprize\b", _re.IGNORECASE)
+_PL_TRICK_ARROW  = _re.compile(r"[>]|\s:\s")
+_PL_LONG_TOKEN   = _re.compile(r"\S{21,}")
+
+
+def _norm_name(name: str) -> str:
+    """Strip diacritics, lowercase, collapse whitespace, remove periods."""
+    nfkd = _unicodedata.normalize("NFKD", name)
+    stripped = "".join(c for c in nfkd if not _unicodedata.combining(c))
+    s = stripped.lower().strip().replace(".", "")
+    return _re.sub(r"\s+", " ", s)
+
+
+def _aggressive_norm(name: str) -> str:
+    """Drop middle names/initials — keep first + last word only."""
+    s = _norm_name(name)
+    parts = s.split()
+    if len(parts) > 2:
+        return f"{parts[0]} {parts[-1]}"
+    return s
+
+
+def _is_person_like(name: str) -> bool:
+    """Return False if name is clearly not a canonical person name."""
+    s = name.strip()
+    if not s:                      return False
+    if _PL_MOJIBAKE.search(s):     return False
+    if _PL_EMBED_Q.search(s):      return False
+    if _PL_STANDALONE_Q.search(s): return False
+    if _PL_BAD_CHARS.search(s):    return False
+    if _PL_SCOREBOARD.match(s):    return False
+    if _PL_PRIZE.search(s):        return False
+    if _PL_MATCH_RESULT.search(s): return False
+    if _PL_BIG_NUMBER.search(s):   return False
+    if _PL_NON_PERSON.search(s):   return False
+    if "," in s:                   return False
+    if _PL_ALL_CAPS.match(s):      return False
+    if _PL_TRAILING_JUNK.search(s) and len(s.split()) >= 2: return False
+    if " " not in s and "." not in s: return False
+    if _PL_ABBREVIATED.match(s):   return False
+    if _PL_INCOMPLETE.match(s):    return False
+    if _PL_INITIALS.match(s):      return False
+    if _PL_PRIZE_SUFFIX.search(s): return False
+    if _PL_TRICK_ARROW.search(s):  return False
+    if _PL_LONG_TOKEN.search(s):   return False
+    if s[0].islower():             return False
+    if _re.search(r"\bThe\b", s):  return False
+    if '"' in s:                   return False
+    if " or " in s.lower():       return False
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -140,8 +224,38 @@ def main() -> None:
         # ------------------------------------------------------------------
         print("\nLoading provisional persons → historical_persons...")
 
-        provisional = [r for r in persons_rows if r.get("person_type", "") == "PROVISIONAL"]
+        # Build normalized-name index of canonical persons already in DB
+        # so we can skip provisional persons that duplicate them.
+        _existing_rows = conn.execute(
+            "SELECT person_name FROM historical_persons"
+        ).fetchall()
+        _existing_norm: set[str] = set()
+        _existing_aggressive: set[str] = set()
+        for (pn,) in _existing_rows:
+            if pn:
+                _existing_norm.add(_norm_name(pn))
+                _existing_aggressive.add(_aggressive_norm(pn))
+
+        provisional_raw = [r for r in persons_rows if r.get("person_type", "") == "PROVISIONAL"]
+        # Filter out encoding-corrupted / non-person-like names
+        # and names that duplicate an existing canonical person.
+        persons_qc_skipped = 0
+        persons_dedup_skipped = 0
+        provisional = []
+        for r in provisional_raw:
+            pn = r.get("person_name", "").strip()
+            if not _is_person_like(pn):
+                persons_qc_skipped += 1
+                continue
+            if _norm_name(pn) in _existing_norm or _aggressive_norm(pn) in _existing_aggressive:
+                persons_dedup_skipped += 1
+                continue
+            provisional.append(r)
         print(f"  PROVISIONAL rows: {len(provisional):,} (CANONICAL rows skipped — already loaded by script 08)")
+        if persons_qc_skipped:
+            print(f"  QC filter: {persons_qc_skipped} non-person-like name(s) skipped")
+        if persons_dedup_skipped:
+            print(f"  Dedup filter: {persons_dedup_skipped} duplicate(s) of existing canonical persons skipped")
 
         persons_inserted = 0
         persons_skipped  = 0

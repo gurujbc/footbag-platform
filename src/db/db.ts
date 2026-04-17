@@ -3414,6 +3414,28 @@ export const legacyClaim = {
   `),
 } as const;
 
+// ── Persons QC ───────��───────────────────────────────────────────────────────
+
+export interface PersonsQcRow {
+  person_id: string;
+  person_name: string;
+  aliases: string | null;
+  source: string | null;
+  source_scope: string | null;
+  country: string | null;
+  event_count: number;
+  placement_count: number;
+}
+
+export const personsQc = {
+  listAll: db.prepare(`
+    SELECT person_id, person_name, aliases, source, source_scope, country,
+           event_count, placement_count
+    FROM historical_persons
+    ORDER BY person_name COLLATE NOCASE
+  `),
+} as const;
+
 let helperTransactionOpen = false;
 
 function rollbackHelperTransaction(): void {

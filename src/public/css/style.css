@@ -427,6 +427,11 @@ th.sortable:hover { color: var(--primary); }
 .badge-closed         { background: #f0f0f0; color: #555; }
 .badge-completed      { background: #e8eaf6; color: #3949ab; }
 
+/* ── Severity indicators (internal QC pages) ───────────────── */
+.severity-high   { color: #c62828; font-weight: 700; }
+.severity-medium { color: #e65100; font-weight: 600; }
+.severity-low    { color: #616161; }
+
 /* ── Featured event hero ────────────────────────────────────── */
 .event-hero {
   position: relative;

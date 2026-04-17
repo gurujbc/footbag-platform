@@ -1,2 +1,1268 @@
-person_id,country,notes
-63cda333-9780-5bb4-a4f1-7618bf7fe937,New Zealand,Competed at Worlds (Denmark 2015 / USA 2017) but nationality is NZ
+person_id,person_name,country,reason,status
+8bbe4128-d9c1-5a88-b7a1-6ef0ed282f9c,"""Rame"", Wichita Ks",United States,event_location_heuristic:1/1,auto
+d0eb63d0-3e59-5d51-a114-7856e49d9600,A GRAVEL,United States,event_location_heuristic:1/1,auto
+f26c8661-e93f-5f0f-a5b5-25765c5aef9e,A Inteman,United States,event_location_heuristic:1/1,auto
+01419344-6968-5902-ac1c-5154b86990e4,A Jolicour,United States,event_location_heuristic:1/1,auto
+dfb6e564-170b-5e8f-9ae9-01c814009f90,A Lasken,United States,event_location_heuristic:1/1,auto
+19ee10c8-f691-5869-9a19-90edf8ee6187,A Noller-prizes,United States,event_location_heuristic:1/1,auto
+81a9f9d9-030e-5b86-81ec-66aa82861e65,A Smith,United States,event_location_heuristic:1/1,auto
+f8e083bc-63ea-5703-a595-99e31a5d0ab2,A. Dukes,United States,event_location_heuristic:1/1,auto
+267a554e-8cf3-5421-ad2a-65a59ea954ba,A. Fritch,Finland,event_location_heuristic:1/1,auto
+20857b3c-506a-57e4-90a0-fd36d4044d3a,A. Ronald,Finland,event_location_heuristic:1/1,auto
+f7454cc8-548c-53f2-958f-691d564474ec,A. Smirnov,Finland,event_location_heuristic:1/1,auto
+b5a0550c-595c-5fad-a2c3-8f3c098981f2,A. Wolff,Finland,event_location_heuristic:1/1,auto
+840afecd-c646-5a4d-b09f-5cd9c3426c08,AJ Schultz,United States,event_location_heuristic:2/2,auto
+aef45333-50d3-5e29-8482-2f76c6ca90f9,Aaron Saucedo,United States,event_location_heuristic:2/2,auto
+019ead09-4345-5705-9196-5b37fba7813e,Aaron Vargas,United States,event_location_heuristic:1/1,auto
+9c47ce23-cbfc-5324-8ca6-a103b2cbc0d0,Abbey Marment,New Zealand,event_location_heuristic:1/1,auto
+38c0cb5d-12c3-54bb-bd52-67934dec64a9,Abdom Vivas,Venezuela,event_location_heuristic:1/1,auto
+e86a1f8c-d705-5f4e-9f9e-ec85f0e07509,Abrahmovicz Piotr,Denmark,event_location_heuristic:1/1,auto
+99110263-91d7-5018-bc5e-49661655a293,Acosta Iván,Venezuela,event_location_heuristic:1/1,auto
+f7ee7f66-2d25-5756-b54b-698bd92c6866,Adam Greenwood : Sailing Catwalk,Canada,event_location_heuristic:1/1,auto
+34311aab-5906-5989-be20-b220786feb86,"Adam Pirog, Montréal",Canada,event_location_heuristic:1/1,auto
+ef947789-8aa3-5b0a-8ad9-63601433a885,Adrian Herrera,United States,event_location_heuristic:1/1,auto
+693b7dd3-a5f9-50da-a4b3-1898bb7a069b,Aerial Santesteban,United States,event_location_heuristic:3/3,auto
+13d62e3a-ab11-55f8-8586-12c3f2f7b58c,Aerial Zone,United States,event_location_heuristic:1/1,auto
+a57e474e-c6e1-5d58-abd7-e02dba347094,Aitor Armińo,Spain,event_location_heuristic:1/1,auto
+90903174-06f0-5135-8fc6-5b5256bb866f,Al Laverick,United States,event_location_heuristic:3/3,auto
+d94ff77c-52ab-5ddd-b5e7-3b4963d7c20c,Al Petersen,United States,event_location_heuristic:3/3,auto
+3c93150b-7b40-5ad9-bc1c-14a7322b3a8d,Alan Cook,United States,event_location_heuristic:6/6,auto
+921b8a6a-0446-576e-b47d-a526c1ca83aa,Alberto Romero,Spain,event_location_heuristic:1/1,auto
+441fd7d9-70aa-51f7-bd1a-58e5d12b1fb6,Aleksandar Kostov,Bulgaria,event_location_heuristic:1/1,auto
+66d60bd4-26b7-582c-9c0e-d06108a0ef8d,Aleksander Smirnov,Finland,event_location_heuristic:1/1,auto
+e19def34-04ae-5a47-8a88-22e180fb9429,Aleksandr Ivanov,Russia,event_location_heuristic:1/1,auto
+c9d93b87-ad4e-5302-ad73-0575871e8c65,Aleksi Hirvonen,Finland,event_location_heuristic:1/1,auto
+1f2d14aa-31e7-5d1f-a338-9ae43af68af5,Alex Frazier,United States,event_location_heuristic:2/2,auto
+b3044e91-1827-5e9a-b5da-8468c657c443,Alex G,United States,event_location_heuristic:1/1,auto
+be0d9849-db58-5aa2-90cc-df475a8c43bd,Alex Ibardaloza,United States,event_location_heuristic:6/6,auto
+bab369e3-b27c-55ec-99e7-a9b61865acfb,Alex Martínez,Spain,event_location_heuristic:1/1,auto
+bc5b80e3-a300-53c1-96d1-ea2fcba71746,Alex Smirnov,Switzerland,event_location_heuristic:1/1,auto
+b3b44b70-64a4-5ac3-bf71-2540e787c826,Alex Spiers,Canada,event_location_heuristic:1/1,auto
+8cc0e066-739c-527c-bd73-69d2cb855f53,Alexander Dojcinovic,Germany,event_location_heuristic:1/1,auto
+5d017dc4-f610-5e69-87b4-2a6819a60df4,Alexander Mantilla,Venezuela,event_location_heuristic:1/1,auto
+32f4bc20-4b43-525f-a4ea-1a2aa5a4683b,Alexander Tranakiev,Bulgaria,event_location_heuristic:1/1,auto
+3d87ba49-38b2-56a2-9c55-0e75a1068699,Alexander Tushkanov,Finland,event_location_heuristic:1/1,auto
+5b4d9b46-02d7-5889-9c02-7a255606a131,Alexandre Colpron,Canada,event_location_heuristic:1/1,auto
+e881c68e-e8fd-52ad-88eb-666f12a5d931,Alexandre Kègle,Canada,event_location_heuristic:1/1,auto
+280d54cc-376d-50b3-b65b-653dcacedd6c,Alexis Cańas,Spain,event_location_heuristic:1/1,auto
+0dec53e2-8fa7-536e-9446-a79a8b4ebade,Alf Marcussen,United States,event_location_heuristic:9/11,auto
+24c82c78-29ee-5a20-a93d-505d50a28d0c,Alison Smith,United States,event_location_heuristic:5/5,auto
+9437b458-a15b-5185-a9ce-9f1fd40094dc,Allison Smith,United States,event_location_heuristic:2/2,auto
+240d0483-2ac6-5fa4-b492-2e90969711fa,Alpha Schwa Omega,United States,event_location_heuristic:1/1,auto
+ff61e6f1-ddee-5f7d-aa31-7b689d602033,Alpine Smog,Denmark,event_location_heuristic:1/1,auto
+54921e82-57a6-55ce-bc52-aa7218fc6c4f,Alpine Whirlgig,Denmark,event_location_heuristic:1/1,auto
+b1c0d55c-d633-58ca-b18e-4ef0373e50d9,Amélie Beck,Canada,"REVIEW:current=United States,events_suggest=Canada:3/5",review
+e361a088-0b37-54f8-8b09-98b5905a68eb,Andi Beimel,Germany,event_location_heuristic:2/2,auto
+ad171a1d-399c-590c-a7ed-b87d688ca54d,Andr Lemaire,Canada,event_location_heuristic:1/1,auto
+d89fb4a8-445e-5a3b-8634-420b1d4d88f7,Andre Peńa,Venezuela,event_location_heuristic:1/1,auto
+257613b6-c90e-5b73-b80f-68aeea73f376,Andreas Kaefer,Czech Republic,event_location_heuristic:2/2,auto
+4f8c0a9f-96b9-5af4-bf86-8c53b901bb59,Andreina Peña,Venezuela,event_location_heuristic:1/1,auto
+2d6e3c0d-e167-51be-8f24-c832cc5aab87,Andrew C,United States,event_location_heuristic:2/2,auto
+2e2add6f-666a-598e-8dc6-d4196c028e07,Andrew Delaray,United States,event_location_heuristic:1/1,auto
+550b1509-2b9d-5203-a261-736ab3988a57,Andrew Hires,United States,event_location_heuristic:1/1,auto
+0a8221b7-5458-5c0e-9ce0-84e5fe595919,Andrew Williams,United States,event_location_heuristic:2/2,auto
+8418efff-beb1-5d08-b527-326b13541e39,Andriw Sanchez,Venezuela,event_location_heuristic:1/1,auto
+1e3c6cef-870c-51b7-b803-a52062edf47f,Andy Götze,Germany,event_location_heuristic:1/1,auto
+17a27155-b5bc-5c72-ac90-602127a1ed24,Andy Nawrath,Germany,event_location_heuristic:1/1,auto
+ede58b38-2fc5-523b-9a4e-7cc9b5312cfc,Andy Ronalds,Canada,event_location_heuristic:1/1,auto
+cfc984b0-0ea8-536d-a835-4803b25c20e0,Anita Chabannes,Switzerland,event_location_heuristic:1/1,auto
+40cdf712-ab85-50f7-bf64-1ef644c26c8d,Ann Miller,United States,event_location_heuristic:1/1,auto
+bd356b7c-9551-5004-ad5a-7c5492df2642,Annaleissa Cohen,United States,event_location_heuristic:2/2,auto
+83577342-91bd-5546-b599-133919ee289c,Annamarie Fillmore,United States,event_location_heuristic:1/1,auto
+e0e61399-16fb-5726-b14d-87bb55e2a0a2,Anne Laskin,United States,event_location_heuristic:1/1,auto
+c2c3262e-2c77-5286-a14c-35ed53c75eb2,Annual Mountain Dew's,United States,event_location_heuristic:1/1,auto
+b046ab19-f057-53dd-a850-18c4248086ff,Antek Szczeniowski,Poland,"REVIEW:current=Germany,events_suggest=Poland:2/3",review
+c58c203f-0eee-5faf-9116-e1425b81bffb,Anthony Glick,United States,event_location_heuristic:1/1,auto
+3bee9edb-d696-5787-8bc6-171bad4c54e6,Anthony Intemann / Greg Nice Neumann,United States,event_location_heuristic:1/1,auto
+23538743-e231-58c7-b978-18d5b048cab0,Anthony Raymond Intemann,United States,event_location_heuristic:2/2,auto
+82373a72-32d5-5e98-abe6-6b1e6df4358e,Anthony Rosay,France,event_location_heuristic:1/1,auto
+5c239094-9ad9-5dfd-a641-33b5f9af6d0b,Antoin Benhini,Canada,event_location_heuristic:1/1,auto
+e6b1a3dd-ef7b-596b-89a8-efe471fe0e31,Antoine The Rocks-Godin,United States,event_location_heuristic:1/1,auto
+2858bb21-7c41-5d93-a295-b3303b6a3aec,Anton Kunde,Germany,event_location_heuristic:1/1,auto
+40b82d9d-3d08-5ee8-b30e-44f229f64531,Antonio B,Germany,event_location_heuristic:1/1,auto
+677d7ab4-9cea-5cb6-bee3-b3aaa9142958,Antti Putkonen,Finland,event_location_heuristic:1/1,auto
+467ee170-fa2b-5be9-b95a-444e4338bc4b,"Arkadiusz Dudziñski ? 208,13",Poland,event_location_heuristic:1/1,auto
+664c0e58-39a1-5ea8-8992-405d62fc776d,Aron Tennant,Canada,event_location_heuristic:2/2,auto
+e01dce48-2a5f-5d2c-bf31-12fe5c2094e3,Arthur Bartlett,United States,event_location_heuristic:1/1,auto
+93854cbf-8d66-5a6b-9307-227e108ec68b,Asher Frank,United States,event_location_heuristic:1/1,auto
+d372bd02-c482-58ba-81a7-825635d04cc6,Askar Shaykhutdinov,Finland,event_location_heuristic:1/1,auto
+8e383abf-073c-559a-bc35-783419bdca8b,Atomic Ducking,Czech Republic,event_location_heuristic:1/1,auto
+70f66bdf-3478-5396-8cf3-5155ac1b0dd6,Atomic TOurque,United States,event_location_heuristic:1/1,auto
+e2eca1a4-ca5d-518f-ac1e-b2b02f14b0a2,Atomic Torque,Canada,event_location_heuristic:1/1,auto
+2d0be06c-c8ac-5768-a709-1c60bb47f7f6,Augustin Tiffou ? Predator,France,event_location_heuristic:1/1,auto
+e17d0227-d08b-5d5d-a7f0-0a2533dd7b9c,B Solonoski,United States,event_location_heuristic:2/2,auto
+cb35a45d-0782-5c85-a749-ae99415120ae,B Solonoski-prizes,United States,event_location_heuristic:1/1,auto
+d3b242be-4a4d-59a8-80bb-3b5ac9ef3946,B. Dubuis,Switzerland,event_location_heuristic:1/1,auto
+9d0638a6-8b67-5d19-9ee1-83dc4e7e0b83,B. Rochon,Canada,event_location_heuristic:1/1,auto
+73875aa6-99fc-561e-84e0-34fca07049b9,B. Williams,Canada,event_location_heuristic:1/1,auto
+3b5efcc8-34c8-512a-a412-66ca51e357ec,"BC, Arizona, Texas",Canada,event_location_heuristic:1/1,auto
+11fdf582-4df5-53e9-b59a-81533ece30df,Ban Baron,United States,event_location_heuristic:1/1,auto
+e49606c9-e902-513d-adb9-563426c0ae98,Barb Lareau,United States,event_location_heuristic:1/1,auto
+03ab6375-1357-52ad-be82-4fe60aff6347,Barry Thorsen,United States,event_location_heuristic:1/1,auto
+74bab864-2b3a-54eb-8e7c-c93c20ade226,Basia Klimczak,Poland,event_location_heuristic:1/1,auto
+c653acac-232c-57bf-a21f-69168681b046,Bathélémy Meridjen,France,event_location_heuristic:1/1,auto
+1b0957a6-2207-5531-b9d8-eb472b4f4dca,Beau Barnett,United States,event_location_heuristic:2/2,auto
+c9bf0c11-f04e-58fe-a5e0-44e8c4974022,Bedwetter>Frantic Butterfly,Hungary,event_location_heuristic:1/1,auto
+74e79140-82cd-54e3-b171-c60bbc50fb33,Belouin Ollivier,France,"REVIEW:current=Switzerland,events_suggest=France:2/3",review
+e92579eb-135d-5493-aa49-5b3d3c35e205,"Belozerov, Roman",Finland,event_location_heuristic:1/1,auto
+5ed35e24-8690-5e94-81d6-d8d5788c6333,Ben B,United States,event_location_heuristic:1/1,auto
+cc742bca-887e-59a5-93f5-9e6c150224ad,Ben Baybak,United States,event_location_heuristic:1/1,auto
+f8a2e4ab-66f8-5457-80ff-e4b0b7192740,Ben Clark,United States,event_location_heuristic:1/1,auto
+fcac9da4-201f-577e-8133-76e170c67179,Ben Floor,Canada,event_location_heuristic:1/1,auto
+643c809b-a507-583f-b3b8-3004339f0877,Ben Kersens,United States,event_location_heuristic:1/1,auto
+ffea5e83-b3c2-5a1f-88a3-d801228773f6,Ben Kettman,Canada,event_location_heuristic:1/1,auto
+016a53ef-4523-5372-aa85-c67d9fd959c7,Ben Kühner,Germany,event_location_heuristic:1/1,auto
+9ac7b4ae-d154-5acb-a548-02e04e6c99b6,Ben Lindahl,United States,event_location_heuristic:1/1,auto
+c68076a8-0205-5ac0-ad11-b7698f944b89,Benjamin Babiak,United States,event_location_heuristic:2/2,auto
+665c0587-a15f-52c4-92cd-13de415fc50f,Benjamin J. Babyak,United States,event_location_heuristic:1/1,auto
+bf658f4c-a8e8-5a45-87d4-ab424e158e9d,Benjamin Lemme,Germany,event_location_heuristic:1/1,auto
+f17dfbea-c05c-5c5c-936e-a77a23efbf1b,Benni Hakel,Germany,event_location_heuristic:1/1,auto
+5fbf40d4-498a-5ebe-91a0-f1298c1cb8d2,Benny Gsponer,Switzerland,event_location_heuristic:1/1,auto
+fbdcd384-a1c5-5e94-a96d-2d2a1f2f75d5,Beta Fog,Canada,event_location_heuristic:1/1,auto
+243edd82-4810-581b-a037-62412f0b082b,Beth Grassfield,United States,"REVIEW:current=Canada,events_suggest=United States:2/3",review
+abb8d2d7-4e49-5ce5-bb77-5b63f6ebf09f,Big Add Posse,United States,event_location_heuristic:1/1,auto
+579640f0-042f-5c78-8b85-fd74091261af,Big Ben Alston,United States,event_location_heuristic:1/1,auto
+67af5b3f-6e16-530a-8841-409debf11fb0,Bill Bethurum,United States,event_location_heuristic:9/9,auto
+64f96b0a-2f13-51fb-a203-106c52053d29,Bill Bleecker,United States,event_location_heuristic:2/2,auto
+ad445467-08e9-559c-a6d4-662835f2ea2e,Bill Crosby,United States,event_location_heuristic:2/2,auto
+92b0ee3b-efaa-545a-b07e-30ab6d8ebeb0,Bill Hayne,United States,event_location_heuristic:13/13,auto
+78040fc3-00b0-5c52-82fd-1f13717ab812,Bill Wall,United States,event_location_heuristic:1/1,auto
+ed5eb141-e8eb-5cb5-8dac-079172569975,Blake Mikkleson,United States,event_location_heuristic:1/1,auto
+bb8e92f1-9e60-57d9-824f-23001877776a,Blizzard dimwalk ps whirl,Poland,event_location_heuristic:1/1,auto
+9436574d-2df2-5691-86ee-cf385b6a4b98,Blurry Flux,Denmark,event_location_heuristic:1/1,auto
+32cdf07e-bb99-5258-a2e4-0c69bfcfb67a,Blurry Torque,Denmark,event_location_heuristic:1/1,auto
+e31f35d9-87e6-55ea-8583-ee5abb442d02,Blurry Whirl,United States,event_location_heuristic:1/1,auto
+948d55d7-dbc2-5219-843b-6901b7f5b610,Blurry Whirl >,Hungary,event_location_heuristic:1/1,auto
+da953510-d4e2-55f3-95b5-1645d05334fc,Blurry Whirl>Pdx Torque>Pdx Mirage,United States,event_location_heuristic:1/1,auto
+0f311c4a-f308-593d-9895-446b0f96aa4f,Blurry symposium whirl,Finland,event_location_heuristic:1/1,auto
+053f76dc-93a2-5121-beba-22ef7ee5f8d8,Bob Fokoly,Germany,event_location_heuristic:1/1,auto
+53a84b88-a5dc-5b83-9e6b-e6a105624509,Bob Gosselin,United States,event_location_heuristic:2/2,auto
+0056a58b-c553-5af0-9aee-daf02297008e,Bob Silva,United States,event_location_heuristic:1/1,auto
+4a680cee-eee2-5f29-9637-86075d66581c,Bob Swerdlick,United States,event_location_heuristic:2/2,auto
+6b3c16eb-ed3a-5083-a055-24bdff8dfd8c,Boris J. Ollivier,France,event_location_heuristic:1/1,auto
+053d8f29-01e0-55d1-af68-0e386dcad8ef,Borja Asenjo,Spain,event_location_heuristic:1/1,auto
+ea34e51b-523e-5486-889b-57fb9ed1b3b3,Bostjan Brescak,Germany,event_location_heuristic:1/1,auto
+15549b43-5dd3-5ddf-82b2-bbfa89b4cd46,Bostjan Kobe,Germany,event_location_heuristic:1/1,auto
+6b61839a-4e49-5986-b69c-492d332fb135,Brace Guettich,United States,event_location_heuristic:1/1,auto
+7171bd57-249d-50c0-9cd4-bc0654a85822,Brad Smith,United States,event_location_heuristic:7/7,auto
+2eb2a119-2bd9-5f0d-95ff-2dae142f0dca,Bradley McGhee,United States,event_location_heuristic:1/1,auto
+224a5a63-3780-5417-a356-b1d2f48167c4,Brandon Crum,United States,event_location_heuristic:4/4,auto
+7629d42c-58af-554f-9c65-3a3f25afa0de,Brandon Temple,United States,event_location_heuristic:2/2,auto
+2216a4b4-f166-5d94-8fda-38e40f13ff85,Brandy Montoya,United States,event_location_heuristic:2/2,auto
+5e9d875c-9818-5f8b-93ab-153c9eaa53c3,Brenda Carman,United States,event_location_heuristic:2/2,auto
+1b6f7d4f-b903-5d69-ba4d-3d43b9630177,Brett Bennett,United States,event_location_heuristic:1/1,auto
+10d9727a-9b86-590b-b4e3-adbbefd6f3f6,Brian A. McCarty,United States,event_location_heuristic:1/1,auto
+f01c0a83-56dd-5bc4-814e-584c5cd1b0b6,Brian Beun,United States,event_location_heuristic:1/1,auto
+6434295d-2719-5fcf-b028-45cfbd0fcac3,Brian H,United States,event_location_heuristic:1/1,auto
+21acf358-b81d-5e71-b8a4-cb7ed04704fe,Brian Kenney,United States,event_location_heuristic:1/1,auto
+595e78c3-73bb-5fb3-95a5-dbc326dc2aad,Brian Pickup,United States,event_location_heuristic:1/1,auto
+373e9063-06ea-58d4-a0b6-049aeb2c0c0e,Brian Scott,United States,event_location_heuristic:1/1,auto
+6306d242-a626-5ae5-ba9e-f6e1a4f61f88,"Bridgewater, NJ",Canada,event_location_heuristic:1/1,auto
+dedeb265-0b57-5729-89be-8382b2fd4e8b,British Victoria,Canada,event_location_heuristic:1/1,auto
+adadcd06-38cf-5979-88d1-aeba346489ee,Bud Meltsner,United States,event_location_heuristic:1/1,auto
+e6554368-2c1b-57a6-a740-af46466a26d8,Budás SiGi Bálint,Hungary,event_location_heuristic:1/1,auto
+aedd13c6-1e35-55f3-8600-c253d065c786,Byron Proshold,United States,event_location_heuristic:1/1,auto
+608451e2-98c3-5a13-871f-c49d6ad95c1d,C Donnelly,United States,event_location_heuristic:1/1,auto
+09d8cf34-2f2e-503e-bccf-b24c2f5c883d,C Garvin,United States,event_location_heuristic:2/2,auto
+a29b222a-5af3-5779-a97e-69ce5884591c,C Rosh,United States,event_location_heuristic:1/1,auto
+71c0130e-4f54-5467-8a11-767be0f4c076,C Wedemeyer,United States,event_location_heuristic:1/1,auto
+97a22397-d098-563f-9b05-71fda1720c9b,C. Balch,United States,event_location_heuristic:1/1,auto
+2db03aa2-2f7c-5fb5-b4bc-71c059b491d2,C. Donelly,United States,event_location_heuristic:1/1,auto
+237075d5-9f16-5f36-918f-60684327d372,C. Dukes,United States,event_location_heuristic:1/1,auto
+ee853186-e1b5-5585-b9f3-8f51f345d58a,CARLOS RAMIREZ- BERNARDO PALACIOS,Colombia,event_location_heuristic:1/1,auto
+0e4ddbf7-cf45-5536-9e62-3d69b31ae72f,Calab Abraham $25,United States,event_location_heuristic:1/1,auto
+e0b5ae54-b306-5a6c-b4f1-2c4fa081a0a4,Camilo Daouk,Switzerland,event_location_heuristic:1/1,auto
+9813c547-d952-5501-aff5-4ecbbbabc393,Camtu Pham,Austria,event_location_heuristic:1/1,auto
+42f00eee-c726-57a6-9278-72a1bc0ea708,"Cantillo, Eduardo",Venezuela,event_location_heuristic:1/1,auto
+798fe27c-7247-5c17-929a-2796c47dbc7b,Captain Chaos,United States,event_location_heuristic:1/1,auto
+7353e46c-9cc3-5c3a-a0fe-3db267e56c8b,Carla Müller,Germany,event_location_heuristic:1/1,auto
+7db5bb8b-844a-5cf2-87e6-b48ebec0b703,Carlos Moreno,Colombia,event_location_heuristic:1/1,auto
+e0288ec5-c4a2-5059-aa75-521edd13820f,"Caroline Bourgoin, Montréal",Canada,event_location_heuristic:1/1,auto
+1e8080c6-e505-5beb-ad13-1ab7c65f0134,Carolyn Cruz,United States,event_location_heuristic:1/1,auto
+067382c6-91ef-570c-b9ae-fafa6900fbbc,Carolyn Gerard,United States,event_location_heuristic:1/1,auto
+cbf84862-04b1-5408-9e43-49b9818ed9aa,Carolyn Ramondie,United States,event_location_heuristic:2/2,auto
+0c288683-68be-5ecd-ab70-942cec240b88,Cathey Guenther,United States,event_location_heuristic:1/1,auto
+1cb4599b-eab2-5f10-87d7-dadbbaab022a,Cathy Riffaud,France,event_location_heuristic:1/1,auto
+740fb3d2-19c3-5204-9f0f-4ac8bcf607ad,Chad Chidester,United States,event_location_heuristic:1/1,auto
+b268c49e-eef5-54f8-8ed5-16d8b5ffb62a,Chad Rassmuson,United States,event_location_heuristic:1/1,auto
+760c6344-fde6-5751-9ffd-df90c3c75d32,Charles Simmers,United States,event_location_heuristic:3/3,auto
+73af217e-99e5-57a3-a11e-d387a5c087a5,Charlie Dukes,United States,event_location_heuristic:1/1,auto
+0c36a7fe-b213-51bd-bd5f-946ef09d47d7,Charly Franz,Germany,event_location_heuristic:1/1,auto
+5ed3846e-4212-5e19-84ff-19cc486e66db,Cheri Johnson,United States,event_location_heuristic:1/1,auto
+cfcef53f-670c-5721-b206-1ebe7d63987c,Cheryl Hughes,United States,event_location_heuristic:14/14,auto
+6fc4c7d5-86c5-5ed6-86f5-66ab48db3fba,"Chris ""Shoes"" Hughes",United States,event_location_heuristic:1/1,auto
+f338dca1-c86c-56d2-8da4-39b08841c457,Chris Bond,United States,event_location_heuristic:2/2,auto
+f4b3a710-aaeb-55ff-a0f7-d567050d9d15,Chris Eichman,United States,event_location_heuristic:1/1,auto
+f167387d-c29b-5b96-b663-9568fdbb22f0,Chris H.,United States,event_location_heuristic:1/1,auto
+4d88e588-7fee-54f6-be7e-e53e322e12de,Chris J,United States,event_location_heuristic:1/1,auto
+a99d39eb-06c9-534d-9eeb-17b790af4cb0,Chris Knight,United States,event_location_heuristic:3/3,auto
+8959d778-41d3-554e-a831-6e1f73534b0f,Chris Ott,United States,"REVIEW:current=Finland,events_suggest=United States:18/23",review
+2dad2f09-7552-5822-b8af-d1c62f7d0ae3,Chris Schoonover,United States,event_location_heuristic:1/1,auto
+6177295a-750d-5f81-a203-61eb8157ae94,Chris Seguin,United States,event_location_heuristic:1/1,auto
+50e6e450-d92d-59ee-b37b-94cc93adaeed,Chris Shears,United States,event_location_heuristic:1/1,auto
+310e6bba-6a73-5aa8-a3c7-a9c8d738124d,Chris Staton,United States,event_location_heuristic:1/1,auto
+34e6c36f-8346-57f1-84b8-8bba9c528c0b,Chris Zagars,United States,event_location_heuristic:1/1,auto
+ce8f9c7c-a151-5d74-ae32-80e9e5ec1e93,Christian Bopp,Denmark,event_location_heuristic:1/1,auto
+f93b1d05-effb-51bd-b825-d5ab31334594,Christian Kloc,United States,event_location_heuristic:2/2,auto
+6ac8a32b-beed-5517-bb29-a804b89ee47d,Christian Loewe,France,event_location_heuristic:1/1,auto
+bc87149c-b9f5-5da5-adc6-190043e02f9b,Christian Löwe,Germany,event_location_heuristic:1/1,auto
+1e7d75e9-5b94-5085-9d11-945e1ef86cf5,Christian Ruby,Germany,event_location_heuristic:1/1,auto
+faf743c2-0c26-5780-8c79-6fbdc2561101,Christoph Jung,Germany,event_location_heuristic:1/1,auto
+0232dbe9-246a-5c5c-ae66-7d69b541aaca,Christophe Guille,France,event_location_heuristic:2/2,auto
+7b686f60-43cf-5481-9e20-6115df175f9a,Christopher Cleaver,United States,event_location_heuristic:1/1,auto
+e54e962b-2415-5eb9-9fba-9489ee3f82e7,Christopher Ingle,United States,event_location_heuristic:1/1,auto
+1db3ad26-faf1-55bb-a75e-4e24d963827a,Christopher Young,United States,event_location_heuristic:3/4,auto
+dddfd26d-7743-5e65-8675-2ec535bc6d68,Christy Atkin,United States,event_location_heuristic:1/1,auto
+4b6f438d-a3fb-56b1-8861-450dc19008bc,Chuck Baldwin,United States,event_location_heuristic:1/1,auto
+408ad9ef-9208-538e-b4b6-d93a5a16ad84,Chuck Simmers,United States,event_location_heuristic:4/4,auto
+2dc2f297-a742-537a-9423-675f0bdb2c03,Cindy Marshall,United States,event_location_heuristic:1/1,auto
+0288eae9-0f02-518c-bc82-39caae190be0,Cindy Miller,United States,event_location_heuristic:2/2,auto
+e590161a-4fe0-53a3-b2b6-28022f98f41d,Clemens Girl Friend,Germany,event_location_heuristic:1/1,auto
+e894cfda-3ef6-50c4-a504-a8ff8f8da8e5,Clovis Jaunet,France,event_location_heuristic:2/2,auto
+3f0958bc-360c-5ae8-8e51-7b579e0b50e2,Cody Baird,United States,event_location_heuristic:1/1,auto
+e2cc3bd7-b8c7-5a2f-8fde-1bd91a843cda,Colin Cowles,United States,event_location_heuristic:1/1,auto
+1a7a1b1a-b100-58fd-a540-0fe677ac4ccb,Colin Hortigon,United States,event_location_heuristic:1/1,auto
+07e98e72-22b8-5bb2-86a4-2b629a63bb3e,Colin McLeod,United States,event_location_heuristic:3/3,auto
+7c2d134d-7f41-5ff6-98e8-ba50844f0ce9,Colleen Minton,United States,event_location_heuristic:3/3,auto
+589a286f-e44d-5304-b1c3-99c222d9ad1d,Cooper Rooks,United States,event_location_heuristic:1/1,auto
+2193cd0d-f409-5e51-ab7c-443303fac76b,Cornelius Abel,Germany,event_location_heuristic:1/1,auto
+6f1f34ff-c2cd-5c83-a43e-5d3149af4598,Cory D. Current,Canada,event_location_heuristic:1/1,auto
+048574ff-0ca9-509a-863f-22f02a6ef7b9,Craig McNair,United States,event_location_heuristic:3/3,auto
+3f87e279-30c5-5397-9fae-7a4469f4617f,Curt Stranger,United States,event_location_heuristic:1/1,auto
+cc8381d2-0c42-515f-9a5b-fcf83d63ab07,D Garber,United States,event_location_heuristic:3/3,auto
+a28b4276-bece-5741-9a8c-d329d25d699d,D Kramer,United States,event_location_heuristic:1/1,auto
+8b943a37-07a5-56f7-a9b9-22cb0362a6f8,D O'Brien,United States,event_location_heuristic:1/1,auto
+bac17651-8b0f-5532-bb76-58b69a64c02e,D. Dorney,United States,event_location_heuristic:1/1,auto
+04aa658e-0cfc-5ee4-826b-03ad00475942,D. Filonenko,Finland,event_location_heuristic:1/1,auto
+a9aab79e-2138-5005-939a-e6d37989c71d,D. Soulard,Canada,event_location_heuristic:1/1,auto
+ef0f29cd-939f-5134-9b55-d8a07f761a9a,DC All Stars,Canada,event_location_heuristic:1/1,auto
+0b2de920-66b1-5100-9e55-07f1844e1035,DJ Fuji,Germany,event_location_heuristic:1/1,auto
+f3021d87-e703-596c-8e69-a5f519444ad2,DJ Williams,United States,event_location_heuristic:1/1,auto
+0265138a-6895-5c82-b7c3-3f02d9a61e68,Dale Crawford,United States,event_location_heuristic:3/3,auto
+8127198e-116c-5fb4-a004-d62f285f210e,Dallas DFC,United States,event_location_heuristic:1/1,auto
+5f1755de-3a3e-5f4c-a33d-ae197ce0da5b,Damian Budzik-Wroclaw,Poland,event_location_heuristic:1/1,auto
+4f3f0a36-17ce-5f54-92aa-ecbcfa4fe8e2,Damian Gielnicky,Czech Republic,event_location_heuristic:2/2,auto
+30946e18-8740-575a-8a6a-49559f21e619,Dan Chick,United States,event_location_heuristic:1/1,auto
+577441e1-9aa5-5392-8ea8-8e156c74a438,Dan Holland,United States,event_location_heuristic:1/1,auto
+fab25c7a-5cde-5aaa-958f-1f0ad9248eff,Dan Schläpfer,Switzerland,event_location_heuristic:1/1,auto
+0b724ea2-183d-5704-a8c1-8f6d15503b16,Daniel Carey,United States,event_location_heuristic:1/1,auto
+1c57d601-ac3b-53a4-b0ee-971f2ec1d40f,Daniel Dleon,Venezuela,event_location_heuristic:1/1,auto
+a934f27d-d076-5d40-83c2-5abc6388c88f,Daniel Kuźniec,Poland,event_location_heuristic:2/2,auto
+37031ab2-57df-5be0-8ea4-586101ecffb4,Daniel Urrutia,Venezuela,event_location_heuristic:3/3,auto
+59364bc9-652b-5582-a61a-cc82b1b201bd,Daniel Waite,United States,event_location_heuristic:1/1,auto
+d8dcc2f4-da4e-5b6e-aa70-89127ba1ab0e,"Danny Kirstek, Wichita KS",United States,event_location_heuristic:1/1,auto
+9605c630-f86e-592c-9f86-68fd5fffcda2,Danny Kristek,United States,event_location_heuristic:1/1,auto
+5950e5f2-4ab8-59b4-b790-65f64a6f57a6,Danny Peleva,Bulgaria,event_location_heuristic:3/3,auto
+d69c68f7-b9fb-5171-8275-3e4605209c19,Dara Hristova,Bulgaria,event_location_heuristic:2/2,auto
+2898c70a-5e96-5998-a014-c73c88ae1d49,Darryl Kasper,New Zealand,event_location_heuristic:1/1,auto
+ee802991-ece7-502d-97b0-aa80ab21f5d4,Dave Connell,United States,event_location_heuristic:1/1,auto
+6fab0ff6-2191-52b2-8c3b-5685e071b28c,Dave Dr. Fly,United States,event_location_heuristic:2/2,auto
+d00d203f-ac71-5ec1-ad7f-497a8f024c50,Dave Frazier,United States,event_location_heuristic:2/2,auto
+5cb79fb4-ab20-558f-b4a2-e7206c9f22df,Dave Hill,United States,event_location_heuristic:5/5,auto
+b73558bf-be9d-5ed8-b8ba-f2fc2a070214,Dave Piehota,United States,event_location_heuristic:1/1,auto
+50f10965-320f-5715-a56c-47b9fb8033b9,Dave Shoch,United States,event_location_heuristic:1/1,auto
+5eede61e-42bf-5132-b8c3-4f0cc0bbf5cd,Dave Yevin,United States,event_location_heuristic:2/2,auto
+de313613-7455-54ae-bdf4-74bec53676bf,David Edgmon,United States,event_location_heuristic:1/1,auto
+94ffdc88-a565-59af-b73f-19c5f8d7e2ed,David Fujimura,Germany,"REVIEW:current=Finland,events_suggest=Germany:7/11",review
+2a322837-9a94-5259-b030-d5c20adae927,David Hill,United States,event_location_heuristic:1/1,auto
+c87adc38-9322-538b-bd91-41ed2fa2e53c,David Kaufmann O,France,event_location_heuristic:1/1,auto
+e48deceb-0598-5cc6-9d85-3ca95598865c,David L. Bernard III,Canada,event_location_heuristic:1/1,auto
+c1550d2f-29cf-5868-a333-b227f5e87d20,David Martin,France,event_location_heuristic:1/1,auto
+d6ad8243-9a55-55c2-b78b-044e3f53f30c,David Mellov,Estonia,event_location_heuristic:2/2,auto
+9def2ce6-b6f9-5c37-9653-be26949bd8db,David Moutard,United States,event_location_heuristic:1/1,auto
+a07b118a-810a-5673-bcea-2b82e66cee69,David P,United States,event_location_heuristic:1/1,auto
+d1e08f6a-089d-51e6-8b37-8fde157ae0aa,David Pollen,United States,event_location_heuristic:2/2,auto
+387c0c9e-328c-5f7b-a6a4-94b5a3f30767,David Ramaud,France,event_location_heuristic:1/1,auto
+895b0608-34df-509a-853d-684ffa24e824,David Robinson,United States,event_location_heuristic:18/18,auto
+bdaad421-5eb1-54cb-84a7-e9181419b24e,David Theolis,Canada,event_location_heuristic:1/1,auto
+6336e73f-d7f2-5dac-a5a0-0c1530adf555,Dawson Thelin,United States,event_location_heuristic:1/1,auto
+bbd1e614-ad30-5a7e-bd75-501dceb9664b,Dea Evans,United States,event_location_heuristic:6/6,auto
+f3953f36-bcbd-5a75-a80d-e436477517cc,Deb Partridge,United States,event_location_heuristic:1/1,auto
+4e3de5ce-3552-5a7b-9ca0-3ef21d7040cb,Debra Cleere,United States,event_location_heuristic:1/1,auto
+c09440e1-39a7-5b75-a15a-e6e1f24a9444,Demers $250,United States,event_location_heuristic:1/1,auto
+837ec022-2c71-5b9a-b878-c1f89a95e57e,Denise Kurz,Germany,"REVIEW:current=Poland,events_suggest=Germany:2/3",review
+229212a9-513e-5b9a-87fc-779d686bca05,Dennis Griffin,United States,event_location_heuristic:1/1,auto
+84641a6f-36d4-5857-af3f-827b1f57102f,Dennis Ross,United States,event_location_heuristic:16/18,auto
+62e250bb-818f-52ac-b704-52b04b21522f,Denton Louis : Butterfly,Canada,event_location_heuristic:1/1,auto
+ee0ef24c-997d-56e3-a458-4583aa0a8b29,Diane Orihel,United States,event_location_heuristic:1/1,auto
+352b4abc-f2c8-5732-a23c-693605586ac4,Diego Diaz,Poland,event_location_heuristic:1/1,auto
+4e25b192-feb6-527d-96c9-a8b91e5bc654,Dim Derricott,United States,event_location_heuristic:1/1,auto
+4186a249-fa51-5fad-b93a-e7a549fce4b9,Diving Butterfly,Finland,event_location_heuristic:1/1,auto
+95862386-4210-572e-9a66-adcec5516d41,Dobri Markov,Bulgaria,event_location_heuristic:3/3,auto
+000932eb-8521-5af4-a1bc-5acb590c19d5,Don Hart,United States,event_location_heuristic:1/1,auto
+e367f1b8-3d6f-58b7-9455-edb96a0f8ec7,Doromir Markov,Bulgaria,event_location_heuristic:1/1,auto
+b1b3fb39-e071-5813-b892-186d72e9f42b,Dorota Wojtaszuk,Czech Republic,event_location_heuristic:1/1,auto
+8f4f3932-9938-57fe-8588-cb4d3c3d6f70,Doug Cassidy,United States,event_location_heuristic:8/8,auto
+f8d9d69d-cd6d-56d8-8963-b19c60546ce8,Doug Epperson,United States,event_location_heuristic:1/1,auto
+550ca0f5-6ca4-5c3e-b167-ac117ee645d8,Doug Krob,United States,event_location_heuristic:1/1,auto
+3d8f7f62-d342-512b-a6ba-4327f4880bba,Doug Toth,United States,event_location_heuristic:1/1,auto
+27d54f1f-96eb-55a0-b7a1-a3296662f56d,Douglas Beskin,United States,event_location_heuristic:1/1,auto
+99cd7dd0-f93a-5c6b-834e-7e8fec43fd78,Ducking Symposium Butterfly,Denmark,event_location_heuristic:1/1,auto
+d39777d0-d1ed-52a2-ae3d-f0b1525cb574,Dudziński Arkadiusz,Poland,event_location_heuristic:1/1,auto
+35232b9d-de3c-503b-ac14-c4e168025357,Dutch Holland,United States,event_location_heuristic:2/2,auto
+e4fc434d-1a98-567a-80da-1a7b8a0e2083,Dylan Cole,United States,event_location_heuristic:2/2,auto
+bfe080ab-2ee1-5fe9-a660-39185f919f7d,E Price,United States,event_location_heuristic:2/2,auto
+6f925c5e-bf1f-5980-9d10-70d7b975aee3,E. Daniesl,United States,event_location_heuristic:1/1,auto
+ca6174d1-2858-5759-a6df-90e4cb4535bd,E. Press,United States,event_location_heuristic:1/1,auto
+8722cab8-770d-56c2-ab80-efd99e7654f0,E. Stryker,United States,event_location_heuristic:1/1,auto
+c540febd-ce4e-5312-a77e-ecdcae122094,Ebb Huggins,United States,event_location_heuristic:1/1,auto
+648ab031-29e7-5261-9817-e10739f88b56,Ed La Macchia,United States,event_location_heuristic:3/3,auto
+411a2252-54bf-5a3e-8e1e-643c572833fc,Ed Larnacchia,United States,event_location_heuristic:1/1,auto
+53b62622-65cc-5c71-87d3-423fe3931645,Ed Stawicki,United States,event_location_heuristic:1/1,auto
+040edc30-57b1-5dc9-9586-16629a07fe2a,Eddie Sarabia,United States,event_location_heuristic:2/2,auto
+9381df36-35c3-5703-b87e-fc0f8e93e704,Edgar Camargo,Colombia,"REVIEW:current=Venezuela,events_suggest=Colombia:7/11",review
+a65c1e85-08b8-514f-b398-7299abd066c1,Edmund Larnacchia,United States,event_location_heuristic:1/1,auto
+7b729bc2-570a-543c-a460-24ed136deb5b,Eduardo Martinez,Venezuela,"REVIEW:current=Poland,events_suggest=Venezuela:19/28",review
+da5d3d9e-8e70-5d51-9aae-a55d25601a6e,Eduardo Portillo,Venezuela,event_location_heuristic:1/1,auto
+5021dfa1-3c8b-5197-b45c-1b63c581158c,Edward Orlando,United States,event_location_heuristic:1/1,auto
+f50b3c75-c930-5a71-a9f4-c5dda9e3a430,Eli Laird,United States,event_location_heuristic:1/1,auto
+35d0c8f6-2996-5294-b8a8-89cd7c7c06d5,Elizaveta Tikhomirova,Russia,event_location_heuristic:1/1,auto
+78183052-83b2-53ab-b4d1-49c1832c5d23,Elliott J,United States,event_location_heuristic:1/1,auto
+dc903a00-f767-576d-b671-da367ec302ce,Emily Efford,New Zealand,event_location_heuristic:2/2,auto
+7d32011f-f0bb-5cec-b597-ad74f5ea2d4d,Emily J,United States,event_location_heuristic:1/1,auto
+24ebddfa-0047-5f90-a1db-18bc2ccc6ba3,Emily Johns,United States,event_location_heuristic:4/4,auto
+beeca29f-726d-5e59-a784-7e8b34bbbea9,Emily Verdy,United States,event_location_heuristic:1/1,auto
+d89e00ac-af98-5c8e-842c-632ce5cb92e4,Emmanuel Maldonado,Venezuela,event_location_heuristic:1/1,auto
+66ca751d-f765-5239-9d63-248a9db891f6,Eneko Aiega,Spain,event_location_heuristic:1/1,auto
+ec0fba11-d33c-52c2-8edf-b92df4fa04bd,Eneko García,Spain,event_location_heuristic:2/2,auto
+59cfb2e4-042b-5d53-955d-0b5495c317ea,Enrique Cuevas Gordo,Spain,event_location_heuristic:1/1,auto
+87028de6-3991-597f-848a-a54cb401ec85,"Eric ""Bart"" Bartholoman",United States,event_location_heuristic:1/1,auto
+d54df96c-ec53-5661-8094-e6fcf4067dab,Eric Anthony,United States,event_location_heuristic:1/1,auto
+f02efc5b-3ae1-5979-a64f-a6f211b846d7,Eric Bartholomay,United States,event_location_heuristic:2/2,auto
+5fff2fc8-87ee-5d13-8bcd-145a47ab22af,Eric Castro,Venezuela,event_location_heuristic:1/1,auto
+4e175a34-850d-5c05-a4ec-576b16011156,Eric Castro H,Venezuela,event_location_heuristic:1/1,auto
+64a623c2-d9cf-5c4f-bd00-35ab09712293,Eric Cole,United States,event_location_heuristic:2/2,auto
+2098278e-f478-5487-ad81-80656cfa311d,Eric Malmi,Finland,event_location_heuristic:2/2,auto
+8fc8ad7c-0950-5c82-b6bc-1e77597aae49,Eric Marsiglia,United States,event_location_heuristic:1/1,auto
+9c473035-2d1d-5a73-8c2a-085b2b10ca5a,Eric Michaels,United States,event_location_heuristic:2/2,auto
+444d0429-5e77-53d5-a811-776e21c6cbb6,Eric Thompson-Green,United States,event_location_heuristic:1/1,auto
+1852147b-0045-582f-8060-a155c811280e,Eric Tokle,Chile,event_location_heuristic:1/1,auto
+0881e57e-0ac6-5c2d-9153-862f8b46cab1,Eric Wolff,United States,event_location_heuristic:1/1,auto
+5752d5a2-e5dd-5798-89df-dab0d56d565b,Erik ???,United States,event_location_heuristic:1/1,auto
+f464f328-0845-5a16-af4a-aedfcbec478a,Erik ?????,United States,event_location_heuristic:1/1,auto
+cf5bcf37-09ee-51aa-911a-73621a61b4f5,Erik Chan : Reverse Mailstrom,Canada,event_location_heuristic:1/1,auto
+74c702c5-8c7a-56c3-9a3a-84bc75cb0611,Erik Thompson-Green,United States,event_location_heuristic:1/1,auto
+6726f8d3-0a30-5200-b0ad-28e9e62e54d6,Erroll $50,United States,event_location_heuristic:1/1,auto
+5e6bd229-d2b9-5a83-a130-446b0487c5dd,Erzsebet Hornyak,Poland,event_location_heuristic:1/1,auto
+fe891952-eee9-5388-83d9-d4330aeef1ca,Esther Strauch,Germany,event_location_heuristic:1/1,auto
+3956bfca-c99b-501b-a646-d81f70a42b82,Ethan T. Jordan,United States,event_location_heuristic:1/1,auto
+85451e5b-a8b0-5100-a630-b099cf5e8fd5,Etienne Gastineau,France,event_location_heuristic:2/2,auto
+f8e14004-8ac4-5d2f-ad34-3c082020dbab,Eudardo Martinez,Poland,event_location_heuristic:1/1,auto
+2806d42d-926e-5440-b6a2-186fd75bdce9,Eva Trunner,Austria,event_location_heuristic:1/1,auto
+7bbc620b-366a-5ffb-8bf3-0f9f3e9e8e0e,Evan Bozett,United States,event_location_heuristic:3/3,auto
+9457e466-a62e-5664-8fa0-6300df26cc2c,Evan David,United States,event_location_heuristic:2/2,auto
+fc288821-61f5-5fbc-b034-99062afaef86,Evgeniya Tsibulskaya,Finland,event_location_heuristic:1/1,auto
+dff6c142-ff4c-5ba6-b27f-a9ce02b6ed0e,Evgeny Shiryaev,Finland,event_location_heuristic:1/1,auto
+14683e57-ca44-573e-96cd-74f95aebd13f,Evgeny Stoyanov,Bulgaria,event_location_heuristic:1/1,auto
+1ee4de3d-2aaa-582a-8072-e1b0dcd20988,F Pelletier,United States,event_location_heuristic:1/1,auto
+0f5f1c82-fe41-5f5c-bbfb-e1385adbb27f,F. D.,Canada,event_location_heuristic:1/1,auto
+23e22360-8244-59b1-bdfe-f85835cfd495,F. Peltier,United States,event_location_heuristic:1/1,auto
+1ce6f2bb-0fbe-5d78-9c6a-662d867d4209,Fabio Grande,Spain,event_location_heuristic:1/1,auto
+97dedd59-bc89-5bb7-baa6-f97e9f9a4d95,Fancois Peltier,United States,event_location_heuristic:1/1,auto
+3dbc1217-cd0a-5d29-8171-bb64152d071e,Fil Klindblad,Australia,event_location_heuristic:1/1,auto
+bac4ab7a-dd0d-5fa9-ac24-3423efb08f1d,Filip Wjcik,Poland,event_location_heuristic:1/1,auto
+c27376a4-743e-59d6-afe4-de633ef0b323,Flipp Derr,United States,event_location_heuristic:1/1,auto
+17118f71-7e4c-5cf9-850d-92f75b5441e8,Flo Wolff,Germany,event_location_heuristic:1/1,auto
+e80278ce-191f-5b92-88bb-dfa1dee65e0d,Florian Dibbern,Germany,event_location_heuristic:1/1,auto
+8d464305-c058-5490-bd7b-2130c6f427a7,Florian Vollmer,Germany,event_location_heuristic:1/1,auto
+bc2d057c-f74b-54bd-accd-78440b84214d,Food Processor,Denmark,event_location_heuristic:1/1,auto
+bc7e1b6c-4d05-5d4b-ada3-f72494ea4e39,Fran Díaz,Venezuela,event_location_heuristic:1/1,auto
+9bc4d9e1-9a3f-500f-8832-a130db1e29df,Francine Beaudry,United States,event_location_heuristic:3/3,auto
+1b319e07-dd4f-57c5-9aed-050a150b204b,Francios Leh,United States,event_location_heuristic:1/1,auto
+4321a894-edc7-57bb-b141-bafa696093f1,Francis Guimond,Canada,event_location_heuristic:1/1,auto
+0c137a16-77ef-5016-98d5-b353034373c4,Francois De,United States,event_location_heuristic:1/1,auto
+39536eda-03ed-5996-aa21-e2d8ea0ad4d4,Frank Diaz,Venezuela,event_location_heuristic:6/6,auto
+473d221e-3abd-5d2d-9354-8492ff169555,Frank Haase,Spain,event_location_heuristic:1/1,auto
+abc77588-e1d8-5afa-8930-4ee99711e6a8,Frank Mingst,United States,event_location_heuristic:2/2,auto
+2eca5ec4-3308-5933-aff5-0a74e37f4392,Frank Sellers,United States,event_location_heuristic:1/1,auto
+7927d367-678a-5170-b5de-69e1883c7892,Franki Pelletier,United States,event_location_heuristic:2/2,auto
+f125c7b4-13cc-53ca-9651-25933500ed48,"Frankie ""the Kind"" Gutowski",United States,event_location_heuristic:1/1,auto
+34228231-fe9f-5c48-9e7c-de27181855c3,Frankie Becerril,United States,event_location_heuristic:2/2,auto
+99026947-f309-52d9-b7ae-2cf32e9c8ffc,Franklin Maduro,Venezuela,event_location_heuristic:2/2,auto
+b2f7a2ca-00b7-5b3a-8e51-698125650aa6,Franois Parayre,Canada,event_location_heuristic:1/1,auto
+06e833ec-f06f-50fb-9c56-390ca839e23f,Fred Barnum,United States,event_location_heuristic:2/2,auto
+8acf4e97-e1e8-50d7-8fd4-3a1d8ff4e731,Fred Kippley,United States,event_location_heuristic:1/1,auto
+9ad97b4a-efc0-5718-a789-ce05bb9a732e,Frenzel Eduardo Martinez,Germany,event_location_heuristic:1/1,auto
+428ca386-c745-55e5-a365-8cb9e1045a1f,"Fritsch, Ted",Finland,event_location_heuristic:2/2,auto
+8e2c6ec7-c3e7-53da-a9e0-d6f9a6e4dcd6,G Nelso,United States,event_location_heuristic:1/1,auto
+82ec8769-1247-5044-bc82-9bd11751c581,G Neumann,United States,event_location_heuristic:1/1,auto
+de6fdd5a-ac49-540b-9676-31bf04c0d913,G Routier,United States,event_location_heuristic:1/1,auto
+f606e9f1-7b88-5c16-8b94-3fcdd92d27a6,G Smith,United States,event_location_heuristic:1/1,auto
+9f262c47-9c7a-5e4e-ae99-d6b35553c0a6,G. Vorotilina,Finland,event_location_heuristic:1/1,auto
+d7aa3b67-7ea4-5f32-8b51-45131ffe9192,Gaba Gawarecka,Poland,event_location_heuristic:1/1,auto
+21edaa8e-7b7d-5880-94f9-4772be76a70e,Gadziński Marcin,Poland,event_location_heuristic:2/2,auto
+f06dc40d-e92e-5784-9269-cf25a77b450e,Gale Bigler,United States,event_location_heuristic:2/2,auto
+3948ef6b-94a8-549b-a2a1-fbfea77506a2,Garry G. Griggs,United States,event_location_heuristic:1/1,auto
+1de22070-477b-5209-8f40-561ce8784b7a,Garry Griggs,United States,event_location_heuristic:3/3,auto
+4a758559-8f8f-52fa-9242-23c0722d9ff8,Garry Williams,United States,event_location_heuristic:1/1,auto
+e8c77b10-aaa9-5725-8e2f-7568c20a8ac2,Gary Edge,United States,event_location_heuristic:1/1,auto
+133b6dd3-1463-5d89-802e-707414d4cc06,Gary Laut,United States,event_location_heuristic:2/2,auto
+0e7d1c85-0363-5357-b2d8-452cc3d3d112,Gary Linder,United States,event_location_heuristic:2/2,auto
+472663b7-a356-59f4-8743-c5ad3fae999e,Gary Preston,United States,event_location_heuristic:1/1,auto
+8959befc-fa9f-5d08-83a3-8ed026f68527,Gasper Znidarsic,Germany,event_location_heuristic:1/1,auto
+170a664e-0ba4-5428-b0b2-22f2a303a527,Gautam Joshi,United States,event_location_heuristic:1/1,auto
+29db951f-018c-5ff3-b916-c584f836a6d5,Gavin C. Jordan,United States,event_location_heuristic:1/1,auto
+49b38d45-c347-5aeb-8850-1993e8c12ee4,Gaylene Runey,United States,event_location_heuristic:2/2,auto
+24bcc2a2-57e9-5de5-ab8a-2533619db21a,Genesis Rake,Czech Republic,event_location_heuristic:1/1,auto
+82939fbe-4b40-509e-95b7-2064ce4b5cfc,Geof Hossenfeffer,United States,event_location_heuristic:2/2,auto
+114354f6-f7c1-57ea-ac51-920df2b188fc,George Clarke,United States,event_location_heuristic:1/1,auto
+3f1b01a1-ce54-5837-8b61-021181459fc7,Georgi Petkov,Bulgaria,event_location_heuristic:1/1,auto
+76aaa00d-2d19-5cdc-959f-b0a27c8ffd41,Georgi Staev,Bulgaria,event_location_heuristic:1/1,auto
+e19b83c1-2185-53eb-bc64-2d8800618f3e,Georgo Csallo,Czech Republic,event_location_heuristic:1/1,auto
+d4002cc4-45c2-58fd-b2f1-255491cf1c95,Gerg Lima,France,event_location_heuristic:2/2,auto
+e224c612-2853-5de3-854c-59d7773cf055,Geri Waldispühl,Switzerland,event_location_heuristic:2/2,auto
+a9a520a4-a8ce-50e1-b181-28ab1e54a6dc,Gillaume Garnier,France,event_location_heuristic:1/1,auto
+92c4d817-2028-59ed-a0e7-2a37a0c55a55,Gilles Bourgeois,France,event_location_heuristic:5/5,auto
+d7763d9b-a6cf-5f70-860b-2738801bbf27,Gina Meyer,United States,event_location_heuristic:1/1,auto
+3d6e2651-d51e-538d-b708-0db33f7f6338,Giovani Fiore,Venezuela,event_location_heuristic:1/1,auto
+c4992ed1-4e25-518a-afb1-59e6c55e6acf,Glenn Towne,United States,event_location_heuristic:1/1,auto
+bcc9d508-2ab1-5967-b462-c80b30bc1173,Gonzalez Alan,Venezuela,event_location_heuristic:1/1,auto
+e54e0173-e7b7-5e62-b0dc-3e10d93a9143,Gonzalez Elias,Venezuela,event_location_heuristic:1/1,auto
+bfd770ca-dad6-5700-b9cb-e1756166296f,Goran Vrasnesic,Czech Republic,event_location_heuristic:1/1,auto
+c3acde49-0d72-532e-9e7f-4ad474be8ed6,Gordon Gilges,United States,event_location_heuristic:2/2,auto
+5a51c9b2-8b04-553c-93f2-670c54b64320,Gosia Dbska,Poland,event_location_heuristic:1/1,auto
+4a975f58-6d32-5096-b182-5facce21c1a8,Gozia Nycz,Czech Republic,event_location_heuristic:1/1,auto
+128a0fc2-589a-56c2-ad99-05707a2bdce7,Grace Carnebalino,United States,event_location_heuristic:1/1,auto
+5e9196f6-80e9-58e5-b152-822cd1fc1021,Grace Faucette,United States,event_location_heuristic:1/1,auto
+88ab1a63-3898-599b-bf47-a9dc09b927b4,Graham Joonsar,United States,event_location_heuristic:1/1,auto
+efd1cd4a-aa91-5a16-88bc-eb55d2f32783,Grecia Martínez,Venezuela,event_location_heuristic:1/1,auto
+d9b099c9-2372-590d-83ac-1b63dd16bd86,Greg Armstrong,United States,event_location_heuristic:1/1,auto
+26ae8ced-dd01-5b1c-b1c3-461e51e1f289,Greg Baca,United States,event_location_heuristic:1/1,auto
+bf5ce187-5cac-52fc-be9b-ba22c5c6fc01,Greg Cortopassi,United States,event_location_heuristic:12/12,auto
+809cd398-6823-5f08-88e4-bd2c3bb4023a,Greg Grande,United States,event_location_heuristic:1/1,auto
+caa90a96-c0ee-5d20-8418-fe425520f423,Greg James,United States,event_location_heuristic:2/2,auto
+08f5ff4d-20e1-5f67-81b2-c6dc2b83eafe,Greg Nelson $15,United States,event_location_heuristic:1/1,auto
+04c88363-0e14-53f2-b6df-60fbe371e2ec,Greg Stoltz,France,event_location_heuristic:1/1,auto
+7f28a753-d941-5bd5-a0d2-7c6dfca147bc,Gregg Potts,United States,event_location_heuristic:1/1,auto
+aad918ef-5851-5cac-bb36-9dd009ff114a,Gregg Theiss,United States,event_location_heuristic:1/1,auto
+05d68884-d2e0-5e29-b253-48a280f2d68a,Gregor Sipek,Czech Republic,event_location_heuristic:1/1,auto
+18b7bcca-c56d-511f-8341-571edd4c0e83,Grey Uzcategui,Venezuela,event_location_heuristic:1/1,auto
+1a91f7f4-2a7e-5090-8661-e83b2cc8b37f,Grisha Tellenbach,Czech Republic,event_location_heuristic:1/1,auto
+d43bb3d2-6bd5-53f9-be6e-9c450e738687,Gustavo Arteaga,Venezuela,event_location_heuristic:1/1,auto
+56e18c2a-d4ea-5752-be54-c896312469db,Gustavo Ocanto,Venezuela,event_location_heuristic:1/1,auto
+227d306e-9259-5869-8a1e-d9d1751f0134,Gősi lurko György,Hungary,event_location_heuristic:3/3,auto
+c84bb715-190b-50fb-a49b-2aa5b38ede73,H. Hellberg,Finland,event_location_heuristic:1/1,auto
+f9a1fe8b-1c4f-5753-8400-abfcb3af6b9f,H. Schlichting,Finland,event_location_heuristic:1/1,auto
+fbecb699-62d3-5183-b14b-3902d5cfd92c,H. Schlichtling,Finland,event_location_heuristic:1/1,auto
+cf24fce1-6a81-5172-a356-bc3907cf2fa4,Hacky Sack Jack Lentz,United States,event_location_heuristic:1/1,auto
+0133c223-ffdd-5560-96c6-3d1d518c965f,Hanna Widen,United States,event_location_heuristic:2/2,auto
+888210e8-a2e1-593a-8355-f8169e3e368b,Hannah Whiteman,New Zealand,event_location_heuristic:2/2,auto
+c86e1ec0-fcf2-5279-81e5-abf4ab5ff157,Hanneé Daniel,Germany,event_location_heuristic:1/1,auto
+e1dae8d3-6efe-5f69-b26f-43bfea773928,Hanneé Tiger,Germany,event_location_heuristic:1/1,auto
+28ccdba7-d837-53e4-bd64-ebc2c8341142,Heather Cook,United States,event_location_heuristic:2/2,auto
+737c677f-3150-5e10-8fcb-51e536b47bed,Heather Van Hoesen,United States,event_location_heuristic:1/1,auto
+b6b18fd6-fb1b-51f1-b41e-4c7f0c032770,Henning Lindner,Germany,"REVIEW:current=Switzerland,events_suggest=Germany:7/10",review
+384db19e-5a55-531e-8e6f-589021f09229,Henri Nlend,France,event_location_heuristic:1/1,auto
+0c44ad0a-c5e2-58f8-a4f2-55b2a80123f2,Henrik Simon,Germany,event_location_heuristic:1/1,auto
+93ec95fa-5c8b-520e-a051-302fe7bbcc81,Herra X,Finland,event_location_heuristic:1/1,auto
+c4afd86a-085a-545d-844c-41a5622c4070,Hilary Strickland,United States,event_location_heuristic:1/1,auto
+0a73887f-3e3a-5b9c-9c5f-7786b1d6eabf,Holly Rae Taylor,United States,event_location_heuristic:1/1,auto
+004b1911-36bc-5804-af96-14c5e5cde585,Homola + Halász,Hungary,event_location_heuristic:1/1,auto
+55798ecf-056c-5b40-8df5-2d9340c4e7f6,Honza Huleja,Czech Republic,event_location_heuristic:1/1,auto
+8c1806b4-5f9c-51ab-9e26-23539abdaa69,"Hugues Veillette, Montréal",Canada,event_location_heuristic:1/1,auto
+d2354935-8ac5-56de-b3b0-83402b7cef15,I PRICE,United States,event_location_heuristic:1/1,auto
+989a3dea-c7d9-5bb3-9a0f-1dc6a95f3ecb,I. Liukko,Finland,event_location_heuristic:1/1,auto
+3d79f319-de66-5a9a-865e-0354a09fc5cd,IL 49,United States,event_location_heuristic:1/1,auto
+9589a3cc-c11f-5c66-9ad3-ea4868034396,IL 63,United States,event_location_heuristic:1/1,auto
+75b173cb-fd2a-51e9-82d6-6a5f6c2a9b9e,IL 68,United States,event_location_heuristic:1/1,auto
+58521acd-67e9-5e54-a512-4d841f0337e4,IL 79,United States,event_location_heuristic:1/1,auto
+6caa47c6-fc83-5903-8b0d-b669bf2ea1a8,IL 82,United States,event_location_heuristic:1/1,auto
+82cf2ad2-665c-549d-96f2-c6fab4671b55,Iavor Zhelev,Bulgaria,event_location_heuristic:1/1,auto
+29722bb4-08c8-5158-92fa-77c387054acc,Iguaraya Delgado,Venezuela,event_location_heuristic:1/1,auto
+962cc161-9786-5f09-9178-0684c9b75d14,Iker Durango,Spain,event_location_heuristic:1/1,auto
+62d7d742-01e6-5d0c-89f1-e9511e53c2f3,Iker Ortega,Spain,event_location_heuristic:1/1,auto
+33ff21bd-782e-59dd-a038-d63120a60dc0,Illka Malin,Czech Republic,event_location_heuristic:2/2,auto
+6421d9db-4176-5d4d-a251-a334dad9bfe1,Inigo Sanchez,Spain,event_location_heuristic:1/1,auto
+e6ade89a-d527-5d6e-bd47-057487a8b2d6,Inkinen Miko,Czech Republic,event_location_heuristic:1/1,auto
+f9b47f7b-656c-56e9-995e-9ffcbe59479d,Itzik Netanel,United States,event_location_heuristic:1/1,auto
+a08d3c72-20de-5dde-956f-a1dc746f4256,Ivan Bel,France,event_location_heuristic:2/2,auto
+ab46de9b-f2b3-5d45-b55d-651ef1a00f64,Ivan Cuende,Spain,event_location_heuristic:1/1,auto
+d082646e-0a5f-50ad-bece-fac15b057274,Ivan Gonzalez,Venezuela,event_location_heuristic:1/1,auto
+6cb3f5d5-25ed-56b6-a07b-5793657ea714,Ivan Rashev,Bulgaria,event_location_heuristic:1/1,auto
+56bf4c8b-a291-5587-91e2-b743e0b87573,Ivaylo Yordanov,Bulgaria,event_location_heuristic:1/1,auto
+fb29f616-017d-54f7-8cbd-913489501c1c,Iwona Sitkowska,Poland,event_location_heuristic:1/1,auto
+54868317-41f0-5234-b98f-a8a6e5aef1f0,Ińigo Galdakao,Spain,event_location_heuristic:1/1,auto
+106b9471-6188-56ce-a250-054cd65b076c,J Aurnou,United States,event_location_heuristic:1/1,auto
+91c51f19-b071-52a5-81a7-406ded7d629e,J Beham,United States,event_location_heuristic:1/1,auto
+785f1288-5566-5b03-a120-df9f74227772,J Belanger,United States,event_location_heuristic:1/1,auto
+c554a950-fd5a-56b3-9301-eeea28b47acb,J Bowling,United States,event_location_heuristic:1/1,auto
+1e7991da-8918-5c5b-a59e-6445c37239ab,J DONALLY,United States,event_location_heuristic:1/1,auto
+fd7dbe48-f977-5154-be8b-f66572d13deb,J DeClerq,United States,event_location_heuristic:1/1,auto
+915e1229-e77e-5d49-8021-a80c55625f6d,J Hankins,United States,event_location_heuristic:3/3,auto
+4533172b-d933-5470-aa8b-51231f8b899f,J Langis,United States,event_location_heuristic:4/4,auto
+6947f1f3-a9e2-5b04-8b60-421393138ec6,J Leyes,United States,event_location_heuristic:1/1,auto
+39019c6f-fe6f-5e1e-908b-b41188b42049,J Rix,United States,event_location_heuristic:2/2,auto
+8bf34ecb-803b-5e9c-a7a0-ac8ed0745b29,J Solonoski,United States,event_location_heuristic:3/3,auto
+37846fec-cb32-5a52-9ab8-c3d1e2c9306b,J-F Bélanger,Canada,event_location_heuristic:1/1,auto
+f502a76c-a514-5eba-9348-19c12043991c,J-M Rytilahti,Finland,event_location_heuristic:1/1,auto
+a05ce9c6-df63-50f5-9db6-256c46b5721e,J. Bhm,Finland,event_location_heuristic:1/1,auto
+b38db79f-a81e-517a-91c1-c96f06c465d7,J. Felix,United States,event_location_heuristic:1/1,auto
+04a9e036-ee29-5be5-91df-00bc6dffad3d,J. Harris,Canada,event_location_heuristic:1/1,auto
+804f4afc-04af-5d9c-8b13-9a831b841f64,J. Mirken,Canada,event_location_heuristic:1/1,auto
+9f624e35-8259-5cd4-b0fb-18063fcfa697,J. Patrick Kelly,United States,event_location_heuristic:1/1,auto
+142ca9b3-a93b-5fb2-ad83-51a64e8b72d6,J. Varvaro,United States,event_location_heuristic:1/1,auto
+a06affb1-7f59-5e16-8e43-7ded2bb5479f,J. Wendt,United States,event_location_heuristic:2/2,auto
+92541f01-acde-5860-ba3b-fbd7e4c3b178,J.-F. Bélanger,Canada,event_location_heuristic:1/1,auto
+5dbed62b-6dda-5f85-8f46-cc51b7dba40e,JD Thompson,United States,event_location_heuristic:1/1,auto
+1869d5a4-7acd-5476-b98b-51639f451cee,JF Bélanger,Canada,event_location_heuristic:2/2,auto
+aa5c0f07-40ed-539a-b1df-f5c1e6f2a621,JP Rochefort,Canada,event_location_heuristic:1/1,auto
+f386ac64-b872-5deb-98b8-d29ea168a3de,Jack Jer,United States,event_location_heuristic:2/2,auto
+9efbe8c9-76f6-5396-ba1a-baf5a19fb743,Jacob Busby,United States,event_location_heuristic:1/1,auto
+7d90c02c-fac4-5f9e-9e38-fbc9f4129593,Jacob Hankamer,United States,event_location_heuristic:1/1,auto
+2ba72900-1111-51c1-bdd0-c84c032e1010,Jacob Kunde,Germany,event_location_heuristic:1/1,auto
+0d3e1e6c-9b75-575e-94c9-8591693e5dcf,Jai Gabe,United States,event_location_heuristic:1/1,auto
+3a02c5ce-fec4-582e-95b9-44364be9fcf9,Jake Jo Dodd,United States,event_location_heuristic:1/1,auto
+9c4c2880-e6d5-5cd8-9c7b-2d4965119839,Jake Kellams,United States,event_location_heuristic:3/3,auto
+5a67809b-73b6-5184-855a-955320ad2b59,Jake Stare,Germany,event_location_heuristic:1/1,auto
+87553164-56ca-5133-8196-d67769952d51,Jakob Brüllmann,Switzerland,event_location_heuristic:1/1,auto
+42e15ea8-543f-5cbd-bd7a-966fbf69ba5a,Jakub Svoboda,Czech Republic,event_location_heuristic:1/1,auto
+bbbc14f6-4a30-509b-a6be-ca3294b090cb,James Deans,United States,event_location_heuristic:1/1,auto
+2440fa12-9910-538b-9de5-6394b8779af8,James Gilbert,United States,event_location_heuristic:1/1,auto
+5ec11989-7c04-5854-bd7a-727047e73f7f,"James Gilbert, Austin",United States,event_location_heuristic:1/1,auto
+785604f0-5b68-5c19-b765-e260c20ac618,James L. Widman,United States,event_location_heuristic:3/3,auto
+381f13eb-3018-570f-b4f0-ded617f2cf1d,James Stallcup,United States,event_location_heuristic:1/1,auto
+ef9ebdb9-7d34-5d2b-a31a-300da8b3bbd7,Jamie Elliott,Canada,event_location_heuristic:1/1,auto
+c4ff6c08-6811-5f9b-9bfd-80372e4a4df1,Jan Dabi Romero,Spain,event_location_heuristic:1/1,auto
+60ef8b91-774a-52dd-86bb-4413585a45fc,Jan Meier,Switzerland,event_location_heuristic:1/1,auto
+da91c887-8d3d-5cd6-b1b1-c72aa313942f,Jan-Olof Karlsson,Europe,event_location_heuristic:2/2,auto
+582ec65f-1587-5142-907a-4cbb0f53d940,Jani Liurko,Germany,event_location_heuristic:1/1,auto
+0b28cadf-05a2-5caf-b18f-3ad3899f23a5,Janice Earl,United States,event_location_heuristic:4/4,auto
+83fd96e8-9ee5-5ca1-a821-f691a81f665c,Janne Tahvola,Finland,event_location_heuristic:1/1,auto
+201230dd-7bcc-5347-9439-c8b42e9c4ca8,Jason Buster,United States,event_location_heuristic:1/1,auto
+81401e11-aea3-586e-abe9-831121b0175d,Jason Nevis,Canada,event_location_heuristic:1/1,auto
+1c27b213-957c-5680-8ff1-046547496fdb,Jason Valdrow,United States,event_location_heuristic:1/1,auto
+cf2770dc-4666-536c-a712-988cf33bbc9b,Jasper Johansen,Denmark,event_location_heuristic:1/1,auto
+c284fc52-4321-51eb-bca6-fd4464131c27,Javier Vargas Chacon,Venezuela,event_location_heuristic:1/1,auto
+73b5a327-bdb5-57a7-b7f8-b05c0399faa3,Javor Jelev,Bulgaria,event_location_heuristic:1/1,auto
+967d7902-4529-5571-ba60-6c67a55a85b9,Jay Claffey,United States,event_location_heuristic:1/1,auto
+58f34b3d-ea5f-5745-8605-b396e1d9a6f6,Jay Clatworthy,United States,event_location_heuristic:1/1,auto
+4b64e224-7a2f-576c-a81a-ecc0db13e2a3,Jay Moldenhauer,United States,event_location_heuristic:1/1,auto
+dbc24aa3-50da-5e23-8d1d-e8f3fd379260,Jazz + Juz,Hungary,event_location_heuristic:1/1,auto
+8e1f2923-dd1a-5e9a-95e2-d99c720b065c,Jean Letort,France,event_location_heuristic:1/1,auto
+54d24f68-96bf-5837-bdaa-02e3d0774e76,Jean Phillipe Labbé,Canada,event_location_heuristic:1/1,auto
+320e5738-1b7e-56d0-8854-4fdde0a682e0,Jean-Franois Lemieux,Canada,event_location_heuristic:1/1,auto
+66543fae-cd0b-57a0-89e6-8c45080f8bcb,Jean-François Veillette,Canada,event_location_heuristic:1/1,auto
+9f4eb6f4-dcd9-5418-9ba5-76dd6c271f09,Jean-Gabriel Davis Jean,Spain,event_location_heuristic:1/1,auto
+b8fab5e2-d6d3-482b-b062-0f0394d9bd75,Jean-Philippe Rochefort,Canada,event_location_heuristic:5/5,auto
+6f4cab5e-5a9a-5f72-85cc-fe4570087b46,Jeff Bevan,United States,event_location_heuristic:1/1,auto
+e2d3304a-c103-50e7-97b9-2ad16a69a364,Jeff Cajka,United States,event_location_heuristic:1/1,auto
+fd168a16-97c9-5f9f-9675-f89cdea9a0f7,Jeff Haas,United States,event_location_heuristic:4/4,auto
+21d9c8a2-7491-587b-8e5d-474400d56d50,Jeff Howse,United States,event_location_heuristic:2/2,auto
+360843bb-ec5f-5b44-9721-2e68086196df,Jeff Lowe,United States,event_location_heuristic:1/1,auto
+9674be50-c39e-5a32-8a7c-7b24131fa873,Jeff Wickman,Canada,event_location_heuristic:2/2,auto
+ee770dd7-31d9-5209-9329-35edf9b93349,Jeffrey Johnson,United States,event_location_heuristic:2/2,auto
+63de151d-ae4e-5af9-8869-b3a1490b373e,Jekke Ruotsalainen,Finland,event_location_heuristic:2/2,auto
+8c932652-477b-566f-a3d4-94c37513143f,Jenna Collins,United States,event_location_heuristic:3/3,auto
+8d03383e-8e17-5065-a3ec-bae127aea67d,Jennifer Reese,United States,event_location_heuristic:2/2,auto
+014427ca-52a3-5363-8cf2-784115ce7a9d,Jenny Davidson,United States,event_location_heuristic:2/2,auto
+3f48caf5-14c9-59f1-8255-1db7ef2fd049,Jenny Davison,United States,event_location_heuristic:1/1,auto
+35cf4d5e-114c-5930-a6dd-ea000d03764e,Jeremy Bentham w,United States,event_location_heuristic:1/1,auto
+13c3d2a0-92ef-5001-b5eb-ed02e70c1635,Jeremy Guilbaud,France,event_location_heuristic:1/1,auto
+266e7fd1-2f87-5bfb-ab6d-0e40bd00f3c7,Jeremy Hendersen,United States,event_location_heuristic:1/1,auto
+107833f8-0252-59a7-8063-9c0fc070b55c,Jesse Whitworth,United States,event_location_heuristic:1/1,auto
+6ca7a5f2-3c59-59ad-a525-1479f8f32114,Jessica Milangela,Venezuela,event_location_heuristic:1/1,auto
+e660815d-226e-5339-813d-6b9f2e7f4950,Jesus Carballeira,Spain,event_location_heuristic:1/1,auto
+ae8cf07e-28d5-5537-80e7-9211e23228fa,Jesus Castro,Spain,event_location_heuristic:1/1,auto
+d739ffdc-7e69-561f-9a39-fe15bcd661e4,Jesus Jiménez,Venezuela,event_location_heuristic:1/1,auto
+212ca9c9-b8ab-503e-8514-e5b547d657d9,Jesus Manuel Rivero,Venezuela,event_location_heuristic:1/1,auto
+e9ed22c4-752e-5972-b360-0f2158243666,Jesus Rosamelano,Spain,event_location_heuristic:1/1,auto
+8009e7c1-ea53-5082-887a-67e0d993d8fe,Jhoan Cubides,Venezuela,event_location_heuristic:1/1,auto
+2af354a9-70df-5a0c-815e-1cecf30ff548,Jim Elsner,United States,event_location_heuristic:1/1,auto
+1541265d-59fd-5bd7-8a27-a8ef320ede61,Jim Haley,United States,event_location_heuristic:1/1,auto
+069371cb-847f-5c68-a3dd-7b1171999566,Jim Hankin,United States,event_location_heuristic:1/1,auto
+aa0970d0-9905-5bd0-a049-adcd7dad9709,Jim Hunsaker,United States,event_location_heuristic:2/2,auto
+e8b0d0e1-b01a-5e4d-af2e-2120517ac687,"Jim McCoppin, VA",United States,event_location_heuristic:1/1,auto
+1df424ed-8425-5452-ac6a-f7abb11bb468,Jimmy Evans,United States,event_location_heuristic:5/5,auto
+40949c35-5007-566a-aa73-41cc3d3a4421,Joan Pollack,United States,event_location_heuristic:1/1,auto
+33c56e6b-4ff8-516d-ad74-d7d3e6edd355,Jochen Bauer Aka Doctor Jay,France,event_location_heuristic:1/1,auto
+4a06d35f-7a27-5347-8c06-3157385d71f6,Jodi Chandler,United States,event_location_heuristic:4/4,auto
+2224d6ba-5be4-56a5-90e1-aaa61a15bcb0,Jodi Sebastian,United States,event_location_heuristic:2/2,auto
+2064a9fe-7880-5cf7-80a4-933eb33d6db0,Jodi Sebastien,United States,event_location_heuristic:3/3,auto
+064c2b7e-c905-5eef-a3b5-ce8aef00d49f,Joe Clark,United States,event_location_heuristic:1/1,auto
+a8ddd904-d67c-5bc1-b04a-84f386bb2be5,Joe Muscolino,United States,event_location_heuristic:1/1,auto
+e13ebf32-13f5-537d-9b6b-8d6b975ecb8d,Joel Neilson,United States,event_location_heuristic:1/1,auto
+b59c54ba-3683-5880-86b5-0536d307cd67,Johan Winchester,Venezuela,event_location_heuristic:2/2,auto
+0af64dd8-dba4-5ef8-a7bd-47b95adb5632,Johannes Hoppe,Germany,event_location_heuristic:1/1,auto
+581d14c6-ef8e-50be-8a4b-f68c57947fa5,John Cook,United States,event_location_heuristic:1/1,auto
+f8bd392f-8e8a-5fd4-8ef1-006d2c3e1e0b,John East,United States,event_location_heuristic:16/16,auto
+f800e373-e31d-5279-9c71-ea8ce7763df5,John Elsner,United States,event_location_heuristic:1/1,auto
+5d4624fd-09c1-5936-ab08-91567df09453,John Hayduk,Canada,event_location_heuristic:1/1,auto
+b6694d6d-1042-5a2a-be15-f197e7c20f91,John Lentz,United States,event_location_heuristic:1/1,auto
+93f8cccd-ea8e-57e9-9252-5799512e9b18,John Mulyk,United States,event_location_heuristic:1/1,auto
+46b23e31-9e0e-5693-862d-3455d9397587,John Nodtvedt,United States,event_location_heuristic:1/1,auto
+8f420eba-d663-5f06-b0f4-b62bf7550f80,John Stalberger,United States,event_location_heuristic:17/17,auto
+f155a6da-c627-5140-906a-916be6277292,John Suckling,United States,event_location_heuristic:1/1,auto
+a7c6f15d-5735-585e-be84-a23a8840553d,Jon Cousillas,Spain,event_location_heuristic:1/1,auto
+a6e260ae-74e5-5ef5-8b20-d7c2fbd65b83,Jon Lind,United States,event_location_heuristic:13/15,auto
+9ebd73a8-53d9-5c71-8e9f-66a39b6c666b,Jon Proańo,Spain,event_location_heuristic:1/1,auto
+c4e9ba06-3717-57a4-89e9-c437d4a692d3,Jon Shultz,United States,event_location_heuristic:2/2,auto
+b331f31d-161c-56bc-bebd-94a574717b22,Jonas Thull I,France,event_location_heuristic:1/1,auto
+90dc41bd-7fc8-568f-92d8-41d820ac2c83,Jonathan Mori,Canada,event_location_heuristic:1/1,auto
+957bb634-eb31-5dc6-838a-b0c0b1c6efa4,Jonny Buster,United States,event_location_heuristic:1/1,auto
+45b15a46-6813-5e73-a1bb-4da46805b2b5,Jono Heyes,New Zealand,event_location_heuristic:1/1,auto
+a2f6dfda-bf61-5d05-919c-4997a49adc5a,Jordan Kido Atip,France,event_location_heuristic:1/1,auto
+1def020d-d02c-5d7a-9744-3b4451c38ee6,Jordan Moir,Canada,event_location_heuristic:1/1,auto
+3f134cb2-3233-590c-8a67-92a36de55ef8,Jose Bermejo,Spain,event_location_heuristic:1/1,auto
+cc7ea8f9-457e-5001-8940-de022909f053,Jose Icarus,France,event_location_heuristic:1/1,auto
+d49ee933-78d1-537e-a866-0a2a87dc1bef,Joseba Nieto,Spain,event_location_heuristic:1/1,auto
+172b0dcf-e5f2-542c-9faf-591cec39d091,Joseba Prieto,Spain,event_location_heuristic:1/1,auto
+4c584356-7672-5dba-8b61-9621b4958ba1,Joseph Esposito,United States,event_location_heuristic:1/1,auto
+83208b47-aa71-5ed0-8e8d-438c0f32f99f,Joseph Solonoski,United States,event_location_heuristic:1/1,auto
+faf2bc88-f262-5538-99a2-f51bee51913c,Josh Casey,United States,event_location_heuristic:1/1,auto
+ca1522d3-d150-52fc-ae19-1b0b7cd2cd0a,Josh Jones,United States,event_location_heuristic:1/1,auto
+b39ec050-703f-574a-a2ab-d59749391429,Josh Vorvel,Canada,"REVIEW:current=United States,events_suggest=Canada:2/3",review
+bf895acc-2d39-53eb-b454-9175f0237a9f,Joshua Munstermann,United States,event_location_heuristic:1/1,auto
+0f1d5703-1707-50c0-b53e-310a32d256e6,Joshua Penney,United States,event_location_heuristic:1/1,auto
+bc532fc0-b0e0-5d8b-be4c-887e8bb9facb,Joso Palencár,Czech Republic,event_location_heuristic:1/1,auto
+82d8b095-2599-5f5d-96d2-f33f90bc934e,José Goncalves,Venezuela,event_location_heuristic:2/2,auto
+b139100a-0dd1-5cbe-8e0a-87be525f12f0,José Ángel,Venezuela,event_location_heuristic:1/1,auto
+2bff68df-32e6-5101-86c1-379d53588885,Jouni Niemelä,Finland,event_location_heuristic:2/2,auto
+6a2364cd-8564-528b-b3be-90f245289d34,"Joël Murray, Montréal",Canada,event_location_heuristic:1/1,auto
+73728c19-e412-5006-aa48-1d2685a77f7e,Judy Grace,United States,event_location_heuristic:2/2,auto
+a7566699-30e2-52b1-b549-bfd364f6941e,Juha Heinonen,Finland,event_location_heuristic:1/1,auto
+5b153f61-be92-514f-bfdf-d0800f17cfc4,Juha-Matti Rithilati,Czech Republic,event_location_heuristic:1/1,auto
+023c695b-ef02-51dd-89bb-0eb3ef0841c6,Juha-Matti Rytilahti,Finland,event_location_heuristic:5/6,auto
+261e3bca-ecb3-535f-8508-5e0179c1a13d,Juha-Matti Rytilathi,Czech Republic,event_location_heuristic:2/2,auto
+09f1a51b-77f4-5ded-a94d-3f3653fc09db,Juho Taavetinkangas,Finland,event_location_heuristic:1/1,auto
+2f3e67b6-3342-524f-b0f0-97d5d422c1db,Jukka Niittymaa,Finland,event_location_heuristic:1/1,auto
+4768af8a-857d-5d1d-90e9-244a6585abaf,Julia Dick,Germany,event_location_heuristic:1/1,auto
+5e30827e-45a7-52c2-9bdb-f531d6ceb6c1,Julie McClurg,United States,event_location_heuristic:3/3,auto
+a7eb7333-672d-513a-9baa-de62a9cc45c3,Julie Reed,United States,event_location_heuristic:4/4,auto
+4c0f1696-9beb-53ec-8c1b-80bb66be26d9,Julien T,Canada,event_location_heuristic:1/1,auto
+73f3543e-f172-52ba-b7b9-00895fd1ba2b,Julio Churio,Venezuela,event_location_heuristic:1/1,auto
+0b50a4c1-02e3-5abe-8569-2a4630bb101b,Junior Barron,United States,event_location_heuristic:1/1,auto
+69f2f4a6-5d2d-5561-9bbd-d523f0bc9c5a,Junya Shimada,France,event_location_heuristic:1/1,auto
+79a5f495-9c00-5ef1-adf7-973883affba5,Jussi Lathinen,Czech Republic,event_location_heuristic:1/1,auto
+5e3ca814-df95-54ef-be35-c929c904b6d4,Justin Eichenlaub I,France,event_location_heuristic:1/1,auto
+98006aca-02be-5cf3-9905-93b3898d4d30,Justin Higdon,United States,event_location_heuristic:1/1,auto
+20d3527d-fb66-5c30-9256-13854d498b55,Justin Soulard,Canada,event_location_heuristic:1/1,auto
+dc66a5cd-a64c-587c-800c-1bf682ec4a9d,Justin W,United States,event_location_heuristic:1/1,auto
+13389190-a640-523e-9521-625438816bff,Justin Witt,United States,event_location_heuristic:1/1,auto
+e6bb8a79-7f79-5d3b-a9d8-112afbb1913f,Justin Wright,United States,event_location_heuristic:1/1,auto
+277e85cb-28e5-5611-9dd4-f30c88c790f4,Jędrzej Jurek,Poland,event_location_heuristic:2/2,auto
+07f18eaf-fa26-5710-9737-73cc095c2056,K Gates,United States,event_location_heuristic:1/1,auto
+d7e84e38-2d8e-5771-97c8-afe420a40c2b,K Kelly,United States,event_location_heuristic:1/1,auto
+9699a7fc-aa57-5e18-95a2-20eae757e32b,K Schubel,United States,event_location_heuristic:1/1,auto
+cb87bd14-f5da-5d58-81f8-0df6fcc49327,K. David,United States,event_location_heuristic:1/1,auto
+10516784-3b88-5da4-a473-49fb36112543,K. Somolinos,United States,event_location_heuristic:1/1,auto
+3c6bb301-c7bb-53ae-a1fb-fc200a577169,Kahn Manahi,New Zealand,event_location_heuristic:1/1,auto
+0c681fd1-e4bf-54b3-a314-41da581ecb40,Kalia Klaban,United States,event_location_heuristic:3/3,auto
+744c578c-26b7-5f7c-8be7-d66dcb293582,Kalin Pencev,Bulgaria,event_location_heuristic:1/1,auto
+26ea3ad5-2088-5170-88aa-509d063440fe,Kaloyan Tanev,Bulgaria,event_location_heuristic:1/1,auto
+aa8e4d31-8587-5d00-8097-b7ac8dfabf0f,Karel Hudeček,Czech Republic,event_location_heuristic:1/1,auto
+48b378f2-ab4b-57d7-b32b-c93efac74301,Karen Atgopian,United States,event_location_heuristic:2/2,auto
+63327293-7bb9-5a45-a50a-e2a2167ba80e,Karen Gunther,United States,event_location_heuristic:1/1,auto
+b131be1e-6cd7-51e7-876f-032d251d0184,Karen Ingle,United States,event_location_heuristic:2/2,auto
+984e6f84-cfd4-53b4-b8b3-b2ee40e4bedb,Karen Uppinghouse,United States,event_location_heuristic:1/1,auto
+ef345264-c5fc-5335-bc14-e0cd45212bf9,Karla Reinke,United States,event_location_heuristic:2/2,auto
+81f5f5a4-86bb-5483-a005-7e245aa8a405,Katharina Luzern,Germany,event_location_heuristic:1/1,auto
+f6658c1c-2859-5d9e-803f-e1af9c060efe,Kathryn McCulloch,United States,event_location_heuristic:1/1,auto
+d3b2157c-d8b8-5f01-8338-fbe5c27ce5db,Kathy Guenther,United States,event_location_heuristic:1/1,auto
+32d0ac0f-7c07-5d72-a78a-a6db2c9dfb72,Kathy Kristensen,United States,event_location_heuristic:1/1,auto
+65110afa-b4a8-5b55-9b73-b2ef3b2716c9,Katie Storment,United States,event_location_heuristic:8/8,auto
+66827965-e208-5ab0-b3c9-51e32b9b65b5,"Kavin Thiffault, Shawinigan",Canada,event_location_heuristic:1/1,auto
+0ba458ec-2741-5b88-acda-993982a2e128,Kelly Palmer,United States,event_location_heuristic:1/1,auto
+04396235-fc73-52b1-b206-cf901d3ce9f1,"Ken ""The Hammer"" Hamric",United States,event_location_heuristic:1/1,auto
+6061368a-0a50-5697-bbbf-81f131211712,Ken Brady,United States,event_location_heuristic:1/1,auto
+c5d6f492-6a73-52c6-97dc-52111c1e9e96,Ken Eldrick,United States,event_location_heuristic:2/2,auto
+2fd5d7f8-7140-55f5-9e60-a29e8cb58f8e,Kenneth Hamric,United States,event_location_heuristic:3/3,auto
+cb4c89dd-ae90-5c6f-adc5-6579c298ae7f,Kentaro Hasegawa,Germany,"REVIEW:current=Finland,events_suggest=Germany:2/3",review
+9837d58a-0b5d-58cf-a565-dda9bde70bac,Kevin Coker,United States,event_location_heuristic:2/2,auto
+eb40c6a6-7e80-5190-b77d-47a47735bc0b,Kevin Courtney,United States,event_location_heuristic:6/6,auto
+986b8404-74ce-5a3c-b5c4-3d6091c8f5f5,Kevin Crowley: Food Processor,Canada,event_location_heuristic:1/1,auto
+650b4bd5-6142-53a8-b9ed-ee8698a52eb5,Kevin Fine,United States,event_location_heuristic:1/1,auto
+c849a66b-7661-50eb-9445-f5f20f44fda1,Kevin Gaunce,United States,event_location_heuristic:1/1,auto
+d58260f2-eeac-5dc8-915c-168f1bf2721e,Kevin McDermott,United States,event_location_heuristic:1/1,auto
+76700f78-1880-5175-b338-50e46d631fd8,Kevin McFly Brackens,United States,event_location_heuristic:1/1,auto
+02444eef-0300-51cb-ab6b-86f4859531a1,Kevin Regamey : bill,Canada,event_location_heuristic:1/1,auto
+23c026a3-73e6-512e-8477-7808332decc6,Kevin Regamy - Alpha Reactor,Canada,event_location_heuristic:1/1,auto
+88963166-34ed-5225-a608-3c31ec9ce41a,Kevin Richey,Switzerland,event_location_heuristic:1/1,auto
+4020e057-0e2f-5251-bed8-f56fd990274b,Kim Brady,United States,event_location_heuristic:1/1,auto
+b76be9ba-0d58-5747-8ab1-11f3e3e5cc8d,Kim Era,United States,event_location_heuristic:3/3,auto
+9894c9d2-378b-5de9-9532-fff3f4067cf8,Kim Salin,Finland,event_location_heuristic:2/2,auto
+e82676be-6325-5b7f-8db0-d80381bb095a,Kim Westover,United States,event_location_heuristic:1/1,auto
+1658ef95-0402-5e7d-bdcb-bb936d363b75,Kinga Gwźdź,Poland,event_location_heuristic:1/1,auto
+54f50f09-e686-5f8f-ae29-08fe185827da,Kirsten Anhuth,United States,event_location_heuristic:1/1,auto
+ab878df2-aa71-5c38-a549-e3b29c6455f4,Kiss + Gyáni,Hungary,event_location_heuristic:1/1,auto
+4c83d24f-d1aa-5f4d-950b-d1900e2ba1d5,Klaus Steinert,Germany,event_location_heuristic:1/1,auto
+08006721-8766-5d37-9dae-c91fef984657,Klemenz Lngauer,France,event_location_heuristic:2/2,auto
+e59061b6-039b-5859-8031-88cf05e44c2f,Kristian Julev,Bulgaria,event_location_heuristic:1/1,auto
+dbb92999-00a6-59c0-823f-b079a259929d,Kristian Tonev,Bulgaria,event_location_heuristic:1/1,auto
+f5a9e806-eea5-5035-9c1a-916cc8cd2000,Krzysztof Sobtka,Poland,event_location_heuristic:1/1,auto
+39eda057-f719-5382-80aa-df0fbddd3b8a,Kszysztof Sobtka,Poland,event_location_heuristic:1/1,auto
+4adba7fa-0457-5639-b284-63ef2e794979,L Sauez,United States,event_location_heuristic:1/1,auto
+cf3c5975-4847-568a-8447-67055ac1ab39,L. W.-Lavallée,Canada,event_location_heuristic:1/1,auto
+43f9fbc8-6285-5f85-889c-3b786a5ad11d,Lance Levy,United States,event_location_heuristic:1/1,auto
+96334482-f1dc-55c2-b1dd-f6fc5b72f171,Lani Rector,United States,event_location_heuristic:2/2,auto
+82ff0f3f-6bfe-5ac8-8c4e-91a76ae4eee2,Lars Aue,Germany,event_location_heuristic:1/1,auto
+21cad2ce-d0c2-51e3-976c-8dc4d6ce65f9,Lars Murkner,Germany,event_location_heuristic:1/1,auto
+2790d60e-ff64-5321-90ce-efaf98df1130,Lasse Christiansen,United States,event_location_heuristic:1/1,auto
+475fdef6-6675-5583-b081-a5d178fc5c74,Lasse Liimatta,Finland,event_location_heuristic:1/1,auto
+85c5cf72-cfca-57f1-b0be-4d698d911593,Laura Aramendia,United States,event_location_heuristic:1/1,auto
+3bf2aebf-67a0-52c7-9645-38a7342778c8,Laura Chouèri,Spain,event_location_heuristic:1/1,auto
+d2ec728e-729e-5ba9-bb41-72c88b2b7b09,Laura Cooley,United States,event_location_heuristic:2/2,auto
+e0726cfa-188a-5af7-8e43-55947b4a900e,Laura Cragh,United States,event_location_heuristic:2/2,auto
+aba47442-75b8-5d1d-bcb7-b41debc3d661,Laura Zeller,United States,event_location_heuristic:1/1,auto
+4901847d-1c88-5fda-aca5-a24c19da90d9,Lee Guenther,United States,event_location_heuristic:4/4,auto
+0e0c2aca-3ec8-5e07-b801-6fcce3534629,Lee Langlois,United States,event_location_heuristic:1/1,auto
+c85641ce-a4b4-51ea-8cd1-0d02f054331b,Legbeater -> Pdx legbeater,Finland,event_location_heuristic:1/1,auto
+5fe356a0-1194-5376-8fb0-b264ba093b3c,Legbeater -> Vortex,Finland,event_location_heuristic:1/1,auto
+7fc2bb0c-29eb-500c-a536-d45fe1b59123,Leynner Vale,Venezuela,event_location_heuristic:1/1,auto
+e9ec1101-308a-50eb-a40a-d8bfb24a9a1e,Line Duchenes,United States,event_location_heuristic:1/1,auto
+52af6be0-3bad-5865-89d3-fa23847b1823,Lisa McDaniels,United States,event_location_heuristic:1/1,auto
+bba8b8c5-0d76-5a80-8cf2-1479b77ca023,Lisa Monte,United States,event_location_heuristic:1/1,auto
+b34678c0-261f-5f91-ae3e-ab98c1e606e7,Lisa Waccolz,United States,event_location_heuristic:1/1,auto
+e368b23b-3c07-55eb-847f-a1181e820e97,Lisa Übele,Germany,event_location_heuristic:4/4,auto
+a006d38e-4f1e-52aa-a18f-21b3813e9f99,Lito Marley,Chile,event_location_heuristic:2/2,auto
+c973f0e1-bec6-5b0d-8279-3ada4b5fa359,Liza Tikhomirova,Czech Republic,event_location_heuristic:1/1,auto
+4de02695-b769-58ca-814d-a3682de86969,Loco Watevaman,Bulgaria,event_location_heuristic:3/3,auto
+73e436f3-a67a-5acd-933c-d4818be89723,Logan McDonald,United States,event_location_heuristic:1/1,auto
+f3d1585a-fb97-547d-a7b7-69a830741aa9,Lolle Vollmer,Germany,event_location_heuristic:1/1,auto
+9b58a90e-16b6-5b8d-aa46-8831ac324c23,Lori Di Monte,Canada,event_location_heuristic:1/1,auto
+7bff8113-eb01-5c75-8670-63f0b21759e6,Lori Jean Tarr,United States,event_location_heuristic:6/6,auto
+ed952575-4248-5f72-8dc7-db3335797bf7,Louis Brasher,United States,event_location_heuristic:1/1,auto
+efc4ba39-63cb-536e-8f0f-f9e856adef1c,Lucas Barclay,United States,event_location_heuristic:2/2,auto
+b213d9d4-f231-5bb0-90a0-518750595aa8,Luis Alvarez,United States,event_location_heuristic:1/1,auto
+3155e7e2-030e-562a-badf-49681e9e2dff,Luis Blanco,Venezuela,event_location_heuristic:1/1,auto
+a75e4656-41c5-5902-8911-bc1e3ca1be06,Luis Enrique,Venezuela,event_location_heuristic:1/1,auto
+90bff1ae-2cb0-56d2-80f3-4c9862e7fa8d,Luis Ortegano,Venezuela,event_location_heuristic:1/1,auto
+206eaac4-f28d-5cad-b334-c0ea07752736,Luka W.-Lavallée,Canada,event_location_heuristic:1/1,auto
+eb31fc55-dea7-5e08-8ae7-fa8eef52b2f9,Luka WeyLav-Lavallee,United States,event_location_heuristic:1/1,auto
+2415ac1f-92e7-5076-80d7-882e00e42312,Lukas Zimmermann,Germany,event_location_heuristic:1/1,auto
+6d4ac083-f7fc-5ac2-a596-a5fa0d20fe43,Luke Tarr,United States,event_location_heuristic:2/2,auto
+6bc93f1a-9366-543e-a54e-f7a824076cdc,Lukáš Blašek,Czech Republic,event_location_heuristic:1/1,auto
+faa16e00-de39-5cc1-bfb1-a9da6ba5682e,Lydia Bertrand,Canada,event_location_heuristic:1/1,auto
+91820577-fd3a-5f7b-8738-efb1592781d4,Lynette Haat,United States,event_location_heuristic:1/1,auto
+14423c86-46cb-5fe3-9d16-766ebdd2c415,Lynn Swearingen,United States,event_location_heuristic:2/2,auto
+6c0eec49-cc11-5e69-a2de-b7acd9065bfd,Lynnett Hunt,United States,event_location_heuristic:1/1,auto
+e189a521-a22a-5bde-81ff-ff37d5fdca6f,Lyric Ester,United States,event_location_heuristic:3/3,auto
+9ef2d754-9a4c-5476-a04e-fcd5c6584f80,M Adamczyk,United States,event_location_heuristic:1/1,auto
+32d69b24-4f65-597b-8510-ccef510b79ba,M Bouchard,United States,event_location_heuristic:1/1,auto
+09f68b88-5d60-5195-908d-a9fd14dd1ff5,M Cossette,United States,event_location_heuristic:1/1,auto
+90942b91-1809-57a8-9979-f40cdcbdc99b,M Demuy,United States,event_location_heuristic:1/1,auto
+e4406103-8ce8-5512-86c7-e3ced3a1aa22,M GARVIN,United States,event_location_heuristic:1/1,auto
+99dfee50-47c1-5420-ac23-2c1f3b3b1224,M Gatewood,United States,event_location_heuristic:1/1,auto
+74f9cebf-855b-5c1e-b691-7c90ca67b772,M Girard,United States,event_location_heuristic:1/1,auto
+30023755-5d08-52d2-8914-30ac482010a3,M Quinn,United States,event_location_heuristic:1/1,auto
+4973b0ac-fbb2-5cdb-b78a-d1cd26fcc214,M Quint,United States,event_location_heuristic:1/1,auto
+45e5b524-cc34-58b0-a013-8d56ddcc3e64,M Qunint,United States,event_location_heuristic:1/1,auto
+73e1ad52-b315-537f-924f-3ed70d953484,M Sauserman,United States,event_location_heuristic:1/1,auto
+61440464-2d6f-5063-b69f-297430d47cc8,M Schneider,United States,event_location_heuristic:1/1,auto
+4bfea14c-bf85-5c7f-9342-5f4cd5e7aee7,M Vilade,United States,event_location_heuristic:1/1,auto
+84168f84-4094-5a22-bfb9-b2d2d1ced81f,M. Daniels,United States,event_location_heuristic:3/3,auto
+46a703e3-f9bd-58a9-8e6c-9d015e74cc70,M. Payant,Canada,event_location_heuristic:1/1,auto
+d969c9b3-7c29-56e8-8a20-91ba95f496e9,Maciek Szymanowski,Poland,event_location_heuristic:1/1,auto
+df625522-d21f-5344-8549-4880c67cf6a4,Maggi Barry,United States,event_location_heuristic:1/1,auto
+2430dadf-ab47-5f40-a4b3-d2f5cba9a8be,Magorzata Olędzka,Poland,event_location_heuristic:1/1,auto
+142366bf-1599-57d1-8f3e-379dfd5f7c6e,Manu Kruse,Germany,event_location_heuristic:5/5,auto
+45b99ae3-92ff-5ef9-894a-5b7b673114fd,Marc Faugoin,France,event_location_heuristic:3/3,auto
+161dc9be-03ce-5077-8785-71ddccd8efe1,Marc Gebauer,Germany,event_location_heuristic:1/1,auto
+1c15f82d-530b-5bc6-890b-66e685f4b109,Marc Weber,United States,event_location_heuristic:1/1,auto
+eb77a67a-a067-54b9-bf35-a1f91afafefb,Marc-André Sabourin,Canada,event_location_heuristic:1/1,auto
+6cfbc7b0-a1a3-56b2-b75b-17d9fba324a8,Marcel Aue,Germany,event_location_heuristic:1/1,auto
+ef07ceab-d9b3-55ea-9ae2-4612a45232a4,Marcel Denkert,Germany,event_location_heuristic:1/1,auto
+ed753583-b3f3-54d2-8d11-2f4c8d287170,"Marcin Bujko ? 243,87",Poland,event_location_heuristic:1/1,auto
+21ccd2e6-8d27-595e-8e71-6c6ad98921d3,Marcin Ka³czor,Poland,event_location_heuristic:1/1,auto
+f0a510c0-c269-5029-a62e-36108ab1f99d,Marco Trentmann,Germany,event_location_heuristic:1/1,auto
+66a75aea-2932-550b-ab1f-1250c7bfa765,Marek Šandrik,Czech Republic,event_location_heuristic:1/1,auto
+565fd17a-2f78-5890-97ff-bd0093bf719e,Maria J. Silva,Venezuela,event_location_heuristic:1/1,auto
+fdf8022e-1b76-57e0-a06b-b0fbe66e7f26,Marie Elsner,United States,event_location_heuristic:4/4,auto
+eb3d3774-6682-547e-817e-ba1755c22d7a,Marie Letort,Spain,event_location_heuristic:1/1,auto
+ea3e8335-afa4-549c-b247-bf39e96d4e6f,Marie-Ange Cossette-Trudel,United States,event_location_heuristic:3/4,auto
+95a455df-654e-54f5-87c3-1fa96f7c1212,Marijn Smeeehuizen,Germany,event_location_heuristic:1/1,auto
+8f3305ac-3567-558f-bab8-4bc8a3d42608,"Marilou Ouimet, Montréal",Canada,event_location_heuristic:1/1,auto
+501e621b-f61e-561d-bfad-0499c2831637,Marilou Roy,Canada,event_location_heuristic:2/2,auto
+5cdd14b9-4069-5c67-a317-18f46235a0ca,Marion Rousseau,Canada,event_location_heuristic:1/1,auto
+a4149ef3-1102-5f23-82ad-d5013cb083c4,Mark Cicchetti,United States,event_location_heuristic:4/4,auto
+5a12d580-866d-5e5f-92d8-0a5cd408dcf9,Mark Hunsbuger,United States,event_location_heuristic:1/1,auto
+bd81acec-a1a1-530f-83a1-d707f4679c40,Mark Pollish,United States,event_location_heuristic:1/1,auto
+227572fb-db70-57fd-92da-e930ab47ab81,Mark Voightman,United States,event_location_heuristic:1/1,auto
+a26fb161-f274-5a04-b33b-e9611684baf5,Mark Voightmann,United States,event_location_heuristic:2/2,auto
+0c64ae88-eb60-5eee-a648-70c6457ff654,Mark Wendell,United States,event_location_heuristic:1/1,auto
+59f8e90b-0c10-5b98-92bb-ed74b8e4543c,Mark Willhite,United States,event_location_heuristic:1/1,auto
+e422cc37-aa78-5b26-ba0b-0d939d4756d6,Marko Valant,Germany,event_location_heuristic:1/1,auto
+610e8482-84d0-58c6-b37c-aa5b01e93d20,Markus Aue,Germany,event_location_heuristic:1/1,auto
+116038e9-531e-5127-ba1f-64b78e4d077c,Markus Kaspzac,Germany,event_location_heuristic:1/1,auto
+bfd82ad1-62d0-5632-94aa-8a5f171cb82a,Markus Thierfelde,Germany,event_location_heuristic:1/1,auto
+f354fac0-927b-5bbd-898c-83c3abc522e0,Marta Cano,United States,event_location_heuristic:1/1,auto
+9d3ab7c8-1c5f-5e69-8633-be8bfe893329,Martin $100,United States,event_location_heuristic:1/1,auto
+7d7d6623-4c34-54ef-933f-50edf155b492,Martin Côté Martin Graton,Canada,event_location_heuristic:1/1,auto
+6a39a410-cf17-5852-9251-7cd57d434790,Martin Dimov,Bulgaria,event_location_heuristic:1/1,auto
+4926d731-cc55-5cce-af24-87c88584e9d2,Martin Ernst,Germany,event_location_heuristic:1/1,auto
+5d821b80-4cf1-580b-af38-c8bd73fb06ad,Martin Sldek,Finland,event_location_heuristic:1/1,auto
+08b6e99d-43b9-557a-96c9-6a8b55891110,Marty Diller,United States,event_location_heuristic:1/1,auto
+49b7c234-73c5-59ba-b04f-f642cdd9220f,Mary Nessman,Canada,event_location_heuristic:1/1,auto
+5ed98363-47dd-5096-ad2a-41bcd0a55894,Marylyn Demuy,Canada,event_location_heuristic:1/1,auto
+b5a2a885-5b46-5777-87ef-1fe163db9342,Matador>Blurry Whirl>Superfly,Czech Republic,event_location_heuristic:1/1,auto
+4f1ad079-d875-5f6c-a10c-85f9b0e50fc7,Mathias Feulner,Germany,event_location_heuristic:2/2,auto
+598abe32-c325-54bd-a85c-ea30e36fe17c,Mathias Reynaud,France,event_location_heuristic:1/1,auto
+ea8ed880-0862-51f3-974b-408bd6bd740f,Mathieu Dubost,France,event_location_heuristic:1/1,auto
+94135133-be71-5196-ba11-78d5189c5ae8,Matt Churney,United States,event_location_heuristic:3/3,auto
+f3bf9637-e7d2-5772-b003-f26866b4dc37,Matt Clark,United States,event_location_heuristic:1/1,auto
+7679b216-dbc8-54dd-8947-ababcb90fe67,Matt Martens,Canada,event_location_heuristic:1/1,auto
+10536f4f-112d-5141-ba21-c2a624b1efba,Matt Rizzetta,United States,event_location_heuristic:2/2,auto
+bde038f5-d132-5587-95a7-58a764077741,Matt Saucerman,Canada,event_location_heuristic:1/1,auto
+d6a823ed-9f2d-5a3b-8d20-7e6af3c3f646,Matti Hämäläinen,Finland,event_location_heuristic:1/1,auto
+cee1fc10-85bc-5380-8809-a7ec1e7375f4,Matze Schmidt,Germany,event_location_heuristic:1/1,auto
+366b31bd-49d1-51cb-ba8a-ae6b4491150e,Mauro Wildhaber,France,event_location_heuristic:1/1,auto
+0dc6498b-a8ed-5410-9ca6-930bf9aa9ad9,Max Gerhard,Germany,event_location_heuristic:1/1,auto
+74657471-d6be-5bc1-84f3-30590a13cd0a,Max Rose,Germany,event_location_heuristic:2/2,auto
+95fb4def-7ff2-5c9c-8de5-1b97d0e13756,Max Smith,United States,event_location_heuristic:5/5,auto
+d9c497c5-a98d-5e4e-b432-384ec29bed27,Max Von Westernhagen,Germany,event_location_heuristic:1/1,auto
+359eabfe-cc4a-585b-8f24-4357b9704358,Maxi Calabro,Switzerland,event_location_heuristic:1/1,auto
+678fc396-dc3d-513f-b914-2a1d381b3dad,Maxiej Pietrzycki,Poland,event_location_heuristic:1/1,auto
+4d774aa7-60ca-551e-beb8-ca1bb514b1b2,Maya Aronshtam,Finland,event_location_heuristic:1/1,auto
+6114f203-861b-55c2-9582-e3b17b3c4739,Medina Carlos,Venezuela,event_location_heuristic:1/1,auto
+e9e54ad8-a358-5a73-bd8f-2770752cdeab,"Melissa Schneider, Massachussets",Canada,event_location_heuristic:1/1,auto
+86be4583-45d8-5475-bd69-efd5e8884c9a,Michael Alfred,United States,event_location_heuristic:1/1,auto
+872f795f-3884-5205-bb23-1ffe715f2dfd,Michael Grueter,United States,event_location_heuristic:1/1,auto
+563f13df-c8c3-5aeb-af7d-b06ad7095e5d,Michael Lowdermilk,United States,event_location_heuristic:1/1,auto
+205f135b-7839-5156-b9fe-a77114d1493e,Michael Peterson,United States,event_location_heuristic:1/1,auto
+4032a9ca-a2fa-5cb0-b27f-6343a3c4fae7,Michael Stillhard,Switzerland,event_location_heuristic:1/1,auto
+8a35798f-b5f5-5230-91fa-55f088992e35,Michał Rg,Poland,event_location_heuristic:1/1,auto
+49e91320-a093-5911-a9ed-21ce27cf5421,Michi+mr. Germany GER,Switzerland,event_location_heuristic:1/1,auto
+db93ccb4-3986-5b10-81c8-416cfea6ac09,Michiael Lamberjohann,Germany,event_location_heuristic:1/1,auto
+4e14aeb1-eab8-5861-8692-613d91cb14c0,Mihail Petrov,Bulgaria,event_location_heuristic:1/1,auto
+98064613-6a22-5ca6-a352-d7a664844a5e,Mika Suominen,Finland,event_location_heuristic:1/1,auto
+894c7c45-6e4e-5bd9-af41-f68a39f5bcf9,Mike Best,United States,event_location_heuristic:1/1,auto
+74af7cb0-2d11-5bbb-9dd6-e007a5aaa915,Mike Bilan,United States,event_location_heuristic:1/1,auto
+d71597ff-2da8-56c8-8833-71aae00d3c98,Mike Commons,United States,event_location_heuristic:1/1,auto
+9e8a837d-1c44-59b7-b4b0-7d1b1fc81090,Mike Craig,United States,event_location_heuristic:1/1,auto
+d75b5871-83c1-5284-b09d-a5eb5d4377dd,Mike Harding,United States,event_location_heuristic:14/14,auto
+b342f25a-2b96-529b-8d7c-bfd62752b71a,Mike Huarca,United States,event_location_heuristic:2/2,auto
+1381939c-35d0-5941-ae91-ca262b6fc482,Mike Marshall,United States,event_location_heuristic:12/12,auto
+70e1582b-c009-508a-b3e1-11b184198b72,Mike Mueller,United States,event_location_heuristic:1/1,auto
+052457cb-52e0-5137-a12f-7d463dec4fa6,Mike Peterson,United States,event_location_heuristic:1/1,auto
+38df5c50-08d9-5706-90e5-464508ea0962,Mike Puderbaugh,United States,event_location_heuristic:2/2,auto
+827a0675-0977-57d1-93a3-86b02cd9035e,Mike Rex Stoler,United States,event_location_heuristic:2/2,auto
+eab43b28-18c8-554f-9a77-1cf91d2ee159,Mike Walsh,United States,event_location_heuristic:1/1,auto
+8353cc49-f669-5f4f-a4d0-81b06f434670,Mike Williams,United States,event_location_heuristic:4/4,auto
+3ee7578c-2a04-5787-903a-a371ecd27d39,Mikel Torde,Spain,event_location_heuristic:1/1,auto
+311d75c6-149d-584b-b38a-482e0f6d6bcb,Mikkel Hung,United States,event_location_heuristic:1/1,auto
+fb631aa2-7758-5012-a5b2-762d5ab554a8,Mikko Salonen,Finland,event_location_heuristic:1/1,auto
+a6c70371-734d-58d4-b222-939d1a010c29,Mildret Rumpf,Germany,event_location_heuristic:3/3,auto
+57d9d461-0323-5fc0-bf4c-273adb56a78b,Miroslava Daneva,Bulgaria,event_location_heuristic:1/1,auto
+d4a300ba-33f8-5be8-98ad-594c19b50a6e,Misty Helme,United States,event_location_heuristic:1/1,auto
+e85a6af9-3ac6-550d-8b35-045ec4886d06,Misty Helms,United States,event_location_heuristic:1/1,auto
+488b0e98-ade4-5ddc-8e76-67ec5aab3d15,Mitch Belledent,France,event_location_heuristic:1/1,auto
+935c5ecc-f88b-5662-a158-31d48818d008,Mobius >,Germany,event_location_heuristic:1/1,auto
+5c20f8f0-8ba3-5025-be3d-3c7d0c447190,Moglum Polák,Czech Republic,event_location_heuristic:2/2,auto
+67fb21bf-f551-55ca-b2dc-b3212fad2c31,Mohamed Ibeli,Germany,event_location_heuristic:2/2,auto
+2264d214-3d77-5313-980f-8d23c4f7bae6,Mohsen Padidar,Germany,event_location_heuristic:1/1,auto
+44c627c0-cf91-5573-99a3-53d42bcdae25,Moises Cespedes,Venezuela,event_location_heuristic:1/1,auto
+7d4c6ceb-ebfc-5211-a29b-60385ee0167e,Montage Rake,Czech Republic,event_location_heuristic:1/1,auto
+0e28133b-deb0-50e3-b4b2-cb3061fba1c1,Moritz Ulbrich,Germany,event_location_heuristic:1/1,auto
+1be9a2ae-7dd7-5468-9963-5386b0631c27,Morton Lundsgaard,United States,event_location_heuristic:2/2,auto
+2bd4c26f-a8ba-5306-bd8f-618a6a5f5907,N Dubreuil,United States,event_location_heuristic:1/1,auto
+64d10440-c57e-55ed-9b94-f3b5e1a06faa,N. Liukko,Finland,event_location_heuristic:1/1,auto
+7d88acae-cdb3-53c1-b90c-f0f8485e038d,Nadine Beyler,Czech Republic,event_location_heuristic:1/1,auto
+6c59bd1b-9619-54d3-8bf8-eed54164b3f3,Naiara Oritz de Pinedo,Spain,event_location_heuristic:1/1,auto
+fe1a5919-ce7b-5a2f-b253-7581a8c43713,Nakaleth Charly Franz,Germany,event_location_heuristic:1/1,auto
+607af4b9-c182-56bf-bb03-02bcd02ccd70,Nakaleth Franz,Germany,event_location_heuristic:1/1,auto
+eccb075a-3997-5288-a805-774d358f5656,Nancy Reynolds,United States,event_location_heuristic:15/15,auto
+5eaa3535-50ff-5f8f-94c1-18a4b5ea4fed,Natalia Fryś,Poland,"REVIEW:current=Bulgaria,events_suggest=Poland:4/6",review
+2074b865-2331-5c94-9f79-36e22468af38,Natalia Nikolaeva,United States,event_location_heuristic:2/2,auto
+1e82408a-8d7b-5bfa-97db-58ba8d355c57,Natalie Allen,New Zealand,event_location_heuristic:1/1,auto
+0bb23c1b-6ce7-5fc1-8726-a72d885d3456,Nate Allison,United States,event_location_heuristic:1/1,auto
+0a0437ab-52ec-5db5-ae21-f2462e49de20,Nate Wicker,United States,event_location_heuristic:1/1,auto
+9af9fa47-67ea-5376-8875-71bf24016a7a,Nathan Rhoads,Canada,"REVIEW:current=United States,events_suggest=Canada:3/5",review
+1eae2110-079e-5e9b-afa3-9f9f570eb2d0,Nell Tekam,Germany,"REVIEW:current=France,events_suggest=Germany:3/5",review
+e140e411-57f3-5e19-be5b-8c692d32afbc,Nelson Mantilla,Venezuela,event_location_heuristic:1/1,auto
+eb3025da-5788-57d0-ac5e-2c6a1db5ea70,Nemesis bedwetter pixie whirling swirl,Poland,event_location_heuristic:1/1,auto
+88b3f57f-29cf-5f33-9042-60385be2725b,New Orleans,United States,event_location_heuristic:1/1,auto
+19e2e21d-c5fe-5039-8db1-f2f5aa4bba8b,New Paltz,United States,event_location_heuristic:1/1,auto
+a895b87a-b71a-56a7-8654-163d6eec5923,Ngoc Anh Nguyen Thi,France,event_location_heuristic:1/1,auto
+7204412c-92b7-5680-8dba-1cd50ed662bc,Nic Knatterton,Germany,event_location_heuristic:1/1,auto
+a63df440-53c2-5f0c-90d8-af0aebd122af,Nick Faust,United States,event_location_heuristic:1/1,auto
+b2c8b316-645a-5db0-8cec-6259a3a411a0,Nick Ryan,United States,event_location_heuristic:1/1,auto
+241f99eb-2373-51cd-9532-aadcebb3318d,Nick Shpiece,United States,event_location_heuristic:1/1,auto
+d45ea608-7176-5c2b-8a55-e7f17b065f7e,Nick Zbinden,Germany,event_location_heuristic:1/1,auto
+85cf7d48-597b-5ae1-9565-36c8bfbf41ea,Nicolas Dietl,Czech Republic,event_location_heuristic:1/1,auto
+8058c164-8613-528d-b745-aa46a2de2a68,Nicolas Laille,France,event_location_heuristic:1/1,auto
+502a18a7-6da7-582d-835a-400d780f2e2f,Nicolas Nantes,France,event_location_heuristic:1/1,auto
+033c90a6-43b1-562f-8fe9-6dcb02cdf38f,Nicolas de Zeuuw,France,event_location_heuristic:1/1,auto
+658a5be9-2be0-5a7b-8d43-8661aa489e92,Noah Haunhorst,Germany,event_location_heuristic:1/1,auto
+3dda7a0d-efea-515d-84de-4c25862ff2ab,Noel Giffin,Canada,event_location_heuristic:1/1,auto
+dd135513-e215-5aa9-985c-91c633304cfd,Normand Bellemare,United States,event_location_heuristic:2/2,auto
+5559d819-65c6-5150-b06b-1cfdb79e06fe,Nycz Gosia,Poland,event_location_heuristic:1/1,auto
+62964897-0af3-5f86-89eb-1b4781712664,O Berthiaume-Bergé,United States,event_location_heuristic:1/1,auto
+c7b59aba-9d92-509f-b62d-a74991665596,O. B.-Bergé,Canada,event_location_heuristic:1/1,auto
+5b02851d-7234-5981-a8d3-6a301aff3e04,Of All Pools,Switzerland,event_location_heuristic:2/2,auto
+f7e3a4f0-9746-543e-ae85-0c9325d021d1,Ognian Ognianov,Bulgaria,event_location_heuristic:1/1,auto
+d0ad2839-ffe6-574b-bc87-c5b9fd6130e2,Ohio Oxford,Canada,event_location_heuristic:2/2,auto
+6b4b0ac4-c0f8-5356-953c-68f981b699ef,Ola Brzezinska,Poland,event_location_heuristic:1/1,auto
+c70c6137-6faa-5887-92f1-34a5e09d2a69,Ole Snack,Denmark,event_location_heuristic:1/1,auto
+9ac8e337-d15f-511d-8987-489b3f0b892f,Olek Hamala -Wroclaw,Poland,event_location_heuristic:1/1,auto
+8d2d25e9-a21b-5404-b8c6-479317219c9b,Olli Torkkeli,Finland,event_location_heuristic:1/1,auto
+a943e8e6-d38d-5d26-bf53-bd57cc0cbc87,Ollie Clampet,United States,event_location_heuristic:1/1,auto
+f6e603d5-52c9-5aa8-aee3-3a5120cbdb14,Olędzka Gosia,Poland,event_location_heuristic:1/1,auto
+e9640e77-ec4a-5526-addc-91ca3c438c95,Ontario Guelph,Canada,event_location_heuristic:2/2,auto
+5ee8d6a7-309d-5dec-aa80-5f051fc4fe72,Orace Jhon,Venezuela,event_location_heuristic:1/1,auto
+cccdd6a9-b1dd-5990-9b30-43bd30f26543,Oskari Forstén $$$,Finland,event_location_heuristic:1/1,auto
+5cab97e5-f041-5012-9314-dd8c781f062d,P Asswad,United States,event_location_heuristic:3/3,auto
+ecf73a31-1654-5561-b07f-5e472770987f,P Duran,United States,event_location_heuristic:1/1,auto
+96f70321-ed5f-5448-8ddc-6a324fa92982,P Irish,United States,event_location_heuristic:1/1,auto
+ab5f9064-e915-5fef-97a1-f5d2bdd8f640,P Keehan,United States,event_location_heuristic:2/2,auto
+9bd245ff-2adb-5f69-9350-4f477102a33c,P LAROSE,United States,event_location_heuristic:1/1,auto
+2dcb5bc0-9529-53a3-839f-73ecb9476077,P. Lessard prize,United States,event_location_heuristic:1/1,auto
+0801d2f5-6520-597c-9290-3ba583fc8372,P. Norrod,United States,event_location_heuristic:1/1,auto
+70b57374-0395-5f2f-bcf7-1e9caa70492b,P. Thomas Plech,Germany,event_location_heuristic:1/1,auto
+9c627020-6897-5667-821f-3c3365a35bf5,P. Thomas Russel,Germany,event_location_heuristic:1/1,auto
+e1129844-1e80-5f54-96c2-c67cb318df01,P. Tomecek,United States,event_location_heuristic:1/1,auto
+2f1aa24e-81a1-5726-acec-77e91c8cc7ee,P.T. Levern,Germany,event_location_heuristic:1/1,auto
+d4fa79d5-8082-5f41-8782-2bbcdd7e50d5,PA Coalition of Kickers,United States,event_location_heuristic:1/1,auto
+26ddc85f-3a5a-569c-b765-84e7343ec0e7,PAVEL CERVENY-PETR FUCIK,Czech Republic,event_location_heuristic:1/1,auto
+513813c9-136c-576b-8aca-2b83e63ac83e,PF Daigle,United States,event_location_heuristic:1/1,auto
+03e21d3f-fb3d-53a2-bb01-6ed18f0b3df1,PJ Diagle,United States,event_location_heuristic:1/1,auto
+8d97ed2f-19aa-5b45-84a8-6f9653b79135,PJ Lareau,United States,event_location_heuristic:1/1,auto
+26919319-4001-5980-ba59-1cf24f5ed3b9,PS Whirl,Denmark,event_location_heuristic:1/1,auto
+64702b6e-713d-541a-8f0b-a5182bff3aca,Pablo ?,Canada,event_location_heuristic:1/1,auto
+b6b83c95-c213-5851-9dac-5aeea0d97cba,Pablo Achutegui,Spain,event_location_heuristic:1/1,auto
+f1a12f5d-d7fd-5791-8464-4db895fb2d62,Palencia Sain,Venezuela,event_location_heuristic:1/1,auto
+cb0d452e-f641-56bd-a7a6-405411e44bbb,Paola Paz,Venezuela,event_location_heuristic:1/1,auto
+6174baef-8190-5239-96c6-1a444e98355d,Paradon Swirl>mullet>steping torque,Czech Republic,event_location_heuristic:1/1,auto
+37d6396b-c77e-563d-a81f-71cfb18428a5,Paradon to Paradox,United States,event_location_heuristic:1/1,auto
+496cbf39-59ec-563e-aea3-99e991dc20a7,Paradox-Double-Legover to Atom,United States,event_location_heuristic:1/1,auto
+4a8a4eaa-c3b8-52ee-bd2a-04bbb1ad0a78,Pat Bieber,United States,event_location_heuristic:1/1,auto
+fb644300-e5a4-51ca-962f-e59dad795b03,Pat Castle,United States,event_location_heuristic:2/2,auto
+8ea1c9ad-d2d1-5cd0-ba57-2e59c8a3ff96,Patrick Keehan*,United States,event_location_heuristic:1/1,auto
+83f3a5cd-9cc3-5bb1-85f2-a1020752e3f0,Patrick Schnickelsen,Germany,event_location_heuristic:1/1,auto
+d6947450-a75f-5dc9-aee6-0de53c118b83,Patrik Schrickel,Switzerland,event_location_heuristic:1/1,auto
+74fd2374-8ad0-5ca6-90d8-91e19e3df4e9,Paty ?,France,event_location_heuristic:1/1,auto
+79f1ac1b-ff6f-525a-996e-38303cbf2175,Paul Blair,United States,event_location_heuristic:2/2,auto
+163a9965-96de-5838-a862-a6fd568343df,Paul Dieter,United States,event_location_heuristic:2/2,auto
+a701fbdb-fd7f-50c5-8d6b-e5f8087832c1,Paul Garnaat,United States,event_location_heuristic:2/2,auto
+d19bba03-8bbd-52e4-a25b-0c6cc8786fa2,Paul Kronjäger,Austria,event_location_heuristic:1/1,auto
+7d01ba14-c07f-518e-b4f4-73429024e60b,Paul Stromberg,United States,event_location_heuristic:1/1,auto
+887cf0e3-8802-51a7-b05e-1cb44b7a99a8,Paula Brzezińska,Poland,event_location_heuristic:1/1,auto
+3726d460-b45f-529c-8d8f-b27f1485a122,Paula Elsner,United States,event_location_heuristic:4/4,auto
+1d7218f2-e0f8-52c1-b17b-b9b0d6ed50c3,Paula Vollmer,Germany,event_location_heuristic:1/1,auto
+d192973a-66ec-53d8-9722-75b6509d5ac9,Pauline Bechtel,United States,"REVIEW:current=Canada,events_suggest=United States:5/8",review
+1ce6f15d-6be5-5f34-8ddd-ced4143821bd,Pauline Beichert,United States,event_location_heuristic:1/1,auto
+6dce704f-38f5-592d-b4a5-634edbdac220,Paulo Carvahal,Chile,event_location_heuristic:1/1,auto
+9d75ec58-2612-5df1-954a-e94dbf2fe274,Pawe Fr czek,Poland,event_location_heuristic:1/1,auto
+d922b4ab-f92f-5e0f-aaa6-b1c8700e2d25,Pawe³ Ro¿ek,Poland,event_location_heuristic:1/1,auto
+7ca2c7b0-e3a2-5b9f-a7c7-e683fbaa8e0c,Pelletier- Gilles Demers,Canada,event_location_heuristic:1/1,auto
+3da8df16-6a2a-5b1b-91db-63bad5d5f474,Pennsylvania Langhorne,Canada,event_location_heuristic:1/1,auto
+0f16d849-0c3d-5950-b90e-81e1660ab542,Peter Bevitori,United States,event_location_heuristic:1/1,auto
+7a64214f-be7f-5755-b3a3-ab760553bc7b,Peter Chandler,United States,event_location_heuristic:4/4,auto
+e4fd5a14-d88a-5030-9bcf-68eb8e250339,Peter Irish $350,United States,event_location_heuristic:1/1,auto
+087d0517-57be-55b1-a44c-cc54cef176b7,Petr Brocka,Germany,event_location_heuristic:1/1,auto
+f803457c-745e-5eba-b615-f710b7ff685a,Petur Krustev,Bulgaria,event_location_heuristic:1/1,auto
+dab6b1fc-0f5c-5d40-88a9-fdb99cc76497,Phasing Rev,Denmark,event_location_heuristic:1/1,auto
+be45ae36-fd42-5677-8f12-850015d7bf53,Phil Donegan,United States,event_location_heuristic:1/1,auto
+71acaaa9-0a92-5ad4-9f49-69354fdce72e,Phil Larose,Canada,event_location_heuristic:1/1,auto
+78ef8d0e-e2a8-5745-82f2-df7d4de578ea,Phil Less,Canada,event_location_heuristic:1/1,auto
+6c952d6e-bf0d-5658-9bb3-9411e17eca44,Phil Nierstheimer,France,event_location_heuristic:1/1,auto
+dfa427fa-4856-52a1-b3b8-12f55a372df7,Phil Summers,United States,event_location_heuristic:2/2,auto
+eb0192e0-11ed-54e8-804a-0b751b5975e3,Philip Nierstheimer,Germany,event_location_heuristic:1/1,auto
+50cbe690-5881-512c-8f73-c25839dc675b,Philip Schäfer,Germany,event_location_heuristic:3/3,auto
+396bb2a5-5d59-577c-9fad-6208eedef745,Phillip Francis,United States,event_location_heuristic:1/1,auto
+b5c3f42f-fc12-52fb-ad4f-530ab659c873,"Pierre-Pascal Gauthier, Montréal",Canada,event_location_heuristic:1/1,auto
+83e4f6e2-018c-5030-a824-5b97bdb672b6,Piotr Bałtrukieiwcz,Poland,event_location_heuristic:1/1,auto
+300b982b-6082-5f36-994b-5c339bcf4f8b,Piotr Kuriata,Poland,event_location_heuristic:1/1,auto
+f72bace0-f194-5284-b023-44f42dc38be3,Piotr Staroscic,Poland,event_location_heuristic:1/1,auto
+920ec62d-37f7-5f42-b681-490dcd83ccb1,Piotrek Abramowicz -Wroclaw,Poland,event_location_heuristic:1/1,auto
+6a1c97d8-698b-535b-987c-1e3e75f12ed6,Pixie Legover,Canada,event_location_heuristic:1/1,auto
+062e8695-46cb-5260-a516-4250d4488fbb,Pixie Same,Denmark,event_location_heuristic:1/1,auto
+58610c8a-c9c7-54b9-bd29-2142538b6968,Pixie Slapping Butterfly,Denmark,event_location_heuristic:1/1,auto
+5609483c-e5a8-550e-b6ee-7051359f68bd,Platz nur Gnitzen,Germany,event_location_heuristic:1/1,auto
+e8ee7762-403c-5c08-a4f1-69034a08287b,Priit Jõe,Estonia,event_location_heuristic:2/2,auto
+8c52b3d5-6cba-5f85-ba6d-a5115f33f12a,Priit Kruus,Estonia,event_location_heuristic:2/2,auto
+beed13f8-2a6d-580b-beff-448a8a792a0e,Prikhosko Oxana,Russia,"REVIEW:current=Denmark,events_suggest=Russia:2/3",review
+96b84e1f-af05-57a8-b277-d3d3c86bb884,Przemysaw Pietrzycki,Poland,event_location_heuristic:1/1,auto
+202cb90a-850e-5c14-9dc0-93a292f486d3,Quan Theo Phung,Canada,event_location_heuristic:1/1,auto
+276d1c8a-d38a-5d30-9bf4-4771822b6c6b,R Abramson,United States,event_location_heuristic:1/1,auto
+cc1454b0-2ea1-5a3e-bc4e-83d75e5c1f91,R Creed,United States,event_location_heuristic:1/1,auto
+bbe9ede6-743b-59be-96ce-1b8ff2cd327d,R Lavign,United States,event_location_heuristic:1/1,auto
+c7da61bc-b9a4-590f-8449-97f929ee2ea3,R McCloskey,United States,event_location_heuristic:1/1,auto
+2d0bfb41-c581-5fa1-b885-2260b3eea9c4,R Mulroney,United States,event_location_heuristic:1/1,auto
+0a3b1e80-a637-5719-991a-b0aca1c677f3,R Perkins,United States,event_location_heuristic:1/1,auto
+4666b8b8-10fd-5937-b855-be5e2ad71bcf,R. Vincent Bradley,United States,event_location_heuristic:1/1,auto
+06015232-bd25-54a0-9dcc-5a120f768844,R.J. Lareau,United States,event_location_heuristic:1/1,auto
+12c12db3-36eb-564c-9b93-1a68f547798c,Rado Čarnaj,Czech Republic,event_location_heuristic:1/1,auto
+4ced0cc7-0502-58bc-9291-19b8f4bfe2eb,Radosaw Turek,Poland,event_location_heuristic:1/1,auto
+943b5edd-940c-5f1f-bec3-4e3106b6f272,Radoslav Strasbourg,Germany,event_location_heuristic:1/1,auto
+cb02af30-7d9f-5e03-9bde-29e7bef439af,Ramirez Jorge,Venezuela,event_location_heuristic:1/1,auto
+d47d35c4-948a-5380-9c9f-98accc2ed1e4,Ramon Zambrano De La Torre,Venezuela,event_location_heuristic:1/1,auto
+bbb3cc3a-eb7f-5948-978d-1df1d985bf2a,Randy Cooper,United States,event_location_heuristic:1/1,auto
+462e9f90-037b-58ed-80b8-3ff82319c7bc,Randy Nelson,United States,event_location_heuristic:1/1,auto
+9a56b5a2-8f5b-5333-801a-ea4911d64346,Raul O'Donnal,United States,event_location_heuristic:2/2,auto
+c70afc81-af26-5242-8413-2dc2bc8d4c17,Ray Knecht,Switzerland,event_location_heuristic:1/1,auto
+d875082e-f397-5ff6-86de-b0225de53801,Raymond Brito,Venezuela,event_location_heuristic:3/3,auto
+993a1fae-d92c-5c44-8f03-f78a80063b4b,Rebecca Gourgey,United States,event_location_heuristic:2/2,auto
+cc0cbfbe-fa81-5a4c-929c-574c36f3eeac,Reid ??,United States,event_location_heuristic:1/1,auto
+1f95821a-2b0d-5849-982f-29d333a8ee44,Remi Kristensen,United States,event_location_heuristic:14/16,auto
+ff053819-8375-5389-9f97-76d88f7f3dd0,Ren Rhr ? Whirr,France,event_location_heuristic:1/1,auto
+30d9a908-b245-563b-be3a-6b6969c6b99e,Ren Ruhr,France,event_location_heuristic:1/1,auto
+2bb8b3c3-291b-547b-a24d-7094262dc3e8,Renee Johnson,United States,event_location_heuristic:1/1,auto
+bdcc4473-e7f4-5586-aca1-0ff7150b32f2,Renee Sheets,United States,event_location_heuristic:1/1,auto
+54c86d7e-f30b-5310-bd64-49601d957e2d,Renee Sheets Johnson,United States,event_location_heuristic:1/1,auto
+b2fe1e6f-71e9-5278-8351-fbfee5e18c39,Reto Leoliger,Switzerland,event_location_heuristic:1/1,auto
+3a078987-92a5-54d7-9d7d-4a8e1462ff07,Rex Stadler,United States,event_location_heuristic:1/1,auto
+cf5e5afb-71ef-5c8d-a9f0-92f8caa8b242,Rh Place Chris Burkhart,United States,event_location_heuristic:1/1,auto
+69959e2f-72ba-59f4-8fa4-bd930df74b4f,"Rich ""Chard"" Cook",United States,event_location_heuristic:2/2,auto
+f178be86-f9fa-5783-ae7a-ae054136df8e,Rich Bates,United States,event_location_heuristic:1/1,auto
+739186cd-adef-53f7-ac66-1122e54ee787,Rich Cook,United States,event_location_heuristic:2/2,auto
+ee6b2f3a-d859-54a8-bffb-8dfa62b9d629,Rich Mpelezoz,United States,event_location_heuristic:1/1,auto
+63434954-ee84-5663-a6a6-2e852a6aa8fe,Rich Rausschmeier,United States,event_location_heuristic:1/1,auto
+ad124386-df17-5977-8e22-653e35713387,Rich Venville,United States,event_location_heuristic:1/1,auto
+1519e8cf-c10c-5159-b011-428d890b297c,"Richard ""Chard"" Cook",United States,event_location_heuristic:1/1,auto
+f4f4ab98-032e-5590-9f29-515e93fb94a4,Richard Pearce,Canada,event_location_heuristic:1/1,auto
+ddfadb9e-c645-5ed2-a356-ef0f4dd2d873,Rick Benedetti,United States,event_location_heuristic:1/1,auto
+069f0cd5-e306-5fff-a003-a6f15f94931a,Rick Scaffel,United States,event_location_heuristic:1/1,auto
+61d2a963-25d2-56b4-a87b-c33222e3c217,Rick Shipley,United States,event_location_heuristic:2/2,auto
+b89ffd7d-baca-505a-817b-26ca368a432a,Ricky Hennessy,United States,event_location_heuristic:2/2,auto
+30c0cf6e-04b2-5587-8652-fcf21f9289f1,Rico Frankenberg,Germany,event_location_heuristic:1/1,auto
+f409e80d-105c-50f6-8e5a-019b1496b69e,Riku Sarja,Finland,event_location_heuristic:1/1,auto
+aa072ca1-bc85-5550-bd94-1d2ae96a22e1,Rip Walk,France,event_location_heuristic:1/1,auto
+8a7d1d7e-666f-5779-a2b6-6b63ba8ab939,Ripped Warrior to Fog,United States,event_location_heuristic:1/1,auto
+18be2801-f3c2-52ec-ab37-885532ef88b4,Ripwalk ducking osis torque,Poland,event_location_heuristic:1/1,auto
+f1a8a0e0-ef77-5b90-8904-518b0f15734c,Ripwalk pdx drifter torque,Poland,event_location_heuristic:1/1,auto
+2b77bf53-5fb8-57a3-a5c0-aa9b0b08434e,Rita Buckley,United States,event_location_heuristic:6/6,auto
+937a82c2-c527-5d82-955f-e9c91a9d5070,Ritz M'Goo,United States,event_location_heuristic:1/1,auto
+8a717881-7bc3-5469-8983-dc2d83ca8191,Rob Sorenson,United States,event_location_heuristic:1/1,auto
+48af39a7-ec96-5d6d-a086-8e12fe0fdf06,Rob Woodhull,United States,event_location_heuristic:1/1,auto
+282ea81a-5815-5a15-9842-ee2ad6e2047e,Robert Conover,United States,event_location_heuristic:2/2,auto
+2b39a2d9-e069-5a44-8333-ba58e33b13b5,Robert Mistretta,United States,event_location_heuristic:1/1,auto
+ea1f2969-41a0-5c66-a82d-66b2ef15eb95,Roberto Martinez,Venezuela,event_location_heuristic:1/1,auto
+f4ad933f-aa72-5d61-a2f7-60e26fffcb8d,Robin Icard,United States,event_location_heuristic:1/1,auto
+50976d65-b674-5423-a4fb-543936e4e95b,Robin Puechel,Czech Republic,event_location_heuristic:3/3,auto
+97ae849f-d1ca-5325-b17c-aa1c1d1da4bf,Robin P¸chel,Germany,event_location_heuristic:1/1,auto
+c4adef73-b6ff-5958-898f-741b59e30d93,Roger Stimson,United States,event_location_heuristic:2/2,auto
+3ac917ba-49ff-514c-a2ea-f61971b08e72,Romie Williams,United States,event_location_heuristic:2/2,auto
+ed4e4a24-8211-5cd8-a49c-204e343e4b60,Ron King,United States,event_location_heuristic:1/1,auto
+3c0be1ae-b4d4-5551-b058-bc7bf0c8914e,Ronald Ańez Mora,Venezuela,event_location_heuristic:2/2,auto
+07f357cd-a093-541c-873b-48160feace4a,Rooted Symposium Reverse Whirl,Canada,event_location_heuristic:1/1,auto
+f7443a1b-7a71-5085-ba8e-3aa06d6ea98d,Rosen Kirov,Bulgaria,event_location_heuristic:1/1,auto
+a1edcc94-aa75-5bc5-b305-937ffdd557ae,Rosen Pelovski,Bulgaria,event_location_heuristic:1/1,auto
+57fe320f-350a-5ab2-8d52-5a3c902f0bc2,Ross Irwin,United States,event_location_heuristic:1/1,auto
+d1df8936-9546-5a07-a939-ea479051c9b3,Roxann Benesch,United States,event_location_heuristic:1/1,auto
+1eac632e-bc41-5f3e-887b-1dcf6282f8d4,Rumen Georgiev,Bulgaria,event_location_heuristic:1/1,auto
+a5b82f3c-dc9e-530a-a41f-b6cc91ed593c,Russ Thomas,United States,event_location_heuristic:1/1,auto
+a012bafd-6d10-5ced-b604-d05c9a73cbb2,Russ Willi,United States,event_location_heuristic:2/2,auto
+120a89f2-5cf4-58c2-b65e-41ab151508df,Russ Williford,United States,event_location_heuristic:1/1,auto
+639ad508-eca6-5541-bd75-ae49c1794224,Russell Nelson,United States,event_location_heuristic:1/1,auto
+acbdf488-c97a-5719-a86c-12914252b806,Russell Willit,United States,event_location_heuristic:1/1,auto
+61b45a55-c4a3-5127-9d93-bee5d0165200,Ryan DiAngioletti,United States,event_location_heuristic:1/1,auto
+13d9cfe7-c087-5ad6-9593-7e7f6ef73a74,Ryan Tamblyn,United States,event_location_heuristic:1/1,auto
+0215b744-640c-5446-aa34-18661dc05ea0,Rémi ?,Canada,event_location_heuristic:1/1,auto
+62bce1c2-2033-51c8-825d-b43fd478ab82,Répási Csaba,Hungary,event_location_heuristic:2/2,auto
+254a9b38-b05d-5ad3-a7d4-1eb56ef539e7,Róg Michał,Poland,event_location_heuristic:1/1,auto
+14c4e020-4311-5379-a877-a28e70a856f9,S DOREN,United States,event_location_heuristic:1/1,auto
+25363100-1ac1-5bd7-9e5e-2cccbfa139fb,S Durfee,United States,event_location_heuristic:1/1,auto
+bc83226e-9947-5213-a4a6-9014419545de,S Goldberg,United States,event_location_heuristic:1/1,auto
+3bb092a6-7909-53f2-95e5-7ba03a1111c3,S Jani,United States,event_location_heuristic:1/1,auto
+6bddc183-958c-506a-b6d7-ff33acc14514,S NICOL,United States,event_location_heuristic:1/1,auto
+07477843-46c0-5e2e-93f0-548e8ce54963,S Smith,United States,event_location_heuristic:1/1,auto
+e160f59f-1cf2-57d9-a65a-3a5271dcf503,S Yani,United States,event_location_heuristic:1/1,auto
+39775ae9-a083-58d7-82f2-74f163ebbbb6,S. Cloutier,Canada,event_location_heuristic:1/1,auto
+e997d794-c827-561a-ac46-89263b5ce4fe,S. Comeau,United States,event_location_heuristic:1/1,auto
+5e14f0b6-1fde-596b-87b0-c3b5809cc4d1,S. Duchesne,Canada,event_location_heuristic:1/1,auto
+32b5a5a9-b036-5d24-bdc5-3c361004f53d,S. Johnson,United States,event_location_heuristic:1/1,auto
+d1b6a22f-db3c-5f02-92db-3c29c0511b91,S. Miller,United States,event_location_heuristic:1/1,auto
+19036be0-c1ff-5976-b3e3-df127294a148,Sailing Mirage,Denmark,event_location_heuristic:1/1,auto
+baf7e83e-842d-5289-a53d-0478dd5c37cb,Sain Palacios,Venezuela,event_location_heuristic:1/1,auto
+fc4f71ad-edf0-5d7a-8097-610b82e4f4c5,Sam Cloutier,United States,"REVIEW:current=Canada,events_suggest=United States:2/3",review
+18b95c98-9221-5e29-be20-bbb408dc435c,Sam Meyers,United States,event_location_heuristic:1/1,auto
+ecfcea17-316e-5db0-bfdd-a74b08da29a6,Sami Ruohonen,Finland,event_location_heuristic:1/1,auto
+e5b5852c-6792-5d2b-a8e6-b754be9ae2bd,Samuel Cloutier,Canada,"REVIEW:current=United States,events_suggest=Canada:12/18",review
+b8e1c931-d662-5b51-a93f-f87757facc50,"Samuel Jobin, Shawinigan",Canada,event_location_heuristic:1/1,auto
+a38904c5-3972-5325-8c21-c59f7fe45388,Sandra Kostrzewa,Poland,event_location_heuristic:2/2,auto
+1733c7a5-b516-5d8e-9261-4ff1f26a2ee6,Sara-Maude Duguay,Canada,event_location_heuristic:1/1,auto
+84897bb3-ffc8-5634-a0f2-199c54b0c457,Sarah George,United States,event_location_heuristic:3/3,auto
+cdb8aba4-eac7-513f-83a9-00aaf48865b1,Sasha Morgan,Canada,event_location_heuristic:1/1,auto
+1bfe5c1e-d634-56e4-845a-582ee0a2c941,Saulo Goncalves,Venezuela,event_location_heuristic:1/1,auto
+777d9449-6e41-5985-bb7d-cdaf8647ef9c,Scott Cleere,United States,event_location_heuristic:18/19,auto
+4cbf790d-c542-5318-9337-ee3dfd539ff1,Scott Hughes,United States,event_location_heuristic:42/46,auto
+e231fd02-eb77-5be1-949f-ab47a7f05293,Scott Woodward,United States,event_location_heuristic:1/1,auto
+e967dfce-4594-591f-903b-95b327c52496,Sean Robertson,United States,event_location_heuristic:1/1,auto
+3f73a757-dfc5-5fdf-bd80-76bf59539721,Sebastian Aue,Germany,event_location_heuristic:1/1,auto
+94445f5c-2fb8-5481-a136-e75b34963a18,Sebastian Deckert,Germany,event_location_heuristic:1/1,auto
+2655dd6b-12f9-514f-9298-7e3ee49bac42,Sebastien Stryker,United States,event_location_heuristic:1/1,auto
+e87e5404-7adb-596f-8f1d-a69249f6e391,Sebastien Vanhove,Belgium,event_location_heuristic:1/1,auto
+e2e64ec8-d0c0-5352-93a4-2975ea456f53,Sergey Kozlow,Czech Republic,event_location_heuristic:1/1,auto
+56dbd704-ec6a-5c62-b91a-0606448d337a,Sergio Gomez,France,event_location_heuristic:1/1,auto
+0b0dbf15-8800-5001-81b5-bb9a2f088118,Sergio Martin,Spain,"REVIEW:current=Denmark,events_suggest=Spain:2/3",review
+4667c817-96f6-5e6e-b3ab-46ecd390dc0e,Shannon Aubin,United States,event_location_heuristic:5/5,auto
+9b37c96d-ebd0-5b5b-9bd5-09864ced9edd,Shannon Moore,United States,event_location_heuristic:1/1,auto
+c04b0df1-3194-55ab-aa97-16adb45c25d3,Shannon Storment,United States,event_location_heuristic:1/1,auto
+14d56111-9811-5543-be08-9263c5dafabd,Shawn Fisher,United States,event_location_heuristic:1/1,auto
+8a8afac0-e76b-5737-b9e2-ae156d469878,Shibun Bundit,Bulgaria,event_location_heuristic:2/2,auto
+0a532382-ac0a-582e-903d-9a00c1499cca,Shiriaev Evgeniy,Russia,event_location_heuristic:1/1,auto
+1e1bc64f-894f-59b0-ad65-d83914077067,Simon Kolodenchuk,Canada,event_location_heuristic:1/1,auto
+9e438f1a-5ed0-5e89-a59e-6421a8a0bfa1,Simon Munoz Arango,Colombia,event_location_heuristic:1/1,auto
+815da1ba-ff0d-59dc-8df6-aeff866957b0,Simon Voß,Germany,event_location_heuristic:1/1,auto
+1b8c7a0d-2e95-5e80-8bea-9d226c9bdd00,Simon-Francois Kolodentchuk,Finland,event_location_heuristic:1/1,auto
+a7c87843-ec5d-5626-8c40-8e7ae88b1835,Simon-François Kolodenchuk,Canada,event_location_heuristic:2/2,auto
+33ea8646-f93d-5fe0-bdfa-8832b6ebf9cb,Siméon Fontaine,Canada,event_location_heuristic:2/2,auto
+cefb0da5-c30a-5ecd-93e7-1d46b77acb04,Simón Blanco,Venezuela,event_location_heuristic:1/1,auto
+439c6a58-6d99-58fb-94ea-de9857583794,Skocki Aleksander,Poland,event_location_heuristic:1/1,auto
+9fa63dc2-6ac6-59fb-a6cc-fcb4cdb49281,Sladzana Dzukanovic,Slovenia,event_location_heuristic:1/1,auto
+483ccc40-b18d-5666-a688-4a107e970130,Smear with two footbags,Denmark,event_location_heuristic:1/1,auto
+df8998a4-ed48-5f8a-a6a6-025315d7184e,Sonny Fahimi,United States,event_location_heuristic:1/1,auto
+b3a942b7-bb64-57f5-ae30-4fe760602085,Sophie Berenika Broch,United States,event_location_heuristic:2/2,auto
+cf4d9111-827f-5db8-8ff0-a1b7ee7029ce,Soren Ravnkilde,United States,event_location_heuristic:1/1,auto
+be24bd46-acc8-51c7-9e03-cd1505156764,Sound Footwork,United States,event_location_heuristic:1/1,auto
+45c7be8f-bd67-533a-b63a-980978c3bb65,"Stefan ""Stuff Nold",Germany,event_location_heuristic:1/1,auto
+422b7f19-04c1-5ca7-8368-7bf1ede84764,Stefan Deffner,Germany,event_location_heuristic:1/1,auto
+749fbc86-889e-5571-8224-b76e4b04f203,Stefan F,Germany,event_location_heuristic:1/1,auto
+96ac234b-5dba-5754-87dd-08a661a898fc,Stefan Ivanov,Bulgaria,event_location_heuristic:1/1,auto
+c8282e00-ec53-5257-8f7b-e45fcbe86931,Stefan Rusenov,Bulgaria,event_location_heuristic:2/2,auto
+faec45b4-3fc8-599f-b960-65d21efc8d04,Steffen Jack,Germany,event_location_heuristic:1/1,auto
+fcd6a5db-bc39-561d-b1c8-c3d885b12b56,Steffen Seemann,Germany,event_location_heuristic:1/1,auto
+f86e6eee-04ac-5ff8-89c2-881ad5c34161,Stephan Rautenber,Germany,event_location_heuristic:1/1,auto
+293fc954-5979-566e-b97d-79524fc8f642,Stephanie Moody,United States,event_location_heuristic:1/1,auto
+9f0a3940-6eaa-5614-9ece-c093d26ae567,Steve Baker,United States,event_location_heuristic:1/1,auto
+c07337b4-2de4-5fdb-ad38-b8253df4e42c,Steve Brown,United States,event_location_heuristic:1/1,auto
+9eb5c503-7c1c-58b5-a1c4-6e21d3d308a7,Steve Campbell,United States,event_location_heuristic:1/1,auto
+93be25ad-068c-5451-b315-1fdfa01c56bf,Steve Fennell,United States,event_location_heuristic:1/1,auto
+37c37125-1003-545f-aabe-230d05167de7,Steve Goldberg 11-0 Over Ianek Regimbauld,United States,event_location_heuristic:1/1,auto
+14941d8e-1763-5f1e-9daf-dc3c7fa97c96,Steve Granzberg,United States,event_location_heuristic:2/2,auto
+d3941833-f276-5b0c-b7b2-c92fffacd3c1,Steven Campbell,United States,event_location_heuristic:1/1,auto
+0cf6c5f6-e7d6-5aed-b187-bdaec78b6e78,Steven L. Goldberg,United States,event_location_heuristic:1/1,auto
+96272c4e-84c3-52af-9a39-4e443d7278e7,Stoyan Conev,Bulgaria,event_location_heuristic:1/1,auto
+9911cbfc-a91c-5fb5-a432-9cb3e57913e4,Stuart Macfersan,New Zealand,event_location_heuristic:1/1,auto
+172da5dd-ca4a-554e-8981-99993e295dd7,Stuart Roll,United States,event_location_heuristic:2/2,auto
+c85f1631-d0f7-5e18-8924-311a124f2a45,Stuff Himself,Germany,event_location_heuristic:1/1,auto
+42ac71dd-3b87-523a-82af-09196aad8042,Stuff Nold,Germany,event_location_heuristic:1/1,auto
+3acafbdc-a083-5799-801e-9e5d0ad0c197,Stéphane Roy,Canada,event_location_heuristic:1/1,auto
+e3f410cd-f79e-56c9-98f3-8feaa526ed89,Suttipong Mungkala,Switzerland,event_location_heuristic:1/1,auto
+edfaeacf-7a0a-5925-addc-411f1d419c7c,Suz Beauchemin,United States,event_location_heuristic:1/1,auto
+3c09d4cc-2da9-5e1f-8a4c-e44ca0542f82,Suzanne Beauchemin,United States,event_location_heuristic:2/2,auto
+66a9c0c3-7dc0-5567-9d95-38d18e5654c2,Sven Whatshisname,Sweden,event_location_heuristic:1/1,auto
+ad4e4ee0-723b-5beb-b741-6216d11af1f7,Swirling Double Blender,Denmark,event_location_heuristic:1/1,auto
+544393b5-01e8-5a52-a46b-59487a761e37,Symple Foodprocessor,Canada,event_location_heuristic:1/1,auto
+0a4eeaeb-67e9-58a7-845d-bfc50722551f,Symposium Whirr,Denmark,event_location_heuristic:1/1,auto
+1f9901eb-d992-5944-acce-f6f5e20fb580,Szolosi + Horváth,Hungary,event_location_heuristic:1/1,auto
+83fe46bf-0c65-5ecf-9b63-d66a8dff0f69,Szymon Ka³wak,Poland,event_location_heuristic:1/1,auto
+70ffde4c-3d82-560e-ba63-4b163901cf16,"Sébastien Duchesne, Montréal",Canada,event_location_heuristic:1/1,auto
+6d1c6944-8a56-59c2-a9dc-2af1f9b42f6c,Sławek Brzeziński,Poland,event_location_heuristic:1/1,auto
+1b9ef2f5-e183-562d-a81d-732718101d21,T Bergamasco,United States,event_location_heuristic:2/2,auto
+81c776f7-dbfb-5bfd-aba5-331c2a5b68f4,T Caruso,United States,event_location_heuristic:2/2,auto
+616c4133-562e-5593-bed6-a8b6a86434b8,T Murren,United States,event_location_heuristic:1/1,auto
+0eacf016-2635-59ab-9e5c-aebc3b9d946c,T. Aeberli,Finland,event_location_heuristic:1/1,auto
+9a114f18-965a-5b49-b8cc-c88a22ca0193,T. Lewis,Finland,event_location_heuristic:2/2,auto
+d30b8f2a-22c7-5a37-a309-7d3b483e7957,T. Murran,United States,event_location_heuristic:1/1,auto
+f3e08a38-9938-5cb0-af45-e6b1e0955b50,T. Rehn,Canada,event_location_heuristic:1/1,auto
+9eafd635-3b2a-5a67-8522-b58282b7071c,TMS Tyrpekl,Czech Republic,event_location_heuristic:1/1,auto
+81f7a969-923b-5330-8276-7f05bd94f070,Tailleur prize,United States,event_location_heuristic:1/1,auto
+8e4f56c6-f582-5a06-bf3c-d35fff18543e,Tami Peltz,United States,event_location_heuristic:4/4,auto
+5143e3f4-5190-50a4-b7a2-57e6948cb706,Tanessa Kiso,Canada,event_location_heuristic:1/1,auto
+2546c3a3-8357-5029-995e-fb687538e526,Tanya Jeliazkova,Germany,event_location_heuristic:1/1,auto
+fb04b414-44f7-5107-bc26-b9f8a791d242,"Tapaninaho, Mikko",Finland,event_location_heuristic:1/1,auto
+b968cc7f-a28a-5766-a1c7-516fb4544baa,Tara Ohr,United States,"REVIEW:current=Canada,events_suggest=United States:2/3",review
+57ada7b0-f21c-5c8c-8de5-240c2e0131bd,Tay Moldenhauser,United States,event_location_heuristic:1/1,auto
+22831a0a-4a71-50c4-abd7-913482023b37,Team S. Thomas Sustrac ? Robinson Sustrac,France,event_location_heuristic:2/2,auto
+aeea6560-04a1-5006-aca4-754a1d7069c5,Ted Huff,United States,event_location_heuristic:2/2,auto
+81a31183-8c9b-575e-8354-925e3e62be1b,Ted Johnson,United States,event_location_heuristic:1/1,auto
+3aba9918-c94a-5f4d-bd22-45cabbada3a2,Ted The Gatekeeper Fritsch,United States,event_location_heuristic:1/1,auto
+ee20ea17-80a8-5b17-ba75-6459a4e1cbe7,"Tellenbach, Grischa",Finland,event_location_heuristic:1/1,auto
+90ecfd38-d620-59a6-9a98-1ed4f3752dc7,Thanh Trung Nguyen,France,event_location_heuristic:1/1,auto
+08ea6608-cb2b-5c30-8f09-c897de952442,The next highest-placed player,France,event_location_heuristic:1/1,auto
+9f8faea6-17bf-5d14-815b-01ec054eb966,Thomas Försterson,Germany,event_location_heuristic:1/1,auto
+c8d29f54-05a6-5383-b87a-09ce9dea4236,Thomas Jacquemart,France,event_location_heuristic:1/1,auto
+16f98d62-84fc-5ebe-99ae-3fe6196f137a,Thomas Komair,Spain,event_location_heuristic:1/1,auto
+1d0faa12-9bd2-54d1-83f6-30c484ef1e1c,Thomas Mortensen,Denmark,event_location_heuristic:1/1,auto
+09426ddb-9b12-5d96-95e7-a454b3b860a7,Thomas Whitman,United States,event_location_heuristic:1/1,auto
+d1fd81cf-a4fc-5ee9-8302-85db5a8cb9bd,Thomas tomtom Jouan,France,event_location_heuristic:1/1,auto
+671442cd-206b-557f-91db-afc5324a4422,Thomsenf und die 4. Dimension+,Germany,event_location_heuristic:1/1,auto
+25411e56-55ff-5fea-9cbc-496196f34fc0,Thorsten Sülbeck,Germany,event_location_heuristic:1/1,auto
+3ce83fc2-50a1-591d-aeb3-eef46f4285cd,"Thorsten, Ole",Germany,event_location_heuristic:1/1,auto
+7956501f-d8bb-51e6-8edb-0c68a105b284,Tim Gertsen,United States,event_location_heuristic:1/1,auto
+ec692339-872c-5faa-a562-e5767b9627bf,Tim Kelly,United States,event_location_heuristic:1/1,auto
+5e46bdbe-bbbb-5cca-aacb-d5edf9bf2540,Tim Mackey,United States,event_location_heuristic:2/2,auto
+a21d7b11-d500-5c19-8f5c-e63c5029ca9d,Tim Perram,United States,event_location_heuristic:1/1,auto
+4e9ce626-ead9-5872-b22a-4dd10b80426e,Tim Peters,United States,event_location_heuristic:2/2,auto
+de9e5c5c-8b5b-5ced-b326-5d2048c7ab3c,Tim Prater,United States,event_location_heuristic:2/2,auto
+72cc232f-cce0-554a-af55-0c033187bc69,Timothy Vozar,United States,event_location_heuristic:1/1,auto
+bdc334c8-95e8-5274-a8f2-c3742cc4c5c9,Tina Lewis 521,United States,event_location_heuristic:1/1,auto
+2dad455b-5018-5ca6-9b86-f051c86b30ea,Tobias Bartl,Germany,event_location_heuristic:1/1,auto
+7138c487-69be-558c-9c47-1e8b03d19f3c,Toe set DadaCurve,Finland,event_location_heuristic:1/1,auto
+f0156ba3-ee86-5eab-b884-99ba8719dd84,Tom Akin,United States,event_location_heuristic:3/3,auto
+11c8e043-b499-5ecc-b83c-690dece9316c,Tom Sisneros,United States,event_location_heuristic:1/1,auto
+339db443-39bd-5786-82d7-743fb4108109,Tom Tangalos,United States,event_location_heuristic:2/2,auto
+795522f0-595c-599d-844e-c8f61b4f7a00,Tomas Bogo-Budapest,Poland,event_location_heuristic:1/1,auto
+58ed9b56-aaf0-5041-9fb9-6b05cce3b0fa,Tomas Danek,Czech Republic,event_location_heuristic:1/1,auto
+6d845e63-43e3-51d3-8e86-bd131b7c6f10,Tomas Drbohlav,Czech Republic,event_location_heuristic:1/1,auto
+a7dc73db-4d55-5805-a360-98684599133b,Tomas Konicek,Czech Republic,event_location_heuristic:1/1,auto
+93ae2905-be44-5297-b346-0cb10aa85b3f,Tomasz Kleszynski,Poland,event_location_heuristic:1/1,auto
+39518944-31f9-5cba-910c-bef31d5cc32a,Tomasz Kocio³kowski,Poland,event_location_heuristic:1/1,auto
+54ad446f-88a0-5821-8bcd-f47e843ce7ef,Tomek Kociołkowski,Poland,event_location_heuristic:1/1,auto
+123d891d-989b-52aa-b8c9-06cf85139ef1,Tomi Helomaa,Finland,event_location_heuristic:1/1,auto
+ee4f7703-fea7-5a51-b35b-7d5629d175ec,Tomi Szekely,Austria,event_location_heuristic:2/2,auto
+1e47dccb-0bab-53cc-bccb-daac24614ff4,Tommi Hatakka,Finland,event_location_heuristic:1/1,auto
+5c70d95e-dacb-56f7-8a98-74d14a46b920,Tommi Terä,Finland,event_location_heuristic:2/2,auto
+6b4ff6ed-91f2-5232-9eb0-be12a9a4a0d0,Tony Nevara,United States,event_location_heuristic:1/1,auto
+f38e2f8e-cba6-5fff-8b20-90791fd0d794,Torbin Wigger,United States,"REVIEW:current=Germany,events_suggest=United States:6/8",review
+f31b6715-c9ff-5d27-9bb1-bf260b19ebe7,Travis Tips,United States,event_location_heuristic:1/1,auto
+bb786de7-6041-5abe-aa75-5fff53e3fe7b,Tre Jones,United States,event_location_heuristic:1/1,auto
+fcd5bac7-6c1b-5d1f-8ff4-b9bedebc33e4,Tricia Sullivan,United States,event_location_heuristic:11/11,auto
+3b25f805-f97e-528c-915d-3647ecaa8914,Trudy Archdale,United States,event_location_heuristic:7/7,auto
+f10cf22e-95b0-585f-9f83-29a9f7fa20ae,Tuukka Rihkola,Finland,event_location_heuristic:1/1,auto
+63c00759-60c5-5ded-ad2e-8ed627e7f7e5,Twenty-one Way Tie,United States,event_location_heuristic:1/1,auto
+8588e870-640f-5f48-b02c-6b1d580d803e,Tym Rickards,United States,event_location_heuristic:1/1,auto
+d5b0153d-a2d3-58c7-90e5-1b9196c93b8a,Uli Thiemann,Germany,event_location_heuristic:1/1,auto
+bb76edeb-e414-55a4-9f0a-be0288067645,Ulli NUH Haase,Germany,event_location_heuristic:1/1,auto
+99fa93e8-04a1-578c-9817-38d95b047c72,Ulysse Cazzato,Switzerland,event_location_heuristic:1/1,auto
+4ce6338d-5548-5c17-b1d5-fd28ac20e052,Unai Pérez,Spain,event_location_heuristic:3/3,auto
+1dd4bb6c-71f7-5863-a2bb-f18f05f9309f,Unknown Freestyler,Poland,event_location_heuristic:1/1,auto
+a00478df-94ac-55c4-9ef0-a1c213823dd9,VA or VT depending on when you ask,United States,event_location_heuristic:1/1,auto
+01cc2734-72e1-5f24-b00c-97afa97bac5e,Vahid Brown,United States,event_location_heuristic:1/1,auto
+77b895f5-0150-54ca-a50f-355a30137714,Valerie Davidson,Canada,event_location_heuristic:1/1,auto
+e95236c0-939c-5f04-9242-104efd585f91,Valtteri Ahlström,Finland,event_location_heuristic:1/1,auto
+03ed9422-5152-5132-a181-7249637c824a,Vanessa Sabala,United States,event_location_heuristic:2/2,auto
+902dfab3-89bc-5721-8623-dfc9f8ba4419,Varvel Josh,United States,event_location_heuristic:2/2,auto
+6cbe35ae-4c5a-51c0-b6cd-bd02ead4a98c,Venca Runstuk,Germany,event_location_heuristic:1/1,auto
+c5442b0d-c068-53ad-b754-ae414aaa22e3,Vesa Hytönen,Finland,event_location_heuristic:1/1,auto
+ac52a427-ee90-5b49-933d-ec73d2ddbecd,Victor Morales,Chile,event_location_heuristic:1/1,auto
+5e0d4840-1072-53c0-8be5-75b59e043903,Vince Richardson,United States,event_location_heuristic:1/1,auto
+96a81591-6ef5-5cfc-8ac3-cf07f70d8a56,Vincent Quinn,United States,event_location_heuristic:1/1,auto
+f8d846a9-8fdb-5ce4-adc6-7ec4873abe3b,Virginia Shaolin Foot Clan,United States,event_location_heuristic:1/1,auto
+6c824181-c7b9-5777-a07d-951b1a6b8912,Vladislav Donkov,Bulgaria,event_location_heuristic:1/1,auto
+92d37824-eaca-512c-8980-02e9886e32ac,Vlček Jan,Czech Republic,event_location_heuristic:1/1,auto
+4a9eec48-24df-5707-b379-12a9599106fb,Váška Kouda,Czech Republic,event_location_heuristic:1/1,auto
+0a1200a7-ea67-5e34-9e24-3bb4f86ec5e1,Walt H,United States,event_location_heuristic:1/1,auto
+c0592850-ae68-5b8b-aaf2-2741b8bdc51d,Walt Mason,United States,event_location_heuristic:7/7,auto
+9918c8a8-ea8a-5d9d-b741-3df34dfe48e7,Walt Seger,United States,event_location_heuristic:1/1,auto
+ef011846-b672-5dd4-a671-ce5197cee74b,Walter Houston,United States,event_location_heuristic:1/1,auto
+5aed8ef2-04e5-5356-8f37-99c533ad32a4,Wash Park,United States,event_location_heuristic:1/1,auto
+ac1ba46f-f0b2-522d-839c-6b342f20719f,Weber Honza,Denmark,event_location_heuristic:1/1,auto
+3194e18d-013f-58eb-b98f-45e9a6c6d0bc,Wendy Aroni,Spain,event_location_heuristic:1/1,auto
+a8eeac09-0582-51f1-8512-cdfb48e8c548,Whirling Swirl,Denmark,event_location_heuristic:1/1,auto
+0ce805c2-f594-56b1-9c81-4a0b8222a9d0,Whirlygig whirlwind spinning blender,Poland,event_location_heuristic:1/1,auto
+378333f4-1c22-548c-a549-32e8036f3338,Wiktor Dbski.,Poland,event_location_heuristic:1/1,auto
+e05dee56-e313-5664-aa3d-493f1351e0cd,Wilder Zambrano,Venezuela,event_location_heuristic:3/3,auto
+a6ba539d-a3b1-5685-ba8f-f537731bc96d,Will Squire,United States,event_location_heuristic:2/2,auto
+6e7308b5-a952-53d6-926a-72756b2efce7,Will Webb,United States,event_location_heuristic:1/1,auto
+68d28d79-f04a-5178-a710-cec22cd2c88b,Will-i Williams,United States,event_location_heuristic:1/1,auto
+d3479b84-234b-5cc4-8787-881c544d9c0d,William Laver,United States,event_location_heuristic:1/1,auto
+1f8e5b65-fd97-5ebe-a209-f0caa7102236,Windy City Cup Champions,United States,event_location_heuristic:1/1,auto
+7310ace3-1e84-5ff6-866a-c1b62c6bd777,Wlady Pachexo,Germany,event_location_heuristic:1/1,auto
+8529c8d7-5dd2-53fa-9488-166f8e7b3d55,Xavier Beauchamp-Tremblay,Canada,event_location_heuristic:2/2,auto
+057719c2-8533-5b4d-b280-383f25ce9494,Xbody Toe Spikehammer,Denmark,event_location_heuristic:1/1,auto
+2ea49cc4-8bea-54e1-b76c-e4c7c7f89644,Y ARCHAMBAUTL,United States,event_location_heuristic:1/1,auto
+4092e588-c9ed-57b5-9420-7599412a0d4f,Y Merzouk,United States,event_location_heuristic:1/1,auto
+18f4476d-1e0c-58cd-aeef-95ffb6b4a518,"Yacine Merzouk, Montréal",Canada,event_location_heuristic:1/1,auto
+e54cc36f-d768-52df-a794-86faa5c24584,Yaka Stare,Germany,event_location_heuristic:1/1,auto
+578be3ea-f996-5c2e-a570-43020f8ae9cc,Yan ?,Canada,event_location_heuristic:1/1,auto
+2b657f06-a69f-561e-8d93-a2ce54e23bb4,Yassin B,Germany,event_location_heuristic:1/1,auto
+866de9c5-0c00-5c61-8de1-03dbb56f2b01,Yavor Zehlev,Bulgaria,event_location_heuristic:1/1,auto
+dca9481a-e8e1-5de1-b3df-6be7b0e99293,Yneliz García,Spain,event_location_heuristic:1/1,auto
+537037d7-1ed7-5ce5-8715-384ae22e5ca6,Yohann Jobin,France,event_location_heuristic:1/1,auto
+9f0f85ae-78a7-5228-8a88-4db788a80897,Yves Arschamboult,Czech Republic,event_location_heuristic:1/1,auto
+650d6a64-030f-58e6-926d-2530c71c12cc,Zach Gautt,United States,event_location_heuristic:1/1,auto
+d0d67c3c-27a1-5246-96bb-1bb6ef17d5e2,Zach Longman,United States,event_location_heuristic:1/1,auto
+e43cfc6c-0884-5985-bc9a-4a089df0e20b,Zach Reeves,United States,event_location_heuristic:1/1,auto
+b7dd610f-fc50-560f-af69-9bdfd089cdb7,Zachary Hoffa,United States,event_location_heuristic:1/1,auto
+3f3db0d3-018e-5248-8464-ad841c3316fa,Zack Stranz,United States,event_location_heuristic:1/1,auto
+259109eb-63bf-5a50-938a-0ca6dd3165bb,Zebulon Jones,United States,event_location_heuristic:2/2,auto
+8e202208-14e1-5f66-a3f4-ed5589175e7c,his Watercarrier,Germany,event_location_heuristic:1/1,auto
+4ad93854-032d-516f-8236-33c6a2a09ddc,kickers from as far as Vancouver,Canada,event_location_heuristic:1/1,auto
+05746f01-8537-5a86-9059-10c59309ce14,team being determined by the head-to-head,France,event_location_heuristic:1/1,auto
+ed274fcc-cd75-514d-97d3-63b9ba7bd0bd,ted's excellent adventure,Canada,event_location_heuristic:1/1,auto
+2ee44016-454f-5ee8-9bb9-b26a74cd47f3,ukasz Domin,Poland,event_location_heuristic:1/1,auto
+b485aa29-273a-5ba3-9a7c-f4af8ccda19a,winners in open,United States,event_location_heuristic:1/1,auto
+d9e7e323-1ff4-5c52-9c01-a426b124e05e,women's events.,United States,event_location_heuristic:1/1,auto
+7a50dbde-ed1a-542c-8b0a-e180d7944998,Álvaro Alfinger,Venezuela,event_location_heuristic:2/2,auto
+173bd8d9-65d5-5c21-954a-bee7185d4ed1,Ü 30 Connection Gimbel Heimer,Germany,event_location_heuristic:1/1,auto

@@ -4108,7 +4108,7 @@ def canonicalize_records(
                 else:
                     results_raw = _override_clean + "\n" + results_raw
             else:
-                print(f"  WARN: results file override not found: {_override_path}")
+                pass  # Override file removed — fix incorporated upstream
 
         # Parse placements WITH event_type context for better division categorization
         placements, rejected_division_headers = parse_results_text(results_raw, event_id, event_type_hint)

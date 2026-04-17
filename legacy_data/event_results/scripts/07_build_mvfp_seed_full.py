@@ -29,6 +29,7 @@ Outputs (default: legacy_data/event_results/seed/mvfp_full or as provided by --o
 from __future__ import annotations
 
 import argparse
+import re
 import uuid
 from pathlib import Path
 import pandas as pd
@@ -42,6 +43,71 @@ _AUTO_PERSON_NS = uuid.UUID("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 def auto_person_id(display_name: str) -> str:
     """Return a stable UUID5 derived from a normalised display name."""
     return str(uuid.uuid5(_AUTO_PERSON_NS, display_name.strip().lower()))
+
+
+# ── Person-likeness gate (mirrors export_canonical_platform.py step 5b) ───────
+_PL_MOJIBAKE     = re.compile(r"[¶¦±¼¿¸¹º³]")
+_PL_EMBED_Q      = re.compile(r"\w\?|\?\w")
+_PL_STANDALONE_Q = re.compile(r"(?:^|\s)\?{1,5}(?:\s|$)")
+_PL_BAD_CHARS    = re.compile(r"[+=\\|/]")
+_PL_SCOREBOARD   = re.compile(r"^[A-Z]{2}\s+\d+$")
+_PL_PRIZE        = re.compile(r"\$\d+")
+_PL_MATCH_RESULT = re.compile(r"\d+-\d+\s+over\b", re.IGNORECASE)
+_PL_BIG_NUMBER   = re.compile(r"\b\d{3,}\b")
+_PL_NON_PERSON   = re.compile(
+    r"\b(Connection|Dimension|Footbag|Spikehammer|head-to-head|"
+    r"being determined|Freestyler|round robin|results|"
+    r"Champions|Foot Clan|"
+    r"whirlygig|whirlwind|spinning|blender|smear|"
+    r"clipper|torque|butterfly|mirage|legbeater|ducking|"
+    r"eggbeater|ripwalk|hopover|dropless|scorpion|matador|"
+    r"symposium|swirl|drifter|vortex|superfly|"
+    r"atomic|blurry|whirl|flux|dimwalk|nemesis|bedwetter|"
+    r"pixie|rooted|sailing|diving|ripped|warrior|"
+    r"paradon|steping|pdx|mullet|"
+    r"Big Add Posse|Aerial Zone|Annual Mountain|Be Announced|"
+    r"depending|highest.placed|two footbags)\b",
+    re.IGNORECASE,
+)
+_PL_ALL_CAPS     = re.compile(r"^[A-Z]{2,}[\s-]+[A-Z]{2,}(?:[\s-]+[A-Z]{2,})*$")
+_PL_TRAILING_JUNK = re.compile(r"[*]+$")
+_PL_ABBREVIATED  = re.compile(r"^[A-Z]\.?\s+\S")
+_PL_INCOMPLETE   = re.compile(r"^\S+\s+[A-Z]$")
+_PL_INITIALS     = re.compile(r"^[A-Z]\.\s+[A-Z]\.$")
+_PL_PRIZE_SUFFIX = re.compile(r"-prizes\b|\bprize\b", re.IGNORECASE)
+_PL_TRICK_ARROW  = re.compile(r"[>]|\s:\s")
+_PL_LONG_TOKEN   = re.compile(r"\S{21,}")
+
+
+def _is_person_like(name: str) -> bool:
+    """Return False if name is clearly not a canonical person name."""
+    s = name.strip()
+    if not s:
+        return False
+    if _PL_MOJIBAKE.search(s):     return False
+    if _PL_EMBED_Q.search(s):      return False
+    if _PL_STANDALONE_Q.search(s): return False
+    if _PL_BAD_CHARS.search(s):    return False
+    if _PL_SCOREBOARD.match(s):    return False
+    if _PL_PRIZE.search(s):        return False
+    if _PL_MATCH_RESULT.search(s): return False
+    if _PL_BIG_NUMBER.search(s):   return False
+    if _PL_NON_PERSON.search(s):   return False
+    if "," in s:                   return False
+    if _PL_ALL_CAPS.match(s):      return False
+    if _PL_TRAILING_JUNK.search(s) and len(s.split()) >= 2: return False
+    if " " not in s and "." not in s: return False
+    if _PL_ABBREVIATED.match(s):   return False
+    if _PL_INCOMPLETE.match(s):    return False
+    if _PL_INITIALS.match(s):      return False
+    if _PL_PRIZE_SUFFIX.search(s): return False
+    if _PL_TRICK_ARROW.search(s):  return False
+    if _PL_LONG_TOKEN.search(s):   return False
+    if s[0].islower():             return False
+    if re.search(r"\bThe\b", s):   return False
+    if '"' in s:                   return False
+    if " or " in s.lower():       return False
+    return True
 
 
 def load_csv(path: Path) -> pd.DataFrame:
@@ -324,14 +390,30 @@ def main() -> None:
         )
 
         # Create minimal persons records for any newly assigned IDs
+        # Skip non-person-like display names (junk, tricks, narrative, etc.)
+        # and null their person_id so no dangling FK is created.
         existing_ids = set(persons["person_id"].str.strip())
         new_rows = []
-        seen: set[str] = set()
+        seen_good: set[str] = set()
+        seen_bad: set[str] = set()
         for _, row in event_result_participants[missing_mask].iterrows():
             pid = row["person_id"]
-            if pid not in existing_ids and pid not in seen:
-                seen.add(pid)
-                new_rows.append({"person_id": pid, "person_name": row["display_name"]})
+            dn = row["display_name"]
+            if pid in existing_ids or pid in seen_good:
+                continue
+            if pid in seen_bad:
+                continue
+            if _is_person_like(dn):
+                seen_good.add(pid)
+                new_rows.append({"person_id": pid, "person_name": dn})
+            else:
+                seen_bad.add(pid)
+
+        # Null person_id for participants whose display_name failed the gate
+        if seen_bad:
+            bad_mask = event_result_participants["person_id"].isin(seen_bad)
+            event_result_participants = event_result_participants.copy()
+            event_result_participants.loc[bad_mask, "person_id"] = ""
 
         if new_rows:
             persons = pd.concat(
@@ -341,7 +423,8 @@ def main() -> None:
 
         print(
             f"  Auto-assigned person_id to {n_missing} participant rows "
-            f"({len(new_rows)} new minimal person records created)"
+            f"({len(new_rows)} new minimal person records created"
+            f"{f', {len(seen_bad)} non-person-like nulled' if seen_bad else ''})"
         )
 
     # ------------------------------------------------------------------

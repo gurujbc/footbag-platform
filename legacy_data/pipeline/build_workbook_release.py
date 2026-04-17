@@ -398,15 +398,68 @@ def load_all():
     # presence is documented in the identity lock from authoritative sources
     # (magazines, TXT files).  This is a workbook-only supplement; it does not
     # modify canonical_input or the platform export.
+    #
+    # Person-likeness + alias-dedup gates are applied so the supplement doesn't
+    # re-introduce junk or duplicate entries that the platform export filtered.
+    import re as _re
+    _PL_MOJIBAKE   = _re.compile(r"[¶¦±¼¿¸¹º³]")
+    _PL_EMBED_Q    = _re.compile(r"\w\?|\?\w")
+    _PL_STANDALONE = _re.compile(r"(?:^|\s)\?{1,5}(?:\s|$)")
+    _PL_BAD_CHARS  = _re.compile(r"[+=\\|/]")
+    _PL_ABBREVIATED = _re.compile(r"^[A-Z]\.?\s+\S")
+    _PL_INCOMPLETE = _re.compile(r"^\S+\s+[A-Z]$")
+
+    def _supp_norm(name: str) -> str:
+        nfkd = unicodedata.normalize("NFKD", name)
+        stripped = "".join(c for c in nfkd if not unicodedata.combining(c))
+        return _re.sub(r"\s+", " ", stripped.lower().strip().replace(".", ""))
+
+    # Load alias names to skip duplicates
+    _alias_norms: set[str] = set()
+    _alias_csv_path = ROOT / "overrides" / "person_aliases.csv"
+    if _alias_csv_path.exists():
+        with open(_alias_csv_path, newline="", encoding="utf-8") as _af:
+            for _ar in csv.DictReader(_af):
+                _a = _ar.get("alias", "").strip()
+                if _a:
+                    _alias_norms.add(_supp_norm(_a))
+
+    # Build norm index of existing persons (already in canonical_input)
+    _existing_norms: set[str] = set()
+    for _p in persons.values():
+        _existing_norms.add(_supp_norm(_p.get("person_name", "")))
+
+    def _supp_is_person_like(name: str) -> bool:
+        s = name.strip()
+        if not s: return False
+        if _PL_MOJIBAKE.search(s): return False
+        if _PL_EMBED_Q.search(s): return False
+        if _PL_STANDALONE.search(s): return False
+        if _PL_BAD_CHARS.search(s): return False
+        if "," in s: return False
+        if " " not in s and "." not in s: return False
+        if _PL_ABBREVIATED.match(s): return False
+        if _PL_INCOMPLETE.match(s): return False
+        if s[0].islower(): return False
+        if _re.search(r"\bThe\b", s): return False
+        if '"' in s: return False
+        if " or " in s.lower(): return False
+        if _re.search(r"[>]|\s:\s", s): return False
+        if _re.search(r"\S{21,}", s): return False
+        return True
+
     upstream_persons_path = CANONICAL_UPSTREAM / "persons.csv"
     if upstream_persons_path.exists():
         upstream_field = "fbhof_member"   # canonical uses fbhof_member not hof_member
         with open(upstream_persons_path, newline="", encoding="utf-8") as f:
             n_added = 0
+            n_gate_skipped = 0
+            n_alias_skipped = 0
             for r in csv.DictReader(f):
                 pid = r.get("person_id", "").strip()
                 if not pid or pid in persons:
                     continue  # already present
+                pname = r.get("person_name", "").strip()
                 fy_str = r.get("first_year", "").strip()
                 if not fy_str:
                     continue  # no documented first_year — skip
@@ -416,10 +469,19 @@ def load_all():
                     continue
                 if fy > _EARLY_ERA_FIRST_YEAR_CUTOFF:
                     continue
+                # Gate: skip non-person-like names
+                if not _supp_is_person_like(pname):
+                    n_gate_skipped += 1
+                    continue
+                # Alias dedup: skip if name matches a known alias or existing person
+                pnorm = _supp_norm(pname)
+                if pnorm in _alias_norms or pnorm in _existing_norms:
+                    n_alias_skipped += 1
+                    continue
                 # Translate canonical field names to canonical_input field names
                 persons[pid] = {
                     "person_id":          pid,
-                    "person_name":        r.get("person_name", ""),
+                    "person_name":        pname,
                     "member_id":          r.get("member_id", ""),
                     "country":            r.get("country", ""),
                     "first_year":         fy_str,
@@ -432,10 +494,13 @@ def load_all():
                     "hof_member":         r.get(upstream_field, "0"),
                     "hof_induction_year": r.get("fbhof_induction_year", r.get("hof_induction_year", "")),
                 }
+                _existing_norms.add(pnorm)
                 n_added += 1
-        if n_added:
+        if n_added or n_gate_skipped or n_alias_skipped:
             print(f"  Early-era supplement: +{n_added} persons "
-                  f"(first_year ≤ {_EARLY_ERA_FIRST_YEAR_CUTOFF})")
+                  f"(first_year ≤ {_EARLY_ERA_FIRST_YEAR_CUTOFF})"
+                  f"{f', {n_gate_skipped} gate-skipped' if n_gate_skipped else ''}"
+                  f"{f', {n_alias_skipped} alias-dedup-skipped' if n_alias_skipped else ''}")
 
     print(f"  Events: {len(events)}   Disciplines: {len(discs)}")
     print(f"  Participants: {len(raw_results)}   Persons: {len(persons)}")

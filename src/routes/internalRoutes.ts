@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { netController } from '../controllers/netController';
+import { personsController } from '../controllers/personsController';
 
 /**
  * Internal / operator routes.
@@ -7,6 +8,10 @@ import { netController } from '../controllers/netController';
  * Mount point: /internal
  */
 export const internalRouter = Router();
+
+// Persons QC + browse
+internalRouter.get('/persons/qc', personsController.qcPage);
+internalRouter.get('/persons/browse', personsController.browsePage);
 
 // Net team corrections triage
 internalRouter.get('/net/team-corrections',                    netController.teamCorrectionsPage);

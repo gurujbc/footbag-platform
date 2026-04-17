@@ -2910,3 +2910,232 @@ Zdravko Doichev,2be794bf-e8a8-59a0-9b17-0bc7619b7587,Zdravko Doichev,verified,qu
 Zeb Jackson,348ea683-38f2-54ab-ad04-db29a37bb687,Zeb Jackson,verified,
 Zelinka Ales,f2e73bec-d859-51b9-8312-edb5a473e83e,Ales Zelinka,verified,merged: Last-First format swap or confirmed variant
 Zsolt Feher,29370e6c-7fb6-518e-acd1-ca4bec96556c,Zsolt Feher,verified,
+Marcin Ka³czor,cf77df18-0e51-52e5-8ffa-24d2fbdfe827,Marcin Kalczor,verified,mojibake: Windows-1250 ³→ł
+Pawe³ Ro¿ek,0b3ffb10-2257-510e-a69a-26ff2fc87508,Pawel Rozek,verified,mojibake: Windows-1250 ³→ł ¿→ż
+Robin P¸chel,3c50ab0f-2056-50ce-a5f2-c7c95e96702f,Robin Puchel,verified,mojibake: Windows-1250 encoding
+Szymon Ka³wak,4ae1304e-960b-554f-8ce7-c59e0d7607b2,Szymon Kalwak,verified,mojibake: Windows-1250 ³→ł
+Tomasz Kocio³kowski,b073c3b7-95e2-5b0b-b66c-4f86649fd5d4,Tomasz Kociolkowski,verified,mojibake: Windows-1250 ³→ł
+Tomá¹ Tuèek,511f8154-a9df-5bbd-8375-1164c1e266e2,Tomas Tucek,verified,mojibake: Windows-1250 ¹→š è→č
+A GRAVEL,55584eb9-ab8b-517f-b514-1e08f8852a31,Alexandre Gravel,verified,abbreviated_name:single_match
+A Inteman,71ae4086-3d7f-5fdb-812b-778eda4da0cf,Anthony Intemann,verified,abbreviated_name:single_match
+A Jolicour,ed638858-3da2-5302-8a94-6eef9dd674a1,Amelie Jolicoeur,verified,abbreviated_name:single_match
+A Lasken,4c135bb4-c05b-5b8c-8ca4-d60512ccbf24,Ann Lasken,verified,abbreviated_name:single_match
+A Noller-prizes,ecf5bb08-8088-5a0d-b236-3eb837afc74e,Amy Noller,verified,abbreviated_name:single_match
+C Donnelly,fbf68649-3d75-5fec-80d5-c56ce2c5b948,Chuck Donnelly,verified,abbreviated_name:single_match
+C Garvin,4d9f4d4a-2c1e-5192-b28d-a4d9510b31ad,Chris Garvin,verified,abbreviated_name:single_match
+C Wedemeyer,b63b58da-fe12-59da-92d6-15726472e38b,Carol Wedemeyer,verified,abbreviated_name:single_match
+D Garber,b4af1ee7-233b-56c3-80cd-a8ad1a6193f2,Dave Garber,verified,abbreviated_name:single_match
+D Kramer,38ace662-7295-5be2-a71f-add24991ad14,Dan Kramer,verified,abbreviated_name:single_match
+D O'Brien,2367d506-3a7b-5532-9c55-3f970c46cf8c,Dominic O'Brien,verified,abbreviated_name:single_match
+F Pelletier,9d9b7019-1c24-54b4-8dfb-75bc689657e2,Francois Pelletier,verified,abbreviated_name:single_match
+G Nelso,da2cbc95-e09b-5a22-9baf-00e25552c9b6,Greg Nelson,verified,abbreviated_name:single_match
+G Neumann,cab98078-fdb2-557d-a5c9-799b41eb4f04,Greg Nice Neumann,verified,abbreviated_name:single_match
+G Smith,08ecb6e2-5ae2-539e-a4be-41cb2d98524b,Garth Smith,verified,abbreviated_name:single_match
+I PRICE,f4cf5692-6b89-519d-9b68-4c1c5b078c05,Ian Price,verified,abbreviated_name:single_match
+J Aurnou,accd5308-86e3-5984-83c2-ff14c16d7613,Jon Aurnou,verified,abbreviated_name:single_match
+J Bowling,a4083a97-d4c3-5aca-a315-7f25de92928e,Jeff Bowling,verified,abbreviated_name:single_match
+J Hankins,61656316-f92f-5235-a6fd-e3218d5601f8,Jim Hankins,verified,abbreviated_name:single_match
+J Langis,5141763c-285a-5f50-abd1-c5ef3b16ff0a,Jason Langis,verified,abbreviated_name:single_match
+J Solonoski,2ec7a35d-e4db-5e12-bd89-107bb277ce07,Joe Solonoski,verified,abbreviated_name:single_match
+K Gates,12862941-97ef-53c3-bafa-8629a52bbb2e,Krishna Gates,verified,abbreviated_name:single_match
+K Schubel,72287a20-7e99-5c83-a70d-1ed4c11d404f,Kathy Schubel,verified,abbreviated_name:single_match
+M Bouchard,f1e2640c-48ae-588d-99bc-7b55713191f0,Manu Bouchard,verified,abbreviated_name:single_match
+M Demuy,40a3babb-8d9d-522c-8cbf-9f221bbc5903,Marilyn Demuy,verified,abbreviated_name:single_match
+M GARVIN,ed04335c-1a6f-5784-bc6c-bf5c2b7a513c,Matt Garvin,verified,abbreviated_name:single_match
+M Gatewood,7a0b457d-c8fa-5c7f-bc5f-3598f375457d,Mike Gatewood,verified,abbreviated_name:single_match
+M Quinn,f9ca484d-69f6-5ebb-b5e4-3e949b0f84da,Matt Quinn,verified,abbreviated_name:single_match
+M Quint,66a19925-00c6-5da5-8b24-2bb656591603,Matt Quint,verified,abbreviated_name:single_match
+M Sauserman,4dc85043-ec84-5125-bbbc-b3895edcdca4,Matt Sauserman,verified,abbreviated_name:single_match
+M Schneider,26e40173-e0b2-5d76-99b7-61a202886550,Melissa Schneider,verified,abbreviated_name:single_match
+M Vilade,38235b83-a291-534d-ae4b-6ba8c6d6bf67,Matt Vilade,verified,abbreviated_name:single_match
+N Dubreuil,c9342c2f-a5b9-58cc-bbb5-9a884d179a13,Noah Dubreuil,verified,abbreviated_name:single_match
+O Berthiaume-Bergé,78e060c9-3854-5b49-a5da-130392b333ea,Olivier Berthiaume,verified,abbreviated_name:single_match
+P Asswad,202607a4-85da-5231-957a-85eb5a4e3e76,Patrick Asswad,verified,abbreviated_name:single_match
+P Duran,ebba741d-7628-5830-8c96-e15ef18f2905,Pat Duran,verified,abbreviated_name:single_match
+P Irish,542be6a9-3b5a-5374-961b-9de19c0def7a,Peter Irish,verified,abbreviated_name:single_match
+P Keehan,a885c64b-88c5-5b90-a17e-598a5076fcd5,Patrick Keehan,verified,abbreviated_name:single_match
+P LAROSE,4184f9cc-a307-5b20-8676-670e751d7654,Philippe Larose,verified,abbreviated_name:single_match
+R Abramson,324e8281-d669-5099-95c9-bcb620dfc605,Rachel Abramson,verified,abbreviated_name:single_match
+R Creed,4666b60c-eadb-5238-88ef-146acf5d5003,Rob Creed,verified,abbreviated_name:single_match
+R Lavign,290519a0-7c5d-5068-98a5-ec9f8847801f,Rober Lavign,verified,abbreviated_name:single_match
+R McCloskey,6842b20a-a927-5b6b-9501-4fae0e547a1f,Rob McCloskey,verified,abbreviated_name:single_match
+R Mulroney,4cf390be-81e9-586c-95c7-aa90dd752ba8,Ryan Mulroney,verified,abbreviated_name:single_match
+S Durfee,cd035f70-1e6d-5620-b8eb-bf5809c756ab,Scott Durfee,verified,abbreviated_name:single_match
+S Goldberg,0ae92001-5680-502c-95fa-500e6a808f14,Steve Goldberg,verified,abbreviated_name:single_match
+S Jani,8f15594c-f3f9-53d9-bfe5-409e746b7c29,Sunil Jani,verified,abbreviated_name:single_match
+T Bergamasco,c0bc24e3-dd5f-5ad7-8570-77d685dd5638,Thomas Bergamasco,verified,abbreviated_name:single_match
+Y ARCHAMBAUTL,691f48a0-1dbd-5ef5-99ea-13615a7437d2,Yves Archambault,verified,abbreviated_name:single_match
+Y Merzouk,97d60d0e-3503-5814-8b1d-3fe6bb6bff86,Yacine Merzouk,verified,abbreviated_name:single_match
+Walt H,c6704eb0-91e0-538b-8806-9a43b16e91cb,Walt Houston,verified,abbreviated_name:single_match
+Elliott J,d28e7fec-29c9-5a16-82df-5952178d8517,Elliott Johns,verified,abbreviated_name:single_match
+Emily J,24ebddfa-0047-5f90-a1db-18bc2ccc6ba3,Emily Johns,verified,abbreviated_name:single_match
+"Adam Pirog, Montréal",5a74ce40-c264-5136-b408-4ca3be3a99f1,Adam Pirog,verified,name_with_location:stripped
+"Caroline Bourgoin, Montréal",13f2e206-6318-590d-b2a3-e9b90fc94c3c,Caroline Bourgoin,verified,name_with_location:stripped
+"James Gilbert, Austin",2440fa12-9910-538b-9de5-6394b8779af8,James Gilbert,verified,name_with_location:stripped
+"Jim McCoppin, VA",3ab114f1-839a-5581-a859-8c48809ae672,Jim McCoppin,verified,name_with_location:stripped
+"Joël Murray, Montréal",df3f3136-675e-551d-b940-0991d6295c57,Joël Murray,verified,name_with_location:stripped
+"Kavin Thiffault, Shawinigan",5d187fce-0ade-59a6-8ec3-e2ebae0c259c,Kavin Thiffault,verified,name_with_location:stripped
+"Marilou Ouimet, Montréal",000a2598-ea7a-5f0b-8298-049bbc38efa4,Marilou Ouimet,verified,name_with_location:stripped
+"Melissa Schneider, Massachussets",26e40173-e0b2-5d76-99b7-61a202886550,Melissa Schneider,verified,name_with_location:stripped
+"Samuel Jobin, Shawinigan",c57afdbe-f73a-5740-a2d3-0ec71764ee18,Samuel Jobin,verified,name_with_location:stripped
+"Sébastien Duchesne, Montréal",6dd904b7-11c6-5d62-af34-dad61040e67e,Sebastien Duchesne,verified,name_with_location:stripped
+"Yacine Merzouk, Montréal",97d60d0e-3503-5814-8b1d-3fe6bb6bff86,Yacine Merzouk,verified,name_with_location:stripped
+"Belozerov, Roman",d88c923c-2775-5283-bfec-1624d807ca47,Roman Belozerov,verified,inverted_name:last_first
+"Cantillo, Eduardo",61b12677-a1b7-587f-a11d-1e49d05d32f5,Eduardo Cantillo,verified,inverted_name:last_first
+"Tapaninaho, Mikko",5a2e9e09-b72a-56f5-8bec-edfe5b745b21,Mikko Tapaninaho,verified,inverted_name:last_first
+"Tellenbach, Grischa",ec1d5118-cd4b-591f-a84a-04bbe20868bc,Grischa Tellenbach,verified,inverted_name:last_first
+Antoine The Rocks-Godin,dc732475-83aa-586e-9a36-b2254318669e,Antoine Godin,verified,nickname:stripped
+"Frankie ""the Kind"" Gutowski",4972a04c-1a6c-5c12-af8e-6c2df00e3264,Frank Gutowski,verified,nickname:stripped
+"Ken ""The Hammer"" Hamric",3991f932-86d6-54ae-8e43-9f7e651142cf,Ken Hamric,verified,nickname:stripped
+Ted The Gatekeeper Fritsch,738cbf71-ad21-598f-a5b3-afdb8bdf543d,Theodore Fritsch,verified,nickname:stripped
+Simon-François Kolodenchuk,1e1bc64f-894f-59b0-ad65-d83914077067,Simon Kolodenchuk,verified,diacritics_variant
+Simon-Francois Kolodentchuk,1e1bc64f-894f-59b0-ad65-d83914077067,Simon Kolodenchuk,verified,spelling_variant
+Stuff Himself,e2ad332e-4635-5c13-9bc3-9cd157eaee8d,Stefan Nold,verified,nickname:joke_entry
+Toe set DadaCurve,e2ad332e-4635-5c13-9bc3-9cd157eaee8d,Stefan Nold,verified,junk:trick_notation
+Twenty-one Way Tie,e2ad332e-4635-5c13-9bc3-9cd157eaee8d,Stefan Nold,verified,junk:placeholder
+C. Balch,e8aa88b0-f630-555a-ac0c-60d033607464,Chris Balch,verified,dotted_initial:single_match
+C. Donelly,71036e42-93d9-5860-abf7-f4e25b68966f,Check Donelly,verified,dotted_initial:single_match
+E. Stryker,c256196e-aeb4-5011-9dce-81719a307619,Erroll Stryker,verified,dotted_initial:single_match
+F. Peltier,97dedd59-bc89-5bb7-baa6-f97e9f9a4d95,Fancois Peltier,verified,dotted_initial:single_match
+H. Hellberg,1a1b1397-a4b8-5826-b51d-ff5391eba110,Hakan Hellberg,verified,dotted_initial:single_match
+H. Schlichting,e023aa06-ace7-5617-8145-aaca829f4c54,Helena Schlichting,verified,dotted_initial:single_match
+I. Liukko,e0ff5af1-8b97-5b29-af49-1792c3746c0f,Iisak Liukko,verified,dotted_initial:single_match
+J. Harris,7c8cfb20-ed0b-5203-89ea-46dea3ebf0e0,Jack Harris,verified,dotted_initial:single_match
+J. Varvaro,86e02868-8a77-5e1f-9783-e7b43e95ddb2,Jason Varvaro,verified,dotted_initial:single_match
+K. Somolinos,d1aace44-cd92-5b85-9ed1-fe4afb2cd502,Ken Somolinos,verified,dotted_initial:single_match
+"L. W.-Lavallée",206eaac4-f28d-5cad-b334-c0ea07752736,Luka W.-Lavallée,verified,dotted_initial:single_match
+M. Daniels,33e83366-7b1e-5c4a-99a9-8eba0d3988ca,Mark Daniels,verified,dotted_initial:single_match
+M. Payant,df233ab3-492d-5dac-a854-d79a7f53cb76,Mathieu Payant,verified,dotted_initial:single_match
+N. Liukko,9aca54b3-8989-5d9e-8ca3-b5420d233d8f,Ninni Liukko,verified,dotted_initial:single_match
+"O. B.-Bergé",8842db90-a28e-52d6-87e1-8466adcc548a,Olivier B.-Bergé,verified,dotted_initial:single_match
+P. Tomecek,3ee1e348-8cd4-57f0-9677-a6c3cdccb466,Pascal Tomecek,verified,dotted_initial:single_match
+S. Johnson,4c16387a-d825-5e9c-a012-317c4b4a16f8,Steve Johnson,verified,dotted_initial:single_match
+T. Aeberli,6c84f5b5-7da4-5b72-bdd7-453421a3c3d8,Tina Aeberli,verified,dotted_initial:single_match
+T. Lewis,54e16a85-0204-5ef1-aa92-a09c9af8ae1c,Tina Lewis,verified,dotted_initial:single_match
+T. Rehn,157f3e7c-c772-5ab1-adf9-e607ccca17b2,Thibault Rehn,verified,dotted_initial:single_match
+A. Fritch,34055beb-ed72-59a5-9b69-13dca858e0f7,Antonio Fritsch,verified,human_confirmed:spelling_variant
+Annaleissa Cohen,008f279b-0172-5793-868e-70f7b4c45ac7,Anneleissa Cohen,verified,typo:events_1_vs_5
+Brace Guettich,886e5b99-bd46-5707-a490-a2e938b09a35,Bruce Guettich,verified,typo:events_1_vs_32
+Brain Dennis,36bfca80-14c7-52f6-bd1c-b4ef1ec702e5,Brian Dennis,verified,typo:events_1_vs_3
+Brain McKenzie,0c7a541a-eae6-5ffc-9b9b-3ff86bf3941c,Brian McKenzie,verified,typo:events_1_vs_6
+Brian Nelson,1e600282-c338-51d1-936e-e326f5c0eda8,Bryan Nelson,verified,typo:events_1_vs_7
+Calab Abraham,ea4b97b8-2ee0-516b-94ce-ccdf349463da,Caleb Abraham,verified,typo:events_1_vs_6
+Eudardo Martinez,7b729bc2-570a-543c-a460-24ed136deb5b,Eduardo Martinez,verified,typo:events_1_vs_25
+Eugeny Shiryaev,24fb402d-fa5a-53c4-9d1a-e2c4667ccd4d,Evgeni Shiryaev,verified,typo:events_2_vs_18
+Evgeny Shiryaev,24fb402d-fa5a-53c4-9d1a-e2c4667ccd4d,Evgeni Shiryaev,verified,typo:events_1_vs_18
+Francios Leh,27569bfc-a9e1-58c3-845b-ba0a01f4d9d7,François Leh,verified,typo:events_1_vs_18
+Gerg Lima,c7a23f15-f2ed-5f2b-ac50-bb1adb185475,Greg Lima,verified,typo:events_2_vs_54
+Gozia Nycz,07f95465-470d-502b-804d-643380e1385c,Gosia Nycz,verified,typo:events_1_vs_14
+Hanneé Daniel,edcbfbae-aae6-51bf-aef4-41ae3cab0d19,Hannés Daniel,verified,typo:events_1_vs_31
+Hirsto Marev,cc9b2a6b-4d13-586f-a640-fc7f55a2c267,Hristo Marev,verified,typo:events_1_vs_13
+Ilja Sernov,a812c3d4-7d7c-5f0f-899f-29c39da709df,Ilya Sernov,verified,typo:events_1_vs_3
+Illka Malin,5c0a3bfe-be36-5f21-9ce1-2700c8af27f3,Ilkka Malin,verified,typo:events_1_vs_43
+Jake Stare,bef7e11c-8b9c-5187-ae6e-665cba7f9825,Jaka Stare,verified,typo:events_1_vs_12
+Jakko Inkinen,b097c320-f6cb-5350-8a0e-7e47a3b0338b,Jaako Inkinen,verified,typo:events_1_vs_2
+Jason Hall,998b1b7c-26da-5fd3-8957-4398616d55b9,Jakob Hall,verified,typo:events_1_vs_5
+Jermey Mirken,31bd4e75-1a44-56b4-94b3-071cdc8dee82,Jeremy Mirken,verified,typo:events_2_vs_44
+Johhny Sarah,c2c56323-1121-5a07-8416-5aca5fa1ce00,Johnny Sarah,verified,typo:events_1_vs_11
+Jordan Moir,16aae952-d265-5e4d-81b8-5474f6c43802,Jorden Moir,verified,typo:events_1_vs_17
+Kirsten Anhuth,8e17712f-7c8d-5c61-93e2-85d061117be2,Kerstin Anhuth,verified,typo:events_1_vs_28
+Lisa Thygesen,43e31230-b102-5a58-a636-9da126870284,Lise Thygesen,verified,typo:events_2_vs_14
+Lukacs Domin,d65e2ac9-c615-5f25-b58f-14493a27af47,Lukasz Domin,verified,typo:events_1_vs_16
+"Ma gorzata Szpulecka",7c2e8452-754a-5880-a3b1-0b51b54ee71b,Malgorzata Szpulecka,verified,typo:events_0_vs_2
+Maciek Bujko,28f922a5-5d62-5473-b08e-3cd2ef6f74fe,Maciej Bujko,verified,typo:events_2_vs_7
+Maciek Surdziel,086ebb0d-fc03-59af-a4f2-532aa5e30da2,Maciej Surdziel,verified,typo:events_1_vs_3
+Marcus Hemmer,c0488adb-3715-53d6-ab5f-263f143604da,Markus Hemmer,verified,typo:events_1_vs_2
+Mark Inzinger,524737fe-5bbc-52a9-9252-7d636cbd0571,Marc Inzinger,verified,typo:events_1_vs_2
+Martin Czech,bb89d2bb-12af-5038-a092-0b4cf1269860,Marcin Czech,verified,typo:events_1_vs_15
+Marylyn Demuy,40a3babb-8d9d-522c-8cbf-9f221bbc5903,Marilyn Demuy,verified,typo:events_1_vs_48
+Maxiej Pietrzycki,94fa84c1-d2d6-52df-a224-c318a0e3771c,Maciej Pietrzycki,verified,typo:events_1_vs_22
+Micheal Gupton,1130d6a6-a00f-5522-a518-df7c5bd25f3c,Michael Gupton,verified,typo:events_1_vs_3
+Patricia Szczeniowska,df7e1022-efda-5124-848e-43b1713268a6,Patrycja Szczeniowska,verified,typo:events_1_vs_2
+Pavel Rozek,0b3ffb10-2257-510e-a69a-26ff2fc87508,Pawel Rozek,verified,typo:events_1_vs_59
+Peca Stica,478980c9-d72c-53e7-9892-3bcdf1de059f,Petr Stica,verified,typo:events_1_vs_2
+Radis Turek,2002626c-155f-5447-8115-bba010c6a418,Rados Turek,verified,typo:events_1_vs_15
+Ray Adams,20d639b1-087f-5227-9eaa-6dd342d57439,Rob Adams,verified,typo:events_1_vs_33
+Rich Bates,5812096d-611b-5ca7-a4c0-bc30d45b67f4,Rick Bates,verified,typo:events_1_vs_9
+Roddy Esposito,71a7d160-629d-50d4-b5ea-8f24bfd85a7a,Radhy Esposito,verified,typo:events_1_vs_3
+Sebastian Verdy,c0ba05a1-16a9-51e0-bcf5-7f6b879710a9,Sebastien Verdy,verified,typo:events_2_vs_9
+Silvan Daouk,8000b520-2bfb-5767-86a7-b5c8eefc7651,Silwan Daouk,verified,typo:events_1_vs_26
+Slava Sidorin,8781b759-cc12-5efa-bfcd-c2595866382f,Slawa Sidorin,verified,typo:events_2_vs_11
+"Stìpán Klimek",064f7ed6-a0b7-5510-b9ab-869395a112fd,Stepan Klimek,verified,typo:events_2_vs_8
+Sylwan Daouk,8000b520-2bfb-5767-86a7-b5c8eefc7651,Silwan Daouk,verified,typo:events_1_vs_26
+Tanya Jeliazkova,f95453fc-b49b-55df-954e-7b9f22c63f3b,Tania Jeliazkova,verified,typo:events_1_vs_2
+Vald Eskenasy,ace0f85a-fff5-5fc2-b175-bea0fc903043,Vlad Eskenasy,verified,typo:events_1_vs_9
+Valerie Davidson,77d78830-84f5-520d-99d7-105a2b455eb3,Valeria Davidson,verified,typo:events_1_vs_12
+"Vá ka Kouda",4a9eec48-24df-5707-b379-12a9599106fb,Váška Kouda,verified,typo:events_0_vs_1
+Zac Jackson,348ea683-38f2-54ab-ad04-db29a37bb687,Zeb Jackson,verified,typo:events_2_vs_4
+Anthony Raymond Intemann,71ae4086-3d7f-5fdb-812b-778eda4da0cf,Anthony Intemann,verified,full_name:events_1_vs_22
+Ben Baybak,c5297bc0-0f46-5f3f-b165-c6f4901f8838,Ben Babyak,verified,typo:scan_match
+Benjamin Babiak,c5297bc0-0f46-5f3f-b165-c6f4901f8838,Ben Babyak,verified,typo:scan_match
+Benjamin J. Babyak,ede0da6c-0e27-576f-abe5-6a20a004343b,Benjamin Babyak,verified,scan_match
+Alex Zeke Ibardaloza,be0d9849-db58-5aa2-90cc-df475a8c43bd,Alex Ibardaloza,verified,nickname:scan_match
+Andreas Grandi Peier,1df65a5e-fdb5-5385-a31e-4ac28b916b28,Andreas Peier,verified,nickname:scan_match
+Boris J. Ollivier,7150e55f-c6bd-5d27-a08b-9617313cac5e,Boris Ollivier,verified,scan_match
+"Chris ""Shoes"" Hughes",078f83ff-ffba-5e46-a0e8-2e4a5e6fb1c6,Chris Hughes,verified,nickname:scan_match
+Cory D. Current,f1f49edd-da47-536a-b759-de441795fc2f,Cory Current,verified,scan_match
+"Eric ""Bart"" Bartholoman",1bfd2283-e621-5841-ae09-840660685725,Eric Bartholoman,verified,nickname:scan_match
+Jake Jo Dodd,178b0676-d5ac-5d2e-9696-c8908ce5b533,Jake Dodd,verified,nickname:scan_match
+Jan Honza Weber,1e09ba09-ec4b-5961-8b95-e0d638dc4f5c,Jan Weber,verified,nickname:scan_match
+Joe Hollywood Lepley,3ccd5c24-fa2e-51e9-9cb4-033e0366ea6c,Joe Lepley,verified,nickname:scan_match
+Julien Guil Romiti,ad56005f-3da3-5f45-99c3-a691e7e6773c,Julien Romiti,verified,nickname:scan_match
+Luis Alberto Sarmiento,0d14b078-6374-583e-a5a8-81d0d6c5593a,Luís Sarmiento,verified,scan_match
+"Martin Côté Martin Graton",d0fd4b0a-a59e-525d-a918-eefb16c70e80,Martin Graton,verified,scan_match
+Mike Patrick McCarthy,762bb9f5-cfb2-5ab4-8cff-c1d6452609cd,Mike McCarthy,verified,nickname:scan_match
+Mike Rex Stoler,cd833478-a31f-5610-8f45-2344401a861b,Mike Stoler,verified,nickname:scan_match
+Olivier Zitoun Baillon,42492045-f1bf-5183-82c0-fedee3941a1e,Olivier Baillon,verified,nickname:scan_match
+"Richard ""Chard"" Cook",619a16fc-fe87-552c-b882-b92d96d15588,Richard Cook,verified,nickname:scan_match
+"Rich ""Chard"" Cook",619a16fc-fe87-552c-b882-b92d96d15588,Richard Cook,verified,nickname:scan_match
+Tim Daniel Livson,4082f2aa-cd10-5a43-bdb5-bf3ba790be48,Tim Livson,verified,nickname:scan_match
+"Tuomas Kärki 1. Tuomas Kärki",e7937047-c7f1-5739-bb84-aceb23c17dd7,Tuomas Karki,verified,scan_match
+"Jakob og Jesper Hall",998b1b7c-26da-5fd3-8957-4398616d55b9,Jakob Hall,verified,scan_match
+"Dudziński Arkadiusz",6513b145-8a4a-556a-a04f-981d95db2d70,Arkadiusz Dudzinski,verified,inverted_name
+Gonzalez Elias,737e36ea-4090-55ab-8844-2f4acc522880,Elías González,verified,inverted_name
+"Vlček Jan",446b5d82-318c-5584-8834-66ec244c20cb,Jan Vlcek,verified,inverted_name
+Ramirez Jorge,8f78f9ec-3153-5ff6-b7b8-bf10e492f476,Jorge Ramírez,verified,inverted_name
+"Álvaro Alfinger",dd2a80e1-f668-5a5e-913a-77b16e5d48a7,Alvaro Manzanero Alfinger,verified,variant_name
+Antoine Godin,a6723fe0-45bd-576e-983d-783ce27035b9,Antoine Desrochers Godin,verified,variant_name
+Sergio Hernandez Santiago,403742dd-27cb-5ebc-a0db-4382eaccfe64,Sergio Hernandez,verified,extra_last_name
+Stephan Rautenber,9188c2d1-9556-5ad8-b890-6c22425dbbf0,Stephan Rauthenberg,verified,truncated_name
+Wiktor Dbski.,c917c04b-83fa-5c1a-8f2c-292f24db5616,Wiktor Debski,verified,truncated_name
+Wicked Eric Windsor,aff8bed6-46fd-570d-962b-223a0780cdac,Eric Windsor,verified,nickname_prefix
+Eric Wolff,e8b82661-4428-5e51-a786-29bf7a23728f,Eric Wulff,verified,typo:events_1_vs_59
+Garry G. Griggs,1de22070-477b-5209-8f40-561ce8784b7a,Garry Griggs,verified,middle_initial
+Thomas tomtom Jouan,383d34a4-3fcf-5661-96ab-aed75a430d5f,Thomas Jouan,verified,nickname
+Khoa Dao Anh Nguyen,f06b66e5-bc34-5a71-9eec-1a176fec790e,Khoa Nguyen,verified,extra_middle_names
+"Jaakko Inkinen 4. Juha-Matti Rytilahti",023c695b-ef02-51dd-89bb-0eb3ef0841c6,Juha-Matti Rytilahti,verified,ranking_artifact
+"Adam Greenwood : Sailing Catwalk",de72051a-f92e-5e3c-b161-af9028b11492,Adam Greenwood,verified,colon_trick_suffix
+"Erik Chan : Reverse Mailstrom",1bedfc1b-885c-5426-a93f-6fe033fd5f3e,Erik Chang,verified,colon_trick_suffix
+"Kevin Regamey : bill",6c912402-7d0e-580d-938c-7c6542c48bb1,Kevin Regamey,verified,colon_trick_suffix
+"Kevin Crowley: Food Processor",ad54afe3-3f18-5862-87d1-4e02e4fbf9fd,Kevin Crowley,verified,colon_trick_suffix
+David Kaufmann O,2cf525b7-ae53-56ff-98f2-0f845d6d998f,David Kaufmann,verified,suffix_junk
+Jay Moldenhauer,045862ac-72b8-5b86-bc01-5a4d087b47e0,Jay Moldenhauser,verified,typo
+"Jean-Franois Lemieux",184a06bb-be96-5120-9a7c-1676f2b01a2a,Jean-Francois Lemieux,verified,typo
+Jim Toes Fitzgerald,b54020bc-1a1a-5d23-89e1-34617b3514fa,Jim Fitzgerald,verified,nickname
+Jodi Sebastien,2224d6ba-5be4-56a5-90e1-aaa61a15bcb0,Jodi Sebastian,verified,typo
+Juha-Matti Rithilati,023c695b-ef02-51dd-89bb-0eb3ef0841c6,Juha-Matti Rytilahti,verified,typo
+Juha-Matti Rytilathi,023c695b-ef02-51dd-89bb-0eb3ef0841c6,Juha-Matti Rytilahti,verified,typo
+Juho Matti Rytalahti,023c695b-ef02-51dd-89bb-0eb3ef0841c6,Juha-Matti Rytilahti,verified,typo
+Justin Eichenlaub I,c476f406-2f03-5f67-88aa-f90dcc36ac42,Justin Eichenlaub,verified,suffix_junk
+"Karel Hude ek",aa8e4d31-8587-5d00-8097-b7ac8dfabf0f,Karel Hudeček,verified,encoding
+Ken Somolino,d1aace44-cd92-5b85-9ed1-fe4afb2cd502,Ken Somolinos,verified,typo
+"Klemenz Lngauer",b41cedc4-cb5f-5d49-899f-5a04af4092da,Klemenz Längauer,verified,encoding
+"Krzysztof Sobtka",ddf2f704-a4d2-5653-a82a-45987d37645c,Krzysztof Sobótka,verified,typo
+Lassd Yacoub,1845d6ee-79c0-57bb-8474-0139e2a4e555,Lassad Yacoub,verified,typo
+Lisa McDaniels,f995558d-69d9-557a-892a-0e695d85250b,Lisa McDaniel Jones,verified,typo
+Lisa Monte,5439339f-3ef7-59be-9759-8b426d77d4d5,Lisa Monti,verified,typo
+Lisa Waccolz,09509e3c-2132-542b-b40f-8abbbf00f63a,Lisa Wachholz,verified,typo
+"Lukáš Blašek",dcd4f256-409a-5afe-b320-98c10b762aec,Lukáš Blažek,verified,typo
+Mark Hunsbuger,6f08080b-9aad-54de-afc5-1c6e553f6a6e,Mark Hunsburger,verified,typo
+Mark Voightman,a26fb161-f274-5a04-b33b-e9611684baf5,Mark Voightmann,verified,typo
+Markus Kaspzac,9c8376c9-68ea-572f-abe2-822871cf0e7b,Markus Kapszak,verified,typo
+"Martin Sldek",4aacc030-1054-5a9e-82e9-96a8e7887435,Martin Sladek,verified,encoding
+"Nicolas de Zeuuw",24331263-e0d9-5d89-be90-7558ae1a3db6,Nicolas De Zeeuw,verified,typo
+Dave Hillis,5cb79fb4-ab20-558f-b4a2-e7206c9f22df,Dave Hill,verified,typo
+Eric Bartholoman,f02efc5b-3ae1-5979-a64f-a6f211b846d7,Eric Bartholomay,verified,typo
+Gary Laut,66a5ee0b-abd2-5b24-9d53-5c4f6e3fee14,Gary Lautt,verified,typo
+Greg Grande,03ffa350-fa0f-5075-8d07-418305ee55f5,Greg Grandy,verified,typo
+James Deans,6257b1c3-bbae-5937-b773-ffd5c2152715,James Dean,verified,typo
+Phil Less,45c97f4f-9077-5585-8a83-a9d9a8829f12,Phil Lessard,verified,truncated
+"Thomas Försterson",8bebb3c9-6fbd-5bf2-bd8e-a8e2bfc3d940,Thomas Förster,verified,typo
+B Solonoski-prizes,e17d0227-d08b-5d5d-a7f0-0a2533dd7b9c,B Solonoski,verified,prize_suffix

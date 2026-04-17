@@ -59,9 +59,11 @@ def main():
     # Adding a new source is now as simple as adding to this list
     input_paths = [
         Path("out/stage1_raw_events_mirror.csv"),
+        Path("out/stage1_raw_events_curated.csv"),
+        # Pre-1997 legacy sources — no longer produced by the production pipeline.
+        # Retained in list so they merge automatically if regenerated.
         Path("out/stage1_raw_events_fbw.csv"),
         Path("out/stage1_raw_events_magazine.csv"),
-        Path("out/stage1_raw_events_curated.csv"),
     ]
 
     all_rows: List[dict] = []
@@ -73,7 +75,6 @@ def main():
     for path in input_paths:
         if not path.exists():
             notes.append(f"Source missing, skipping: {path}")
-            print(f"Warning: {path} not found. Skipping.")
             continue
 
         with open(path, "r", encoding="utf-8") as f:
