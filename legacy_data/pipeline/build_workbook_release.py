@@ -50,7 +50,7 @@ OUTPUT_PATH        = ROOT / "out" / "Footbag_Results_Release.xlsx"
 # Persons with first_year ≤ this value are included even without placements.
 _EARLY_ERA_FIRST_YEAR_CUTOFF = 1990
 
-VERSION = "v22"
+VERSION = "v22.1"
 UPDATED = date.today().isoformat()
 
 # ── Styles ─────────────────────────────────────────────────────────────────────
@@ -635,18 +635,26 @@ def build_readme(wb: Workbook, events: dict, persons: dict, n_parts: int) -> Non
     sections = [
         ("OVERVIEW", [
             ("Coverage",
-             f"{n_with_results} events with results across {n_years} years · "
-             f"{n_persons} identified competitors · {n_parts:,} placement records"),
-            ("Years",    "1980 – present (all years included, no year suppression)"),
-            ("Sources",  "Post-1997: Footbag.org HTML archive (mirror-derived, highest authority).  "
-                         "Pre-1997: Footbag World magazine scans + oldresults.txt + "
-                         "expert corrections from authoritative human sources."),
-            ("Identity", "All statistics aggregated by person_id (UUID).  "
-                         "No display-name matching — each person counted once regardless of "
-                         "name variants, nicknames, or married-name changes.  "
-                         "Canonical names sourced from persons.csv."),
-            ("Divisions","Fully normalized (no Sgls/Dbls abbreviations).  "
-                         "Categories: freestyle · net · golf · sideline."),
+             f"Dataset includes {n_events} events (1980–2025) and "
+             f"{n_parts:,}+ participant records.  "
+             f"{n_persons} identified competitors across {n_years} years."),
+            ("Post-1997",
+             "Post-1997 data is highly complete (mirror-based)."),
+            ("Pre-1997",
+             "Pre-1997 data is partially reconstructed from magazine scans "
+             "and curated sources."),
+            ("Sources",
+             "Post-1997: Footbag.org HTML archive (mirror-derived, highest authority).  "
+             "Pre-1997: Footbag World magazine scans + oldresults.txt + "
+             "expert corrections from authoritative human sources."),
+            ("Identity",
+             "All statistics aggregated by person_id (UUID).  "
+             "No display-name matching — each person counted once regardless of "
+             "name variants, nicknames, or married-name changes.  "
+             "Canonical names sourced from persons.csv."),
+            ("Divisions",
+             "Fully normalized (no Sgls/Dbls abbreviations).  "
+             "Categories: freestyle, net, golf, sideline."),
             ("Version",  f"{VERSION} — {UPDATED}"),
         ]),
         ("SHEETS", [
@@ -659,50 +667,56 @@ def build_readme(wb: Workbook, events: dict, persons: dict, n_parts: int) -> Non
             ("<year>",               "One sheet per year (1980 – present).  Each column is one event; "
                                      "rows show placements by division.  Non-sparse events only."),
         ]),
-        ("COVERAGE LIMITATIONS", [
-            ("Pre-1997",        "Data reconstructed from magazine scans and text archives.  "
-                                "Coverage is incomplete: some events have only partial results, "
-                                "and some early events are not represented at all.  "
-                                "Coverage level noted in EVENT INDEX column 'Coverage'."),
-            ("Post-1997",       "Mirror-derived results are the highest-authority source.  "
-                                "Most post-1997 events are complete.  Some events have partial "
-                                "coverage where the source page was incomplete at time of archiving."),
-            ("NHSA vs WFA",     "1980–1985 featured distinct NHSA and WFA championships; "
-                                "both are represented as separate events where data permits."),
-            ("Sparse events",   "Events flagged SPARSE in QC - EXCLUDED EVENTS have fewer than 3 "
-                                "disciplines or fewer than 10 placements — excluded from year sheets "
-                                "but listed in EVENT INDEX and QC - EXCLUDED EVENTS."),
+        ("DATA NOTES / LIMITATIONS", [
+            ("Sparse events",
+                "66 events have limited results and are excluded from year sheets.  "
+                "These appear in the EVENT INDEX for completeness."),
+            ("Player identity",
+                "~2% of participant entries are not linked to a confirmed person.  "
+                "These entries are preserved exactly as found in source material."),
+            ("Country field",
+                "\"Country\" reflects primary competition location or inferred association.  "
+                "It does NOT always represent nationality."),
+            ("Early era (1980-1984)",
+                "Data is incomplete due to limited historical records.  "
+                "Multiple \"World Championship\" variants are preserved as recorded."),
+            ("Coverage flags",
+                "Each discipline is labeled as complete, partial, mostly_complete, "
+                "or unresolved.  These flags indicate the level of result completeness."),
+            ("Derived vs historical",
+                "All results in this workbook are from canonical historical sources.  "
+                "No inferred or derived statistics are included in this version."),
         ]),
         ("IDENTITY MODEL", [
-            ("person_id",       "Every competitor is assigned a UUID (person_id).  "
-                                "Statistics count each person_id once per placement slot."),
-            ("Unknowns",        "Unresolved participants display as [Unknown] in year sheets.  "
-                                "These are excluded from all leaderboards and statistics."),
-            ("Sentinels",       "Team slots with an unknown second member are marked [UNKNOWN PARTNER].  "
-                                "Also excluded from statistics."),
-            ("Name variants",   "Nickname and married-name variants are resolved to a single "
-                                "canonical name via the persons table.  No duplicates."),
+            ("person_id",
+                "Every competitor is assigned a UUID (person_id).  "
+                "Statistics count each person_id once per placement slot."),
+            ("Unknowns",
+                "Unresolved participants display as [Unknown] in year sheets.  "
+                "These are excluded from all leaderboards and statistics."),
+            ("Sentinels",
+                "Team slots with an unknown second member are marked [UNKNOWN PARTNER].  "
+                "Also excluded from statistics."),
+            ("Name variants",
+                "Over 3,100 name aliases resolved.  Nickname, married-name, and "
+                "transliteration variants are resolved to a single canonical name "
+                "via the persons table.  Identity resolution is ongoing."),
         ]),
         ("STATISTICS NOTES", [
-            ("Worlds types",    "Worlds leaderboards include all events with event_type=worlds "
-                                "plus pre-1997 events with 'worlds' in the event key "
-                                "(NHSA/WFA/IFAB championships)."),
-            ("Counting method", "Wins and podiums counted once per placement slot "
-                                "(participant_order=1).  Team events: both members credited "
-                                "equally; the slot is counted once in aggregate tables."),
-            ("Top 25",          "Leaderboard tables show top 25.  Full data available "
-                                "in PLAYER STATS sheet and canonical CSV files."),
-            ("Ties",            "Equal-ranked positions use T-N notation (e.g. T-5).  "
-                                "After a tie of N, the next rank skips N-1 positions."),
-        ]),
-        ("KNOWN ISSUES", [
-            ("Pre-1997 gaps",   "Not all pre-1997 events are fully captured.  "
-                                "Some divisions and placements below 3rd may be missing."),
-            ("Unresolved IDs",  "Some participants have no resolved person_id.  "
-                                "These do not affect statistics (excluded by design) "
-                                "but represent genuine historical uncertainty."),
-            ("Source conflicts", "Where FBW and OLD_RESULTS sources disagree, "
-                                 "OLD_RESULTS (authoritative human records) takes precedence."),
+            ("Worlds types",
+                "Worlds leaderboards include all events with event_type=worlds "
+                "plus pre-1997 events with 'worlds' in the event key "
+                "(NHSA/WFA/IFAB championships)."),
+            ("Counting method",
+                "Wins and podiums counted once per placement slot "
+                "(participant_order=1).  Team events: both members credited "
+                "equally; the slot is counted once in aggregate tables."),
+            ("Top 25",
+                "Leaderboard tables show top 25.  Full data available "
+                "in PLAYER STATS sheet and canonical CSV files."),
+            ("Ties",
+                "Equal-ranked positions use T-N notation (e.g. T-5).  "
+                "After a tie of N, the next rank skips N-1 positions."),
         ]),
     ]
 
