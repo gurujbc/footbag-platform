@@ -1194,11 +1194,7 @@ ee4f7703-fea7-5a51-b35b-7d5629d175ec,Tomi Szekely,Austria,event_location_heurist
 1e47dccb-0bab-53cc-bccb-daac24614ff4,Tommi Hatakka,Finland,event_location_heuristic:1/1,auto
 5c70d95e-dacb-56f7-8a98-74d14a46b920,Tommi Terä,Finland,event_location_heuristic:2/2,auto
 6b4ff6ed-91f2-5232-9eb0-be12a9a4a0d0,Tony Nevara,United States,event_location_heuristic:1/1,auto
-<<<<<<< HEAD
-f38e2f8e-cba6-5fff-8b20-90791fd0d794,Torbin Wigger,Denmark,user_confirmed_nationality,auto
-=======
 f38e2f8e-cba6-5fff-8b20-90791fd0d794,Torbin Wigger,Denmark,"human_override:previous=Germany,heuristic_suggest=United States:6/8",manual
->>>>>>> 8b23f07 (update country override)
 f31b6715-c9ff-5d27-9bb1-bf260b19ebe7,Travis Tips,United States,event_location_heuristic:1/1,auto
 bb786de7-6041-5abe-aa75-5fff53e3fe7b,Tre Jones,United States,event_location_heuristic:1/1,auto
 fcd5bac7-6c1b-5d1f-8ff4-b9bedebc33e4,Tricia Sullivan,United States,event_location_heuristic:11/11,auto
