@@ -17,34 +17,33 @@ import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-import { insertMember } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, createTestSessionJwt } from '../fixtures/factories';
 
-const TEST_DB_PATH = path.join(process.cwd(), `test-member-profile-${Date.now()}.db`);
+const TEST_DB_PATH      = path.join(process.cwd(), `test-member-profile-${Date.now()}.db`);
 
 // Set env vars BEFORE any module that reads them is imported.
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.PORT             = '3003';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3003';
-process.env.SESSION_SECRET   = 'member-profile-test-secret';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH          = TEST_DB_PATH;
+process.env.PORT                     = '3003';
+process.env.NODE_ENV                 = 'test';
+process.env.LOG_LEVEL                = 'error';
+process.env.PUBLIC_BASE_URL          = 'http://localhost:3003';
+process.env.SESSION_SECRET           = 'member-profile-test-secret';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
 
-const TEST_SECRET = process.env.SESSION_SECRET!;
 const OWN_ID      = 'member-profile-test-001';
 const OWN_SLUG    = 'test_member';
 const OTHER_ID    = 'member-other-test-001';
 const OTHER_SLUG  = 'other_member';
 
 function ownCookie(): string {
-  return `footbag_session=${createSessionCookie(OWN_ID, 'member', TEST_SECRET, 'Test Member', OWN_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: OWN_ID })}`;
 }
 
 function otherCookie(): string {
-  return `footbag_session=${createSessionCookie(OTHER_ID, 'member', TEST_SECRET, 'Other Member', OTHER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: OTHER_ID })}`;
 }
 
 beforeAll(async () => {
@@ -126,10 +125,21 @@ describe('GET /members/:memberKey — profile view', () => {
 
   it('nonexistent member key → 404', async () => {
     const app = createApp();
+    // Authenticate as a real member; the URL slug is what must not exist.
     const res = await request(app)
       .get('/members/does-not-exist')
-      .set('Cookie', `footbag_session=${createSessionCookie('does-not-exist', 'member', TEST_SECRET)}`);
+      .set('Cookie', ownCookie());
     expect(res.status).toBe(404);
+  });
+
+  it('own profile renders a Change Password link to /edit/password', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .get(`/members/${OWN_SLUG}`)
+      .set('Cookie', ownCookie());
+    expect(res.status).toBe(200);
+    expect(res.text).toContain(`href="/members/${OWN_SLUG}/edit/password"`);
+    expect(res.text).toContain('Change Password');
   });
 });
 
@@ -247,7 +257,9 @@ describe('POST /members/:memberKey/edit — save profile', () => {
 // ── GET /members/:memberKey/:section — stub pages ───────────────────────────────
 
 describe('GET /members/:memberKey/:section — stub pages', () => {
-  const VALID_SECTIONS = ['media', 'settings', 'password', 'download', 'delete'];
+  // `password` is no longer a stub section — it has a real form at
+  // /members/:slug/edit/password (Phase 5).
+  const VALID_SECTIONS = ['media', 'settings', 'download', 'delete'];
 
   it('unauthenticated → 302 to /login with returnTo', async () => {
     const app = createApp();

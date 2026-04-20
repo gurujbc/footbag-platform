@@ -328,14 +328,15 @@ Contains all domain logic and business rules (documented in Service Catalog as d
 
 Provides abstractions for External Services making them look identical whether running locally (development) or in production. These are code-level abstraction layers in the back end which provide developer-production parity, and allow developers to build and test code without using AWS credentials or live links to the other systems.
 
-- EmailAdapter: AWS SES in production, in-memory capture in development.
+- SesAdapter: `LiveSesAdapter` sends via AWS SES in production; `StubSesAdapter` captures messages in memory for dev/test.
 - PaymentAdapter: Stripe SDK in production, mock responses in development.
-- SecretsAdapter: AWS Parameter Store in production, local JSON in development.
+- SecretsAdapter: AWS Parameter Store in production (deferred — not yet wired); dev loads secrets from environment variables via the config singleton per DD §1.11.
 - CloudTrailAdapter: surfaces AWS CloudTrail audit events for AWS activity; in development, writes simulated audit events to local files.
 - LoggingAdapter: In production, sends structured application and technical logs to CloudWatch Logs; in development, writes the same structured logs to local files.
 - MetricsAdapter: In production, sends metrics (counters, timers, gauges) to CloudWatch Metrics; in development, records the same metrics in local in-memory or file-based storage.
 - URLValidationAdapter: In production, performs URL validation including format checks and allowed host patterns; in development, uses a deterministic stub that validates syntax and known patterns without making outbound network calls.
-- PhotoStorageAdapter: Abstracts photo storage between environments. Production uses S3 buckets; development uses local filesystem with identical structure.
+- PhotoStorageAdapter: Abstracts photo storage between environments. `LocalPhotoStorageAdapter` serves both dev and the current production-stub until S3 IAM is wired; future `S3PhotoStorageAdapter` will be the production implementation.
+- JwtSigningAdapter: `KmsJwtAdapter` signs JWTs via AWS KMS (RS256) in production; `LocalJwtAdapter` signs with a file-based RSA keypair in dev/test.
 
 This layer is the translation service. Services call generic interfaces; infrastructure routes to appropriate implementation based on environment (dev, stage, prod).
 
@@ -795,7 +796,7 @@ A custom Python-based crawler was developed to capture the complete Footbag.org 
 
 - The mirror could not access all members, only those with a public presence (club members, event participants with results, published media galleries).
 - The mirror cannot fetch login credentials. Legacy passwords are never imported or accepted.
-- Legacy data migration uses two sources: (1) historical pipeline (James) — persons from human-curated CSV, clubs from mirror extraction, events, results, and honors; (2) legacy member import (Steve's export) — all legacy registered accounts imported as pre-credential placeholder rows, these rows cannot log in or appear in any member-facing surface.
+- Legacy data migration uses two sources: (1) historical pipeline (James) — persons from human-curated CSV, clubs from mirror extraction, events, results, and honors; (2) legacy member import (Steve's export) — all legacy registered accounts imported as rows in the `legacy_members` table, which cannot log in and do not appear in any member-facing surface.
 - Imported members connect their legacy identity to a modern account via a self-serve claim flow: submit a legacy identifier (email, username, or member ID), verify mailbox ownership via a time-limited email link, then confirm the merge. This transfers legacy identity, honors, tier entitlements, and club data to the modern account.
 - Club leaders assigned at bootstrap are leaders. They can manage the club once they register.
 

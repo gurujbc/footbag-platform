@@ -11,7 +11,7 @@ import { freestyleController } from '../controllers/freestyleController';
 import { recordsController } from '../controllers/recordsController';
 import { netController } from '../controllers/netController';
 import { legalController } from '../controllers/legalController';
-import { requireAuth } from '../middleware/authStub';
+import { requireAuth } from '../middleware/auth';
 
 export const publicRouter = Router();
 
@@ -50,10 +50,14 @@ publicRouter.get('/net/partnerships/:teamId',    netController.partnershipDetail
 publicRouter.get('/net/teams',          netController.teams);
 publicRouter.get('/net/teams/:teamId',  netController.teamDetail);
 
-// IMPORTANT: /net/players/:personId/partners/:teamId must be registered before
-// /net/players/:personId so the literal segment 'partners' is not captured as :personId.
-publicRouter.get('/net/players/:personId/partners/:teamId', netController.playerPartnerDetail);
-publicRouter.get('/net/players/:personId',                  netController.playerPage);
+// IMPORTANT: /partners/:teamId variant must be registered before the bare
+// :personId route so the literal 'partners' is not captured as :personId.
+publicRouter.get('/net/players/:personId/partners/:teamId', (req, res) => {
+  res.redirect(302, `/history/${encodeURIComponent(req.params['personId'] ?? '')}`);
+});
+publicRouter.get('/net/players/:personId', (req, res) => {
+  res.redirect(302, `/history/${encodeURIComponent(req.params['personId'] ?? '')}`);
+});
 
 // IMPORTANT: /events/year/:year MUST be registered before /events/:eventKey.
 // Express matches routes in registration order. Without this ordering,
@@ -77,15 +81,24 @@ publicRouter.get('/history/:personId',   historyController.detail);
 // captured as :section.
 publicRouter.get('/members',                       memberController.landing);
 publicRouter.get('/members/:memberKey',             memberController.getProfile);
-publicRouter.get('/members/:memberKey/edit',        requireAuth, memberController.getProfileEdit);
-publicRouter.post('/members/:memberKey/edit',       requireAuth, memberController.postProfileEdit);
-publicRouter.post('/members/:memberKey/avatar',     requireAuth, memberController.postAvatarUpload);
-publicRouter.get('/members/:memberKey/:section',    requireAuth, memberController.getStub);
+publicRouter.get('/members/:memberKey/edit',          requireAuth, memberController.getProfileEdit);
+publicRouter.post('/members/:memberKey/edit',         requireAuth, memberController.postProfileEdit);
+publicRouter.get('/members/:memberKey/edit/password', requireAuth, memberController.getPasswordEdit);
+publicRouter.post('/members/:memberKey/edit/password',requireAuth, memberController.postPasswordEdit);
+publicRouter.post('/members/:memberKey/avatar',       requireAuth, memberController.postAvatarUpload);
+publicRouter.get('/members/:memberKey/:section',      requireAuth, memberController.getStub);
 
 publicRouter.get('/legal',      legalController.index);
 
 publicRouter.get('/login',      authController.getLogin);
 publicRouter.post('/login',     authController.postLogin);
-publicRouter.get('/register',   authController.getRegister);
-publicRouter.post('/register',  authController.postRegister);
-publicRouter.post('/logout',    authController.postLogout);
+publicRouter.get('/register',               authController.getRegister);
+publicRouter.post('/register',              authController.postRegister);
+publicRouter.get('/register/check-email',   authController.getCheckEmail);
+publicRouter.get('/verify/:token',          authController.getVerify);
+publicRouter.post('/verify/resend',         authController.postVerifyResend);
+publicRouter.get('/password/forgot',        authController.getPasswordForgot);
+publicRouter.post('/password/forgot',       authController.postPasswordForgot);
+publicRouter.get('/password/reset/:token',  authController.getPasswordReset);
+publicRouter.post('/password/reset/:token', authController.postPasswordReset);
+publicRouter.post('/logout',                authController.postLogout);

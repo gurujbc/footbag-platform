@@ -8,6 +8,8 @@ import {
 import { runSqliteRead } from './sqliteRetry';
 import { NotFoundError } from './serviceErrors';
 import { PageViewModel } from '../types/page';
+import { personHref } from './personLink';
+import { shapePartnershipPair } from './playerShaping';
 
 // ---------------------------------------------------------------------------
 // Record type labels
@@ -132,7 +134,7 @@ export interface FreestyleTrickContent {
   topValue: number;
   progression: FreestyleRecordViewModel[];  // all records including superseded, newest first
   hasProgression: boolean;                  // true when any records are superseded
-  // Dictionary info — null when trick has no dictionary entry
+  // Dictionary info, null when trick has no dictionary entry
   dictEntry: FreestyleTrickDictEntry | null;
   // Family members: siblings or derivatives, sorted by ADD value
   familyMembers: FreestyleFamilyMember[];   // empty when family has only one member
@@ -218,7 +220,7 @@ export interface FreestyleFamilyGroup {
 }
 
 // ---------------------------------------------------------------------------
-// Freestyle Insights types (service-layer constants — not DB-backed)
+// Freestyle Insights types (service-layer constants, not DB-backed)
 // ---------------------------------------------------------------------------
 
 export interface InsightsTrick {
@@ -281,7 +283,7 @@ export interface FreestyleCompetitorViewModel {
   silvers: number;
   bronzes: number;
   totalPodiums: number;
-  profileHref: string;    // /history/:personId
+  profileHref: string | null;    // /members/{slug} if claimed, else /history/:personId
 }
 
 export interface FreestyleEraViewModel {
@@ -313,10 +315,10 @@ export interface FreestyleCompetitionContent {
 export interface FreestylePartnershipViewModel {
   personIdA:       string;
   personNameA:     string;
-  hrefA:           string;
+  hrefA:           string | null;
   personIdB:       string;
   personNameB:     string;
-  hrefB:           string;
+  hrefB:           string | null;
   appearanceCount: number;
   winCount:        number;
   podiumCount:     number;
@@ -368,7 +370,7 @@ export function shapeFreestyleRecord(row: FreestyleRecordRow): FreestyleRecordVi
   return {
     id:              row.id,
     holderName:      row.holder_name,
-    holderHref:      row.person_id ? `/history/${row.person_id}` : null,
+    holderHref:      personHref(row.holder_member_slug, row.person_id),
     trickName:       row.trick_name,
     trickHref:       row.trick_name ? `/freestyle/tricks/${trickNameToSlug(row.trick_name)}` : null,
     sortName:        row.sort_name,
@@ -402,7 +404,7 @@ function shapeLeaders(rows: FreestyleLeaderRow[]): FreestyleLeaderViewModel[] {
   return rows.map((row, i) => ({
     rank:        i + 1,
     holderName:  row.holder_name,
-    holderHref:  row.person_id ? `/history/${row.person_id}` : null,
+    holderHref:  personHref(row.holder_member_slug, row.person_id),
     recordCount: row.record_count,
     topValue:    row.top_value,
     topTrick:    row.top_trick,
@@ -422,7 +424,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 // Editorial notes for major trick families.
-// These are service-layer constants — not DB-backed — and describe structural
+// These are service-layer constants, not DB-backed, and describe structural
 // significance at the family level rather than individual tricks.
 const FAMILY_NOTES: Record<string, string> = {
   whirl:
@@ -466,7 +468,7 @@ const FAMILY_NOTES: Record<string, string> = {
     'documented trick vocabulary.',
 };
 
-// Rotational base tricks — these receive the higher modifier bonus (add_bonus_rotational)
+// Rotational base tricks, these receive the higher modifier bonus (add_bonus_rotational)
 const ROTATIONAL_BASES = new Set(['whirl', 'mirage', 'torque', 'blender', 'swirl', 'drifter']);
 
 /**
@@ -600,7 +602,7 @@ function shapeModifierEntry(row: FreestyleTrickModifierRow): FreestyleModifierEn
 }
 
 // ---------------------------------------------------------------------------
-// Freestyle Insights constants (frozen analytical output — not DB-backed)
+// Freestyle Insights constants (frozen analytical output, not DB-backed)
 // Source: legacy_data/inputs/curated/records/freestyle_insights.csv
 //         legacy_data/inputs/curated/records/FREESTYLE_EVOLUTION_REPORT.md
 // ---------------------------------------------------------------------------
@@ -712,7 +714,7 @@ const INSIGHTS_NARRATIVES: string[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// History constants (editorial — sourced from Freestyle Evolution Report,
+// History constants (editorial, sourced from Freestyle Evolution Report,
 // derived from 774 documented competitive events 1980–2026)
 // ---------------------------------------------------------------------------
 
@@ -1002,7 +1004,7 @@ export const freestyleService = {
       silvers:      r.silvers,
       bronzes:      r.bronzes,
       totalPodiums: r.total_podiums,
-      profileHref:  `/history/${r.person_id}`,
+      profileHref:  personHref(r.member_slug, r.person_id),
     }));
 
     const eventsByEra: FreestyleEraViewModel[] = eraRows.map(r => ({
@@ -1064,12 +1066,7 @@ export const freestyleService = {
         span = first === last ? String(first) : `${first}–${last}`;
       }
       return {
-        personIdA:       r.person_id_a,
-        personNameA:     r.person_name_a,
-        hrefA:           `/history/${r.person_id_a}`,
-        personIdB:       r.person_id_b,
-        personNameB:     r.person_name_b,
-        hrefB:           `/history/${r.person_id_b}`,
+        ...shapePartnershipPair(r),
         appearanceCount: r.appearance_count,
         winCount:        r.win_count,
         podiumCount:     r.podium_count,

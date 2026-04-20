@@ -240,7 +240,7 @@ Routing note: This project is page-oriented, not REST-API-oriented. Public route
 
 ### 3.1 `IdentityAccessService`
 
-**Purpose/Boundary:** Owns current-slice account entry/auth flows: registration, credential verification, login/logout, and current session-cookie issuance/clearing. Does NOT own member profile CRUD, historical-person reads, tier calculation, or data exports.
+**Purpose/Boundary:** Owns current-slice account entry/auth flows: registration, credential verification, password change/reset, email verification, legacy account claim. Does NOT own member profile CRUD, historical-person reads, tier calculation, data exports, or session-cookie issuance (session-cookie issuance and clearing are controller-level HTTP glue per DD §1.9; the service returns a signed JWT string and the controller sets/clears the cookie).
 
 Future detail (retain explicitly): auth hardening to the long-term JWT/session design remains governed by `docs/DESIGN_DECISIONS.md` and `IMPLEMENTATION_PLAN.md`.
 
@@ -249,8 +249,7 @@ Future detail (retain explicitly): auth hardening to the long-term JWT/session d
 **Key Methods:**
 - `register(input) -> {memberId, verificationTokenSent}` — creates `members` row at Tier 0; enqueues verification email via CommunicationService; audit-logs
 - `verifyEmail(token) -> {ok}` — validates SHA-256 token hash, marks `used_at`, activates account
-- `login(credentials) -> {jwt}` — validates credentials; checks `password_version` in JWT payload; enforces login rate limiting; if `is_deceased = 1`: rejects login with appropriate error message; detects grace-period-deleted account → presents restore screen instead of logging in
-- `logout(session) -> {ok}` — invalidates session
+- `verifyMemberCredentials(email, password) -> Member | null` — validates credentials against argon2 hash; enforces deceased/grace-period rules; returns the member row on success or null. Session issuance is the caller's responsibility (controller mints the JWT via `createSessionJwt` and sets the cookie). Login rate limiting is applied at the controller.
 - `changePassword(input) -> {ok}` — increments `password_version` (invalidates all existing JWTs); updates `password_hash`; increments `password_hash_version` only on algorithm change; audit-logs
 - `requestPasswordReset(email) -> {ok}` — rate-limited (5 requests/email/hour regardless of email existence); enqueues reset email with SHA-256-hashed token; consistent timing prevents enumeration
 - `resetPassword(token, newPassword) -> {ok}` — validates token (1-hour expiry, unused); increments `password_version`; marks token consumed; audit-logs
@@ -325,7 +324,7 @@ Future detail (retain explicitly): auth hardening to the long-term JWT/session d
 - `getHistoricalPlayerPage(personId) -> { page, seo, navigation: { contextLinks }, content: { personId, displayName, honorificNickname?, eventGroups } }` — resolves one imported historical person into the detail page model; unknown/non-public IDs resolve as not-found; `eventGroups` carries typed event result history with service-computed `eventHref`; `navigation.contextLinks` carries the typed back link to `/members`
 
 **Key Rules:**
-- historical imported people remain distinct from current member accounts
+- historical imported people vs current member accounts: see DD §2.4
 - historical pages must not imply current-member ownership or contactability
 - public honor visibility for HoF/BAP historical persons is bounded and explicit
 - route handlers stay thin; page shaping belongs here
@@ -455,7 +454,7 @@ For the current public routes, `EventService` is responsible for:
 **Historical imported people read boundary:**
 - `event_result_entry_participants.display_name` is the always-renderable participant label.
 - `historical_person_id` supports read-only historical detail linking when present and when a historical detail target is actually exposed.
-- Historical imported people remain distinct from current Members in this design. They do not automatically participate in member search, profile ownership, roster visibility, or authenticated-member behavior.
+- For entity-level distinction between historical imported people and current Members, see DD §2.4.
 
 **Authz:** Create: Tier 1+. Edit/manage: event organizer or co-organizer scope. Sanction approval, result correction, reassign: admin only.
 
@@ -480,7 +479,7 @@ For the current public routes, `EventService` is responsible for:
 - `[APP]` Public event browse/detail reads use prepared statements exported by `db.ts` directly; no repository layer and no ORM
 - `[APP]` `db.ts` may return flat ordered result rows; grouping and page/view shaping belong above `db.ts`
 - `[APP]` `hostClub` is route-facing display data sourced from `events.host_club_id -> clubs.name` when present and must not be inferred from `event_organizers`
-- `[APP]` when shaping public result rows, set `participantHref` to `"/members/{historical_person_id}"` when a linked `historical_person_id` is present and public; omit the field (or set to null) otherwise — templates render a plain name when `participantHref` is absent; no URL construction in templates
+- `[APP]` when shaping public result rows, set `participantHref` via `personHref(participant_member_slug, participant_historical_person_id)` per DD §2.4 rule 2 (dispatches to `/members/{slug}` for claimed members, `/history/{personId}` otherwise, null if neither). Templates render a plain name when `participantHref` is null; no URL construction in templates.
 - `[APP]` Public year archives include the full completed public event list for the selected year and are not paginated in the current slice
 - `[APP]` A year-page event has `hasResults = true` only when the event is publicly visible and at least one result row exists for that event; this flag may be used for visual treatment on the year page (e.g. a results indicator) but results are not rendered inline on the year page
 - `[APP]` If a historical event has no result rows yet, the canonical event page renders the event and includes an explicit no-results state; the year page shows the event summary regardless of result availability
@@ -881,8 +880,10 @@ For the current public routes, `EventService` is responsible for:
 **Consumers:** All services (enqueue to outbox), AdminGovernanceService (mailing list management), OperationsPlatformService (worker invocation, SES webhook routing)
 
 **Key Methods:**
-- `processSendQueue() -> {ok}` — called by `OperationsPlatformService.runEmailWorker()`; polls `outbox_emails`; skips if `email_sending_paused = 1` (read from `system_config_current`); sends via SES; retries up to `outbox_max_retry_attempts` with exponential backoff; dead-letters after max retries; updates `status`; scrubs plaintext receipt tokens from `body_text` after successful delivery (APP-019); logs to CloudWatch (template ID, member ID, outbox ID, timestamp, result — not raw email addresses)
+- `processSendQueue() -> {ok}` — called by `OperationsPlatformService.runEmailWorker()`; polls `outbox_emails`; skips if `email_outbox_paused = 1` (read from `system_config_current`); sends via SES; retries up to `outbox_max_retry_attempts`; dead-letters after max retries; updates `status`; scrubs plaintext receipt tokens from `body_text` after successful delivery (APP-019); logs to CloudWatch (template ID, member ID, outbox ID, timestamp, result — not raw email addresses)
 - `enqueueEmail(recipient, templateId, context, idempotencyKey) -> {outboxId}` — internal; writes `outbox_emails`; stable idempotency key prevents duplicate sends
+
+Future-scope methods (not implemented in the current slice; retained here as the target service contract for mailing lists, admin sends, bounce/complaint handling, and template management):
 - `sendAnnounceEmail(memberId, subject, body) -> {ok}` — **Tier 2+ members only** (distinct from admin-only list sends); rate-limited; sends to configured `announce@footbag.org` address; archives in `email_archives` with `archive_type='announce'`, `sender_member_id`, `subject`, `body_text`, `sent_at`, `recipient_count=1`; audit-logs (actor ID, subject, timestamp)
 - `sendMailingListEmail(actorId, listSlug, subject, body) -> {ok}` — admin only (except announce list, handled by `sendAnnounceEmail`); enumerates `mailing_list_subscriptions`; applies subscription status filter; archives in `email_archives`; audit-logs; includes unsubscribe links
 - `createMailingList(adminId, input) -> {listId}` — admin; mailing list backed by `mailing_lists`
@@ -1015,19 +1016,19 @@ For the current public routes, `EventService` is responsible for:
 **Consumers:** Member profile controllers (claim flow), admin controllers (manual recovery, bootstrap leadership resolution)
 
 **Key Methods:**
-- `initiateAccountClaim(activeMemberId, identifier) -> {ok}` — classifies identifier type (legacy email, legacy username, or legacy member ID); looks up the matching imported placeholder row; if exactly one eligible row found, creates an `account_claim` token bound to `activeMemberId` and `target_member_id`; applies rate limiting per requesting account, per target row, and per session/IP; queues claim email to `legacy_email`; writes audit event `legacy_claim_email_sent`; returns a generic non-revealing response regardless of outcome (does not distinguish zero matches, multiple matches, ineligible rows, or blocked rows)
-- `consumeAccountClaim(token, activeMemberId) -> {claimData}` — validates token (exists, unconsumed, unexpired, `token_type = 'account_claim'`, `member_id` matches `activeMemberId`); validates target row still exists and is claimable; returns confirmation data including the active account identity and any club-affiliation or bootstrap-leader suggestions for review; on member confirmation, runs merge transaction: transfers `legacy_member_id`, merges profile fields per merge rules, writes tier reconciliation grant via MembershipTieringService if imported tier exceeds current, writes confirmed club affiliations to `member_club_affiliations`, processes bootstrap-leader confirmations, marks token consumed, soft-deletes the imported placeholder row (sets `deleted_at`; NULLs `legacy_member_id` since it was transferred), and marks all outstanding `account_claim` tokens targeting the placeholder as consumed; writes audit event `legacy_claim_completed` with full merge summary
-- `manualLegacyClaimRecovery(adminId, targetImportedMemberId, activeMemberId, reason, verificationNote) -> {ok}` — admin-initiated merge for cases where self-serve claim is unavailable; runs the same merge transaction as `consumeAccountClaim`; requires non-empty `reason` and `verificationNote`; writes audit event `legacy_claim_manual_recovery` with actor, target, reason, and verification note; never auto-promotes `legacy_is_admin` to live admin role
+- `initiateAccountClaim(activeMemberId, identifier) -> {ok}` — classifies identifier type (legacy email, legacy username, or legacy member ID); looks up the matching `legacy_members` row; if exactly one eligible (unclaimed) row is found, creates an `account_claim` token bound to `activeMemberId` and the target `legacy_member_id`; applies rate limiting per requesting account, per target row, and per session/IP; queues claim email to `legacy_email`; writes audit event `legacy_claim_email_sent`; returns a generic non-revealing response regardless of outcome (does not distinguish zero matches, multiple matches, ineligible rows, or blocked rows).
+- `consumeAccountClaim(token, activeMemberId) -> {claimData}` — validates token (exists, unconsumed, unexpired, `token_type = 'account_claim'`, `member_id` matches `activeMemberId`); validates target `legacy_members` row still exists and is unclaimed; returns confirmation data including the active account identity and any club-affiliation or bootstrap-leader suggestions for review; on member confirmation, runs merge transaction: sets `members.legacy_member_id` to the target legacy_member_id, copies editable fields from `legacy_members` to the member row per MIGRATION_PLAN §9 merge rules (COALESCE / OR-merge / fill-if-empty), if the target `legacy_members.legacy_member_id` matches a `historical_persons.legacy_member_id` also sets `members.historical_person_id` to that HP's `person_id`, sets `legacy_members.claimed_by_member_id` + `claimed_at` (the row is NOT deleted), writes tier reconciliation grant via MembershipTieringService if imported tier exceeds current, writes confirmed club affiliations to `member_club_affiliations`, processes bootstrap-leader confirmations, and marks all outstanding `account_claim` tokens targeting this `legacy_members` row as consumed; writes audit event `legacy_claim_completed` with full merge summary.
+- `manualLegacyClaimRecovery(adminId, targetLegacyMemberId, activeMemberId, reason, verificationNote) -> {ok}` — admin-initiated merge for cases where self-serve claim is unavailable; runs the same merge transaction as `consumeAccountClaim` against the `legacy_members` row identified by `targetLegacyMemberId`; requires non-empty `reason` and `verificationNote`; writes audit event `legacy_claim_manual_recovery` with actor, target, reason, and verification note; never auto-promotes `legacy_is_admin` to live admin role
 - `confirmBootstrapLeadership(activeMemberId, bootstrapLeaderId) -> {ok}` — called during claim flow; validates bootstrap row is `provisional` and active member's `legacy_member_id` matches the row's `legacy_member_id`; if no conflicting live leader exists for the club, creates a `club_leaders` row on the active account and marks bootstrap row `claimed`; if a conflict exists, leaves row provisional and flags for admin review; writes audit event `legacy_club_bootstrap_promoted` or notes the conflict
 - `resolveBootstrapLeadership(adminId, bootstrapLeaderId, action, reason) -> {ok}` — admin resolution of provisional bootstrap leadership; actions: `promote` (link to a specific claimed member's `club_leaders` row), `supersede` (mark row superseded; appoint live leader through standard workflow), `reject` (discard provisional assignment); all actions audit-logged
 
 **Authz:** `initiateAccountClaim`, `consumeAccountClaim`, `confirmBootstrapLeadership`: authenticated member (own account only). `manualLegacyClaimRecovery`, `resolveBootstrapLeadership`: admin only.
 
-**Persistence Touchpoints:** `members`, `account_tokens`, `member_tier_grants` (via MembershipTieringService), `member_club_affiliations`, `club_bootstrap_leaders`, `club_leaders`, `audit_entries`, `outbox_emails`
+**Persistence Touchpoints:** `members`, `legacy_members`, `historical_persons` (read-only, for HP-match during claim), `account_tokens`, `member_tier_grants` (via MembershipTieringService), `member_club_affiliations`, `club_bootstrap_leaders`, `club_leaders`, `audit_entries`, `outbox_emails`
 
 **Key Rules:**
 - `[APP]` Non-revealing messaging: claim initiation response never distinguishes zero matches, multiple matches, ineligible rows, or blocked rows. Recommended: "If an eligible legacy record was found, a claim email will be sent."
-- `[APP]` Merge transaction is atomic; the imported placeholder row is soft-deleted at the end of a successful merge (`deleted_at` set, `legacy_member_id` NULLed since it was transferred to the active account); all outstanding `account_claim` tokens targeting the placeholder are marked consumed in the same transaction
+- `[APP]` Merge transaction is atomic. The target `legacy_members` row is MARKED CLAIMED (`claimed_by_member_id` + `claimed_at` set); the row is NOT deleted and persists as the permanent archival record. Member-editable fields copy to the claiming `members` row per MIGRATION_PLAN §9. If the target's `legacy_member_id` matches a `historical_persons.legacy_member_id`, `members.historical_person_id` is set to that HP's `person_id` in the same transaction. All outstanding `account_claim` tokens targeting the claimed `legacy_members` row are marked consumed in the same transaction.
 - `[APP]` Rate limiting applies to claim initiation and resend per requesting account, per target row, and per session/IP
 - `[APP]` A token may only be consumed by the same `member_id` that initiated the request; consuming while authenticated as a different account is rejected
 - `[APP]` Tier reconciliation grant is written only if the imported effective tier exceeds the current effective tier; uses `reason_code = 'migration.legacy_claim_reconcile'`

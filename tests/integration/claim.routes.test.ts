@@ -1,10 +1,10 @@
 /**
- * Integration tests for legacy account claim routes.
+ * Integration tests for legacy account claim routes (three-table design per DD §2.4).
  *
  * Covers:
  *   GET  /history/claim          — claim lookup form (auth required)
  *   POST /history/claim          — legacy identifier lookup
- *   POST /history/claim/confirm  — execute atomic merge
+ *   POST /history/claim/confirm  — execute atomic merge against legacy_members
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
@@ -12,45 +12,45 @@ import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-import { insertMember, insertImportedPlaceholder, insertHistoricalPerson } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, insertLegacyMember, insertHistoricalPerson, createTestSessionJwt } from '../fixtures/factories';
 
 const TEST_DB_PATH = path.join(process.cwd(), `test-claim-${Date.now()}.db`);
 
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.PORT             = '3099';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3099';
-process.env.SESSION_SECRET   = 'claim-test-secret';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH = TEST_DB_PATH;
+process.env.PORT            = '3099';
+process.env.NODE_ENV        = 'test';
+process.env.LOG_LEVEL       = 'error';
+process.env.PUBLIC_BASE_URL = 'http://localhost:3099';
+process.env.SESSION_SECRET  = 'claim-test-secret';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
 
-const TEST_SECRET   = process.env.SESSION_SECRET!;
-const CLAIMER_ID    = 'claim-test-claimer';
-const CLAIMER_SLUG  = 'claim_tester';
-const OTHER_ID      = 'claim-test-other';
-const OTHER_SLUG    = 'other_tester';
-const PLACEHOLDER_ID  = 'legacy-placeholder-001';
+const CLAIMER_ID   = 'claim-test-claimer';
+const CLAIMER_SLUG = 'claim_tester';
+const OTHER_ID     = 'claim-test-other';
+const OTHER_SLUG   = 'other_tester';
+
+// Legacy account with NO corresponding HP — claim just links legacy_member_id.
+const LEGACY_NO_HP = 'LM-12345';
+
+// Legacy account WITH a corresponding historical_person — claim also sets members.historical_person_id.
+const LEGACY_WITH_HP  = '99999';
 const HP_PERSON_ID    = 'hp-claim-test-001';
-const HP_LEGACY_ID    = '99999';
 
 function claimerCookie(): string {
-  return `footbag_session=${createSessionCookie(CLAIMER_ID, 'member', TEST_SECRET, 'Claim Tester', CLAIMER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: CLAIMER_ID })}`;
 }
 
 function otherCookie(): string {
-  return `footbag_session=${createSessionCookie(OTHER_ID, 'member', TEST_SECRET, 'Other Tester', OTHER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: OTHER_ID })}`;
 }
 
 let testDb: BetterSqlite3.Database;
 
 beforeAll(async () => {
-  const schema = fs.readFileSync(
-    path.join(process.cwd(), 'database', 'schema.sql'),
-    'utf8',
-  );
+  const schema = fs.readFileSync(path.join(process.cwd(), 'database', 'schema.sql'), 'utf8');
   testDb = new BetterSqlite3(TEST_DB_PATH);
   testDb.pragma('journal_mode = WAL');
   testDb.pragma('foreign_keys = ON');
@@ -59,10 +59,10 @@ beforeAll(async () => {
   insertMember(testDb, { id: CLAIMER_ID, slug: CLAIMER_SLUG, display_name: 'Claim Tester', login_email: 'claimer@example.com' });
   insertMember(testDb, { id: OTHER_ID, slug: OTHER_SLUG, display_name: 'Other Tester', login_email: 'other@example.com' });
 
-  insertImportedPlaceholder(testDb, {
-    id: PLACEHOLDER_ID,
+  insertLegacyMember(testDb, {
+    legacy_member_id: LEGACY_NO_HP,
+    real_name: 'Legacy Player',
     display_name: 'Legacy Player',
-    legacy_member_id: 'LM-12345',
     legacy_user_id: 'legacyuser',
     legacy_email: 'legacy@oldsite.com',
     bio: 'Legacy bio text',
@@ -75,10 +75,18 @@ beforeAll(async () => {
   insertHistoricalPerson(testDb, {
     person_id: HP_PERSON_ID,
     person_name: 'Historical Claimant',
-    legacy_member_id: HP_LEGACY_ID,
+    legacy_member_id: LEGACY_WITH_HP,
     country: 'NZ',
     hof_member: 1,
     bap_member: 0,
+  });
+  insertLegacyMember(testDb, {
+    legacy_member_id: LEGACY_WITH_HP,
+    real_name: 'Historical Claimant',
+    display_name: 'Historical Claimant',
+    country: 'NZ',
+    is_hof: 1,
+    is_bap: 0,
   });
 
   const mod = await import('../../src/app');
@@ -104,9 +112,7 @@ describe('GET /history/claim — claim form', () => {
 
   it('authenticated -> 200 with form', async () => {
     const app = createApp();
-    const res = await request(app)
-      .get('/history/claim')
-      .set('Cookie', claimerCookie());
+    const res = await request(app).get('/history/claim').set('Cookie', claimerCookie());
     expect(res.status).toBe(200);
     expect(res.text).toContain('Legacy identifier');
   });
@@ -118,10 +124,7 @@ describe('POST /history/claim — lookup', () => {
   it('empty identifier -> 422 with error', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ identifier: '' });
+      .post('/history/claim').set('Cookie', claimerCookie()).type('form').send({ identifier: '' });
     expect(res.status).toBe(422);
     expect(res.text).toContain('Please enter a legacy identifier');
   });
@@ -129,9 +132,7 @@ describe('POST /history/claim — lookup', () => {
   it('valid match by legacy_email -> 200 with confirmation', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', claimerCookie())
-      .type('form')
+      .post('/history/claim').set('Cookie', claimerCookie()).type('form')
       .send({ identifier: 'legacy@oldsite.com' });
     expect(res.status).toBe(200);
     expect(res.text).toContain('Legacy Player');
@@ -141,10 +142,7 @@ describe('POST /history/claim — lookup', () => {
   it('valid match by legacy_member_id -> 200 with confirmation', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ identifier: 'LM-12345' });
+      .post('/history/claim').set('Cookie', claimerCookie()).type('form').send({ identifier: LEGACY_NO_HP });
     expect(res.status).toBe(200);
     expect(res.text).toContain('Legacy Player');
   });
@@ -152,10 +150,7 @@ describe('POST /history/claim — lookup', () => {
   it('valid match by legacy_user_id -> 200 with confirmation', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ identifier: 'legacyuser' });
+      .post('/history/claim').set('Cookie', claimerCookie()).type('form').send({ identifier: 'legacyuser' });
     expect(res.status).toBe(200);
     expect(res.text).toContain('Legacy Player');
   });
@@ -163,107 +158,107 @@ describe('POST /history/claim — lookup', () => {
   it('no match -> 200 with "not found" message', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ identifier: 'nonexistent@nowhere.com' });
+      .post('/history/claim').set('Cookie', claimerCookie()).type('form').send({ identifier: 'nonexistent@nowhere.com' });
     expect(res.status).toBe(200);
     expect(res.text).toContain('No matching legacy record');
   });
-});
 
-// ── POST /history/claim/confirm — merge ───────────────────────────────────────
-
-describe('POST /history/claim/confirm — merge (imported placeholder)', () => {
-  it('successful merge -> 302 to profile', async () => {
+  it('whitespace-only identifier -> 422', async () => {
+    const freshId = insertMember(testDb, { slug: 'ws_tester', display_name: 'WS Tester', login_email: 'wstester@example.com' });
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ source: 'imported_placeholder', targetId: PLACEHOLDER_ID });
+      .post('/history/claim').set('Cookie', `footbag_session=${createTestSessionJwt({ memberId: freshId })}`)
+      .type('form').send({ identifier: '   ' });
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('Please enter a legacy identifier');
+  });
+});
+
+// ── POST /history/claim/confirm — merge (no HP match) ────────────────────────
+
+describe('POST /history/claim/confirm — merge (no HP match)', () => {
+  it('successful merge -> 302 to profile; legacy_members row marked claimed (not deleted); HP FK stays NULL', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/history/claim/confirm').set('Cookie', claimerCookie())
+      .type('form').send({ legacyMemberId: LEGACY_NO_HP });
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe(`/members/${CLAIMER_SLUG}`);
 
-    // Verify DB state after merge.
-    const claimer = testDb.prepare('SELECT legacy_member_id, bio, city, is_hof, is_bap FROM members WHERE id = ?').get(CLAIMER_ID) as {
-      legacy_member_id: string | null; bio: string; city: string | null; is_hof: number; is_bap: number;
+    const claimer = testDb.prepare(
+      'SELECT legacy_member_id, historical_person_id, bio, city, is_hof, is_bap FROM members WHERE id = ?',
+    ).get(CLAIMER_ID) as {
+      legacy_member_id: string | null; historical_person_id: string | null;
+      bio: string; city: string | null; is_hof: number; is_bap: number;
     };
-    expect(claimer.legacy_member_id).toBe('LM-12345');
+    expect(claimer.legacy_member_id).toBe(LEGACY_NO_HP);
+    expect(claimer.historical_person_id).toBeNull(); // no HP matches LEGACY_NO_HP.
     expect(claimer.is_hof).toBe(1);
 
-    // Placeholder should be soft-deleted with legacy_member_id NULLed.
-    const placeholder = testDb.prepare('SELECT deleted_at, legacy_member_id FROM members WHERE id = ?').get(PLACEHOLDER_ID) as {
-      deleted_at: string | null; legacy_member_id: string | null;
-    };
-    expect(placeholder.deleted_at).not.toBeNull();
-    expect(placeholder.legacy_member_id).toBeNull();
+    const legacy = testDb.prepare(
+      'SELECT claimed_by_member_id, claimed_at FROM legacy_members WHERE legacy_member_id = ?',
+    ).get(LEGACY_NO_HP) as { claimed_by_member_id: string | null; claimed_at: string | null };
+    expect(legacy.claimed_by_member_id).toBe(CLAIMER_ID);
+    expect(legacy.claimed_at).toBeTruthy();
+
+    // Row is NOT deleted — three-table design keeps legacy_members permanent.
+    const stillExists = testDb.prepare('SELECT 1 AS ok FROM legacy_members WHERE legacy_member_id = ?').get(LEGACY_NO_HP);
+    expect(stillExists).toBeTruthy();
   });
 
-  it('already claimed -> 422 with error', async () => {
+  it('requesting member already claimed -> 422 with error', async () => {
+    // CLAIMER is now already claimed from the previous test.
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', claimerCookie())
-      .type('form')
-      .send({ source: 'imported_placeholder', targetId: 'some-other-id' });
+      .post('/history/claim/confirm').set('Cookie', claimerCookie())
+      .type('form').send({ legacyMemberId: 'some-other-id' });
     expect(res.status).toBe(422);
     expect(res.text).toContain('already linked');
   });
 
-  it('invalid targetId -> 422 with error', async () => {
+  it('non-existent legacy_member_id -> 422 with error', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', otherCookie())
-      .type('form')
-      .send({ source: 'imported_placeholder', targetId: 'does-not-exist' });
+      .post('/history/claim/confirm').set('Cookie', otherCookie())
+      .type('form').send({ legacyMemberId: 'does-not-exist' });
     expect(res.status).toBe(422);
     expect(res.text).toContain('no longer available');
   });
 
-  it('missing fields -> 422 with error', async () => {
+  it('missing legacyMemberId -> 422', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', otherCookie())
-      .type('form')
-      .send({});
+      .post('/history/claim/confirm').set('Cookie', otherCookie()).type('form').send({});
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('Invalid claim request');
+  });
+
+  it('empty legacyMemberId -> 422', async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post('/history/claim/confirm').set('Cookie', otherCookie())
+      .type('form').send({ legacyMemberId: '' });
     expect(res.status).toBe(422);
     expect(res.text).toContain('Invalid claim request');
   });
 });
 
-// ── POST /history/claim/confirm — merge (historical person) ───────────────────
+// ── POST /history/claim/confirm — merge (HP match exists) ────────────────────
 
-describe('POST /history/claim/confirm — merge (historical person)', () => {
-  it('lookup by legacy_member_id finds historical person', async () => {
+describe('POST /history/claim/confirm — merge (HP match)', () => {
+  it('successful claim sets members.historical_person_id from the matching HP', async () => {
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', otherCookie())
-      .type('form')
-      .send({ identifier: HP_LEGACY_ID });
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('Historical Claimant');
-    expect(res.text).toContain('historical_person');
-  });
-
-  it('successful historical person claim -> 302 to profile', async () => {
-    const app = createApp();
-    const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', otherCookie())
-      .type('form')
-      .send({ source: 'historical_person', targetId: HP_LEGACY_ID });
+      .post('/history/claim/confirm').set('Cookie', otherCookie())
+      .type('form').send({ legacyMemberId: LEGACY_WITH_HP });
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe(`/members/${OTHER_SLUG}`);
 
-    // Verify: other member now has legacy_member_id and is_hof from historical person.
-    const member = testDb.prepare('SELECT legacy_member_id, is_hof FROM members WHERE id = ?').get(OTHER_ID) as {
-      legacy_member_id: string | null; is_hof: number;
-    };
-    expect(member.legacy_member_id).toBe(HP_LEGACY_ID);
+    const member = testDb.prepare(
+      'SELECT legacy_member_id, historical_person_id, is_hof FROM members WHERE id = ?',
+    ).get(OTHER_ID) as { legacy_member_id: string | null; historical_person_id: string | null; is_hof: number };
+    expect(member.legacy_member_id).toBe(LEGACY_WITH_HP);
+    expect(member.historical_person_id).toBe(HP_PERSON_ID);
     expect(member.is_hof).toBe(1);
   });
 });
@@ -271,43 +266,31 @@ describe('POST /history/claim/confirm — merge (historical person)', () => {
 // ── Merge field semantics ─────────────────────────────────────────────────────
 
 describe('merge field semantics', () => {
-  const MERGE_CLAIMER_ID   = 'merge-test-claimer';
-  const MERGE_CLAIMER_SLUG = 'merge_tester';
-  const MERGE_PLACEHOLDER  = 'merge-placeholder';
+  const MERGE_CLAIMER_ID    = 'merge-test-claimer';
+  const MERGE_CLAIMER_SLUG  = 'merge_tester';
+  const MERGE_LEGACY_ID     = 'LM-MERGE';
 
   function mergeCookie(): string {
-    return `footbag_session=${createSessionCookie(MERGE_CLAIMER_ID, 'member', TEST_SECRET, 'Merge Tester', MERGE_CLAIMER_SLUG)}`;
+    return `footbag_session=${createTestSessionJwt({ memberId: MERGE_CLAIMER_ID })}`;
   }
 
   it('fill-if-empty rules and OR semantics', async () => {
-    // Insert fresh test data for this test.
     insertMember(testDb, {
-      id: MERGE_CLAIMER_ID,
-      slug: MERGE_CLAIMER_SLUG,
-      display_name: 'Merge Tester',
-      login_email: 'mergetester@example.com',
-      city: 'Denver',
-      country: 'US',
+      id: MERGE_CLAIMER_ID, slug: MERGE_CLAIMER_SLUG,
+      display_name: 'Merge Tester', login_email: 'mergetester@example.com',
+      city: 'Denver', country: 'US',
     });
-
-    insertImportedPlaceholder(testDb, {
-      id: MERGE_PLACEHOLDER,
-      display_name: 'Old Player',
-      legacy_member_id: 'LM-MERGE',
-      bio: 'Legacy bio',
-      city: 'Portland',
-      region: 'OR',
-      country: 'CA',
-      is_hof: 0,
-      is_bap: 1,
+    insertLegacyMember(testDb, {
+      legacy_member_id: MERGE_LEGACY_ID,
+      real_name: 'Old Player', display_name: 'Old Player',
+      bio: 'Legacy bio', city: 'Portland', region: 'OR', country: 'CA',
+      is_hof: 0, is_bap: 1,
     });
 
     const app = createApp();
     const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', mergeCookie())
-      .type('form')
-      .send({ source: 'imported_placeholder', targetId: MERGE_PLACEHOLDER });
+      .post('/history/claim/confirm').set('Cookie', mergeCookie())
+      .type('form').send({ legacyMemberId: MERGE_LEGACY_ID });
     expect(res.status).toBe(302);
 
     const row = testDb.prepare(
@@ -318,123 +301,41 @@ describe('merge field semantics', () => {
       is_hof: number; is_bap: number;
     };
 
-    // legacy_member_id transferred.
-    expect(row.legacy_member_id).toBe('LM-MERGE');
-
-    // Bio: claimer had empty string (factory default), should be filled.
-    // (insertMember factory doesn't set bio, so it defaults to '' from schema)
-    // Actually check: the active member's bio default depends on the schema.
-    // The factory inserts don't set bio, so it gets the schema default.
-
-    // City: claimer had 'Denver', should NOT be overwritten.
-    expect(row.city).toBe('Denver');
-
-    // Region: claimer had NULL (factory default), should be filled from placeholder.
-    expect(row.region).toBe('OR');
-
-    // Country: claimer had 'US', should NOT be overwritten.
-    expect(row.country).toBe('US');
-
-    // is_bap: OR semantics, placeholder had 1.
-    expect(row.is_bap).toBe(1);
-
-    // is_hof: both 0, stays 0.
-    expect(row.is_hof).toBe(0);
+    expect(row.legacy_member_id).toBe(MERGE_LEGACY_ID);
+    expect(row.bio).toBe('Legacy bio');      // member bio defaulted to '', filled from legacy.
+    expect(row.city).toBe('Denver');         // member had 'Denver' (non-empty), not overwritten.
+    expect(row.region).toBe('OR');           // member had NULL, filled from legacy.
+    expect(row.country).toBe('US');          // member had 'US', not overwritten.
+    expect(row.is_bap).toBe(1);              // OR semantics, legacy had 1.
+    expect(row.is_hof).toBe(0);              // both 0.
   });
 });
 
-// ── Adversarial claim cases ───────────────────────────────────────────────────
+// ── Adversarial / race cases ──────────────────────────────────────────────────
 
-describe('POST /history/claim/confirm — adversarial cases', () => {
-  it('rejects invalid source value with 422', async () => {
-    // Use a fresh member that has not claimed anything
-    const freshId = insertMember(testDb, { slug: 'adv_fresh', display_name: 'Adv Fresh', login_email: 'advfresh@example.com' });
-    const freshCookie = `footbag_session=${createSessionCookie(freshId, 'member', TEST_SECRET, 'Adv Fresh', 'adv_fresh')}`;
-    const app = createApp();
-    const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', freshCookie)
-      .type('form')
-      .send({ source: 'bogus_source', targetId: 'some-id' });
-    expect(res.status).toBe(422);
-    expect(res.text).toContain('Invalid claim source');
-  });
-
-  it('rejects empty source with 422', async () => {
-    const freshId = insertMember(testDb, { slug: 'adv_empty_src', display_name: 'Adv Empty Src', login_email: 'advemptysrc@example.com' });
-    const freshCookie = `footbag_session=${createSessionCookie(freshId, 'member', TEST_SECRET, 'Adv Empty Src', 'adv_empty_src')}`;
-    const app = createApp();
-    const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', freshCookie)
-      .type('form')
-      .send({ source: '', targetId: 'some-id' });
-    expect(res.status).toBe(422);
-    expect(res.text).toContain('Invalid claim request');
-  });
-
-  it('rejects empty targetId with 422', async () => {
-    const freshId = insertMember(testDb, { slug: 'adv_empty_tid', display_name: 'Adv Empty Tid', login_email: 'advemptytid@example.com' });
-    const freshCookie = `footbag_session=${createSessionCookie(freshId, 'member', TEST_SECRET, 'Adv Empty Tid', 'adv_empty_tid')}`;
-    const app = createApp();
-    const res = await request(app)
-      .post('/history/claim/confirm')
-      .set('Cookie', freshCookie)
-      .type('form')
-      .send({ source: 'historical_person', targetId: '' });
-    expect(res.status).toBe(422);
-    expect(res.text).toContain('Invalid claim request');
-  });
-
-  it('second claim on same historical person is rejected', async () => {
-    const raceHpId = 'hp-race-001';
-    const raceLegacyId = 'RACE-LEGACY';
-    insertHistoricalPerson(testDb, {
-      person_id: raceHpId,
-      person_name: 'Race Target',
-      legacy_member_id: raceLegacyId,
-      country: 'US',
-      hof_member: 0,
+describe('POST /history/claim/confirm — adversarial', () => {
+  it('second claim on same legacy_members row is rejected', async () => {
+    const raceLegacyId = 'LM-RACE';
+    insertLegacyMember(testDb, {
+      legacy_member_id: raceLegacyId, real_name: 'Race Target',
     });
-    const firstId = insertMember(testDb, { slug: 'race_first', display_name: 'Race First', login_email: 'racefirst@example.com' });
+
+    const firstId  = insertMember(testDb, { slug: 'race_first',  display_name: 'Race First',  login_email: 'racefirst@example.com' });
     const secondId = insertMember(testDb, { slug: 'race_second', display_name: 'Race Second', login_email: 'racesecond@example.com' });
 
-    const firstCookie = `footbag_session=${createSessionCookie(firstId, 'member', TEST_SECRET, 'Race First', 'race_first')}`;
-    const secondCookie = `footbag_session=${createSessionCookie(secondId, 'member', TEST_SECRET, 'Race Second', 'race_second')}`;
+    const firstCookie  = `footbag_session=${createTestSessionJwt({ memberId: firstId })}`;
+    const secondCookie = `footbag_session=${createTestSessionJwt({ memberId: secondId })}`;
 
-    // completeClaim expects targetId to be the legacy_member_id (what lookupLegacyClaim returns as id)
-    const app1 = createApp();
-    const res1 = await request(app1)
-      .post('/history/claim/confirm')
-      .set('Cookie', firstCookie)
-      .type('form')
-      .send({ source: 'historical_person', targetId: raceLegacyId });
+    const app = createApp();
+    const res1 = await request(app)
+      .post('/history/claim/confirm').set('Cookie', firstCookie)
+      .type('form').send({ legacyMemberId: raceLegacyId });
     expect(res1.status).toBe(302);
 
-    // Second claim on same HP is rejected
-    const app2 = createApp();
-    const res2 = await request(app2)
-      .post('/history/claim/confirm')
-      .set('Cookie', secondCookie)
-      .type('form')
-      .send({ source: 'historical_person', targetId: raceLegacyId });
+    const res2 = await request(app)
+      .post('/history/claim/confirm').set('Cookie', secondCookie)
+      .type('form').send({ legacyMemberId: raceLegacyId });
     expect(res2.status).toBe(422);
     expect(res2.text).toContain('already been claimed');
-  });
-});
-
-describe('POST /history/claim — whitespace identifier', () => {
-  it('whitespace-only identifier returns 422 with validation error', async () => {
-    // Use a fresh member that has not claimed anything
-    const freshId = insertMember(testDb, { slug: 'ws_tester', display_name: 'WS Tester', login_email: 'wstester@example.com' });
-    const freshCookie = `footbag_session=${createSessionCookie(freshId, 'member', TEST_SECRET, 'WS Tester', 'ws_tester')}`;
-    const app = createApp();
-    const res = await request(app)
-      .post('/history/claim')
-      .set('Cookie', freshCookie)
-      .type('form')
-      .send({ identifier: '   ' });
-    expect(res.status).toBe(422);
-    expect(res.text).toContain('Please enter a legacy identifier');
   });
 });

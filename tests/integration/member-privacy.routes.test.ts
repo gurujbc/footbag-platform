@@ -12,10 +12,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import argon2 from 'argon2';
 import { setTestEnv, createTestDb, cleanupTestDb, importApp } from '../fixtures/testDb';
-import { insertMember, insertHistoricalPerson, insertTag, insertEvent, insertDiscipline, insertResultsUpload, insertResultEntry, insertResultParticipant } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, insertHistoricalPerson, insertTag, insertEvent, insertDiscipline, insertResultsUpload, insertResultEntry, insertResultParticipant, createTestSessionJwt } from '../fixtures/factories';
 
-const { dbPath, sessionSecret } = setTestEnv('3060');
+const { dbPath } = setTestEnv('3060');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
@@ -33,7 +32,7 @@ const DECEASED_EMAIL    = 'deceased@example.com';
 const DECEASED_PASSWORD = 'DeceasedPass1!';
 
 function viewerCookie(): string {
-  return `footbag_session=${createSessionCookie(VIEWER_ID, 'member', sessionSecret, 'Viewer', VIEWER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
 }
 
 beforeAll(async () => {

@@ -288,8 +288,8 @@ describe('Curated items table', () => {
     const res = await request(app).get('/internal/net/curated');
     expect(res.text).toContain('Xavier Browse');
     expect(res.text).toContain('Yvonne Browse');
-    expect(res.text).toContain(`/net/players/${PERSON_X}`);
-    expect(res.text).toContain(`/net/players/${PERSON_Y}`);
+    expect(res.text).toContain(`/history/${PERSON_X}`);
+    expect(res.text).toContain(`/history/${PERSON_Y}`);
   });
 
   it('shows raw names and unlinked badge for unlinked rows', async () => {

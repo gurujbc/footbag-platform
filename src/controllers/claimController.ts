@@ -9,17 +9,17 @@ const FORM_VM = {
 };
 
 export const claimController = {
-  /** GET /history/claim — render the legacy claim lookup form. */
+  /** GET /history/claim, render the legacy claim lookup form. */
   getClaim(_req: Request, res: Response): void {
     res.render('history/claim-form', { ...FORM_VM, content: {} });
   },
 
-  /** POST /history/claim — look up a legacy record by identifier. */
+  /** POST /history/claim, look up a legacy record by identifier. */
   postClaim(req: Request, res: Response, next: NextFunction): void {
     const identifier = req.body.identifier ?? '';
 
     try {
-      const result = identityAccessService.lookupLegacyClaim(req.user!.userId, identifier);
+      const result = identityAccessService.lookupLegacyAccount(req.user!.userId, identifier);
 
       if (!result) {
         res.status(200).render('history/claim-form', {
@@ -33,10 +33,8 @@ export const claimController = {
         seo:  { title: 'Confirm Legacy Account Link' },
         page: { sectionKey: 'members', pageKey: 'claim_verify', title: 'Confirm Legacy Account Link' },
         content: {
-          source:           result.source,
-          targetId:         result.id,
-          displayName:      result.displayName,
           legacyMemberId:   result.legacyMemberId,
+          displayName:      result.displayName,
           country:          result.country,
           isHof:            result.isHof,
           isBap:            result.isBap,
@@ -55,12 +53,11 @@ export const claimController = {
     }
   },
 
-  /** POST /history/claim/confirm — execute the legacy account claim. */
+  /** POST /history/claim/confirm, execute the legacy account claim. */
   postClaimConfirm(req: Request, res: Response, next: NextFunction): void {
-    const source   = req.body.source ?? '';
-    const targetId = req.body.targetId ?? '';
+    const legacyMemberId = req.body.legacyMemberId ?? '';
 
-    if (!source || !targetId) {
+    if (!legacyMemberId) {
       res.status(422).render('history/claim-form', {
         ...FORM_VM,
         content: { error: 'Invalid claim request.' },
@@ -69,7 +66,7 @@ export const claimController = {
     }
 
     try {
-      identityAccessService.completeClaim(req.user!.userId, source, targetId);
+      identityAccessService.claimLegacyAccount(req.user!.userId, legacyMemberId);
       res.redirect(`/members/${req.user!.slug}`);
     } catch (err) {
       if (err instanceof ValidationError) {

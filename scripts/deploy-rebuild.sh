@@ -199,14 +199,36 @@ require_path "service unit source" "$RELEASE_DIR/ops/systemd/footbag.service"
 require_path "compose file" "$RELEASE_DIR/docker/docker-compose.yml"
 require_path "compose prod file" "$RELEASE_DIR/docker/docker-compose.prod.yml"
 
+# Runtime AWS credential files must exist per DEV_ONBOARDING Path H §8.10 5a.
+# Without these, the app inside the container cannot assume the runtime role
+# and KMS Sign / SES Send will fail at request time.
+run_sudo test -f /root/.aws/credentials || { echo "Missing /root/.aws/credentials (see DEV_ONBOARDING Path H §8.10 5a)" >&2; exit 1; }
+run_sudo test -f /root/.aws/config       || { echo "Missing /root/.aws/config (see DEV_ONBOARDING Path H §8.10 5a)"       >&2; exit 1; }
+
 NODE_ENV_VAL=$(require_env NODE_ENV)
 LOG_LEVEL_VAL=$(require_env LOG_LEVEL)
 DB_PATH=$(require_env FOOTBAG_DB_PATH)
 PUBLIC_BASE_URL_VAL=$(require_env PUBLIC_BASE_URL)
 SESSION_SECRET_VAL=$(require_env SESSION_SECRET)
+JWT_SIGNER_VAL=$(require_env JWT_SIGNER)
+JWT_KMS_KEY_ID_VAL=$(require_env JWT_KMS_KEY_ID)
+SES_ADAPTER_VAL=$(require_env SES_ADAPTER)
+SES_FROM_IDENTITY_VAL=$(require_env SES_FROM_IDENTITY)
+AWS_REGION_VAL=$(require_env AWS_REGION)
+AWS_PROFILE_VAL=$(require_env AWS_PROFILE)
 
 if [[ "$SESSION_SECRET_VAL" == *'#'* ]]; then
   echo "SESSION_SECRET contains '#' which breaks systemd EnvironmentFile parsing" >&2
+  exit 1
+fi
+
+if [[ "${SESSION_SECRET_VAL,,}" == *changeme* ]]; then
+  echo "SESSION_SECRET appears to be the .env.example placeholder ('changeme...'). Generate a fresh value with: openssl rand -hex 32" >&2
+  exit 1
+fi
+
+if (( ${#SESSION_SECRET_VAL} < 32 )); then
+  echo "SESSION_SECRET must be at least 32 characters. Generate with: openssl rand -hex 32" >&2
   exit 1
 fi
 

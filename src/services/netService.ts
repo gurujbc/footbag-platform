@@ -7,7 +7,6 @@ import {
   netTeamCorrectionApproval,
   netRecoveryCandidates, RecoveryCandidateAbbrevRow, RecoveryCandidateFreqRow,
   netRecoveryApproval, RecoveryAliasCandidateRow,
-  netPlayers,    NetPlayerSummaryRow, NetPartnerRow, NetPartnerNetworkRow,
   netEvents,     NetEventSummaryRow, NetEventAppearanceRow,
   netHome,       NetHomeRecentEventRow,
                  NetNotablePlayerRow,
@@ -29,12 +28,14 @@ import {
   transaction,
 } from '../db/db';
 import { NotFoundError, ConflictError, ValidationError } from './serviceErrors';
+import { personHref } from './personLink';
+import { shapePartnershipPair } from './playerShaping';
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // ---------------------------------------------------------------------------
-// Evidence disclaimer — always rendered on net pages (not conditioned on data)
+// Evidence disclaimer, always rendered on net pages (not conditioned on data)
 // ---------------------------------------------------------------------------
 const TEAM_DISCLAIMER =
   'Team identities are algorithmically constructed from placement data and may not reflect official partnerships.';
@@ -61,7 +62,7 @@ interface NotablePlayerItemViewModel {
   personId:         string;
   personName:       string;
   country:          string | null;
-  href:             string;
+  href:             string | null;
   totalAppearances: number;
   totalWins:        number;
   totalPodiums:     number;
@@ -385,67 +386,6 @@ interface TeamCorrectionsPageViewModel {
   };
 }
 
-export interface NetPlayerViewModel {
-  personId:         string;
-  personName:       string;
-  country:          string | null;
-  totalAppearances: number;
-  href:             string;   // /net/players/:personId
-}
-
-export interface NetPartnerViewModel {
-  partnerPersonId:   string;
-  partnerName:       string;
-  partnerCountry:    string | null;
-  partnerHref:       string;  // /net/players/:partnerId
-  teamId:            string;
-  teamHref:          string;  // /net/players/:personId/partners/:teamId
-  appearanceCount:   number;
-  firstYear:         number | null;
-  lastYear:          number | null;
-  yearSpan:          string | null;
-  bestPlacement:     number;
-  bestPlacementLabel: string;
-}
-
-export interface NetPartnerNetworkViewModel {
-  partnerPersonId: string;
-  partnerName:     string;
-  partnerCountry:  string | null;
-  partnerHref:     string;
-  appearanceCount: number;
-  winCount:        number;
-  podiumCount:     number;
-  yearSpan:        string | null;
-}
-
-interface CareerHighlightPartner {
-  partnerName: string;
-  partnerHref: string;
-  stat:        string;   // e.g. "33 appearances", "22 wins", "1985–2025"
-}
-
-interface CareerHighlightsViewModel {
-  mostFrequentPartner:    CareerHighlightPartner | null;
-  mostSuccessfulPartner:  CareerHighlightPartner | null;
-  longestPartnership:     CareerHighlightPartner | null;
-  careerSpan:             string | null;   // "1985–2025 (40 years)"
-  hasHighlights:          boolean;
-}
-
-interface NetPlayerPageViewModel {
-  seo:     { title: string };
-  page:    { sectionKey: string; pageKey: string; title: string };
-  content: {
-    player:           NetPlayerViewModel;
-    partners:         NetPartnerViewModel[];
-    topPartners:      NetPartnerNetworkViewModel[];
-    careerHighlights: CareerHighlightsViewModel;
-    totalPartners:    number;
-    disclaimer:       string;
-  };
-}
-
 export interface NetEventQcHints {
   hasMultiStageHint:         boolean;
   unknownTeamExcludedCount:  number;
@@ -472,10 +412,10 @@ export interface NetEventAppearanceViewModel {
   teamHref:         string;
   personIdA:        string;
   personNameA:      string;
-  hrefA:            string;
+  hrefA:            string | null;
   personIdB:        string;
   personNameB:      string;
-  hrefB:            string;
+  hrefB:            string | null;
   placement:        number;
   placementLabel:   string;
   scoreText:        string | null;
@@ -508,39 +448,9 @@ interface NetEventDetailViewModel {
   };
 }
 
-interface NetPlayerPartnerDetailViewModel {
-  seo:     { title: string };
-  page:    { sectionKey: string; pageKey: string; title: string };
-  content: {
-    player:           NetPlayerViewModel;
-    partner: {
-      personId:    string;
-      personName:  string;
-      country:     string | null;
-      href:        string;
-    };
-    teamId:           string;
-    teamDetailHref:   string;  // /net/teams/:teamId — canonical team page
-    appearanceCount:  number;
-    bestPlacement:    number | null;
-    bestPlacementLabel: string | null;
-    yearSpan:         string | null;
-    byYear:           NetAppearanceYearGroup[];
-    disclaimer:       string;
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function netPlayerHref(personId: string): string {
-  return `/net/players/${personId}`;
-}
-
-function netPartnerDetailHref(personId: string, teamId: string): string {
-  return `/net/players/${personId}/partners/${teamId}`;
-}
 
 function eventHref(eventId: string): string {
   return `/events/${eventId}`;
@@ -567,7 +477,7 @@ function placementLabel(n: number): string {
   return `${n}th`;
 }
 
-// Canonical group labels for display — used only when conflict_flag=0
+// Canonical group labels for display, used only when conflict_flag=0
 const GROUP_LABELS: Record<string, string> = {
   open_doubles:          'Open Doubles',
   mixed_doubles:         'Mixed Doubles',
@@ -595,14 +505,9 @@ function shapeTeam(row: NetTeamSummaryRow): NetTeamViewModel {
   return {
     teamId:          row.team_id,
     teamName:        teamName(row.person_name_a, row.person_name_b),
-    personIdA:       row.person_id_a,
-    personNameA:     row.person_name_a,
+    ...shapePartnershipPair(row),
     countryA:        row.country_a,
-    hrefA:           netPlayerHref(row.person_id_a),
-    personIdB:       row.person_id_b,
-    personNameB:     row.person_name_b,
     countryB:        row.country_b,
-    hrefB:           netPlayerHref(row.person_id_b),
     firstYear:       row.first_year,
     lastYear:        row.last_year,
     yearSpan:        yearSpan(row.first_year, row.last_year),
@@ -642,102 +547,6 @@ function groupAppearancesByYear(
   return years.map(year => ({ year, appearances: map.get(year)! }));
 }
 
-function shapePlayer(row: NetPlayerSummaryRow): NetPlayerViewModel {
-  return {
-    personId:         row.person_id,
-    personName:       row.person_name,
-    country:          row.country,
-    totalAppearances: row.total_net_appearances,
-    href:             netPlayerHref(row.person_id),
-  };
-}
-
-function shapePartner(personId: string, row: NetPartnerRow): NetPartnerViewModel {
-  return {
-    partnerPersonId:    row.partner_person_id,
-    partnerName:        row.partner_name,
-    partnerCountry:     row.partner_country,
-    partnerHref:        netPlayerHref(row.partner_person_id),
-    teamId:             row.team_id,
-    teamHref:           netPartnerDetailHref(personId, row.team_id),
-    appearanceCount:    row.appearance_count,
-    firstYear:          row.first_year,
-    lastYear:           row.last_year,
-    yearSpan:           yearSpan(row.first_year, row.last_year),
-    bestPlacement:      row.best_placement,
-    bestPlacementLabel: placementLabel(row.best_placement),
-  };
-}
-
-function buildCareerHighlights(networkRows: NetPartnerNetworkRow[]): CareerHighlightsViewModel {
-  if (networkRows.length === 0) {
-    return {
-      mostFrequentPartner: null,
-      mostSuccessfulPartner: null,
-      longestPartnership: null,
-      careerSpan: null,
-      hasHighlights: false,
-    };
-  }
-
-  function makeHighlight(r: NetPartnerNetworkRow, stat: string): CareerHighlightPartner {
-    return {
-      partnerName: r.partner_name,
-      partnerHref: netPlayerHref(r.partner_person_id) ?? `/net/players/${r.partner_person_id}`,
-      stat,
-    };
-  }
-
-  // Most frequent: max appearance_count
-  const byApps = [...networkRows].sort((a, b) =>
-    b.appearance_count - a.appearance_count || b.win_count - a.win_count);
-  const mostFrequent = byApps[0];
-
-  // Most successful: max win_count (skip if 0 wins across all partners)
-  const byWins = [...networkRows].sort((a, b) =>
-    b.win_count - a.win_count || b.podium_count - a.podium_count || b.appearance_count - a.appearance_count);
-  const mostSuccessful = byWins[0].win_count > 0 ? byWins[0] : null;
-
-  // Longest partnership: max span
-  const bySpan = [...networkRows].sort((a, b) => {
-    const spanA = (a.last_year ?? 0) - (a.first_year ?? 0);
-    const spanB = (b.last_year ?? 0) - (b.first_year ?? 0);
-    return spanB - spanA || b.appearance_count - a.appearance_count;
-  });
-  const longest = bySpan[0];
-  const longestSpanYears = (longest.last_year ?? 0) - (longest.first_year ?? 0);
-
-  // Career span across all partnerships
-  let minYear: number | null = null;
-  let maxYear: number | null = null;
-  for (const r of networkRows) {
-    if (r.first_year !== null && (minYear === null || r.first_year < minYear)) minYear = r.first_year;
-    if (r.last_year !== null && (maxYear === null || r.last_year > maxYear)) maxYear = r.last_year;
-  }
-
-  let careerSpanStr: string | null = null;
-  if (minYear !== null && maxYear !== null) {
-    const spanLen = maxYear - minYear;
-    if (minYear === maxYear) {
-      careerSpanStr = `${minYear}`;
-    } else {
-      careerSpanStr = `${minYear}–${maxYear} (${spanLen} years)`;
-    }
-  }
-
-  return {
-    mostFrequentPartner:   makeHighlight(mostFrequent, `${mostFrequent.appearance_count} appearances`),
-    mostSuccessfulPartner: mostSuccessful
-      ? makeHighlight(mostSuccessful, `${mostSuccessful.win_count} wins`)
-      : null,
-    longestPartnership:    longestSpanYears > 0
-      ? makeHighlight(longest, yearSpan(longest.first_year, longest.last_year) ?? '')
-      : null,
-    careerSpan:            careerSpanStr,
-    hasHighlights:         true,
-  };
-}
-
 function shapeHomeRecentEvent(row: NetHomeRecentEventRow): NetHomeRecentEventViewModel {
   return {
     eventId:           row.event_id,
@@ -774,12 +583,7 @@ function shapeEventAppearance(row: NetEventAppearanceRow): NetEventAppearanceVie
     teamId:        row.team_id,
     teamName:      teamName(row.person_name_a, row.person_name_b),
     teamHref:      `/net/partnerships/${row.team_id}`,
-    personIdA:     row.person_id_a,
-    personNameA:   row.person_name_a,
-    hrefA:         netPlayerHref(row.person_id_a),
-    personIdB:     row.person_id_b,
-    personNameB:   row.person_name_b,
-    hrefB:         netPlayerHref(row.person_id_b),
+    ...shapePartnershipPair(row),
     placement:     row.placement,
     placementLabel: placementLabel(row.placement),
     scoreText:     row.score_text,
@@ -946,9 +750,11 @@ interface NetCuratedBrowseItemViewModel {
   disciplineName:  string | null;
   playerAPersonId: string | null;
   playerAName:     string | null;
+  playerAHref:     string | null;
   playerARawName:  string | null;
   playerBPersonId: string | null;
   playerBName:     string | null;
+  playerBHref:     string | null;
   playerBRawName:  string | null;
   extractedScore:  string | null;
   roundHint:       string | null;
@@ -1036,6 +842,8 @@ interface NetCandidateDetailViewModel {
   playerBPersonId:  string | null;
   playerAName:      string | null;
   playerBName:      string | null;
+  playerAHref:      string | null;
+  playerBHref:      string | null;
   extractedScore:   string | null;
   roundHint:        string | null;
   confidenceScore:  number | null;
@@ -1073,6 +881,8 @@ interface NetCandidateViewModel {
   playerBPersonId:   string | null;
   playerAName:       string | null;
   playerBName:       string | null;
+  playerAHref:       string | null;
+  playerBHref:       string | null;
   extractedScore:    string | null;
   roundHint:         string | null;
   confidenceScore:   number | null;
@@ -1384,6 +1194,23 @@ function fmtConf(avg: number | null): string {
   return avg.toFixed(2);
 }
 
+interface PairedPlayerRow {
+  player_a_person_id: string | null;
+  player_b_person_id: string | null;
+  member_slug_a:      string | null;
+  member_slug_b:      string | null;
+}
+
+function shapePairedPlayerHrefs(row: PairedPlayerRow): {
+  playerAHref: string | null;
+  playerBHref: string | null;
+} {
+  return {
+    playerAHref: personHref(row.member_slug_a, row.player_a_person_id),
+    playerBHref: personHref(row.member_slug_b, row.player_b_person_id),
+  };
+}
+
 function shapeCandidate(row: NetCandidateRow): NetCandidateViewModel {
   return {
     candidateId:     row.candidate_id,
@@ -1394,6 +1221,7 @@ function shapeCandidate(row: NetCandidateRow): NetCandidateViewModel {
     playerBPersonId: row.player_b_person_id,
     playerAName:     row.person_name_a,
     playerBName:     row.person_name_b,
+    ...shapePairedPlayerHrefs(row),
     extractedScore:  row.extracted_score,
     roundHint:       row.round_hint,
     confidenceScore: row.confidence_score,
@@ -1430,6 +1258,7 @@ function shapeCuratedBrowseItem(row: NetCuratedBrowseRow): NetCuratedBrowseItemV
     playerBPersonId: row.player_b_person_id,
     playerBName:     row.person_name_b,
     playerBRawName:  row.player_b_raw_name,
+    ...shapePairedPlayerHrefs(row),
     extractedScore:  row.extracted_score,
     roundHint:       row.round_hint,
     yearHint:        row.year_hint,
@@ -1593,12 +1422,7 @@ export const netService = {
         teamId:          r.team_id,
         teamName:        teamName(r.person_name_a, r.person_name_b),
         teamHref:        `/net/partnerships/${r.team_id}`,
-        personIdA:       r.person_id_a,
-        personNameA:     r.person_name_a,
-        hrefA:           netPlayerHref(r.person_id_a),
-        personIdB:       r.person_id_b,
-        personNameB:     r.person_name_b,
-        hrefB:           netPlayerHref(r.person_id_b),
+        ...shapePartnershipPair(r),
         appearanceCount: r.appearance_count,
         winCount:        r.win_count,
         podiumCount:     r.podium_count,
@@ -1630,7 +1454,7 @@ export const netService = {
     const spanB = bySpan.slice(0, BUCKET_SIZE).map(shapePoolRow);
     if (spanB.length) notablePartnerships.push({ title: 'Longest Spans', partnerships: spanB });
 
-    // Notable players — buckets from player aggregate pool
+    // Notable players, buckets from player aggregate pool
     const playerPool = netHome.listNotablePlayerPool.all() as NetNotablePlayerRow[];
 
     function shapeNotablePlayer(r: NetNotablePlayerRow): NotablePlayerItemViewModel {
@@ -1638,7 +1462,7 @@ export const netService = {
         personId:         r.person_id,
         personName:       r.person_name,
         country:          r.country,
-        href:             netPlayerHref(r.person_id) ?? `/net/players/${r.person_id}`,
+        href:             personHref(r.member_slug, r.person_id),
         totalAppearances: r.total_appearances,
         totalWins:        r.total_wins,
         totalPodiums:     r.total_podiums,
@@ -1902,12 +1726,7 @@ export const netService = {
       teamId:          r.team_id,
       teamName:        teamName(r.person_name_a, r.person_name_b),
       teamHref:        `/net/partnerships/${r.team_id}`,
-      personIdA:       r.person_id_a,
-      personNameA:     r.person_name_a,
-      hrefA:           netPlayerHref(r.person_id_a),
-      personIdB:       r.person_id_b,
-      personNameB:     r.person_name_b,
-      hrefB:           netPlayerHref(r.person_id_b),
+      ...shapePartnershipPair(r),
       appearanceCount: r.appearance_count,
       winCount:        r.win_count,
       podiumCount:     r.podium_count,
@@ -1964,7 +1783,7 @@ export const netService = {
         stubCount: stubCountRow.stub_count,
         unresolvedPartnerRepeats: partnerRows.map(r => ({
           knownPlayer: r.known_player,
-          knownHref:   netPlayerHref(r.known_pid),
+          knownHref:   personHref(r.known_member_slug, r.known_pid),
           stubPartner: r.stub_partner,
           stubPid:     r.stub_pid,
           coCount:     r.co_count,
@@ -1974,7 +1793,7 @@ export const netService = {
           stubName:    r.stub_name,
           stubPid:     r.stub_pid,
           likelyMatch: r.likely_match,
-          likelyHref:  netPlayerHref(r.likely_pid),
+          likelyHref:  personHref(r.likely_member_slug, r.likely_pid),
         })),
         highValueCandidates: highRows.map(r => ({
           personName:  r.person_name,
@@ -2009,7 +1828,7 @@ export const netService = {
       stubPid:          r.stub_person_id,
       suggestedName:    r.suggested_person_name,
       suggestedPid:     r.suggested_person_id,
-      suggestedHref:    netPlayerHref(r.suggested_person_id),
+      suggestedHref:    personHref(r.suggested_member_slug, r.suggested_person_id),
       suggestionType:   r.suggestion_type,
       confidence:       r.confidence,
       appearances:      r.appearance_count,
@@ -2149,7 +1968,7 @@ export const netService = {
         }
       }
     } catch {
-      // CSV not found — return empty page
+      // CSV not found, return empty page
     }
 
     // Read decisions back from DB
@@ -2370,45 +2189,6 @@ export const netService = {
     };
   },
 
-  getPlayerPage(personId: string): NetPlayerPageViewModel {
-    const playerRow = netPlayers.getPlayerSummary.get(personId) as NetPlayerSummaryRow | undefined;
-    if (!playerRow) throw new NotFoundError(`Net player not found: ${personId}`);
-
-    const partnerRows  = netPlayers.listPartnersByPersonId.all(personId) as NetPartnerRow[];
-    const networkRows  = netPlayers.listPartnerNetworkByPersonId.all(personId) as NetPartnerNetworkRow[];
-
-    const topPartners: NetPartnerNetworkViewModel[] = networkRows.map(r => ({
-      partnerPersonId: r.partner_person_id,
-      partnerName:     r.partner_name,
-      partnerCountry:  r.partner_country,
-      partnerHref:     netPlayerHref(r.partner_person_id) ?? `/net/players/${r.partner_person_id}`,
-      appearanceCount: r.appearance_count,
-      winCount:        r.win_count,
-      podiumCount:     r.podium_count,
-      yearSpan:        yearSpan(r.first_year, r.last_year),
-    }));
-
-    // Compute career highlights from network data
-    const careerHighlights = buildCareerHighlights(networkRows);
-
-    return {
-      seo:  { title: `${playerRow.person_name} — Net` },
-      page: {
-        sectionKey: 'net',
-        pageKey:    'net_player',
-        title:      playerRow.person_name,
-      },
-      content: {
-        player:           shapePlayer(playerRow),
-        partners:         partnerRows.map(r => shapePartner(personId, r)),
-        topPartners,
-        careerHighlights,
-        totalPartners:    partnerRows.length,
-        disclaimer:       TEAM_DISCLAIMER,
-      },
-    };
-  },
-
   getEventsPage(): NetEventsPageViewModel {
     const rows = netEvents.listEvents.all() as NetEventSummaryRow[];
     return {
@@ -2444,56 +2224,6 @@ export const netService = {
         event:        shapeEventSummary(eventRow),
         byDiscipline: groupAppearancesByDiscipline(appearanceRows),
         disclaimer:   TEAM_DISCLAIMER,
-      },
-    };
-  },
-
-  getPlayerPartnerDetail(personId: string, teamId: string): NetPlayerPartnerDetailViewModel {
-    const playerRow = netPlayers.getPlayerSummary.get(personId) as NetPlayerSummaryRow | undefined;
-    if (!playerRow) throw new NotFoundError(`Net player not found: ${personId}`);
-
-    const teamRow = netTeams.getById.get(teamId) as NetTeamSummaryRow | undefined;
-    if (!teamRow) throw new NotFoundError(`Net team not found: ${teamId}`);
-
-    // Validate person is a member of this team
-    if (teamRow.person_id_a !== personId && teamRow.person_id_b !== personId) {
-      throw new NotFoundError(`Player ${personId} is not a member of team ${teamId}`);
-    }
-
-    const appearanceRows = netTeams.listAppearancesByTeamId.all(teamId) as NetTeamAppearanceRow[];
-    const shaped = appearanceRows.map(shapeAppearance);
-
-    const isPersonA    = teamRow.person_id_a === personId;
-    const partnerId    = isPersonA ? teamRow.person_id_b    : teamRow.person_id_a;
-    const partnerName  = isPersonA ? teamRow.person_name_b  : teamRow.person_name_a;
-    const partnerCountry = isPersonA ? teamRow.country_b    : teamRow.country_a;
-
-    const placements   = shaped.map(a => a.placement);
-    const best         = placements.length > 0 ? Math.min(...placements) : null;
-
-    return {
-      seo:  { title: `${playerRow.person_name} / ${partnerName} — Net` },
-      page: {
-        sectionKey: 'net',
-        pageKey:    'net_player_partner',
-        title:      `${playerRow.person_name} / ${partnerName}`,
-      },
-      content: {
-        player:    shapePlayer(playerRow),
-        partner: {
-          personId:   partnerId,
-          personName: partnerName,
-          country:    partnerCountry,
-          href:       netPlayerHref(partnerId),
-        },
-        teamId,
-        teamDetailHref:     `/net/teams/${teamId}`,
-        appearanceCount:    teamRow.appearance_count,
-        bestPlacement:      best,
-        bestPlacementLabel: best !== null ? placementLabel(best) : null,
-        yearSpan:           yearSpan(teamRow.first_year, teamRow.last_year),
-        byYear:             groupAppearancesByYear(shaped),
-        disclaimer:         TEAM_DISCLAIMER,
       },
     };
   },
@@ -2560,6 +2290,7 @@ export const netService = {
       playerBPersonId: row.player_b_person_id,
       playerAName:     row.person_name_a,
       playerBName:     row.person_name_b,
+      ...shapePairedPlayerHrefs(row),
       extractedScore:  row.extracted_score,
       roundHint:       row.round_hint,
       confidenceScore: row.confidence_score,

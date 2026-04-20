@@ -15,13 +15,14 @@ const TEST_DB_PATH = path.join(os.tmpdir(), `footbag-test-avatar-${Date.now()}.d
 const TEST_MEDIA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'footbag-media-'));
 
 // Set env vars BEFORE any module that reads them is imported.
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.FOOTBAG_MEDIA_DIR = TEST_MEDIA_DIR;
-process.env.PORT             = '3098';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3098';
-process.env.SESSION_SECRET   = 'avatar-routes-test-secret';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH          = TEST_DB_PATH;
+process.env.FOOTBAG_MEDIA_DIR        = TEST_MEDIA_DIR;
+process.env.PORT                     = '3098';
+process.env.NODE_ENV                 = 'test';
+process.env.LOG_LEVEL                = 'error';
+process.env.PUBLIC_BASE_URL          = 'http://localhost:3098';
+process.env.SESSION_SECRET           = 'avatar-routes-test-secret';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
@@ -31,21 +32,19 @@ import request from 'supertest';
 import BetterSqlite3 from 'better-sqlite3';
 import sharp from 'sharp';
 
-import { insertMember } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, createTestSessionJwt } from '../fixtures/factories';
 
-const TEST_SECRET = process.env.SESSION_SECRET!;
 const OWN_ID      = 'avatar-test-own-001';
 const OWN_SLUG    = 'avatar_owner';
 const OTHER_ID    = 'avatar-test-other-001';
 const OTHER_SLUG  = 'avatar_other';
 
 function ownCookie(): string {
-  return `footbag_session=${createSessionCookie(OWN_ID, 'member', TEST_SECRET, 'Avatar Owner', OWN_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: OWN_ID })}`;
 }
 
 function otherCookie(): string {
-  return `footbag_session=${createSessionCookie(OTHER_ID, 'member', TEST_SECRET, 'Avatar Other', OTHER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: OTHER_ID })}`;
 }
 
 beforeAll(async () => {

@@ -30,6 +30,7 @@ This document is the Source of Truth for Functional Requirements, defining all U
 - [3. Member Stories](#3-member-stories)
   - [3.1 Account Lifecycle](#31-account-lifecycle)
     - [M_Login](#m_login)
+    - [M_Verify_Email](#m_verify_email)
     - [M_Reset_Password](#m_reset_password)
     - [M_Change_Password](#m_change_password)
     - [M_Logout](#m_logout)
@@ -176,13 +177,13 @@ Payment Processing Guarantees: The system does not grant paid access unless Stri
 
 Currency: The platform supports multi-currency payments via Stripe. Amounts are stored and displayed in the currency of the original transaction. The `currency` field is recorded on all payment records. Reconciliation and reporting display currency alongside amounts. No currency conversion is performed by the platform; Stripe handles currency settlement.
 
-Security tokens: Email verification tokens and password reset tokens are stored in the database as SHA-256 hashes, never as plaintext, preventing account takeover if the database is compromised. Email verification tokens expire after 24 hours and are marked consumed via a consumed_at timestamp after single use. Password reset tokens expire after one hour due to higher sensitivity. Password reset requests are rate-limited to five requests per email per hour, preventing enumeration attacks that reveal valid emails and token farming. The rate limit applies regardless of whether the email exists in the system, with consistent timing to prevent enumeration via timing analysis. Legacy account claim tokens (`account_claim`) expire after 24 hours (configurable via `account_claim_expiry_hours`), are single-use, and are bound to both the requesting authenticated member account and the imported legacy row being claimed. A claim token may only be consumed while authenticated as the same account that initiated the request.
+Security tokens: Email verification tokens and password reset tokens are stored in the database as SHA-256 hashes, never as plaintext, preventing account takeover if the database is compromised. Email verification tokens expire after 24 hours and are marked used via a used_at timestamp after single use. Password reset tokens expire after one hour due to higher sensitivity. Password reset requests are rate-limited to five requests per email per hour, preventing enumeration attacks that reveal valid emails and token farming. The rate limit applies regardless of whether the email exists in the system, with consistent timing to prevent enumeration via timing analysis. Legacy account claim tokens (`account_claim`) expire after 24 hours (configurable via `account_claim_expiry_hours`), are single-use, and are bound to both the requesting authenticated member account and the imported legacy row being claimed. A claim token may only be consumed while authenticated as the same account that initiated the request.
 
 Privacy, visibility, and moderation: Profiles, club rosters, participant lists, and member search results are member-only unless explicitly stated otherwise. Media galleries and tag gallery pages are public, but uploader details (email/phone, uploaded_by) remain private.
 
-Historical imported people may appear in legacy event results and related read-only historical displays even when they are not current Members. This supports historical accuracy only. It does not imply authenticated-member capabilities, profile ownership, member-search inclusion, club-roster visibility, or any other current-member behavior.
+Historical imported people may appear in legacy event results and related read-only historical displays even when they are not current Members. This supports historical accuracy only. It does not imply authenticated-member capabilities, profile ownership, member-search inclusion, club-roster visibility, or any other current-member behavior. See DD §2.4 for the foundational entity-type distinction between `members` and `historical_persons`.
 
-Imported legacy member rows are pre-credential placeholder records created during the one-time migration from the legacy site. They cannot log in, do not appear in member search results or any current-member surface, and do not affect normal registration or password-reset behavior. A legacy member who wants to connect their historical identity and data to a modern account must use the self-serve legacy claim flow while logged in.
+Imported legacy member accounts are stored as rows in the `legacy_members` table, created during the one-time migration from the legacy site. They are not `members` rows: they cannot log in, do not appear in member search results or any current-member surface, and do not affect normal registration or password-reset behavior. A legacy member who wants to connect their historical identity and data to a modern account must use the self-serve legacy claim flow while logged in; the claim links their modern `members` row to the `legacy_members` row rather than converting it.
 
 Moderation flows favor transparency and human oversight: when members flag content, flagged items remain visible until an administrator reviews and decides; no content is hidden or de-ranked automatically by secret algorithms.
 
@@ -511,6 +512,24 @@ Success Criteria:
 - On successful login, the system issues the authenticated session (HttpOnly, Secure, SameSite=Lax session cookie).
 - Individual failed login attempts are not persisted to the audit log. When the login rate limit threshold is crossed, a single audit log entry is created recording that the threshold was exceeded for the given account identifier (no IP address stored). This preserves the privacy-first audit log design while retaining security traceability.
 
+### M_Verify_Email
+
+Access: Visitors who just registered, and existing unverified members, can request and consume a verification link. Logging in is blocked until verification is complete.
+
+Story: As a newly registered visitor, I can open a verification link delivered to my email address so that I can prove mailbox control before my account becomes usable.
+
+Success Criteria:
+
+- On successful registration the system enqueues a verification email containing a unique single-use link with an Administrator-configurable TTL (default: 24 hours). The registration response does not include a session cookie; the visitor lands on a generic "check your email" page.
+- The verify link is a single-use, unguessable token stored hashed at rest (SHA-256); the raw token is never persisted.
+- Opening the verify link marks the member's email as verified, issues the authenticated session (HttpOnly, Secure, SameSite=Lax cookie), and redirects to the member dashboard, or to the legacy-link check when the member's email matches an imported placeholder or historical-person record.
+- Consuming the link a second time is rejected with a generic "invalid, expired, or already used" response. Unknown or expired tokens render the same response (enumeration-safe).
+- Unverified members cannot log in. The login failure response is identical to the wrong-password response (enumeration-safe).
+- Unverified members do not appear in the authenticated member search.
+- Members can request a new verification email by submitting their email address to a resend form. The response is identical regardless of whether an unverified member exists for that address. Resends are rate-limited per normalized email address (safe default).
+- If an email is submitted to the registration form and an account already exists for that address, the response is identical to a successful new registration — no new verification email is sent, and no indication is given that the email is already registered.
+- Admins are not involved in verification; the flow is self-service.
+
 ### M_Reset_Password
 
 Access: Members with a registered email can request a password reset.
@@ -522,7 +541,7 @@ Success Criteria:
 - Reset link valid for an Administrator-configurable duration (default: one hour).
 - Reset link implemented as a single-use, unguessable token that is invalidated after use or expiration.
 - Password reset responses do not reveal whether an email is registered (enumeration-safe message such as "If an account exists for this email, a password reset link has been sent.").
-- Password reset requests are rate-limited per email and IP address to mitigate abuse.
+- Password reset requests are rate-limited per email address to mitigate abuse (Administrator-configurable threshold and window; safe defaults).
 - Once used, old password invalidated.
 - Passwords are stored securely using one-way hashing; they are never stored or logged in plaintext.
 - passwordVersion field incremented for immediate token invalidation.

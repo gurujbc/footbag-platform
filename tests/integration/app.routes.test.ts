@@ -36,24 +36,24 @@ const DRAFT_EVENT_KEY    = 'event_2026_draft_event';
 const ALICE_ID = 'person-alice-001';
 const BOB_ID   = 'person-bob-001';
 
-const TEST_DB_PATH = path.join(process.cwd(), 'test-footbag.db');
+const TEST_DB_PATH       = path.join(process.cwd(), 'test-footbag.db');
 
 // Set env vars BEFORE any module that reads them is imported.
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.PORT             = '3001';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3001';
-process.env.SESSION_SECRET   = 'test-secret-for-integration-tests';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH         = TEST_DB_PATH;
+process.env.PORT                    = '3001';
+process.env.NODE_ENV                = 'test';
+process.env.LOG_LEVEL               = 'error';
+process.env.PUBLIC_BASE_URL         = 'http://localhost:3001';
+process.env.SESSION_SECRET          = 'test-secret-for-integration-tests';
 
 // Dynamic import after env is set so db.ts picks up TEST_DB_PATH.
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { createTestSessionJwt } from '../fixtures/factories';
 
-const TEST_SESSION_SECRET = process.env.SESSION_SECRET!;
 function validAuthCookie(): string {
-  return `footbag_session=${createSessionCookie('test-user', 'admin', TEST_SESSION_SECRET)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: 'test-user', role: 'admin' })}`;
 }
 
 async function buildTestDatabase(): Promise<void> {
@@ -68,8 +68,9 @@ async function buildTestDatabase(): Promise<void> {
   db.exec(schema);
 
   // Footbag Hacky: test member with login_email='footbag' (non-email identifier).
-  // Password comes from STUB_PASSWORD env var; hashed at test-setup time, never stored in git.
-  const footbagHash = await argon2.hash(process.env.STUB_PASSWORD ?? 'Footbag!');
+  // Password comes from STUB_PASSWORD env var (local dev's gitignored .env, or
+  // the per-run default set in tests/setup-env.ts). Never hardcoded in git.
+  const footbagHash = await argon2.hash(process.env.STUB_PASSWORD!);
   insertMember(db, {
     id:                'member-footbag-hacky',
     slug:              'footbag_hacky',
@@ -77,6 +78,15 @@ async function buildTestDatabase(): Promise<void> {
     display_name:      'Footbag Hacky',
     password_hash:     footbagHash,
     email_verified_at: '2025-01-01T00:00:00.000Z',
+  });
+
+  // Admin test-user: target of the JWT produced by validAuthCookie().
+  insertMember(db, {
+    id: 'test-user',
+    slug: 'test_user_admin',
+    login_email: 'test-user@example.com',
+    display_name: 'Test Admin',
+    is_admin: 1,
   });
 
   // FK stub: required by event_results_uploads
@@ -779,7 +789,14 @@ describe('GET /login', () => {
     const app = createApp();
     const res = await request(app).get('/login').set('Cookie', validAuthCookie());
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/members/test-user');
+    expect(res.headers.location).toBe('/members/test_user_admin');
+  });
+
+  it('login page links to /password/forgot', async () => {
+    const app = createApp();
+    const res = await request(app).get('/login');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('href="/password/forgot"');
   });
 });
 
@@ -790,7 +807,7 @@ describe('POST /login', () => {
     const app = createApp();
     const res = await request(app)
       .post('/login')
-      .send(`email=footbag&password=${encodeURIComponent(process.env.STUB_PASSWORD ?? 'Footbag!')}`)
+      .send(`email=footbag&password=${encodeURIComponent(process.env.STUB_PASSWORD!)}`)
       .set('Content-Type', 'application/x-www-form-urlencoded');
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe('/members/footbag_hacky');
@@ -837,6 +854,57 @@ describe('POST /logout', () => {
     const sessionCookie = cookies.find((c: string) => c.startsWith('footbag_session='));
     expect(sessionCookie).toBeDefined();
     expect(sessionCookie).toMatch(/Max-Age=0|Expires=Thu, 01 Jan 1970/i);
+  });
+
+  it('preserves flash cookie across redirects — only clears when banner actually renders', async () => {
+    const app = createApp();
+    // Simulate: logout landed on a redirect-only response (e.g., protected
+    // page bounce). Flash cookie must survive and be cleared only by the
+    // eventual page render.
+    const redirectOnly = await request(app)
+      .get('/history')
+      .set('Cookie', 'footbag_flash_logout=1');
+    expect(redirectOnly.status).toBe(301);
+    const redirectCookies: string[] = Array.isArray(redirectOnly.headers['set-cookie'])
+      ? redirectOnly.headers['set-cookie']
+      : [redirectOnly.headers['set-cookie'] ?? ''];
+    const redirectCleared = redirectCookies.find((c: string) => c.startsWith('footbag_flash_logout='));
+    expect(redirectCleared).toBeUndefined();
+
+    // Now actually render a page with the flash cookie still set.
+    const rendered = await request(app)
+      .get('/')
+      .set('Cookie', 'footbag_flash_logout=1');
+    expect(rendered.text).toContain('You have been logged out.');
+    const renderedCookies: string[] = Array.isArray(rendered.headers['set-cookie'])
+      ? rendered.headers['set-cookie']
+      : [rendered.headers['set-cookie'] ?? ''];
+    const renderedCleared = renderedCookies.find((c: string) => c.startsWith('footbag_flash_logout='));
+    expect(renderedCleared).toMatch(/Max-Age=0|Expires=Thu, 01 Jan 1970/i);
+  });
+
+  it('sets logout flash cookie then shows banner on next page; banner gone after', async () => {
+    const app = createApp();
+    const logoutRes = await request(app)
+      .post('/logout')
+      .set('Cookie', validAuthCookie());
+    const cookies: string[] = Array.isArray(logoutRes.headers['set-cookie'])
+      ? logoutRes.headers['set-cookie']
+      : [logoutRes.headers['set-cookie'] ?? ''];
+    const flashCookie = cookies.find((c: string) => c.startsWith('footbag_flash_logout='));
+    expect(flashCookie).toBeDefined();
+
+    const landing = await request(app).get('/').set('Cookie', 'footbag_flash_logout=1');
+    expect(landing.status).toBe(200);
+    expect(landing.text).toContain('You have been logged out.');
+    const landingCookies: string[] = Array.isArray(landing.headers['set-cookie'])
+      ? landing.headers['set-cookie']
+      : [landing.headers['set-cookie'] ?? ''];
+    const clearedFlash = landingCookies.find((c: string) => c.startsWith('footbag_flash_logout='));
+    expect(clearedFlash).toMatch(/Max-Age=0|Expires=Thu, 01 Jan 1970/i);
+
+    const next = await request(app).get('/');
+    expect(next.text).not.toContain('You have been logged out.');
   });
 });
 

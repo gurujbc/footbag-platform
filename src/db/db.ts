@@ -1,4 +1,5 @@
-import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabase';
+import { SqliteDatabase, openDatabase } from './openDatabase';
+import { config } from '../config/env';
 
 /**
  * DATABASE MODULE
@@ -51,7 +52,7 @@ import { DEFAULT_DB_FILENAME, SqliteDatabase, openDatabase } from './openDatabas
  *   frameworks or hidden data-access layers.
  */
 
-const DB_FILENAME = process.env.FOOTBAG_DB_PATH ?? DEFAULT_DB_FILENAME;
+const DB_FILENAME = config.dbPath;
 const TRANSACTION_TIMEOUT_MS = 30_000;
 
 const PUBLIC_EVENT_DETAIL_VISIBLE_STATUSES = [
@@ -190,15 +191,16 @@ export interface PlayerCareerStatRow {
 }
 
 export interface PlayerPartnerRow {
-  partner_person_id: string;
-  partner_name:      string;
-  partner_country:   string | null;
-  category:          string;
-  appearances:       number;
-  wins:              number;
-  podiums:           number;
-  first_year:        number | null;
-  last_year:         number | null;
+  partner_person_id:   string;
+  partner_name:        string;
+  partner_country:     string | null;
+  partner_member_slug: string | null;
+  category:            string;
+  appearances:         number;
+  wins:                number;
+  podiums:             number;
+  first_year:          number | null;
+  last_year:           number | null;
 }
 
 export interface HealthReadyRow {
@@ -407,7 +409,7 @@ export const publicEvents = {
       erp.id AS participant_row_id,
       erp.participant_order,
       erp.member_id,
-      COALESCE(m_linked.slug, m_legacy.slug) AS participant_member_slug,
+      COALESCE(m_linked.slug, m_via_hp.slug) AS participant_member_slug,
       erp.display_name AS participant_display_name,
       erp.historical_person_id AS participant_historical_person_id
     FROM events AS e
@@ -419,13 +421,9 @@ export const publicEvents = {
       ON erp.result_entry_id = ere.id
     LEFT JOIN members AS m_linked
       ON m_linked.id = erp.member_id
-    LEFT JOIN historical_persons AS hp_link
-      ON hp_link.person_id = erp.historical_person_id
-      AND hp_link.legacy_member_id IS NOT NULL
-    LEFT JOIN members AS m_legacy
-      ON m_legacy.legacy_member_id = hp_link.legacy_member_id
-      AND m_legacy.deleted_at IS NULL
-      AND m_legacy.login_email IS NOT NULL
+    LEFT JOIN members AS m_via_hp
+      ON m_via_hp.historical_person_id = erp.historical_person_id
+      AND m_via_hp.deleted_at IS NULL
     WHERE
       e.id = ?
       AND e.status IN (${PUBLIC_EVENT_DETAIL_VISIBLE_STATUS_SQL})
@@ -460,9 +458,7 @@ export const publicPlayers = {
       (SELECT m.slug
        FROM members AS m
        WHERE m.deleted_at IS NULL
-         AND m.login_email IS NOT NULL
-         AND m.legacy_member_id = hp.legacy_member_id
-         AND hp.legacy_member_id IS NOT NULL
+         AND m.historical_person_id = hp.person_id
        LIMIT 1
       ) AS linked_member_slug
     FROM historical_persons AS hp
@@ -514,7 +510,7 @@ export const publicPlayers = {
       erp_co.participant_order,
       erp_co.display_name         AS participant_display_name,
       erp_co.historical_person_id AS participant_person_id,
-      COALESCE(m_co_linked.slug, m_co_legacy.slug) AS participant_member_slug
+      COALESCE(m_co_linked.slug, m_co_via_hp.slug) AS participant_member_slug
     FROM event_result_entry_participants AS erp_me
     JOIN event_result_entries AS ere
       ON ere.id = erp_me.result_entry_id
@@ -528,13 +524,9 @@ export const publicPlayers = {
       ON erp_co.result_entry_id = ere.id
     LEFT JOIN members AS m_co_linked
       ON m_co_linked.id = erp_co.member_id
-    LEFT JOIN historical_persons AS hp_co
-      ON hp_co.person_id = erp_co.historical_person_id
-      AND hp_co.legacy_member_id IS NOT NULL
-    LEFT JOIN members AS m_co_legacy
-      ON m_co_legacy.legacy_member_id = hp_co.legacy_member_id
-      AND m_co_legacy.deleted_at IS NULL
-      AND m_co_legacy.login_email IS NOT NULL
+    LEFT JOIN members AS m_co_via_hp
+      ON m_co_via_hp.historical_person_id = erp_co.historical_person_id
+      AND m_co_via_hp.deleted_at IS NULL
     WHERE erp_me.historical_person_id = ?
     ORDER BY
       e.start_date DESC,
@@ -547,14 +539,7 @@ export const publicPlayers = {
     SELECT m.slug
     FROM members AS m
     WHERE m.deleted_at IS NULL
-      AND m.login_email IS NOT NULL
-      AND m.legacy_member_id IS NOT NULL
-      AND m.legacy_member_id = (
-        SELECT hp.legacy_member_id
-        FROM historical_persons AS hp
-        WHERE hp.person_id = ?
-          AND hp.legacy_member_id IS NOT NULL
-      )
+      AND m.historical_person_id = ?
     LIMIT 1
   `),
 
@@ -596,6 +581,7 @@ export const publicPlayers = {
       hp_partner.person_id   AS partner_person_id,
       hp_partner.person_name AS partner_name,
       hp_partner.country     AS partner_country,
+      m_partner.slug         AS partner_member_slug,
       ed.discipline_category AS category,
       COUNT(DISTINCT erp_me.result_entry_id) AS appearances,
       SUM(CASE WHEN ere.placement = 1 THEN 1 ELSE 0 END) AS wins,
@@ -610,10 +596,13 @@ export const publicPlayers = {
       ON erp_partner.result_entry_id = erp_me.result_entry_id
       AND erp_partner.id != erp_me.id
     JOIN historical_persons hp_partner ON hp_partner.person_id = erp_partner.historical_person_id
+    LEFT JOIN members m_partner
+      ON m_partner.historical_person_id = hp_partner.person_id
+      AND m_partner.deleted_at IS NULL
     WHERE erp_me.historical_person_id = ?
       AND ed.team_type = 'doubles'
       AND hp_partner.person_name != 'Unknown'
-    GROUP BY hp_partner.person_id, ed.discipline_category
+    GROUP BY hp_partner.person_id, ed.discipline_category, m_partner.slug
     ORDER BY appearances DESC, wins DESC
     LIMIT 15
   `),
@@ -682,7 +671,7 @@ export const clubs = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Freestyle records — public read path
+// Freestyle records, public read path
 //
 // Public filter contract (enforced here, not in service layer):
 //   confidence IN ('verified', 'probable')
@@ -697,6 +686,7 @@ export interface FreestyleRecordRow {
   record_type: string;
   person_id: string | null;
   holder_name: string;
+  holder_member_slug: string | null;
   trick_name: string | null;
   sort_name: string | null;
   adds_count: number | null;
@@ -717,6 +707,7 @@ export const freestyleRecords = {
       fr.record_type,
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      m.slug AS holder_member_slug,
       fr.trick_name,
       fr.sort_name,
       fr.adds_count,
@@ -730,6 +721,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.confidence IN ('verified', 'probable')
       AND fr.superseded_by IS NULL
       AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
@@ -752,6 +746,7 @@ export const freestyleRecords = {
       fr.record_type,
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      m.slug AS holder_member_slug,
       fr.trick_name,
       fr.sort_name,
       fr.adds_count,
@@ -765,6 +760,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.person_id = ?
       AND fr.confidence IN ('verified', 'probable')
       AND fr.superseded_by IS NULL
@@ -776,6 +774,7 @@ export const freestyleRecords = {
     SELECT
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      MAX(m.slug)                                AS holder_member_slug,
       COUNT(*)                                   AS record_count,
       MAX(fr.value_numeric)                      AS top_value,
       MAX(CASE WHEN fr.value_numeric = (
@@ -788,6 +787,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.confidence IN ('verified', 'probable')
       AND fr.superseded_by IS NULL
       AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
@@ -801,6 +803,7 @@ export const freestyleRecords = {
       fr.record_type,
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      m.slug AS holder_member_slug,
       fr.trick_name,
       fr.sort_name,
       fr.adds_count,
@@ -814,6 +817,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.trick_name = ?
       AND fr.confidence IN ('verified', 'probable')
       AND fr.superseded_by IS NULL
@@ -827,6 +833,7 @@ export const freestyleRecords = {
       fr.record_type,
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      m.slug AS holder_member_slug,
       fr.trick_name,
       fr.sort_name,
       fr.adds_count,
@@ -841,6 +848,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.trick_name = ?
       AND fr.confidence IN ('verified', 'probable')
       AND (fr.person_id IS NOT NULL OR fr.display_name IS NOT NULL)
@@ -853,6 +863,7 @@ export const freestyleRecords = {
       fr.record_type,
       fr.person_id,
       COALESCE(hp.person_name, fr.display_name) AS holder_name,
+      m.slug AS holder_member_slug,
       fr.trick_name,
       fr.sort_name,
       fr.adds_count,
@@ -866,6 +877,9 @@ export const freestyleRecords = {
     FROM freestyle_records AS fr
     LEFT JOIN historical_persons AS hp
       ON hp.person_id = fr.person_id
+    LEFT JOIN members AS m
+      ON m.historical_person_id = fr.person_id
+      AND m.deleted_at IS NULL
     WHERE fr.confidence IN ('verified', 'probable')
       AND fr.superseded_by IS NULL
       AND fr.achieved_date IS NOT NULL
@@ -878,6 +892,7 @@ export const freestyleRecords = {
 export interface FreestyleLeaderRow {
   person_id: string | null;
   holder_name: string;
+  holder_member_slug: string | null;
   record_count: number;
   top_value: number;
   top_trick: string | null;
@@ -962,9 +977,11 @@ export interface FreestylePartnershipRow {
   person_id_a:      string;
   person_name_a:    string;
   country_a:        string | null;
+  member_slug_a:    string | null;
   person_id_b:      string;
   person_name_b:    string;
   country_b:        string | null;
+  member_slug_b:    string | null;
   appearance_count: number;
   win_count:        number;
   podium_count:     number;
@@ -980,9 +997,11 @@ export const freestylePartnerships = {
       CASE WHEN pa.person_id < pb.person_id THEN pa.person_id ELSE pb.person_id END AS person_id_a,
       CASE WHEN pa.person_id < pb.person_id THEN pa.person_name ELSE pb.person_name END AS person_name_a,
       CASE WHEN pa.person_id < pb.person_id THEN pa.country ELSE pb.country END AS country_a,
+      CASE WHEN pa.person_id < pb.person_id THEN ma.slug ELSE mb.slug END AS member_slug_a,
       CASE WHEN pa.person_id < pb.person_id THEN pb.person_id ELSE pa.person_id END AS person_id_b,
       CASE WHEN pa.person_id < pb.person_id THEN pb.person_name ELSE pa.person_name END AS person_name_b,
       CASE WHEN pa.person_id < pb.person_id THEN pb.country ELSE pa.country END AS country_b,
+      CASE WHEN pa.person_id < pb.person_id THEN mb.slug ELSE ma.slug END AS member_slug_b,
       COUNT(*)                                              AS appearance_count,
       SUM(CASE WHEN re.placement = 1 THEN 1 ELSE 0 END)   AS win_count,
       SUM(CASE WHEN re.placement <= 3 THEN 1 ELSE 0 END)  AS podium_count,
@@ -995,6 +1014,12 @@ export const freestylePartnerships = {
     JOIN event_result_entry_participants p2 ON p2.result_entry_id = re.id AND p2.participant_order = 2
     JOIN historical_persons pa ON pa.person_id = p1.historical_person_id
     JOIN historical_persons pb ON pb.person_id = p2.historical_person_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE ed.discipline_category = 'freestyle'
       AND ed.team_type = 'doubles'
       AND LOWER(ed.name) NOT LIKE '%sick%'
@@ -1022,20 +1047,21 @@ export const freestylePartnerships = {
 // ---------------------------------------------------------------------------
 // freestyleCompetition
 //
-// Results-derived freestyle competition data. Queries canonical tables only —
+// Results-derived freestyle competition data. Queries canonical tables only
 // no freestyle-domain tables are written; this is a read-only projection.
 //
 // Discipline filter: any discipline whose name contains 'freestyle', excluding
 // doubles and team formats. This covers Open/Intermediate/Women's Singles
 // Freestyle, Open Freestyle, Freestyle, etc.
 //
-// STATS FIREWALL: no evidence-class filtering needed here — these are canonical
+// STATS FIREWALL: no evidence-class filtering needed here. These are canonical
 // placement records, not enrichment data.
 // ---------------------------------------------------------------------------
 export interface FreestyleCompetitorRow {
   person_id:     string;
   person_name:   string;
   country:       string | null;
+  member_slug:   string | null;
   golds:         number;
   silvers:       number;
   bronzes:       number;
@@ -1063,6 +1089,7 @@ export const freestyleCompetition = {
       hp.person_id,
       hp.person_name,
       hp.country,
+      MAX(m.slug)                                          AS member_slug,
       SUM(CASE WHEN ere.placement = 1 THEN 1 ELSE 0 END) AS golds,
       SUM(CASE WHEN ere.placement = 2 THEN 1 ELSE 0 END) AS silvers,
       SUM(CASE WHEN ere.placement = 3 THEN 1 ELSE 0 END) AS bronzes,
@@ -1071,6 +1098,9 @@ export const freestyleCompetition = {
     JOIN event_disciplines ed ON ed.id = ere.discipline_id
     JOIN event_result_entry_participants erep ON erep.result_entry_id = ere.id
     JOIN historical_persons hp ON hp.person_id = erep.historical_person_id
+    LEFT JOIN members m
+      ON m.historical_person_id = hp.person_id
+      AND m.deleted_at IS NULL
     WHERE (lower(ed.name) LIKE '%freestyle%'
            AND lower(ed.name) NOT LIKE '%doubles%'
            AND lower(ed.name) NOT LIKE '%team%')
@@ -1187,7 +1217,7 @@ export const consecutiveKicksRecords = {
 // ---------------------------------------------------------------------------
 // netTeams
 //
-// Net domain enrichment layer — additive, never modifies canonical tables.
+// Net domain enrichment layer, additive, never modifies canonical tables.
 // Evidence class: canonical_only only in phase 1.
 //
 // STATISTICS FIREWALL: all appearance queries use the net_team_appearance_canonical
@@ -1201,9 +1231,11 @@ export interface NetTeamSummaryRow {
   person_id_a:      string;
   person_name_a:    string;
   country_a:        string | null;
+  member_slug_a:    string | null;
   person_id_b:      string;
   person_name_b:    string;
   country_b:        string | null;
+  member_slug_b:    string | null;
   first_year:       number | null;
   last_year:        number | null;
   appearance_count: number;
@@ -1233,15 +1265,23 @@ export const netTeams = {
       t.person_id_a,
       pa.person_name  AS person_name_a,
       pa.country      AS country_a,
+      ma.slug         AS member_slug_a,
       t.person_id_b,
       pb.person_name  AS person_name_b,
       pb.country      AS country_b,
+      mb.slug         AS member_slug_b,
       t.first_year,
       t.last_year,
       t.appearance_count
     FROM net_team t
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     ORDER BY t.appearance_count DESC, t.last_year DESC, pa.person_name ASC
   `),
@@ -1252,15 +1292,23 @@ export const netTeams = {
       t.person_id_a,
       pa.person_name  AS person_name_a,
       pa.country      AS country_a,
+      ma.slug         AS member_slug_a,
       t.person_id_b,
       pb.person_name  AS person_name_b,
       pb.country      AS country_b,
+      mb.slug         AS member_slug_b,
       t.first_year,
       t.last_year,
       t.appearance_count
     FROM net_team t
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE t.team_id = ?
   `),
 
@@ -1290,7 +1338,7 @@ export const netTeams = {
 // ---------------------------------------------------------------------------
 // netPartnerships
 //
-// Top partnerships page — aggregated stats from net_team_appearance_canonical.
+// Top partnerships page, aggregated stats from net_team_appearance_canonical.
 // STATISTICS FIREWALL: queries net_team_appearance_canonical view only.
 // Route: /net/partnerships
 // ---------------------------------------------------------------------------
@@ -1300,9 +1348,11 @@ export interface NetPartnershipRow {
   person_id_a:      string;
   person_name_a:    string;
   country_a:        string | null;
+  member_slug_a:    string | null;
   person_id_b:      string;
   person_name_b:    string;
   country_b:        string | null;
+  member_slug_b:    string | null;
   appearance_count: number;
   win_count:        number;
   podium_count:     number;
@@ -1318,9 +1368,11 @@ export const netPartnerships = {
       t.person_id_a,
       pa.person_name  AS person_name_a,
       pa.country      AS country_a,
+      MAX(ma.slug)    AS member_slug_a,
       t.person_id_b,
       pb.person_name  AS person_name_b,
       pb.country      AS country_b,
+      MAX(mb.slug)    AS member_slug_b,
       COUNT(*)                                              AS appearance_count,
       SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
       SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
@@ -1330,6 +1382,12 @@ export const netPartnerships = {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     HAVING COUNT(*) >= 2
@@ -1337,7 +1395,7 @@ export const netPartnerships = {
     LIMIT 50
   `),
 
-  /** Division filter options — distinct canonical groups with appearance counts. */
+  /** Division filter options, distinct canonical groups with appearance counts. */
   listDivisionOptions: db.prepare(`
     SELECT dg.canonical_group, COUNT(DISTINCT a.id) AS appearance_count
     FROM net_discipline_group dg
@@ -1347,16 +1405,18 @@ export const netPartnerships = {
     ORDER BY appearance_count DESC
   `),
 
-  /** Wider pool for notable partnership buckets — top 100 with >=3 appearances. */
+  /** Wider pool for notable partnership buckets, top 100 with >=3 appearances. */
   listNotablePool: db.prepare(`
     SELECT
       t.team_id,
       t.person_id_a,
       pa.person_name  AS person_name_a,
       pa.country      AS country_a,
+      MAX(ma.slug)    AS member_slug_a,
       t.person_id_b,
       pb.person_name  AS person_name_b,
       pb.country      AS country_b,
+      MAX(mb.slug)    AS member_slug_b,
       COUNT(*)                                              AS appearance_count,
       SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
       SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
@@ -1366,6 +1426,12 @@ export const netPartnerships = {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
     HAVING COUNT(*) >= 3
@@ -1413,9 +1479,11 @@ export function queryFilteredPartnerships(filters: {
       t.person_id_a,
       pa.person_name  AS person_name_a,
       pa.country      AS country_a,
+      MAX(ma.slug)    AS member_slug_a,
       t.person_id_b,
       pb.person_name  AS person_name_b,
       pb.country      AS country_b,
+      MAX(mb.slug)    AS member_slug_b,
       COUNT(*)                                              AS appearance_count,
       SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)    AS win_count,
       SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)   AS podium_count,
@@ -1425,6 +1493,12 @@ export function queryFilteredPartnerships(filters: {
     JOIN historical_persons pa ON pa.person_id = t.person_id_a
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN net_team_appearance_canonical a ON a.team_id = t.team_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     ${joins.join('\n    ')}
     ${where}
     GROUP BY t.team_id
@@ -1439,25 +1513,27 @@ export function queryFilteredPartnerships(filters: {
 //
 // Internal-only diagnostic queries for identity recovery.
 // Detects stub persons (auto-generated, no real PT entry) by checking
-// event_count IS NULL or 0 — these are persons the seed builder created
+// event_count IS NULL or 0. These are persons the seed builder created
 // as placeholders for unresolved canonical participants.
 // Route: /internal/net/recovery-signals
 // ---------------------------------------------------------------------------
 
 export interface RecoveryPartnerRepeatRow {
-  known_player:    string;
-  known_pid:       string;
-  stub_partner:    string;
-  stub_pid:        string;
-  co_count:        number;
-  years:           string;
+  known_player:      string;
+  known_pid:         string;
+  known_member_slug: string | null;
+  stub_partner:      string;
+  stub_pid:          string;
+  co_count:          number;
+  years:             string;
 }
 
 export interface RecoveryAbbreviationRow {
-  stub_name:     string;
-  stub_pid:      string;
-  likely_match:  string;
-  likely_pid:    string;
+  stub_name:          string;
+  stub_pid:           string;
+  likely_match:       string;
+  likely_pid:         string;
+  likely_member_slug: string | null;
 }
 
 export interface RecoveryHighValueRow {
@@ -1474,6 +1550,7 @@ export const netRecoverySignals = {
     SELECT
       hp_known.person_name AS known_player,
       hp_known.person_id   AS known_pid,
+      MAX(m_known.slug)    AS known_member_slug,
       hp_stub.person_name  AS stub_partner,
       hp_stub.person_id    AS stub_pid,
       COUNT(DISTINCT p_stub.result_entry_id) AS co_count,
@@ -1487,6 +1564,9 @@ export const netRecoverySignals = {
     JOIN event_result_entries re ON re.id = p_known.result_entry_id
     JOIN event_disciplines ed   ON ed.id = re.discipline_id AND ed.team_type = 'doubles'
     JOIN events ev              ON ev.id = re.event_id
+    LEFT JOIN members m_known
+      ON m_known.historical_person_id = hp_known.person_id
+      AND m_known.deleted_at IS NULL
     WHERE hp_known.event_count > 0
       AND (hp_stub.event_count IS NULL OR hp_stub.event_count = 0)
       AND hp_stub.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
@@ -1502,13 +1582,17 @@ export const netRecoverySignals = {
       hp_stub.person_name  AS stub_name,
       hp_stub.person_id    AS stub_pid,
       hp_known.person_name AS likely_match,
-      hp_known.person_id   AS likely_pid
+      hp_known.person_id   AS likely_pid,
+      m_likely.slug        AS likely_member_slug
     FROM historical_persons hp_stub
     JOIN historical_persons hp_known
       ON LOWER(SUBSTR(hp_known.person_name,
                       INSTR(hp_known.person_name, ' ') + 1))
          = LOWER(SUBSTR(hp_stub.person_name,
                         INSTR(hp_stub.person_name, ' ') + 1))
+    LEFT JOIN members m_likely
+      ON m_likely.historical_person_id = hp_known.person_id
+      AND m_likely.deleted_at IS NULL
     WHERE (hp_stub.event_count IS NULL OR hp_stub.event_count = 0)
       AND hp_known.event_count > 0
       AND hp_stub.person_name NOT IN ('[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__', '__NON_PERSON__', 'Unknown', '')
@@ -1613,7 +1697,7 @@ export const netRecoveryCandidates = {
     ORDER BY stub_appearances DESC, hp_stub.person_name ASC
   `),
 
-  /** High-frequency stubs (>=3 appearances) — likely real persons needing PT entries. */
+  /** High-frequency stubs (>=3 appearances), likely real persons needing PT entries. */
   listHighFrequencyStubs: db.prepare(`
     SELECT
       hp.person_name,
@@ -1694,27 +1778,33 @@ export const netTeamCorrectionApproval = {
 // ---------------------------------------------------------------------------
 
 export interface RecoveryAliasCandidateRow {
-  id:                    string;
-  stub_name:             string;
-  stub_person_id:        string;
-  suggested_person_id:   string;
-  suggested_person_name: string;
-  suggestion_type:       string;
-  confidence:            string;
-  appearance_count:      number;
-  operator_decision:     string | null;
-  operator_notes:        string | null;
-  reviewed_by:           string | null;
-  reviewed_at:           string | null;
+  id:                     string;
+  stub_name:              string;
+  stub_person_id:         string;
+  suggested_person_id:    string;
+  suggested_person_name:  string;
+  suggested_member_slug:  string | null;
+  suggestion_type:        string;
+  confidence:             string;
+  appearance_count:       number;
+  operator_decision:      string | null;
+  operator_notes:         string | null;
+  reviewed_by:            string | null;
+  reviewed_at:            string | null;
 }
 
 export const netRecoveryApproval = {
   listAll: db.prepare(`
-    SELECT id, stub_name, stub_person_id, suggested_person_id, suggested_person_name,
-           suggestion_type, confidence, appearance_count,
-           operator_decision, operator_notes, reviewed_by, reviewed_at
-    FROM net_recovery_alias_candidate
-    ORDER BY appearance_count DESC, stub_name ASC
+    SELECT rac.id, rac.stub_name, rac.stub_person_id,
+           rac.suggested_person_id, rac.suggested_person_name,
+           m_sug.slug AS suggested_member_slug,
+           rac.suggestion_type, rac.confidence, rac.appearance_count,
+           rac.operator_decision, rac.operator_notes, rac.reviewed_by, rac.reviewed_at
+    FROM net_recovery_alias_candidate rac
+    LEFT JOIN members m_sug
+      ON m_sug.historical_person_id = rac.suggested_person_id
+      AND m_sug.deleted_at IS NULL
+    ORDER BY rac.appearance_count DESC, rac.stub_name ASC
   `),
 
   getById: db.prepare(`
@@ -1750,109 +1840,6 @@ export const netRecoveryApproval = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// netPlayers
-//
-// Player-centric reads for the net domain enrichment layer.
-//
-// STATISTICS FIREWALL: all appearance queries use the net_team_appearance_canonical
-// view, which enforces evidence_class = 'canonical_only' at the DB layer.
-// Never query net_team_appearance directly from this statement group.
-//
-// Routes: /net/players/:personId  |  /net/players/:personId/partners/:teamId
-// ---------------------------------------------------------------------------
-export interface NetPlayerSummaryRow {
-  person_id:              string;
-  person_name:            string;
-  country:                string | null;
-  total_net_appearances:  number;
-}
-
-export interface NetPartnerRow {
-  partner_person_id: string;
-  partner_name:      string;
-  partner_country:   string | null;
-  team_id:           string;
-  appearance_count:  number;
-  first_year:        number | null;
-  last_year:         number | null;
-  best_placement:    number;
-}
-
-export interface NetPartnerNetworkRow {
-  partner_person_id: string;
-  partner_name:      string;
-  partner_country:   string | null;
-  appearance_count:  number;
-  win_count:         number;
-  podium_count:      number;
-  first_year:        number | null;
-  last_year:         number | null;
-}
-
-export const netPlayers = {
-  // STATS FIREWALL: all appearance joins use net_team_appearance_canonical view.
-  // INNER JOINs mean null result = no net appearances (→ 404, not an error).
-
-  getPlayerSummary: db.prepare(`
-    SELECT
-      hp.person_id,
-      hp.person_name,
-      hp.country,
-      COUNT(a.id) AS total_net_appearances
-    FROM historical_persons hp
-    JOIN net_team_member nm    ON nm.person_id = hp.person_id
-    JOIN net_team_appearance_canonical a ON a.team_id = nm.team_id
-    WHERE hp.person_id = ?
-    GROUP BY hp.person_id
-  `),
-
-  listPartnersByPersonId: db.prepare(`
-    -- STATS FIREWALL: uses net_team_appearance_canonical view
-    SELECT
-      nm_partner.person_id  AS partner_person_id,
-      hp.person_name        AS partner_name,
-      hp.country            AS partner_country,
-      nm_self.team_id       AS team_id,
-      COUNT(a.id)           AS appearance_count,
-      MIN(a.event_year)     AS first_year,
-      MAX(a.event_year)     AS last_year,
-      MIN(a.placement)      AS best_placement
-    FROM net_team_member nm_self
-    JOIN net_team_member nm_partner
-      ON  nm_partner.team_id   = nm_self.team_id
-      AND nm_partner.person_id != nm_self.person_id
-    JOIN net_team_appearance_canonical a ON a.team_id = nm_self.team_id
-    JOIN historical_persons hp ON hp.person_id = nm_partner.person_id
-    WHERE nm_self.person_id = ?
-    GROUP BY nm_partner.person_id, nm_self.team_id
-    ORDER BY COUNT(a.id) DESC, MIN(a.placement) ASC
-  `),
-  /** Partner network: aggregate stats per partner across all teams. */
-  listPartnerNetworkByPersonId: db.prepare(`
-    -- STATS FIREWALL: uses net_team_appearance_canonical view
-    SELECT
-      nm_partner.person_id  AS partner_person_id,
-      hp.person_name        AS partner_name,
-      hp.country            AS partner_country,
-      COUNT(a.id)                                            AS appearance_count,
-      SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)     AS win_count,
-      SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)    AS podium_count,
-      MIN(a.event_year)                                      AS first_year,
-      MAX(a.event_year)                                      AS last_year
-    FROM net_team_member nm_self
-    JOIN net_team_member nm_partner
-      ON  nm_partner.team_id   = nm_self.team_id
-      AND nm_partner.person_id != nm_self.person_id
-    JOIN net_team_appearance_canonical a ON a.team_id = nm_self.team_id
-    JOIN historical_persons hp ON hp.person_id = nm_partner.person_id
-    WHERE nm_self.person_id = ?
-    GROUP BY nm_partner.person_id
-    ORDER BY appearance_count DESC, win_count DESC, hp.person_name ASC
-    LIMIT 10
-  `),
-} as const;
-
-// ---------------------------------------------------------------------------
 // netEvents
 //
 // Event-centric reads for the net domain enrichment layer.
@@ -1862,9 +1849,9 @@ export const netPlayers = {
 // Never query net_team_appearance directly from this statement group.
 //
 // QC hints surfaced to public pages (safe summaries only, never raw review queue rows):
-//   has_multi_stage_hint       — event contains multi-stage bracket results
-//   unknown_team_excluded_count — count of results where team could not be linked
-//   discipline_review_count    — count of disciplines flagged for review
+//   has_multi_stage_hint        = event contains multi-stage bracket results
+//   unknown_team_excluded_count = count of results where team could not be linked
+//   discipline_review_count     = count of disciplines flagged for review
 //
 // Routes: /net/events  |  /net/events/:eventId
 // ---------------------------------------------------------------------------
@@ -1889,9 +1876,11 @@ export interface NetEventAppearanceRow {
   person_id_a:     string;
   person_name_a:   string;
   country_a:       string | null;
+  member_slug_a:   string | null;
   person_id_b:     string;
   person_name_b:   string;
   country_b:       string | null;
+  member_slug_b:   string | null;
   discipline_id:   string;
   discipline_name: string;
   canonical_group: string | null;
@@ -1960,9 +1949,11 @@ export const netEvents = {
       t.person_id_a,
       pa.person_name    AS person_name_a,
       pa.country        AS country_a,
+      ma.slug           AS member_slug_a,
       t.person_id_b,
       pb.person_name    AS person_name_b,
       pb.country        AS country_b,
+      mb.slug           AS member_slug_b,
       a.discipline_id,
       ed.name           AS discipline_name,
       dg.canonical_group,
@@ -1976,6 +1967,12 @@ export const netEvents = {
     JOIN historical_persons pb ON pb.person_id = t.person_id_b
     JOIN event_disciplines ed  ON ed.id        = a.discipline_id
     LEFT JOIN net_discipline_group dg ON dg.discipline_id = a.discipline_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = pa.person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = pb.person_id
+      AND mb.deleted_at IS NULL
     WHERE a.event_id = ?
     ORDER BY ed.name ASC, a.placement ASC
   `),
@@ -2016,15 +2013,16 @@ export interface NetHomeTopPlayerRow {
 }
 
 export interface NetNotablePlayerRow {
-  person_id:        string;
-  person_name:      string;
-  country:          string | null;
+  person_id:         string;
+  person_name:       string;
+  country:           string | null;
+  member_slug:       string | null;
   total_appearances: number;
-  total_wins:       number;
-  total_podiums:    number;
-  first_year:       number | null;
-  last_year:        number | null;
-  partner_count:    number;
+  total_wins:        number;
+  total_podiums:     number;
+  first_year:        number | null;
+  last_year:         number | null;
+  partner_count:     number;
 }
 
 export interface NetHomeRecentEventRow {
@@ -2145,7 +2143,7 @@ export const netHome = {
     LIMIT 10
   `),
 
-  /** Player aggregate pool for notable player buckets — top 100 by appearances. */
+  /** Player aggregate pool for notable player buckets, top 100 by appearances. */
   listNotablePlayerPool: db.prepare(`
     -- STATS FIREWALL: uses net_team_appearance_canonical view.
     -- Uses team_id count as partner proxy — avoids expensive self-join.
@@ -2153,6 +2151,7 @@ export const netHome = {
       hp.person_id,
       hp.person_name,
       hp.country,
+      MAX(m.slug)                                            AS member_slug,
       COUNT(a.id)                                            AS total_appearances,
       SUM(CASE WHEN a.placement = 1 THEN 1 ELSE 0 END)     AS total_wins,
       SUM(CASE WHEN a.placement <= 3 THEN 1 ELSE 0 END)    AS total_podiums,
@@ -2162,6 +2161,9 @@ export const netHome = {
     FROM historical_persons hp
     JOIN net_team_member nm ON nm.person_id = hp.person_id
     JOIN net_team_appearance_canonical a ON a.team_id = nm.team_id
+    LEFT JOIN members m
+      ON m.historical_person_id = hp.person_id
+      AND m.deleted_at IS NULL
     WHERE hp.person_name NOT IN ('Unknown', '__NON_PERSON__', '[UNKNOWN PARTNER]', '__UNKNOWN_PARTNER__')
     GROUP BY hp.person_id
     HAVING COUNT(a.id) >= 3
@@ -2180,7 +2182,7 @@ export const health = {
 // netReview
 //
 // Internal / QC reads for the net enrichment review workflow.
-// These queries are for operator review only — never exposed in public pages.
+// These queries are for operator review only; never exposed in public pages.
 //
 // Sources: net_review_queue, net_discipline_group, events, event_disciplines
 // Route: GET /internal/net/review
@@ -2366,7 +2368,7 @@ export const netReview = {
 // netCandidates
 //
 // Internal / operator reads for the net candidate match review page.
-// These queries are operator-only — never exposed in public pages.
+// These queries are operator-only; never exposed in public pages.
 // All rows have evidence_class = 'unresolved_candidate'.
 // ---------------------------------------------------------------------------
 
@@ -2422,6 +2424,8 @@ export interface NetCandidateRow {
   event_title:         string | null;
   person_name_a:       string | null;
   person_name_b:       string | null;
+  member_slug_a:       string | null;
+  member_slug_b:       string | null;
 }
 
 export interface NetCandidateFilters {
@@ -2491,7 +2495,7 @@ export const netCandidates = {
 } as const;
 
 /**
- * Dynamic candidate query — filter by review_status, event_id, linked_only.
+ * Dynamic candidate query, filter by review_status, event_id, linked_only.
  * Uses runtime db.prepare() since filter combinations are not enumerable.
  * Acceptable for a low-frequency internal review tool.
  */
@@ -2532,6 +2536,8 @@ export function queryCandidateItems(filters: NetCandidateFilters): NetCandidateR
       c.player_a_raw_name, c.player_b_raw_name,
       c.player_a_person_id, pa.person_name AS person_name_a,
       c.player_b_person_id, pb.person_name AS person_name_b,
+      ma.slug AS member_slug_a,
+      mb.slug AS member_slug_b,
       c.raw_text, c.extracted_score, c.round_hint, c.year_hint,
       c.confidence_score, c.review_status, c.imported_at,
       f.source_file
@@ -2540,6 +2546,12 @@ export function queryCandidateItems(filters: NetCandidateFilters): NetCandidateR
     LEFT JOIN net_raw_fragment  f   ON f.id             = c.fragment_id
     LEFT JOIN historical_persons pa ON pa.person_id     = c.player_a_person_id
     LEFT JOIN historical_persons pb ON pb.person_id     = c.player_b_person_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = c.player_a_person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = c.player_b_person_id
+      AND mb.deleted_at IS NULL
     ${where}
     ORDER BY c.confidence_score DESC, c.imported_at DESC
     LIMIT ? OFFSET ?
@@ -2565,8 +2577,10 @@ export interface NetCuratedDetailRow {
   player_b_raw_name:   string | null;
   player_a_person_id:  string | null;
   person_name_a:       string | null;
+  member_slug_a:       string | null;
   player_b_person_id:  string | null;
   person_name_b:       string | null;
+  member_slug_b:       string | null;
   raw_text:            string;
   extracted_score:     string | null;
   round_hint:          string | null;
@@ -2595,6 +2609,8 @@ export const netCurated = {
       c.player_a_raw_name, c.player_b_raw_name,
       c.player_a_person_id, pa.person_name AS person_name_a,
       c.player_b_person_id, pb.person_name AS person_name_b,
+      ma.slug AS member_slug_a,
+      mb.slug AS member_slug_b,
       c.raw_text, c.extracted_score, c.round_hint, c.year_hint,
       c.confidence_score, c.review_status, c.imported_at,
       f.source_file
@@ -2604,6 +2620,12 @@ export const netCurated = {
     LEFT JOIN net_raw_fragment   f   ON f.id         = c.fragment_id
     LEFT JOIN historical_persons pa  ON pa.person_id = c.player_a_person_id
     LEFT JOIN historical_persons pb  ON pb.person_id = c.player_b_person_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = c.player_a_person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = c.player_b_person_id
+      AND mb.deleted_at IS NULL
     WHERE c.candidate_id = ?
   `),
 
@@ -2677,8 +2699,10 @@ export interface NetCuratedBrowseRow {
   discipline_name:     string | null;
   player_a_person_id:  string | null;
   person_name_a:       string | null;
+  member_slug_a:       string | null;
   player_b_person_id:  string | null;
   person_name_b:       string | null;
+  member_slug_b:       string | null;
   player_a_raw_name:   string | null;
   player_b_raw_name:   string | null;
   extracted_score:     string | null;
@@ -2755,7 +2779,7 @@ export const netCuratedBrowse = {
 } as const;
 
 /**
- * Dynamic curated-match browse query — filter by status, source, event, year, linked.
+ * Dynamic curated-match browse query, filter by status, source, event, year, linked.
  * Uses runtime db.prepare() for filter flexibility on a low-frequency internal tool.
  */
 export function queryCuratedItems(filters: NetCuratedBrowseFilters): NetCuratedBrowseRow[] {
@@ -2795,6 +2819,8 @@ export function queryCuratedItems(filters: NetCuratedBrowseFilters): NetCuratedB
       cm.discipline_id,  ed.name        AS discipline_name,
       cm.player_a_person_id, pa.person_name AS person_name_a,
       cm.player_b_person_id, pb.person_name AS person_name_b,
+      ma.slug AS member_slug_a,
+      mb.slug AS member_slug_b,
       cm.extracted_score, cm.raw_text,
       c.player_a_raw_name, c.player_b_raw_name,
       c.round_hint, c.year_hint,
@@ -2806,6 +2832,12 @@ export function queryCuratedItems(filters: NetCuratedBrowseFilters): NetCuratedB
     LEFT JOIN net_raw_fragment   f   ON f.id           = c.fragment_id
     LEFT JOIN historical_persons pa  ON pa.person_id   = cm.player_a_person_id
     LEFT JOIN historical_persons pb  ON pb.person_id   = cm.player_b_person_id
+    LEFT JOIN members ma
+      ON ma.historical_person_id = cm.player_a_person_id
+      AND ma.deleted_at IS NULL
+    LEFT JOIN members mb
+      ON mb.historical_person_id = cm.player_b_person_id
+      AND mb.deleted_at IS NULL
     ${where}
     ORDER BY cm.curated_at DESC
     LIMIT ? OFFSET ?
@@ -3082,7 +3114,7 @@ export const account = {
       ere.score_text,
       erp_co.display_name         AS participant_display_name,
       erp_co.historical_person_id AS participant_person_id,
-      COALESCE(m_co_linked.slug, m_co_legacy.slug) AS participant_member_slug,
+      COALESCE(m_co_linked.slug, m_co_via_hp.slug) AS participant_member_slug,
       erp_co.member_id            AS participant_member_id
     FROM event_result_entry_participants AS erp_me
     JOIN event_result_entries AS ere
@@ -3097,13 +3129,9 @@ export const account = {
       ON erp_co.result_entry_id = ere.id
     LEFT JOIN members AS m_co_linked
       ON m_co_linked.id = erp_co.member_id
-    LEFT JOIN historical_persons AS hp_co
-      ON hp_co.person_id = erp_co.historical_person_id
-      AND hp_co.legacy_member_id IS NOT NULL
-    LEFT JOIN members AS m_co_legacy
-      ON m_co_legacy.legacy_member_id = hp_co.legacy_member_id
-      AND m_co_legacy.deleted_at IS NULL
-      AND m_co_legacy.login_email IS NOT NULL
+    LEFT JOIN members AS m_co_via_hp
+      ON m_co_via_hp.historical_person_id = erp_co.historical_person_id
+      AND m_co_via_hp.deleted_at IS NULL
     WHERE erp_me.member_id = ?
     ORDER BY
       e.start_date DESC,
@@ -3129,7 +3157,7 @@ export const account = {
       ere.score_text,
       erp_co.display_name         AS participant_display_name,
       erp_co.historical_person_id AS participant_person_id,
-      COALESCE(m_co_linked.slug, m_co_legacy.slug) AS participant_member_slug,
+      COALESCE(m_co_linked.slug, m_co_via_hp.slug) AS participant_member_slug,
       erp_co.member_id            AS participant_member_id
     FROM event_result_entry_participants AS erp_me
     JOIN historical_persons AS hp
@@ -3146,13 +3174,9 @@ export const account = {
       ON erp_co.result_entry_id = ere.id
     LEFT JOIN members AS m_co_linked
       ON m_co_linked.id = erp_co.member_id
-    LEFT JOIN historical_persons AS hp_co
-      ON hp_co.person_id = erp_co.historical_person_id
-      AND hp_co.legacy_member_id IS NOT NULL
-    LEFT JOIN members AS m_co_legacy
-      ON m_co_legacy.legacy_member_id = hp_co.legacy_member_id
-      AND m_co_legacy.deleted_at IS NULL
-      AND m_co_legacy.login_email IS NOT NULL
+    LEFT JOIN members AS m_co_via_hp
+      ON m_co_via_hp.historical_person_id = erp_co.historical_person_id
+      AND m_co_via_hp.deleted_at IS NULL
     WHERE hp.legacy_member_id = ?
     ORDER BY
       e.start_date DESC,
@@ -3215,6 +3239,29 @@ export const registration = {
 } as const;
 
 export const auth = {
+  findUnverifiedMemberByEmail: db.prepare(`
+    SELECT m.id
+    FROM members_active AS m
+    WHERE m.login_email_normalized = ?
+      AND m.email_verified_at IS NULL
+      AND m.is_deceased = 0
+  `),
+
+  markEmailVerified: db.prepare(`
+    UPDATE members
+    SET email_verified_at = ?,
+        updated_at        = ?,
+        updated_by        = 'system',
+        version           = version + 1
+    WHERE id = ? AND email_verified_at IS NULL
+  `),
+
+  findMemberForSessionAfterVerify: db.prepare(`
+    SELECT id, slug, login_email, password_version, is_admin
+    FROM members_active
+    WHERE id = ?
+  `),
+
   findMemberByEmail: db.prepare(`
     SELECT
       m.id,
@@ -3230,6 +3277,17 @@ export const auth = {
       AND m.is_deceased = 0
   `),
 
+  findMemberForSession: db.prepare(`
+    SELECT
+      m.id,
+      m.slug,
+      m.display_name,
+      m.password_version,
+      m.is_admin
+    FROM members_active AS m
+    WHERE m.id = ?
+  `),
+
   updateMemberLastLogin: db.prepare(`
     UPDATE members
     SET
@@ -3237,6 +3295,155 @@ export const auth = {
       updated_at    = ?,
       updated_by    = 'system',
       version       = version + 1
+    WHERE id = ?
+  `),
+
+  findMemberForPasswordChange: db.prepare(`
+    SELECT id, password_hash, password_version
+    FROM members_active
+    WHERE id = ?
+  `),
+
+  updateMemberPassword: db.prepare(`
+    UPDATE members
+    SET
+      password_hash         = ?,
+      password_version      = password_version + 1,
+      password_changed_at   = ?,
+      updated_at            = ?,
+      updated_by            = 'member',
+      version               = version + 1
+    WHERE id = ?
+  `),
+} as const;
+
+export const systemConfig = {
+  getValueByKey: db.prepare(`
+    SELECT value_json
+    FROM system_config_current
+    WHERE config_key = ?
+  `),
+} as const;
+
+export interface OutboxRow {
+  id: string;
+  recipient_email: string | null;
+  recipient_member_id: string | null;
+  subject: string;
+  body_text: string;
+  from_identity: string | null;
+  retry_count: number;
+  idempotency_key: string | null;
+}
+
+export interface AccountTokenRow {
+  id: string;
+  member_id: string;
+  token_type: string;
+  expires_at: string;
+  used_at: string | null;
+}
+
+export const accountTokens = {
+  insert: db.prepare(`
+    INSERT INTO account_tokens (
+      id, created_at, created_by, updated_at, updated_by, version,
+      member_id, target_legacy_member_id, token_type,
+      token_hash, token_hash_version,
+      issued_at, expires_at
+    ) VALUES (?, ?, 'system', ?, 'system', 1,
+      ?, ?, ?,
+      ?, 1,
+      ?, ?)
+  `),
+
+  findByHash: db.prepare(`
+    SELECT id, member_id, token_type, expires_at, used_at
+    FROM account_tokens
+    WHERE token_hash = ? AND token_type = ?
+  `),
+
+  consumeIfUnused: db.prepare(`
+    UPDATE account_tokens
+    SET used_at    = ?,
+        updated_at = ?,
+        updated_by = 'system',
+        version    = version + 1
+    WHERE id = ? AND used_at IS NULL
+  `),
+} as const;
+
+export const outbox = {
+  insert: db.prepare(`
+    INSERT INTO outbox_emails (
+      id, created_at, created_by, updated_at, updated_by, version,
+      idempotency_key,
+      recipient_email, recipient_member_id, mailing_list_id,
+      sender_member_id, from_identity,
+      subject, body_text,
+      status, retry_count, scheduled_for
+    ) VALUES (?, ?, 'system', ?, 'system', 1,
+      ?,
+      ?, ?, ?,
+      ?, ?,
+      ?, ?,
+      'pending', 0, ?)
+  `),
+
+  selectPendingBatch: db.prepare(`
+    SELECT id, recipient_email, recipient_member_id, subject, body_text,
+           from_identity, retry_count, idempotency_key
+    FROM outbox_emails
+    WHERE status = 'pending'
+      AND (scheduled_for IS NULL OR scheduled_for <= ?)
+    ORDER BY created_at ASC
+    LIMIT ?
+  `),
+
+  findByIdempotencyKey: db.prepare(`
+    SELECT id FROM outbox_emails WHERE idempotency_key = ?
+  `),
+
+  markSending: db.prepare(`
+    UPDATE outbox_emails
+    SET status = 'sending',
+        last_attempt_at = ?,
+        updated_at = ?,
+        updated_by = 'system',
+        version = version + 1
+    WHERE id = ? AND status = 'pending'
+  `),
+
+  markSent: db.prepare(`
+    UPDATE outbox_emails
+    SET status = 'sent',
+        sent_at = ?,
+        updated_at = ?,
+        updated_by = 'system',
+        body_text = NULL,
+        version = version + 1
+    WHERE id = ?
+  `),
+
+  markFailedRetry: db.prepare(`
+    UPDATE outbox_emails
+    SET status = 'pending',
+        retry_count = retry_count + 1,
+        last_error = ?,
+        updated_at = ?,
+        updated_by = 'system',
+        version = version + 1
+    WHERE id = ?
+  `),
+
+  markDeadLetter: db.prepare(`
+    UPDATE outbox_emails
+    SET status = 'dead_letter',
+        retry_count = retry_count + 1,
+        last_error = ?,
+        updated_at = ?,
+        updated_by = 'system',
+        version = version + 1
     WHERE id = ?
   `),
 } as const;
@@ -3285,25 +3492,6 @@ export interface AvatarUploadCountRow {
 
 // ── Legacy claim ────────────────────────────────────────────────────────────────
 
-export interface LegacyPlaceholderRow {
-  id: string;
-  display_name: string;
-  legacy_member_id: string | null;
-  legacy_user_id: string | null;
-  legacy_email: string | null;
-  bio: string;
-  birth_date: string | null;
-  street_address: string | null;
-  postal_code: string | null;
-  city: string | null;
-  region: string | null;
-  country: string | null;
-  ifpa_join_date: string | null;
-  is_hof: number;
-  is_bap: number;
-  legacy_is_admin: number;
-}
-
 export interface AlreadyClaimedRow {
   legacy_member_id: string;
 }
@@ -3331,39 +3519,7 @@ export const legacyClaim = {
     FROM members
     WHERE legacy_member_id = ?
       AND deleted_at IS NULL
-      AND login_email IS NOT NULL
     LIMIT 1
-  `),
-
-  findPlaceholderByIdentifier: db.prepare(`
-    SELECT
-      id, display_name,
-      legacy_member_id, legacy_user_id, legacy_email,
-      bio, birth_date, street_address, postal_code,
-      city, region, country,
-      ifpa_join_date, is_hof, is_bap, legacy_is_admin
-    FROM members
-    WHERE deleted_at IS NULL
-      AND personal_data_purged_at IS NULL
-      AND login_email IS NULL
-      AND password_hash IS NULL
-      AND (legacy_member_id = ? OR legacy_user_id = ? OR legacy_email = ?)
-    LIMIT 1
-  `),
-
-  findPlaceholderById: db.prepare(`
-    SELECT
-      id, display_name,
-      legacy_member_id, legacy_user_id, legacy_email,
-      bio, birth_date, street_address, postal_code,
-      city, region, country,
-      ifpa_join_date, is_hof, is_bap, legacy_is_admin
-    FROM members
-    WHERE id = ?
-      AND deleted_at IS NULL
-      AND personal_data_purged_at IS NULL
-      AND login_email IS NULL
-      AND password_hash IS NULL
   `),
 
   checkAlreadyClaimed: db.prepare(`
@@ -3371,23 +3527,6 @@ export const legacyClaim = {
     FROM members
     WHERE id = ?
       AND legacy_member_id IS NOT NULL
-  `),
-
-  softDeletePlaceholder: db.prepare(`
-    UPDATE members
-    SET
-      deleted_at       = ?,
-      deleted_by       = 'claim_merge',
-      legacy_member_id = NULL,
-      legacy_user_id   = NULL,
-      legacy_email     = NULL,
-      updated_at       = ?,
-      updated_by       = 'claim_merge',
-      version          = version + 1
-    WHERE id = ?
-      AND deleted_at IS NULL
-      AND login_email IS NULL
-      AND password_hash IS NULL
   `),
 
   transferLegacyFields: db.prepare(`
@@ -3411,6 +3550,119 @@ export const legacyClaim = {
       updated_by       = 'claim_merge',
       version          = version + 1
     WHERE id = ?
+  `),
+} as const;
+
+// ── legacy_members ──────────────────────────────────────────────────────────
+//
+// Permanent archival table of old footbag.org user accounts. Claim marks
+// (claimed_by_member_id + claimed_at) but does not delete the row; PII purge
+// clears the claim fields so the legacy account becomes claimable again.
+// ---------------------------------------------------------------------------
+export interface LegacyMemberRow {
+  legacy_member_id: string;
+  legacy_user_id: string | null;
+  legacy_email: string | null;
+  real_name: string | null;
+  display_name: string | null;
+  display_name_normalized: string | null;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  bio: string | null;
+  birth_date: string | null;
+  street_address: string | null;
+  postal_code: string | null;
+  ifpa_join_date: string | null;
+  first_competition_year: number | null;
+  is_hof: number;
+  is_bap: number;
+  legacy_is_admin: number;
+  import_source: string | null;
+  imported_at: string;
+  version: number;
+  claimed_by_member_id: string | null;
+  claimed_at: string | null;
+}
+
+export const legacyMembers = {
+  insert: db.prepare(`
+    INSERT INTO legacy_members (
+      legacy_member_id,
+      legacy_user_id, legacy_email,
+      real_name, display_name, display_name_normalized,
+      city, region, country,
+      bio, birth_date, street_address, postal_code,
+      ifpa_join_date, first_competition_year,
+      is_hof, is_bap, legacy_is_admin,
+      import_source, imported_at,
+      version
+    ) VALUES (
+      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1
+    )
+  `),
+
+  findByIdentifier: db.prepare(`
+    SELECT
+      legacy_member_id,
+      legacy_user_id, legacy_email,
+      real_name, display_name,
+      bio, birth_date, street_address, postal_code,
+      city, region, country,
+      ifpa_join_date, first_competition_year,
+      is_hof, is_bap, legacy_is_admin,
+      claimed_by_member_id, claimed_at
+    FROM legacy_members
+    WHERE claimed_by_member_id IS NULL
+      AND (legacy_member_id = ? OR legacy_user_id = ? OR legacy_email = ?)
+    LIMIT 1
+  `),
+
+  findByLegacyMemberId: db.prepare(`
+    SELECT
+      legacy_member_id,
+      legacy_user_id, legacy_email,
+      real_name, display_name,
+      bio, birth_date, street_address, postal_code,
+      city, region, country,
+      ifpa_join_date, first_competition_year,
+      is_hof, is_bap, legacy_is_admin,
+      claimed_by_member_id, claimed_at
+    FROM legacy_members
+    WHERE legacy_member_id = ?
+  `),
+
+  markClaimed: db.prepare(`
+    UPDATE legacy_members
+    SET
+      claimed_by_member_id = ?,
+      claimed_at           = ?,
+      version              = version + 1
+    WHERE legacy_member_id = ?
+      AND claimed_by_member_id IS NULL
+  `),
+
+  clearClaim: db.prepare(`
+    UPDATE legacy_members
+    SET
+      claimed_by_member_id = NULL,
+      claimed_at           = NULL,
+      version              = version + 1
+    WHERE legacy_member_id = ?
+  `),
+
+  // Written as part of the claim transaction when the claimed legacy_members
+  // row has a matching historical_persons.legacy_member_id. Sets the
+  // derived member↔HP link.
+  setMemberHistoricalPersonId: db.prepare(`
+    UPDATE members
+    SET
+      historical_person_id = ?,
+      updated_at           = ?,
+      updated_by           = 'claim_merge',
+      version              = version + 1
+    WHERE id = ?
+      AND historical_person_id IS NULL
   `),
 } as const;
 

@@ -1,0 +1,30 @@
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    {{#if content.resent}}
+      <div class="form-success-banner" role="status">
+        If an unverified account exists for that email, a new verification link has been sent.
+      </div>
+    {{else}}
+      <p>
+        Registration successful! Please check your email to verify your account.
+        The verification link expires in 24 hours.
+      </p>
+    {{/if}}
+
+    <form method="POST" action="/verify/resend" class="profile-edit-form">
+      <div class="form-field">
+        <label for="email">Didn't get the email? Enter your address to resend:</label>
+        <input type="email" id="email" name="email" autocomplete="email" required />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Resend verification email</button>
+      </div>
+    </form>
+  </section>
+</div>

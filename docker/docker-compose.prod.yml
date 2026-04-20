@@ -30,22 +30,44 @@ services:
       - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
       # Media uploads (avatars, photos). Persisted on host across deploys.
       - ${FOOTBAG_MEDIA_DIR:-/srv/footbag/media}:/app/data/media:rw
+      # AWS config/credentials for the source-profile -> assumed-role chain.
+      # Root-owned on the host (0600); mounted read-only. See Path H §8.10.
+      - /root/.aws:/root/.aws:ro
     environment:
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
       SESSION_SECRET: ${SESSION_SECRET}
+      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_REGION: ${AWS_REGION}
+      JWT_SIGNER: ${JWT_SIGNER}
+      JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
+      SES_ADAPTER: ${SES_ADAPTER}
+      SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
     deploy:
       resources:
         limits:
           memory: 256M
 
   worker:
-    # MVFP v0.1: the worker is a stub that exits immediately (no jobs configured).
-    # restart: always is intentionally NOT set here. The base docker-compose.yml
-    # sets restart: "no" and this override must not change that.
-    # When real background jobs are added, change this to: restart: unless-stopped
-    restart: "no"
+    # Email-outbox polling loop (src/worker.ts). Restart on crash or host
+    # reboot so the outbox keeps draining. SIGTERM-clean exit loop in
+    # src/worker.ts handles graceful shutdown on `docker compose down` and
+    # systemd stop.
+    restart: unless-stopped
     volumes:
       - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+      # AWS config/credentials for the email-outbox worker (activates in the
+      # auth-hardening sprint Phase 8). Matches the web-service mount above.
+      - /root/.aws:/root/.aws:ro
+    environment:
+      PORT: "3000"
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_REGION: ${AWS_REGION}
+      JWT_SIGNER: ${JWT_SIGNER}
+      JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
+      SES_ADAPTER: ${SES_ADAPTER}
+      SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
     deploy:
       resources:
         limits:

@@ -46,6 +46,18 @@ rm -f "${DB_FILE}" "${DB_FILE}-wal" "${DB_FILE}-shm"
 echo "  → Applying schema..."
 sqlite3 "${DB_FILE}" < "${SCHEMA}"
 
+# Ensure mirror-derived club_members.csv exists (idempotent; script skips
+# when CSV newer than source). Needed as input for the legacy_members seed.
+echo "  → Extracting club member data from mirror (for legacy_members seed)..."
+"${PYTHON}" legacy_data/scripts/extract_club_members.py
+
+# Seed legacy_members BEFORE historical_persons is loaded, so the FK
+# historical_persons.legacy_member_id -> legacy_members(legacy_member_id)
+# is satisfied by script 08 below. This is a TEMPORARY mirror-based
+# population; Steve Goldberg's dump will supersede it.
+echo "  → Loading legacy_members seed (temporary, mirror-derived)..."
+"${PYTHON}" legacy_data/scripts/load_legacy_members_seed.py --db "${DB_FILE}"
+
 # Build seed CSVs from canonical input. Script 07 stamps source_scope='CANONICAL'
 # on persons, which the /history Players query requires. This replaces the prior
 # cp-based shortcut, which dropped source_scope and broke the /history listing.

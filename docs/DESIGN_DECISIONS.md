@@ -21,16 +21,18 @@ Current implementation status and accepted temporary deviations are tracked in `
   - [1.6 Single Lightsail Instance behind CloudFront](#16-single-lightsail-instance-behind-cloudfront)
   - [1.7 Docker Containers](#17-docker-containers)
   - [1.8 Container Memory Allocation](#18-container-memory-allocation)
-  - [1.9 Controller to Service Pattern](#19-controller-to-service-pattern)
+  - [1.9 Layered Architecture: Controllers, Services, Middleware, Adapters](#19-layered-architecture-controllers-services-middleware-adapters)
   - [1.10 Catalog-governed Page and Service Contracts](#110-catalog-governed-page-and-service-contracts)
+  - [1.11 Configuration Model](#111-configuration-model)
 - [2. Data Model](#2-data-model)
   - [2.1 Schema and Versioning](#21-schema-and-versioning)
   - [2.2 Data Access Pattern](#22-data-access-pattern)
   - [2.3 Soft Deletes](#23-soft-deletes)
     - [Retention policy](#retention-policy)
-  - [2.4 Immutable Audit Logs with Privacy-safe Fields](#24-immutable-audit-logs-with-privacy-safe-fields)
-  - [2.5 Hashtags and Media](#25-hashtags-and-media)
-  - [2.6 Encryption at Rest](#26-encryption-at-rest)
+  - [2.4 Member, Legacy Member, and Historical Person Entity Types](#24-member-legacy-member-and-historical-person-entity-types)
+  - [2.5 Immutable Audit Logs with Privacy-safe Fields](#25-immutable-audit-logs-with-privacy-safe-fields)
+  - [2.6 Hashtags and Media](#26-hashtags-and-media)
+  - [2.7 Encryption at Rest](#27-encryption-at-rest)
 - [3. Security, Authentication, and Sessions](#3-security-authentication-and-sessions)
   - [3.1 Password Hashing](#31-password-hashing)
   - [3.2 JWT sessions](#32-jwt-sessions)
@@ -353,24 +355,72 @@ Impact:
 
 - Regular review of container memory utilization during first 6 months post-launch to validate allocations and adjust if needed.
 
-## 1.9 Controller to Service Pattern
+## 1.9 Layered Architecture: Controllers, Services, Middleware, Adapters
 
 Decision:
-Controllers call business services directly and return HTML (for browser requests) or JSON (for webhooks/AJAX) based on request context.
-No separate REST API layer between HTML controllers and services. Only Webhook callbacks use REST. JSON endpoints exist where functionally required: webhook handlers and AJAX calls. All business services must be documented in the Service Catalog.
 
-Controllers are thin HTTP adapters only. They may perform request parsing, invoke validation middleware/helpers, select the response path, and delegate rendering, but they do not own business rules, route-domain interpretation, or page-model shaping beyond trivial glue logic. When a page varies by authentication state or viewer role, the controller passes viewer context to the service and the service returns the appropriately shaped response. Controllers must not mutate service-returned view models based on auth state.
+The platform uses a four-layer separation. Each layer has a specific responsibility. A function's signature, imports, and file location follow the layer it belongs to, not its semantic association with other code. Controllers call business services directly and return HTML (for browser requests) or JSON (for webhooks/AJAX). There is no separate REST API layer between HTML controllers and services. Only webhook callbacks use REST. All business services must be documented in the Service Catalog.
+
+Layers:
+
+1. Services (`src/services/`) — pure domain logic.
+
+   - Functions take domain arguments (ids, strings, DTOs) and return domain values. No `Request`/`Response`/`NextFunction` parameters.
+   - Never read cookies or headers. Never set cookies, redirect, or emit status codes.
+   - Own business rules, validation, authorization checks, and page-model shaping.
+
+2. Middleware (`src/middleware/`) — Express cross-cutting handlers.
+
+   - Signature: `(req, res, next) => void` or `(err, req, res, next) => void`.
+   - Apply across multiple routes: authentication, rate limiting, logging, CSRF checks, error handling.
+   - May co-locate HTTP-layer constants they own (cookie names, cookie maxAge) because those are HTTP concerns.
+
+3. Controllers (`src/controllers/`) — per-route HTTP glue.
+
+   - Parse `req.body`/`req.params`/`req.query`, orchestrate service calls, decide response type.
+   - Own `res.cookie(...)`, `res.redirect(...)`, `res.render(...)`, `res.status(...)` calls.
+   - Thin: controllers do not own business rules, route-domain interpretation, or page-model shaping beyond trivial glue logic. When a page varies by authentication state or viewer role, the controller passes viewer context to the service and the service returns the appropriately shaped response. Controllers must not mutate service-returned view models based on auth state.
+
+4. Adapters (`src/adapters/`) — external-service implementations behind typed interfaces.
+
+   - Encapsulate SDK calls (AWS, Stripe, etc.) so services never import `@aws-sdk/*` or similar directly.
+   - Paired structure: one interface plus one or more implementations selected by configuration.
+   - Naming convention: `<Backend><Purpose>Adapter` for implementations; `<Purpose>Adapter` for interfaces.
+   - File organization: one file per adapter at `src/adapters/<purpose>Adapter.ts`, containing the interface, all implementations (as factory functions, not classes), and a synchronous singleton getter `get<Purpose>Adapter()` that selects the configured implementation. Services import the getter and the interface from this single file; they do not construct adapters themselves.
+   - Test hook: each adapter file also exports `reset<Purpose>AdapterForTests()` which clears the singleton so test suites can exercise fresh wiring per file.
+
+Why this separation matters:
+
+- Dev/prod parity. Adapter interfaces are the single swap point between dev and production behavior. The same interface is used by services in both environments, so service code is identical across environments and tests exercise the same path production runs. When adapter implementations are defined inline inside service files, this boundary erodes: services start importing SDK types directly, the adapter seam becomes harder to enforce as new services arrive, and dev/prod parity stops being a structural guarantee.
+
+- Long-term clean code. Clear layer boundaries make it obvious where new code belongs. A new pure helper goes in services. A new Express middleware goes in middleware. A new external-service integration goes behind an adapter interface. Contributors do not have to guess.
+
+- Testability. Services are pure — no HTTP mocking required. Middleware is narrow — tests inject `(req, res, next)` mocks. Controllers are thin and delegate — integration tests exercise them end-to-end. Adapters are swapped for deterministic stubs in dev and test.
+
+Anti-patterns:
+
+- Placing a pure helper inside `src/middleware/` because it relates conceptually to middleware (e.g., a JWT-minting helper next to the JWT-validating middleware). A function's layer is determined by its signature, not by its semantic neighborhood. Pure functions belong in `src/services/`.
+
+- Defining adapter implementations inline inside a service file. Adapters belong in `src/adapters/`; services import the typed interface.
+
+- Reading `req`/`res` inside a service. Services receive their dependencies as arguments from controllers.
+
+- Reading `process.env` inside a service or any `src/` module outside `src/config/env.ts`. See §1.11 Configuration Model.
+
+- Mixing HTTP constants (cookie names, cookie maxAge) into service files. HTTP constants belong in the HTTP layer (controllers or middleware).
 
 Rationale:
 
 - Services contain all business logic and route/domain interpretation.
 - Thin controllers reduce drift, simplify testing, and keep request handling predictable.
-- A single request path through the system reduces cognitive load and better fits the project's object-oriented service structure.
+- Adapter boundaries enable dev/prod parity, SDK evolution, and per-environment testing.
+- Named middleware prevents per-route auth/logging/rate-limit drift.
+- A single request path through the system reduces cognitive load and better fits the project's service structure.
 
 Trade-offs:
 
-- No public REST API (except for required Webhook callbacks).
-- Requires discipline to prevent convenience logic from creeping into controllers.
+- No public REST API (except for required webhook callbacks).
+- Requires discipline to prevent convenience logic from creeping across layer boundaries.
 
 Impact:
 
@@ -378,6 +428,7 @@ Impact:
 - Services remain pure domain logic with no HTTP knowledge (no request/response objects in service signatures).
 - Controllers return HTML pages (via `res.render()` or `res.redirect()`) for browser navigation, JSON for webhooks/callbacks.
 - Controllers should not become the place where page contracts are assembled.
+- Adapters live in `src/adapters/` and are selected by configuration at service instantiation time.
 - JavaScript validation runs client-side; forms submit via traditional POST with full-page navigation.
 
 ## 1.10 Catalog-governed Page and Service Contracts
@@ -409,6 +460,53 @@ Impact:
 - New public pages should not be added without catalog updates.
 - Service ownership disputes should be resolved against the Service Catalog, not by ad hoc controller behavior.
 - Current temporary exceptions belong in `IMPLEMENTATION_PLAN.md`, not as scattered one-off caveats throughout every cataloged page.
+
+## 1.11 Configuration Model
+
+Decision:
+
+Configuration has two tiers with distinct lifecycles and distinct code entry points.
+
+Deploy-time configuration (environment variables) is loaded once at process startup from the host environment into a single typed `config` singleton via `src/config/env.ts`. The singleton is constructed at module load, validated fail-fast, and `Object.freeze`d to prevent mutation. Every module in `src/` reads configuration through `config`; no module reads `process.env` directly. Changing a deploy-time value requires restart.
+
+Runtime-mutable configuration (admin-tunable thresholds, windows, retention periods, pause flags, pricing) is stored in an append-only effective-dated `system_config` table, exposed through the `system_config_current` view, and read at request time via `src/services/configReader.ts` (`readIntConfig(key, fallback)`). Changing a runtime-mutable value is an admin operation; new rows supersede old rows with an `effective_start_at` timestamp; old rows are immutable. Changes take effect without restart.
+
+Rules:
+
+- No `process.env` reads in `src/` outside `src/config/env.ts`. Tests may set `process.env` via `tests/setup-env.ts` before importing config-consuming modules.
+
+- Required env vars use `requireEnv()` in env.ts and throw at startup if missing. Optional env vars have explicit typed defaults inside `loadConfig()`.
+
+- Production-critical env vars have stricter guards than simple non-empty checks (for example `SESSION_SECRET` rejects values containing `changeme` or shorter than 32 characters; `JWT_SIGNER` and `SES_ADAPTER` must be explicit in production with no fallback default).
+
+- `config` is `Object.freeze`d after construction.
+
+- No inline hardcoded thresholds for admin-tunable values in application code. Read via `readIntConfig`.
+
+- `system_config` is append-only; change a value by inserting a new row, never `UPDATE`. Read via the `system_config_current` view only.
+
+- No secrets in `system_config`. Secrets either live in env vars (dev: gitignored `.env`; production: host env file such as `/srv/footbag/env`, root-owned 0600) or are accessed via §3.6 KMS/Parameter Store mechanisms.
+
+- Normative defaults. Defaults for required env vars live in `src/config/env.ts` (or are required explicit in production). Defaults for `system_config` keys are defined in USER_STORIES §6.7 "Configurable Parameters" and must be seeded into the database during initial database creation.
+
+Rationale:
+
+- Single validation point at startup; no scattered fallbacks or silent defaults for deploy-time config.
+- Type-safe access via `AppConfig`.
+- Fail-fast on misconfiguration catches issues at deploy time, not at first request.
+- Separating deploy-time from runtime-mutable config keeps admin operations that do not require redeploy distinct from values that do.
+- Testability: tests inject env vars before module load via `tests/setup-env.ts`; runtime config reads from a test-seeded SQLite view.
+
+Trade-offs:
+
+- Two loader paths (env.ts + configReader) instead of one. The separation is worth the overhead because deploy-time and runtime-mutable config have genuinely different audit, rotation, and operational workflows.
+- Admin-tunable thresholds are DB reads on each use; cached where performance matters but not globally memoized (would defeat runtime mutability).
+
+Impact:
+
+- Services and controllers import from `config` (env.ts) or call `readIntConfig(...)` (runtime config). Never `process.env`.
+- Secrets-handling rules (§3.6) apply to env-var secrets; system_config is not a secret store.
+- SESSION_SECRET is the canonical example of an env-var secret that lives in the host's `/srv/footbag/env` outside Git. See §3.6.
 
 # 2. Data Model
 
@@ -567,7 +665,61 @@ Member personal data: retained for a configurable grace period (Administrator-co
 
 - Financial records: retained as required for reconciliation/compliance, but after deletion windows, personal identifiers are removed/anonymized where feasible while keeping transaction integrity.
 
-## 2.4 Immutable Audit Logs with Privacy-safe Fields
+- Member-to-historical_person link: `members.historical_person_id` is a nullable foreign key with ON DELETE NO ACTION; historical_person rows are never deleted. The link is retained during the grace period to support member-initiated restore. On PII purge, `historical_person_id` is set to NULL on the anonymized member row, and subsequent person-context pages render from the historical_person record only (URL reverts from `/members/{slug}` to `/history/{historical_person_id}`). See §2.4 (entity rules), USER_STORIES `M_View_Profile`, and `M_Delete_Account`.
+
+## 2.4 Member, Legacy Member, and Historical Person Entity Types
+
+Decision:
+
+The platform represents people using three distinct entity types stored in three tables: `members` (authenticated accounts), `legacy_members` (imported old-site accounts from the mirror and future data dump), and `historical_persons` (archival identity records of past participants sourced from event data and club data). These entity types have different primary keys, different URL namespaces, and different privacy and capability rules. Three FK linkages (rule 3) express the identity overlaps between them; unlinked rows in `legacy_members` and `historical_persons` remain archival read-only records.
+
+Rules:
+
+1. Three entity types. The identity model uses three distinct tables, one per entity. A given real-world person may correspond to rows in any combination of the three, via the FK linkages in rule 3.
+
+   - `members` = authenticated accounts on this platform. Identified by `members.id`; addressable by `members.slug`. Hold credentials, tier, profile fields, optional avatar, mailing-list subscriptions.
+
+   - `legacy_members` = imported archival records of old footbag.org user accounts (from the mirror and Steve Goldberg's forthcoming data dump). Identified by `legacy_members.legacy_member_id` (the old-site account id). Read-only after import; never deleted; hold no live credentials. Persist as the permanent audit record of a legacy account even after a current member claims it.
+
+   - `historical_persons` = archival records of past participants sourced from event data and (future) mirror club-roster extraction. Identified by `historical_persons.person_id`. Read-only; never deleted; hold no credentials. Contact information, if present, is admin-surface only and never publicly rendered.
+
+2. URL namespaces. Two general person URL namespaces exist:
+
+   - Member profile URL: `/members/{slug}`.
+
+   - Historical-person URL: `/history/{personId}`.
+
+   Every general-purpose person link in any service MUST go through `personLink.personHref(memberSlug, historicalPersonId)`, which dispatches: `/members/{slug}` when a claimed member exists, `/history/{personId}` otherwise, or null. No service constructs person URLs directly.
+
+   Sport-specific pages render person-related aggregates (event results, partnerships, records, etc.) as SECTIONS on the canonical person page (`/history/{personId}` or `/members/{slug}`), not under their own sport-scoped person namespaces. Sport-specific URL namespaces own sport CONTENT only: events, aggregated team/partnership lists, record tables, trick catalogs, sport landings, and informational pages. They do NOT include per-person deep-dive URLs; per-person data belongs on the canonical person page as sections, not under parallel sport-scoped person URLs.
+
+3. Linkages. Three FK relationships express the identity overlaps between entity types. All three are nullable; `ON DELETE NO ACTION` throughout. Rows in `historical_persons` and `legacy_members` are never deleted.
+
+   - `members.historical_person_id` → `historical_persons(person_id)`. Non-NULL = this member claims that historical identity. Partial UNIQUE index enforces at most one live member per historical person.
+
+   - `members.legacy_member_id` → `legacy_members(legacy_member_id)`. Non-NULL = this member has claimed that legacy account. Partial UNIQUE index enforces at most one live member per legacy account.
+
+   - `historical_persons.legacy_member_id` → `legacy_members(legacy_member_id)`. Non-NULL = the mirror/dump named this historical person with that legacy account id (archival provenance). Partial UNIQUE index enforces 1:1.
+
+4. Claimed historical persons redirect to member profile. When `members.historical_person_id` is non-NULL for a given historical person, the canonical URL is the member's `/members/{slug}`. `GET /history/{personId}` for a claimed historical person redirects (302) to `/members/{slug}`.
+
+5. Reversion on account deletion. When a member's PII is purged (after the grace period per §2.3 Soft Deletes), the application, in one transaction: (a) sets `members.historical_person_id = NULL` and `members.legacy_member_id = NULL` on the anonymized row; (b) clears the claim pointer on the corresponding `legacy_members` row by setting `claimed_by_member_id = NULL` and `claimed_at = NULL`, returning that legacy account to the claimable pool. Subsequent `personHref()` resolution reverts from `/members/{slug}` to `/history/{personId}`.
+
+6. Historical persons confer no member capabilities. A row in `historical_persons` — whether claimed or unclaimed — does NOT confer authentication, inclusion in member search, contactability, profile ownership, mailing-list subscriptions, or any current-member privilege. See §3.9 and GOVERNANCE.md §4.
+
+7. Imported legacy accounts live in `legacy_members`, never in `members`. Legacy migration imports old footbag.org user-account rows into the `legacy_members` table (§4.14b of DATA_MODEL). `legacy_members` rows are permanent archival records; they are never deleted. They do not grant authentication and are not visible on current-member surfaces. When a current member completes the claim flow (§6.5 and SC §10.1) for a legacy account, the application sets `legacy_members.claimed_by_member_id` and `claimed_at`, copies merge-eligible fields to the claiming `members` row per MIGRATION_PLAN §9, and (if the legacy account's `legacy_member_id` matches a `historical_persons.legacy_member_id`) also sets the claiming member's `historical_person_id`. The `legacy_members` row itself is not mutated at claim beyond the two claim-state columns.
+
+Rationale:
+
+- Prevents the conceptual slippage where "historical person" and "member" get conflated, which would leak member-only capabilities (contactability, search inclusion) onto archival records.
+
+- Gives `personHref()` a single documented contract: general person URL dispatch. Every person link in any service obeys the same dispatcher.
+
+- Aligns deletion-reversion behavior with the URL dispatch rule so a claimed-then-unclaimed member's links work correctly without ad-hoc per-service logic.
+
+- Reuses the HP-vs-member pattern consistently: one person → one canonical URL → all data about them rendered as sections on that single page. Prevents per-sport duplication of person-centric data across parallel URL namespaces.
+
+## 2.5 Immutable Audit Logs with Privacy-safe Fields
 
 Decision:
 
@@ -584,6 +736,8 @@ Trade-offs:
 
 - 7-year retention increases storage costs (acceptable for compliance).
 
+- Immutability is enforced at the application-code boundary: no service method issues UPDATE or DELETE against `audit_logs`. Database-level tampering by an actor with direct SQLite write access (for example a Lightsail host compromise) is a residual risk bounded by the SSH access posture (§7.2) and backup retention (§9.4). For tally audit records specifically, WORM storage in S3 Object Lock (§6.9) is the stronger commitment.
+
 Impact:
 
 - All state-changing operations generate audit entries.
@@ -592,7 +746,9 @@ Impact:
 
 - Compliance procedures rely on audit log immutability.
 
-## 2.5 Hashtags and Media
+- Audit log display surfaces must render the 'reason' field (and any free-form admin-authored text) with Handlebars default escaping. Raw HTML rendering (triple-stache, SafeString, or client-side innerHTML) of admin-authored audit content is forbidden.
+
+## 2.6 Hashtags and Media
 
 Decision:
 
@@ -630,7 +786,7 @@ Impact:
 
 - Hashtag validation applies to all hashtags (standardized and freeform): maximum 100 characters per tag, must start with '#' character, and may contain letters, numbers, and underscores only after the leading '#'. Validation prevents excessively long tags, script injection, spaces/punctuation, and other disallowed special characters. Tag matching is case-insensitive but original capitalization is preserved for display quality.
 
-## 2.6 Encryption at Rest
+## 2.7 Encryption at Rest
 
 Decision:
 
@@ -816,7 +972,7 @@ JWTs are signed using an AWS KMS asymmetric key (RSA-2048). Login flow calls KMS
 
 Rationale:
 
-- We could use a slightly different model if we were hosted on EC2, but with Lightsail, this is the way to go.
+- Lightsail has no EC2 instance profile; KMS integration is simpler on EC2 (instance profile attaches automatically) and requires explicit runtime credential wiring on Lightsail (see §7.2). The offline-forgery protection of non-exportable HSM-backed key material is worth that wiring cost for session signing.
 - Private key material never leaves KMS/HSM. A container compromise cannot exfiltrate a reusable signing key. Public-key verification is fast and can be done in-process without KMS round trips.
 
 Trade-offs:
@@ -827,7 +983,7 @@ Trade-offs:
 
 Impact:
 
-AuthService signs tokens via KMSAdapter (kms:Sign) using the runtime assumed role defined by the AWS Lightsail and Credentials decision. Auth middleware verifies using cached public key (kms:GetPublicKey during startup/rotation only).
+AuthService signs tokens via the `JwtSigningAdapter` interface (KMS-backed `KmsJwtAdapter` in production via `kms:Sign`; file-backed `LocalJwtAdapter` in dev/test) using the runtime assumed role defined by the AWS Lightsail and Credentials decision. Auth middleware verifies using cached public key (`kms:GetPublicKey` during startup/rotation only).
 
 ## 3.6 Secrets Management via AWS Parameter Store
 
@@ -839,7 +995,7 @@ In production, the workload reads Parameter Store by using the runtime assumed r
 
 Rationale:
 
-- We could use a slightly different model if we were hosted on EC2, but with Lightsail, this is the way to go.
+- Lightsail has no EC2 instance profile. Parameter Store reads require activating an AWS runtime credential path (long-lived IAM-user keys in `/root/.aws/credentials` (root-owned, 0600) used as a source profile to assume the runtime role, or SSM Hybrid Activation); on EC2 an instance profile handles this automatically. The host env file `/srv/footbag/env` carries only the runtime profile name (`AWS_PROFILE`) and other non-secret config, never the access keys themselves. The Lightsail credential-path cost is accepted for secrets where rotation-without-redeploy or multi-consumer access justifies it.
 - Encryption at rest via AWS-managed KMS keys (transparent to application).
 - IAM access control with a least-privilege runtime assumed role.
 - Parameter versioning enables rollback and controlled rotation.
@@ -850,7 +1006,7 @@ Threat Model Clarification: Parameter Store does not protect against an attacker
 
 Implementation: Parameter paths are organized by environment (`/footbag/prod/`, `/footbag/staging/`, `/footbag/dev/`).
 
-In development, Parameter Store is replaced with `/config/secrets.local.json` containing test credentials in JSON format with nested objects matching the Parameter Store hierarchy. Template file `/config/secrets.template.json` is committed to repository with placeholder values and documentation.
+In development, Parameter Store is replaced with environment-variable loading from a gitignored `.env` file at the repo root via `dotenv`. A committed `.env.example` template enumerates expected keys with placeholder values (the literal substring `changeme` is reserved for placeholder text and is rejected by production startup guards on `SESSION_SECRET`). Per-host non-secret runtime config and per-host operational secrets like `SESSION_SECRET` live in `/srv/footbag/env` on the production host (root:root 0600).
 
 Secrets are fetched once at container startup via SecretsAdapter (SSM GetParameter in production, local JSON file in development).
 
@@ -859,6 +1015,8 @@ Parameter Store contains:
 - Stripe API keys (test/live by environment).
 - Stripe webhook secret (HMAC verification).
 - Email delivery configuration (if any), admin bootstrap tokens, and other exportable credentials and configuration that must not be committed to source control.
+
+Per-host application secrets that are environment-unique and rotation-on-restart-acceptable may live directly in the host env file `/srv/footbag/env` (root:root 0600) rather than in Parameter Store. `SESSION_SECRET` is the canonical example: it is generated fresh per environment, never reused across staging and production, and rotated by editing the host env file and restarting the service. The application and the deploy script both reject any value containing the literal placeholder substring `changeme` or shorter than 32 characters. Rotation runbook: DEVOPS_GUIDE §5.8.
 
 KMS is used for:
 
@@ -874,7 +1032,7 @@ Trade-offs:
 Impact:
 
 - SecretsAdapter abstracts Parameter Store in production and local JSON file in development.
-- Cryptographic signing/encryption paths depend on KMSAdapter, not Parameter Store.
+- Cryptographic signing/encryption paths depend on KMS-backed adapters (`JwtSigningAdapter` for sessions today; `BallotEncryptionAdapter` for envelope encryption when ballots land), not Parameter Store.
 - CloudTrail/CloudWatch monitoring should watch for unusual Parameter Store access patterns and KMS error rates.
 - Parameter Store secrets rotate through new parameter version + controlled container restart / redeploy.
 - KMS keys rotate through an explicit key-rotation procedure (update kid/public key cache; deploy archive verifier update if applicable).
@@ -912,7 +1070,7 @@ Impact:
 
 - Ballot schema adds encryptedDataKey and kmsKeyId fields.
 
-- VotingService encrypts ballots using KMSAdapter.GenerateDataKey + AES-256-GCM; no ballot key retrieved from Parameter Store.
+- VotingService encrypts ballots using `BallotEncryptionAdapter.generateDataKey` (KMS-backed in production; locally-keyed in dev/test) + AES-256-GCM; no ballot key retrieved from Parameter Store.
 
 - Tally operations run under a privileged admin/tally role with kms:Decrypt permission and are exposed only through explicit admin flows.
 
@@ -946,7 +1104,7 @@ Semantics:
 
 - Password reset token TTL: one hour.
 
-- Legacy account claim token TTL: 24 hours (configurable via `account_claim_expiry_hours`). The claim token carries a dual binding: `member_id` (the requesting authenticated account) and `target_member_id` (the imported placeholder row being claimed). A claim token may only be consumed while authenticated as the same `member_id` that initiated the request; consuming while authenticated as a different account is rejected. `target_member_id` uses `ON DELETE CASCADE` so all outstanding claim tokens for an imported row are automatically removed when that row is deleted after a successful claim.
+- Legacy account claim token TTL: 24 hours (configurable via `account_claim_expiry_hours`). The claim token carries a dual binding: `member_id` (the requesting authenticated account) and `target_legacy_member_id` (the `legacy_members` row being claimed). A claim token may only be consumed while authenticated as the same `member_id` that initiated the request; consuming while authenticated as a different account is rejected. `target_legacy_member_id` uses `ON DELETE NO ACTION`; `legacy_members` rows are never deleted in normal flow (they are marked claimed, not removed, per the three-table design).
 
 - Tokens are single-use: on successful consumption, the token record is marked consumed (timestamp) and cannot be reused.
 
@@ -956,9 +1114,9 @@ Semantics:
 
 - Rate limiting is in-process only; state is not persisted and resets on restart (acceptable for single-instance deployment).
 
-Storage format: Store token_hash, member_id, token_type (email_verify, password_reset, data_export, account_claim), target_member_id (nullable; account_claim only), created_at, expires_at, consumed_at (nullable). Index on token_hash (unique) and on expires_at for cleanup.
+Storage format: Store token_hash, member_id, token_type (email_verify, password_reset, data_export, account_claim), target_legacy_member_id (nullable; account_claim only), created_at, expires_at, used_at (nullable). Index on token_hash (unique) and on expires_at for cleanup.
 
-Validation: A presented token is hashed and compared to stored hashes; validation requires consumed_at IS NULL and now \< expires_at. If hashes match and token is not expired or consumed, verification succeeds. Otherwise, verification fails with a generic error message that does not reveal whether the token was invalid, expired, or already used.
+Validation: A presented token is hashed and compared to stored hashes; validation requires used_at IS NULL and now \< expires_at. If hashes match and token is not expired or consumed, verification succeeds. Otherwise, verification fails with a generic error message that does not reveal whether the token was invalid, expired, or already used.
 
 Cleanup: A background cleanup job runs daily to delete expired or consumed token rows (tokens older than 7 days).
 
@@ -1332,13 +1490,27 @@ Impact:
 
 - Member profiles include subscription preferences derived from MailingList and MailingListSubscription: the UI renders checkboxes from MailingList records that are flagged as member-manageable (for example, newsletter, board-announcements, event-notifications, technical-updates in Phase 1), and changes are applied by updating MailingListSubscription and keeping Member.subscriptions in sync.
 
-- SES webhooks update MailingListSubscription records (status, bounce/complaint fields) and any global member email status as needed, and the projection in Member.subscriptions is updated accordingly so future sends skip problematic addresses.
+- SES webhooks update MailingListSubscription records (status, bounce/complaint fields) and any global member email status as needed, and the projection in Member.subscriptions is updated accordingly so future sends skip problematic addresses. SES bounce and complaint notifications arrive via SNS; the webhook endpoint verifies the SNS message signature against the AWS-published signing certificate before processing, and rejects any message that fails signature verification. This parallels the Stripe webhook signature verification in §6.1.
+
+- Bounce state transitions: hard bounces (SES permanent-failure type) auto-flag the `MailingListSubscription` as `bounced` and block further sends to that list for that member. Soft bounces (SES transient-failure type) do not auto-flag on a single event; the worker tracks a sliding bounce count per address and flags as `bounced` only after a configurable threshold (USER_STORIES key `soft_bounce_threshold`). Complaints auto-flag immediately and block all lists for that member pending admin review.
+
+- Bounce and complaint webhook idempotency: inbound SNS messages carry a `messageId`; the webhook handler tracks processed `messageId` values in a `ses_events` table with `messageId` as primary key. Duplicate arrivals return 200 immediately without reprocessing. Parallel to the `stripe_events` idempotency in §6.1.
+
+- Alerting: bounce rate exceeding `bounce_rate_alarm_threshold` (USER_STORIES) and complaint rate exceeding `complaint_rate_alarm_threshold` (USER_STORIES) emit CloudWatch alarms per §8.2.
+
+- Member soft-delete behavior for subscriptions and outbox: during the grace period, `MailingListSubscription` state (including `subscribed`, `unsubscribed`, `bounced`, and `complained` flags) is frozen and preserved. The soft-deleted member cannot change subscriptions because the account is inaccessible. New outbox entries are not enqueued for a soft-deleted member; queued entries addressed to them at the time of soft-delete are moved to `dead_letter` with reason `recipient_soft_deleted`. Missed sends during the grace period are not replayed.
+
+- On member-initiated restore within the grace period: subscription states resume exactly as they were at soft-delete time. Intent is preserved; no re-opt-in is required. Outbox enqueuing reactivates immediately. Bounce and complaint flags persist across soft-delete and restore because they are facts about the email address, not about member intent.
+
+- On PII purge (grace period expiry or explicit purge): `MailingListSubscription` rows are hard-deleted along with other member PII. Restore is no longer possible after this point.
 
 - Admin dashboard shows basic email metrics: sent count, bounce rate, complaint rate, overall delivery health.
 
 - Operational dashboards track pending, sent, and failed outbox entries and expose a “pause sending” emergency toggle.
 
 - Email records are inserted into the outbox table within the same transaction as the business operation that triggers the email. This guarantees that if the transaction commits, the email is queued; if the transaction rolls back, neither the event nor the email record exists.
+
+- Outbox body scrub (APP-019): security-sensitive emails (account verification, password reset, data-export download links, voting receipt tokens) carry single-use tokens in the body text. After successful send, the worker MUST set `outbox_emails.body_text = NULL` so the raw token does not persist in the live DB or in DB backups beyond the moment of delivery. The schema column is nullable specifically to support this scrub. Subject lines never contain tokens by design, so they are preserved.
 
 ## 5.5 Canonical Email Addresses
 
@@ -1552,9 +1724,9 @@ The platform absorbs legacy data from two sources before or at production go-liv
 
 **Historical pipeline (James).** Persons, events, results, honors (Hall of Fame, BAP), clubs, club affiliations, and club leadership. Person truth comes from human-curated CSV files. Club data comes from mirror extraction scripts integrated into the same pipeline. The pipeline also creates historical person records for ~1,600 club-only members who never competed in events. A historical person may exist without a claimed modern account; historical data is published regardless. Bootstrap-eligible clubs are created at go-live with leaders in `club_bootstrap_leaders`. Leaders can manage the club once they register. If a leader has not registered, the first affiliated member who registers can accept leadership during onboarding (Tier 1+, no admin confirmation).
 
-**Legacy member import (Steve's export).** All legacy registered member accounts are imported as pre-credential placeholder rows in `members`. These rows have all credential fields NULL and `email_verified_at` NULL; they cannot log in, are not searchable, and are invisible to all current-member surfaces. The source is a one-time export from the legacy site webmaster, used first as a test load for validation, then as the final production import after write freeze. Legacy passwords are never imported or used.
+**Legacy member import (Steve's export).** All legacy registered member accounts are imported as rows in the `legacy_members` table. These rows hold the legacy-account identity and import-era profile snapshot as a permanent archival record; they cannot log in (there is no credential material in `legacy_members` at all) and do not appear in any current-member surface. The source is a one-time export from the legacy site webmaster, used first as a test load for validation, then as the final production import after write freeze. Legacy passwords are never imported or used.
 
-The two sources share the same identity key (`legacy_member_id`) and converge at cutover when historical persons are auto-linked to imported members by email.
+The two sources share the same identity key (`legacy_member_id`) and converge via FK: `historical_persons.legacy_member_id` and `legacy_members.legacy_member_id` point at the same namespace, and a modern `members` row links into both at claim time via `members.legacy_member_id` and `members.historical_person_id`.
 
 **Self-serve legacy claim flow.** A logged-in member visits "Link Legacy Account" in profile settings and submits a legacy identifier (email address, username, or member ID). The system looks up the matching imported placeholder row and, if eligible, emails a time-limited single-use claim link to the `legacy_email` on that row. Mailbox control is the proof step regardless of which identifier type was submitted. On confirmation, the merge transaction runs atomically: `legacy_member_id` and allowed profile fields are merged into the active account, tier entitlements are reconciled via the ledger, confirmed club affiliations are written to `member_club_affiliations`, bootstrap leadership may be promoted to `club_leaders`, and the imported placeholder row is deleted. User-visible messaging never reveals whether the submitted identifier matched zero rows, multiple rows, or an ineligible row.
 
@@ -1578,7 +1750,7 @@ Trade-offs:
 
 Cross-references:
 
-- **3.8** Account Security Tokens — `account_claim` token type, dual binding, `ON DELETE CASCADE` on `target_member_id`.
+- **3.8** Account Security Tokens — `account_claim` token type, dual binding, `ON DELETE NO ACTION` on `target_legacy_member_id`.
 - **3.9** Security, Privacy, and Historical Record Governance — legacy migration security rules (passwords never imported; `legacy_email` is metadata only; mailbox control is proof step).
 - **6.4** Legacy Archive — the static mirror archive is separate from the migrated live data; archive access is authenticated member-only.
 
@@ -1655,6 +1827,8 @@ Cache control header strategy:
 - Public cacheable HTML / public GET content (for example, public event listings, public galleries, non-personalized pages): Cache-Control: public, max-age=300, must-revalidate. Five-minute caching provides reasonable freshness while reducing origin load. CloudFront cache policy for these routes must use Minimum TTL = 0 so origin headers can disable caching when required.
 
 - API endpoints, authenticated HTML, and any personalized/user-specific content: Cache-Control: private, no-store. These routes use the AWS managed `CachingDisabled` cache policy at CloudFront and are never cached to prevent cross-user data exposure.
+
+- Public unauthenticated routes that render a single-use token in HTML (the password-reset form is the canonical example: it embeds the reset token in a hidden form field and in the form `action` URL) MUST also send `Cache-Control: no-store, no-cache, must-revalidate, private` and `Pragma: no-cache`. Without this, a shared HTTP proxy or browser back-button cache could capture an unconsumed token. The app middleware that sets `private, no-store` for authenticated responses does not apply here because the route is anonymous; controllers must set the headers explicitly on both the GET render and any 422 re-render that includes the token.
 
 - Cache invalidation: After publishing event results or vote tallies, the system programmatically invalidates CloudFront cache for affected URLs using the CloudFront invalidation API. Manual cache purge for emergency updates is a System Administrator / DevOps operational action (AWS tooling/runbooks), not an Application Administrator UI control. Invalidation requests are batched where possible and limited to 1000 per month to control costs.
 
@@ -1810,8 +1984,6 @@ For workload AWS API access, the deployed application does not rely on an implic
 
 The authoritative production runtime principal is therefore the assumed runtime role, not the source profile, not the human operator identity, and not a host-attached instance role. Runtime permissions remain narrowly scoped to only the AWS APIs the application actually needs, such as S3, SES, Parameter Store, CloudWatch, and KMS, depending on the environment and service path.
 
-> **Current simplification — AssumeRole step deferred.** The current deployment uses a dedicated IAM user (`footbag-staging-runtime`) with scoped SSM read permissions and its access keys set directly as `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` environment variables in the root-owned host env file. The source-profile + role-assumption step is not yet implemented. The IAM user's keys are the runtime credential directly. The full AssumeRole pattern described above remains the design target.
-
 Terraform remains the authority for the steady-state IAM roles, policies, Lightsail firewall posture, logging resources, and related infrastructure configuration. The exact host-user creation and public-key installation path may begin as documented bootstrap work, but it must be reproducible, reviewable, and reflected in the runbooks.
 
 Rationale:
@@ -1841,7 +2013,7 @@ Impact:
 
 Alternatives Considered:
 
-- Session Manager on the Lightsail host through the non-EC2 managed-node / hybrid activation path: Rejected for this stage because it adds hybrid-registration complexity and a recurring paid dependency for interactive shell access on a single-instance volunteer deployment without enough compensating value for the expected operator workflow.
+- Session Manager on the Lightsail host through the non-EC2 managed-node / hybrid activation path: Rejected because it adds hybrid-registration complexity (activation ceremony, orphan managed-node registrations, outbound network dependency for credential refresh), SSM Agent CVE history requiring ongoing Agent updates, and IAM privilege-minimization pitfalls, without enough compensating value for the expected single-operator workflow. Cost of the Session Manager service itself is not the driver; Advanced Instances Tier charges apply only if Advanced Instances are enabled.
 - EC2 instead of Lightsail to preserve a no-inbound-port Session Manager shell path: Rejected for this stage because it increases platform complexity and moves the project away from the intentionally proportionate Lightsail-first deployment posture.
 - Shared SSH private key or shared shell account: Rejected because it weakens accountability, complicates offboarding, and conflicts with the project rule against shared privileged identities.
 
@@ -1951,7 +2123,7 @@ KMS Development Environment:
 
 JWT signing uses KMS asymmetric keys in production and ballot encryption uses KMS envelope encryption. Development supports: Default mode: local stubs (no AWS required). High-fidelity mode: local-kms (for zero-cost KMS API parity) or staging AWS KMS keys.
 
-docker-compose.yml includes a local-kms service. Application configuration points KMSAdapter to local-kms in development and to real KMS in staging/production.
+In development the `JwtSigningAdapter` selects its `LocalJwtAdapter` implementation, which uses a file-based RSA-2048 keypair generated on first startup at `database/dev-jwt-keypair.pem` (gitignored). In staging/production the same interface selects `KmsJwtAdapter`, which calls real KMS via the runtime assumed role. No `local-kms` Docker service is required because the adapter abstraction makes the dev impl self-contained; if a future ballot-encryption path needs API-level KMS parity in dev, a local-kms container (e.g., LocalStack) can be added behind `BallotEncryptionAdapter` at that time.
 
 Required IAM permissions for dev profile:
 
@@ -2035,7 +2207,7 @@ Impact:
 
 - Troubleshooting relies on CloudWatch Insights queries.
 
-- Logs MUST redact/reset tokens/JWTs/cookies/Stripe secrets/webhook signatures; use allowlist logging; never log raw email or full subjects.
+- Logs MUST redact tokens, JWTs, cookies, Stripe secrets, webhook signatures, AWS access key IDs and secret access keys, the value of `SESSION_SECRET`, raw JWT cookie values, and any §3.8 single-use account-security token (email verify, password reset, data export, legacy claim) regardless of whether the token appears in URL path, query string, or request body; use allowlist logging; never log raw email or full message subjects. KMS key ARNs are not secrets but should not be logged at request scope.
 
 ## 8.2 Monitoring and Alerting
 
@@ -2343,7 +2515,7 @@ Monitoring and alerts: Alert if memory usage remains above 80 percent for five c
 
 Decision:
 
-All steady-state AWS infrastructure is defined in Terraform configuration files version-controlled in the repository under `/terraform`. A one-time manual bootstrap identity is allowed only to establish Terraform Cloud access, account-baseline controls, and Terraform-managed IAM. After that handoff, manual console changes are prohibited except for emergency incident response, and any emergency change must be reconciled back into Terraform immediately.
+All steady-state AWS infrastructure is defined in Terraform configuration files version-controlled in the repository under `/terraform`. A one-time manual bootstrap identity is allowed only to provision the Terraform remote-state S3 bucket, account-baseline controls, and Terraform-managed IAM. After that handoff, manual console changes are prohibited except for emergency incident response, and any emergency change must be reconciled back into Terraform immediately.
 
 Rationale:
 
@@ -2375,12 +2547,12 @@ Trade-offs:
 
 - Initial setup cost: must define all infrastructure as code.
 - Learning curve: Contributors must understand basic Terraform syntax and workflow.
-- State file management requires coordination: Terraform Cloud free tier (5 users, state management included).
+- State file management requires coordination: Terraform remote state is stored in an S3 bucket with S3 native locking (`use_lockfile = true`, Terraform >= 1.11). No DynamoDB locking and no Terraform Cloud.
 - Requires discipline: Manual console changes create drift requiring reconciliation. Manual AWS console changes are prohibited except for emergency troubleshooting. Any permanent changes must be made via Terraform.
 
 Impact:
 
-- Terraform must remain the authority for the IAM roles, policies, Parameter Store structure, KMS resources, CloudWatch resources, and Systems Manager support required by the Lightsail Systems Manager and Runtime AWS Credentials decision.
+- Terraform must remain the authority for IAM roles, policies, Parameter Store structure (per §3.6), KMS resources, CloudWatch resources, Lightsail instance configuration, Lightsail firewall rules, and any infrastructure-side inputs required by the SSH operator-access posture and the runtime-credential model in §7.2.
 - Deployment/bootstrap documentation must clearly separate one-time bootstrap actions from steady-state Terraform-managed infrastructure.
 
 

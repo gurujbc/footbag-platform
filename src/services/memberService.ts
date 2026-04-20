@@ -1,7 +1,7 @@
 import { account, publicPlayers, MemberProfileRow, MemberResultRow, MemberSearchRow, HistoricalPersonSearchRow } from '../db/db';
 import { NotFoundError, ValidationError } from './serviceErrors';
 import { runSqliteRead } from './sqliteRetry';
-import { getPhotoStorage } from '../adapters/photoStorageInstance';
+import { getPhotoStorageAdapter } from '../adapters/photoStorageAdapter';
 import { PageViewModel } from '../types/page';
 import { groupPlayerResults } from './playerShaping';
 import type { PlayerEventGroup, PlayerHeroData } from '../types/playerProfile';
@@ -108,7 +108,7 @@ function resolveHistoricalName(row: MemberProfileRow): string | null {
  */
 function buildAvatarUrl(thumbKey: string | null, mediaId: string | null): string | null {
   if (!thumbKey) return null;
-  const base = getPhotoStorage().constructURL(thumbKey);
+  const base = getPhotoStorageAdapter().constructURL(thumbKey);
   return mediaId ? `${base}?v=${encodeURIComponent(mediaId)}` : base;
 }
 

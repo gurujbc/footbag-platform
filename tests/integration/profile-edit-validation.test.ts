@@ -14,10 +14,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import BetterSqlite3 from 'better-sqlite3';
 import { setTestEnv, createTestDb, cleanupTestDb, importApp } from '../fixtures/testDb';
-import { insertMember } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, createTestSessionJwt } from '../fixtures/factories';
 
-const { dbPath, sessionSecret } = setTestEnv('3062');
+const { dbPath } = setTestEnv('3062');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
@@ -26,7 +25,7 @@ const MEMBER_ID   = 'edit-val-001';
 const MEMBER_SLUG = 'edit_validator';
 
 function ownCookie(): string {
-  return `footbag_session=${createSessionCookie(MEMBER_ID, 'member', sessionSecret, 'Edit Validator', MEMBER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: MEMBER_ID })}`;
 }
 
 /** Read the member row directly from the test DB to verify persisted values. */

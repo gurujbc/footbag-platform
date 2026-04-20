@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import Busboy from 'busboy';
 import { memberService, ProfileEditInput } from '../services/memberService';
 import { createAvatarService } from '../services/avatarService';
-import { getPhotoStorage } from '../adapters/photoStorageInstance';
+import { identityAccessService } from '../services/identityAccessService';
+import { hit as rateLimitHit } from '../services/rateLimitService';
+import { readIntConfig } from '../services/configReader';
+import { getPhotoStorageAdapter } from '../adapters/photoStorageAdapter';
+import { createSessionJwt } from '../services/jwtService';
+import { issueSessionCookie } from './sessionCookieHelper';
 import { ValidationError, NotFoundError } from '../services/serviceErrors';
 import { logger } from '../config/logger';
 
@@ -27,7 +32,6 @@ interface StubConfig {
 const STUB_SEGMENTS: Record<string, StubConfig> = {
   media:    { pageKey: 'member_media',    title: 'Share Media' },
   settings: { pageKey: 'member_settings', title: 'Account Settings' },
-  password: { pageKey: 'member_password', title: 'Change Password' },
   download: { pageKey: 'member_download', title: 'Download My Data' },
   delete:   { pageKey: 'member_delete',   title: 'Delete Account' },
 };
@@ -44,7 +48,7 @@ function renderNotFound(res: Response): void {
 }
 
 export const memberController = {
-  /** GET /members — members landing; public welcome or authenticated search. */
+  /** GET /members, members landing; public welcome or authenticated search. */
   landing(req: Request, res: Response, next: NextFunction): void {
     if (!req.isAuthenticated) {
       res.render('members/welcome', {
@@ -67,7 +71,7 @@ export const memberController = {
     }
   },
 
-  /** GET /members/:memberKey — own profile or public read-only for HoF/BAP. */
+  /** GET /members/:memberKey, own profile or public read-only for HoF/BAP. */
   getProfile(req: Request, res: Response, next: NextFunction): void {
     const memberKey = req.params.memberKey;
 
@@ -172,7 +176,7 @@ export const memberController = {
     }
   },
 
-  /** POST /members/:memberKey/avatar — handle avatar file upload. */
+  /** POST /members/:memberKey/avatar, handle avatar file upload. */
   postAvatarUpload(req: Request, res: Response, next: NextFunction): void {
     if (!isOwnProfile(req)) {
       renderNotFound(res);
@@ -225,7 +229,7 @@ export const memberController = {
       }
 
       const fileBuffer = Buffer.concat(chunks);
-      const avatarService = createAvatarService(getPhotoStorage());
+      const avatarService = createAvatarService(getPhotoStorageAdapter());
 
       avatarService.uploadAvatar(memberId, fileBuffer)
         .then(() => {
@@ -259,7 +263,78 @@ export const memberController = {
     req.pipe(busboy);
   },
 
-  /** GET /members/:memberKey/:section — stub pages (own profile only). */
+  /** GET /members/:memberKey/edit/password, password-change form (own profile only). */
+  getPasswordEdit(req: Request, res: Response): void {
+    if (!isOwnProfile(req)) {
+      renderNotFound(res);
+      return;
+    }
+    res.render('members/password-edit', {
+      seo:  { title: 'Change Password' },
+      page: { sectionKey: 'members', pageKey: 'member_password', title: 'Change Password' },
+      navigation: {
+        contextLinks: [{ label: 'Back to Profile', href: `/members/${req.params.memberKey}` }],
+      },
+      content: { memberKey: req.params.memberKey },
+    });
+  },
+
+  /** POST /members/:memberKey/edit/password, apply password change. */
+  async postPasswordEdit(req: Request, res: Response, next: NextFunction): Promise<void> {
+    if (!isOwnProfile(req)) {
+      renderNotFound(res);
+      return;
+    }
+    const memberId = req.user!.userId;
+    const maxAttempts = readIntConfig('login_rate_limit_max_attempts', 10);
+    const windowMinutes = readIntConfig('login_rate_limit_window_minutes', 15);
+    const rl = rateLimitHit(`pwchange:${memberId}`, maxAttempts, windowMinutes);
+
+    const renderForm = (opts: { error?: string; success?: boolean; status?: number }) => {
+      res.status(opts.status ?? 200).render('members/password-edit', {
+        seo:  { title: 'Change Password' },
+        page: { sectionKey: 'members', pageKey: 'member_password', title: 'Change Password' },
+        navigation: {
+          contextLinks: [{ label: 'Back to Profile', href: `/members/${req.params.memberKey}` }],
+        },
+        content: { error: opts.error, success: opts.success, memberKey: req.params.memberKey },
+      });
+    };
+
+    if (!rl.allowed) {
+      if (rl.retryAfterSeconds) res.setHeader('Retry-After', String(rl.retryAfterSeconds));
+      renderForm({ error: 'Too many password-change attempts. Please try again later.', status: 429 });
+      return;
+    }
+
+    const { oldPassword, newPassword, confirmPassword } = req.body as {
+      oldPassword?: string; newPassword?: string; confirmPassword?: string;
+    };
+
+    try {
+      const result = await identityAccessService.changePassword(
+        memberId,
+        oldPassword ?? '',
+        newPassword ?? '',
+        confirmPassword ?? '',
+      );
+      // Re-issue the JWT cookie under the new passwordVersion so this browser
+      // stays authenticated. Other sessions (older passwordVersion) are rejected
+      // by the auth middleware's per-request DB check.
+      const role = req.user!.role;
+      const cookieValue = await createSessionJwt(result.memberId, role, result.newPasswordVersion);
+      issueSessionCookie(res, cookieValue, req);
+      renderForm({ success: true });
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        renderForm({ error: err.message, status: 422 });
+        return;
+      }
+      next(err);
+    }
+  },
+
+  /** GET /members/:memberKey/:section, stub pages (own profile only). */
   getStub(req: Request, res: Response, next: NextFunction): void {
     if (!isOwnProfile(req)) {
       renderNotFound(res);

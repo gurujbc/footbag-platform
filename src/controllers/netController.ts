@@ -341,43 +341,6 @@ export const netController = {
     }
   },
 
-  /** GET /net/players/:personId */
-  playerPage(req: Request, res: Response, next: NextFunction): void {
-    try {
-      const vm = netService.getPlayerPage(req.params['personId'] ?? '');
-      res.render('net/player', vm);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404).render('errors/not-found', {
-          seo:  { title: 'Page Not Found' },
-          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
-        });
-        return;
-      }
-      netController._handleError(err, res, next);
-    }
-  },
-
-  /** GET /net/players/:personId/partners/:teamId */
-  playerPartnerDetail(req: Request, res: Response, next: NextFunction): void {
-    try {
-      const vm = netService.getPlayerPartnerDetail(
-        req.params['personId'] ?? '',
-        req.params['teamId']   ?? '',
-      );
-      res.render('net/player-partner', vm);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404).render('errors/not-found', {
-          seo:  { title: 'Page Not Found' },
-          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
-        });
-        return;
-      }
-      netController._handleError(err, res, next);
-    }
-  },
-
   /** GET /internal/net/candidates/:candidateId */
   candidateDetail(req: Request, res: Response, next: NextFunction): void {
     try {

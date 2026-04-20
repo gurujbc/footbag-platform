@@ -306,8 +306,8 @@ describe('GET /net/events/:eventId', () => {
     const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('Eve Alpha');
     expect(res.text).toContain('Eve Beta');
-    expect(res.text).toContain(`/net/players/${PERSON_A}`);
-    expect(res.text).toContain(`/net/players/${PERSON_B}`);
+    expect(res.text).toContain(`/history/${PERSON_A}`);
+    expect(res.text).toContain(`/history/${PERSON_B}`);
   });
 
   it('shows placement labels', async () => {

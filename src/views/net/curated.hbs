@@ -201,9 +201,9 @@
             </td>
             <td>
               {{#if isFullyLinked}}
-                {{#if playerAName}}<a href="/net/players/{{playerAPersonId}}">{{playerAName}}</a>{{else}}{{playerAPersonId}}{{/if}}
+                {{#if playerAName}}<a href="{{playerAHref}}">{{playerAName}}</a>{{else}}{{playerAPersonId}}{{/if}}
                 /
-                {{#if playerBName}}<a href="/net/players/{{playerBPersonId}}">{{playerBName}}</a>{{else}}{{playerBPersonId}}{{/if}}
+                {{#if playerBName}}<a href="{{playerBHref}}">{{playerBName}}</a>{{else}}{{playerBPersonId}}{{/if}}
               {{else}}
                 {{#if playerARawName}}{{playerARawName}}{{else}}<em>unknown</em>{{/if}}
                 /

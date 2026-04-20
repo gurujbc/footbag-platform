@@ -7,6 +7,39 @@
 import { personHref } from './personLink';
 import type { PlayerEventGroup } from '../types/playerProfile';
 
+/** Row fields required to shape a two-sided partnership / team pair. */
+export interface PartnershipPairRow {
+  person_id_a:    string;
+  person_name_a:  string;
+  member_slug_a:  string | null;
+  person_id_b:    string;
+  person_name_b:  string;
+  member_slug_b:  string | null;
+}
+
+/**
+ * Produce the six partnership-pair VM fields (personIdA/B, personNameA/B,
+ * hrefA/B) from a flat row carrying `_a`/`_b`-suffixed columns. Callers
+ * spread the return into their view model.
+ */
+export function shapePartnershipPair(row: PartnershipPairRow): {
+  personIdA:   string;
+  personNameA: string;
+  hrefA:       string | null;
+  personIdB:   string;
+  personNameB: string;
+  hrefB:       string | null;
+} {
+  return {
+    personIdA:   row.person_id_a,
+    personNameA: row.person_name_a,
+    hrefA:       personHref(row.member_slug_a, row.person_id_a),
+    personIdB:   row.person_id_b,
+    personNameB: row.person_name_b,
+    hrefB:       personHref(row.member_slug_b, row.person_id_b),
+  };
+}
+
 /** Row shape that both history and member result queries must satisfy. */
 export interface PlayerResultRow {
   event_id: string;

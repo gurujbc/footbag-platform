@@ -136,7 +136,24 @@ def main() -> None:
     # Link Footbag Hacky to any matching historical_persons record.
     # This is a special case for the test stub account. In production, this
     # linkage happens through the claim flow or auto-link at migration.
+    #
+    # Under the three-table identity model (DD §2.4), the canonical member↔HP
+    # link is members.historical_person_id (direct FK). legacy_member_id on
+    # both tables is still set for legacy_account-claim traceability, but slug
+    # resolution uses the FK.
     hacky_legacy_id = "STUB_FOOTBAG_HACKY"
+    # Seed a stub legacy_members row so the members.legacy_member_id FK
+    # can reference it. The row stays unclaimed-flagged; Hacky's member row
+    # holds the canonical identity.
+    cur.execute(
+        """INSERT OR IGNORE INTO legacy_members
+             (legacy_member_id, real_name, display_name, display_name_normalized,
+              country, is_hof, is_bap, imported_at, version)
+           VALUES
+             (:lid, 'Footbag Hacky', 'Footbag Hacky', 'footbag hacky',
+              'USA', 1, 0, :ts, 1)""",
+        {"lid": hacky_legacy_id, "ts": ts},
+    )
     cur.execute(
         "UPDATE members SET legacy_member_id = :lid WHERE id = :mid AND legacy_member_id IS NULL",
         {"lid": hacky_legacy_id, "mid": member_id},
@@ -146,9 +163,21 @@ def main() -> None:
            WHERE person_name = 'Footbag Hacky' AND legacy_member_id IS NULL""",
         {"lid": hacky_legacy_id},
     )
-    linked = cur.rowcount
-    if linked:
-        print(f"  → Linked Footbag Hacky member to historical person (legacy_member_id={hacky_legacy_id})")
+    linked_hp = cur.rowcount
+    # Additionally set members.historical_person_id so the FK-based redirect
+    # fires under Phase 4+ read paths.
+    cur.execute(
+        """UPDATE members
+           SET historical_person_id = (
+             SELECT person_id FROM historical_persons
+             WHERE person_name = 'Footbag Hacky'
+             LIMIT 1
+           )
+           WHERE id = :mid AND historical_person_id IS NULL""",
+        {"mid": member_id},
+    )
+    if linked_hp:
+        print(f"  → Linked Footbag Hacky member to historical person (legacy_member_id={hacky_legacy_id}, historical_person_id FK set)")
     else:
         print("  → No matching historical person found for Footbag Hacky (will link when results are loaded)")
 

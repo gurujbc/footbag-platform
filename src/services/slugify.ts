@@ -1,4 +1,4 @@
-/** Pure slug helper — no DB dependency. */
+/** Pure slug helper, no DB dependency. */
 export function slugify(displayName: string): string {
   return displayName
     .toLowerCase()

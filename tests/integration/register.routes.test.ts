@@ -12,22 +12,20 @@ import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-import { insertMember } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, createTestSessionJwt } from '../fixtures/factories';
 
-const TEST_DB_PATH = path.join(process.cwd(), `test-register-${Date.now()}.db`);
+const TEST_DB_PATH      = path.join(process.cwd(), `test-register-${Date.now()}.db`);
 
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.PORT             = '3004';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3004';
-process.env.SESSION_SECRET   = 'register-test-secret';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH          = TEST_DB_PATH;
+process.env.PORT                     = '3004';
+process.env.NODE_ENV                 = 'test';
+process.env.LOG_LEVEL                = 'error';
+process.env.PUBLIC_BASE_URL          = 'http://localhost:3004';
+process.env.SESSION_SECRET           = 'register-test-secret';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
-
-const TEST_SECRET = process.env.SESSION_SECRET!;
 
 beforeAll(async () => {
   const schema = fs.readFileSync(
@@ -83,7 +81,7 @@ describe('GET /register', () => {
 
   it('redirects authenticated user to own profile', async () => {
     const app = createApp();
-    const cookie = `footbag_session=${createSessionCookie('member-existing-001', 'member', TEST_SECRET, 'Existing User', 'existing_user')}`;
+    const cookie = `footbag_session=${createTestSessionJwt({ memberId: 'member-existing-001' })}`;
     const res = await request(app).get('/register').set('Cookie', cookie);
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe('/members/existing_user');
@@ -93,7 +91,7 @@ describe('GET /register', () => {
 // ── POST /register ────────────────────────────────────────────────────────────
 
 describe('POST /register', () => {
-  it('valid registration → 302 redirect + session cookie', async () => {
+  it('valid registration → 302 to /register/check-email, no session cookie, DB rows land', async () => {
     const app = createApp();
     const res = await request(app)
       .post('/register')
@@ -105,15 +103,61 @@ describe('POST /register', () => {
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(302);
-    expect(res.headers.location).toMatch(/^\/members\/new_player/);
-    const cookies: string[] = Array.isArray(res.headers['set-cookie'])
-      ? res.headers['set-cookie']
-      : [res.headers['set-cookie']];
-    expect(cookies.some((c: string) => c.startsWith('footbag_session='))).toBe(true);
+    expect(res.headers.location).toBe('/register/check-email');
+    const cookies = res.headers['set-cookie'] as string[] | undefined;
+    expect(cookies?.some((c) => c.startsWith('footbag_session='))).toBeFalsy();
+
+    // The registered branch MUST insert a members row AND enqueue an
+    // outbox_emails row. Anti-enumeration keeps the HTTP response identical
+    // to silent_duplicate, so DB state is the only signal that the write
+    // path actually ran. USER_STORIES §V_Register_Account line 472: "System
+    // sends verification email" on successful registration.
+    const db = new BetterSqlite3(TEST_DB_PATH, { readonly: true });
+    const member = db.prepare(
+      `SELECT id, slug, login_email_normalized, display_name_normalized,
+              password_hash, email_verified_at
+         FROM members WHERE login_email_normalized = ?`,
+    ).get('newplayer@example.com') as
+      | { id: string; slug: string; login_email_normalized: string;
+          display_name_normalized: string; password_hash: string | null;
+          email_verified_at: string | null }
+      | undefined;
+    const outboxRows = db.prepare(
+      `SELECT id, recipient_email, recipient_member_id, status, retry_count
+         FROM outbox_emails WHERE recipient_email = ?`,
+    ).all('newplayer@example.com') as Array<{
+      id: string; recipient_email: string; recipient_member_id: string | null;
+      status: string; retry_count: number;
+    }>;
+    db.close();
+
+    expect(member).toBeDefined();
+    expect(member!.slug).toBeTruthy();
+    expect(member!.password_hash).toBeTruthy();
+    expect(member!.email_verified_at).toBeNull();
+    expect(member!.display_name_normalized).toBe('new player');
+
+    expect(outboxRows).toHaveLength(1);
+    expect(outboxRows[0].status).toBe('pending');
+    expect(outboxRows[0].retry_count).toBe(0);
+    expect(outboxRows[0].recipient_member_id).toBe(member!.id);
   });
 
-  it('duplicate email → 422 with error', async () => {
+  it('duplicate email → 302 to /register/check-email, NO new DB rows (anti-enumeration + silent dedup)', async () => {
     const app = createApp();
+
+    // Snapshot counts *before* the POST. Prior it-blocks may have created
+    // rows; we assert ONLY that the duplicate POST added nothing.
+    // USER_STORIES §V_Register_Account line 530: "no new verification
+    // email is sent" when the address is already registered.
+    const countBefore = (() => {
+      const db = new BetterSqlite3(TEST_DB_PATH, { readonly: true });
+      const m = db.prepare(`SELECT COUNT(*) AS n FROM members`).get() as { n: number };
+      const o = db.prepare(`SELECT COUNT(*) AS n FROM outbox_emails`).get() as { n: number };
+      db.close();
+      return { members: m.n, outbox: o.n };
+    })();
+
     const res = await request(app)
       .post('/register')
       .type('form')
@@ -123,8 +167,19 @@ describe('POST /register', () => {
         password: 'securepass123',
         confirmPassword: 'securepass123',
       });
-    expect(res.status).toBe(422);
-    expect(res.text).toContain('already exists');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/register/check-email');
+
+    const countAfter = (() => {
+      const db = new BetterSqlite3(TEST_DB_PATH, { readonly: true });
+      const m = db.prepare(`SELECT COUNT(*) AS n FROM members`).get() as { n: number };
+      const o = db.prepare(`SELECT COUNT(*) AS n FROM outbox_emails`).get() as { n: number };
+      db.close();
+      return { members: m.n, outbox: o.n };
+    })();
+
+    expect(countAfter.members).toBe(countBefore.members);
+    expect(countAfter.outbox).toBe(countBefore.outbox);
   });
 
   it('short password → 422 with error', async () => {
@@ -246,7 +301,7 @@ describe('POST /register', () => {
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(302);
-    expect(res.headers.location).toMatch(/^\/members\/dave_leberknight/);
+    expect(res.headers.location).toBe('/register/check-email');
   });
 
   it('blank display name defaults to real name', async () => {
@@ -262,12 +317,11 @@ describe('POST /register', () => {
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(302);
-    expect(res.headers.location).toMatch(/^\/members\/jane_footbagger/);
+    expect(res.headers.location).toBe('/register/check-email');
   });
 
-  it('slug conflict is resolved with suffix', async () => {
+  it('slug conflict is resolved with suffix (no visible leak; unverified row exists)', async () => {
     const app = createApp();
-    // First registration with "Existing User" name (slug 'existing_user' is taken).
     const res = await request(app)
       .post('/register')
       .type('form')
@@ -278,7 +332,6 @@ describe('POST /register', () => {
         confirmPassword: 'securepass123',
       });
     expect(res.status).toBe(302);
-    // Should get a suffixed slug like existing_user_2.
-    expect(res.headers.location).toMatch(/^\/members\/existing_user_\d+/);
+    expect(res.headers.location).toBe('/register/check-email');
   });
 });

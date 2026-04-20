@@ -42,6 +42,14 @@ htmlcov/
 *.key
 *.p12
 *.pfx
+*.crt
+*.cer
+secrets/
+.secrets/
+.ssh/
+.aws/
+.npmrc
+.terraformrc
 
 # =========================
 # Local media data (photo uploads — never commit)

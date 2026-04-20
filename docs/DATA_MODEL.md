@@ -36,6 +36,7 @@
   - [4.13 Member Tier Current View](#413-member-tier-current-view)
   - [4.14 Members & Authentication](#414-members--authentication)
   - [4.14a Member Slug Redirects](#414a-member-slug-redirects)
+  - [4.14b Legacy Members](#414b-legacy-members)
   - [4.15 Member Links](#415-member-links)
   - [4.16 Registrations & Event Results](#416-registrations--event-results)
   - [4.17 Media & Galleries](#417-media--galleries)
@@ -599,31 +600,32 @@ When `display_name` changes, the member's slug is regenerated and the old slug i
 #### Stripe identity
 `stripe_customer_id` is the member-level canonical Stripe Customer ID (set when a recurring donation is first created). `payments.stripe_customer_id` is a per-payment snapshot and is **not** the canonical ID.
 
-#### `legacy_member_id` and migration fields
+#### Person-identity and legacy-account linkage
 
-`legacy_member_id` is the canonical identity key linking an imported legacy member account to the historical pipeline. A unique partial index (`ux_members_legacy_id`) enforces uniqueness where non-NULL.
+Two FK-style columns carry person-identity / legacy-account linkage:
 
-The following fields are migration metadata only. None are login credentials:
+- `historical_person_id` (`TEXT`, nullable, `REFERENCES historical_persons(person_id) ON DELETE NO ACTION`): direct FK to the archival historical-person identity this member claims. NULL = no HP claim. Set at claim time — either as a side effect of M_Claim_Legacy_Account (when the claimed legacy account has a matching HP) or as a direct HP claim (competitor with no legacy account claims their historical record). Partial UNIQUE index `ux_members_historical_person_id` enforces at most one live, non-purged member per HP.
+- `legacy_member_id` (`TEXT`, nullable, `REFERENCES legacy_members(legacy_member_id) ON DELETE NO ACTION`): pointer into the old footbag.org user-account namespace — also the PK of `legacy_members` (§4.14b). Set at M_Claim_Legacy_Account time. Partial UNIQUE index `ux_members_legacy_id` enforces at most one member per legacy account.
 
-- `legacy_user_id` — legacy username from the legacy site export.
-- `legacy_email` — email address from the legacy site export. Used solely to deliver the one-time claim link during the self-serve claim flow. Never a login credential.
+`legacy_user_id` and `legacy_email` also remain as TEXT columns for backward compatibility with fields migrated into `members` at claim time; the canonical source for these is `legacy_members`. Post-claim, the member's row holds its own editable copy per MIGRATION_PLAN §9 merge rules; the `legacy_members` row is preserved unchanged as the permanent archival record.
+
 - `legacy_is_admin` — flag indicating the account held admin status on the legacy site. Retained for admin review and audit context only; never grants live admin privilege.
-- `legacy_banned` — conditional on test-load validation; omitted if the export field is absent or unreliable.
-- `ifpa_join_date`, `birth_date`, `street_address`, `postal_code` — profile fields from the export; filled on import, merged into the active account at claim time.
+- `ifpa_join_date`, `birth_date`, `street_address`, `postal_code` — profile fields copied from `legacy_members` at claim time (COALESCE / fill-if-empty). The active member can subsequently edit them; the `legacy_members` copy remains immutable.
 
 #### Credential-state invariant
 
-The `members` table enforces a three-way credential-state invariant via a `CHECK` constraint:
+The `members` table enforces a two-way credential-state invariant via a `CHECK` constraint:
 
 1. **Live account** — `personal_data_purged_at IS NULL`, all credential fields (`login_email`, `login_email_normalized`, `password_hash`, `password_changed_at`) are non-NULL.
-2. **Pre-credential imported placeholder** — `personal_data_purged_at IS NULL`, all credential fields are NULL. Created by the legacy member import; cannot log in; excluded from `members_searchable` and all current-member surfaces via `email_verified_at IS NULL` (primary) and `searchable = 0` (defense-in-depth). Deleted when a claim is completed.
-3. **Purged row** — `personal_data_purged_at IS NOT NULL`, all credential fields are NULL.
+2. **Purged row** — `personal_data_purged_at IS NOT NULL`, all credential fields are NULL.
+
+Imported legacy accounts live in `legacy_members` (§4.14b), not as placeholder rows in `members`.
 
 #### PII purge (APP-022)
 
 `login_email`, `login_email_normalized`, `password_hash`, and `password_changed_at` are nullable to support GDPR account purge.
 
-**Anonymized-stub requirement (app-enforced):** When setting `personal_data_purged_at`, the application must produce a complete anonymized retained stub in the same transaction: clear all nullable contact fields (`phone`, `whatsapp`, `legacy_email`, `legacy_user_id`, `street_address`, `postal_code`, `birth_date`) and overwrite required non-null identity/location fields with anonymized placeholder values as needed to satisfy schema constraints. Exception: for members with `is_hof = 1` or `is_bap = 1`, preserve `display_name` and `bio` per User Stories deletion policy; other required retained identity/location fields remain anonymized as needed. Schema nullability does not enforce the full anonymized-stub shape; this is application-enforced (see APP-022).
+**Anonymized-stub requirement (app-enforced):** When setting `personal_data_purged_at`, the application must produce a complete anonymized retained stub in the same transaction: clear all nullable contact fields (`phone`, `whatsapp`, `legacy_email`, `legacy_user_id`, `street_address`, `postal_code`, `birth_date`); clear both identity-linkage FK pointers (`legacy_member_id`, `historical_person_id`) so person-link dispatchers revert to archival URLs per DD §2.4 rule 5; and overwrite required non-null identity/location fields with anonymized placeholder values as needed to satisfy schema constraints. In the same transaction, clear the claim pointer on the member's `legacy_members` row (set `claimed_by_member_id` and `claimed_at` to NULL) so the legacy account becomes claimable again. Exception: for members with `is_hof = 1` or `is_bap = 1`, preserve `display_name` and `bio` per User Stories deletion policy; other required retained identity/location fields remain anonymized as needed. Schema nullability does not enforce the full anonymized-stub shape; this is application-enforced (see APP-022).
 
 `ifpa_join_date` and `legacy_is_admin` may be retained post-purge as non-identifying administrative metadata.
 
@@ -646,6 +648,35 @@ Stores old slugs after a member's display name (and therefore slug) changes. Ena
 - `created_at` (`TEXT`): timestamp when the slug was superseded.
 
 When a member is deleted, all their slug redirect rows are cascade-deleted.
+
+### 4.14b Legacy Members
+
+**Table:** `legacy_members`
+
+Permanent archival table: one row per imported legacy account from the old footbag.org mirror and, going forward, Steve Goldberg's data dump. Identified by `legacy_member_id` (PK) — the old-site's user-account id, which is the external-namespace pointer also carried by `members.legacy_member_id` and `historical_persons.legacy_member_id`. See DD §2.4 for the three-entity identity model.
+
+#### Immutability and claim semantics
+
+- Rows are **never deleted**. A `legacy_members` row is the permanent archival record of a legacy account's fields at import time.
+- Rows are **never mutated post-import** for the legacy fields (real_name, display_name, bio, country, honor flags, etc.). Import sets these; nothing else writes them.
+- **Claim marks, does not remove.** When a current member completes M_Claim_Legacy_Account, the application sets `claimed_by_member_id` (FK to `members(id)`) and `claimed_at`. The `legacy_members` row persists. MIGRATION_PLAN §9 merge rules still govern what fields copy from `legacy_members` to `members` at claim time (COALESCE / OR-merge / fill-if-empty); the member then edits their own copy.
+- **Unclaim on PII purge** (DD §2.4 rule 5): when a claiming member is purged, `claimed_by_member_id` and `claimed_at` are cleared (both NULL). The legacy account becomes claimable again.
+
+#### Columns
+
+- `legacy_member_id` (`TEXT`, PK): the old-site user-account id.
+- `legacy_user_id`, `legacy_email`: migration metadata from the mirror/dump. `legacy_email` is used to deliver the one-time claim link (MIGRATION_PLAN §8); never a login credential.
+- Profile snapshot — `real_name`, `display_name`, `display_name_normalized`, `city`, `region`, `country`, `bio`, `birth_date`, `street_address`, `postal_code`, `ifpa_join_date`, `first_competition_year`.
+- Honor flags — `is_hof`, `is_bap` (legacy-source honors; copied to members at claim per §9 OR-merge rule).
+- `legacy_is_admin` — old-site admin flag. Retained for audit; never grants live admin privilege.
+- Import audit — `import_source` ('mirror' | 'steve_dump' | NULL pre-integration), `imported_at`, `version`.
+- Claim state — `claimed_by_member_id` (nullable FK to `members(id)` with `ON DELETE NO ACTION`), `claimed_at`. A CHECK constraint enforces the two-column invariant: both NULL (unclaimed) or both set (claimed).
+
+#### Indexes
+
+- `ux_legacy_members_claimed_by` — partial UNIQUE on `claimed_by_member_id` where non-NULL. Enforces at most one current member per legacy account.
+- `ux_legacy_members_legacy_email` — partial UNIQUE on `legacy_email` where non-NULL. Supports M_Claim_Legacy_Account email lookup.
+- `ux_legacy_members_legacy_user_id` — partial UNIQUE on `legacy_user_id` where non-NULL. Supports M_Claim_Legacy_Account username lookup.
 
 ### 4.15 Member Links
 
@@ -672,15 +703,31 @@ Before a competitor registration reaches `status = 'confirmed'`, the application
 
 #### Historical imported people
 
-`historical_persons` stores imported read-only historical identities used by legacy result imports.
+`historical_persons` stores imported read-only archival identity records sourced from event-data (competition results) and, going forward, mirror club-roster extraction. Rows are never deleted. A row may or may not correspond to a current `members` row and may or may not carry a `legacy_member_id` (populated only when the source data named the legacy account).
 
-These rows may or may not correspond to current rows in `members`. They exist so imported historical results can preserve participant identity without requiring that every historical person be a current Member.
+Three entity types form the identity model — see DD §2.4:
 
-`legacy_member_id` on `members` and `historical_persons` is migration-era traceability only for this design. It is not, by itself, a platform-wide unified identity system.
+- `members` — credentialed accounts on this platform.
+- `legacy_members` (§4.14b) — imported legacy accounts from the old footbag.org site (mirror + Steve's dump).
+- `historical_persons` — archival identity records of past participants.
 
-**Governance note:** Imported `historical_persons` rows are public historical record surfaces only. They do not confer member-account status, searchability, or contactability. The imported aggregate fields (`event_count`, `placement_count`, freestyle metrics, etc.) are migration-era metadata — not automatic public statistics. Any aggregate field shown publicly must satisfy the historian-value and completeness/caveat requirements in `docs/GOVERNANCE.md`. When a `historical_person_id` is linked to a `member` row (account claim), the historical public pages must continue to show only historical-record data; the link does not escalate the historical identity into a searchable or contactable current-member account.
+Linkage is expressed via explicit FK pointers (not via shared-column derivation):
 
-> **Maintainer note (longer-term design):** Longer-term, the platform may distinguish a broader Person concept from Member account/membership status, so historical imported people and other non-member identities do not need to be forced into the members table. That longer-term direction is not implemented by this slice. This document should describe the accepted current schema as-is and should not be read as requiring a platform-wide unified persons model yet.
+- `members.historical_person_id` → `historical_persons(person_id)` (§4.14): a current member claims their archival identity. Set at legacy-claim time when a matching HP exists, or as a direct HP claim for a competitor who had no legacy account.
+- `members.legacy_member_id` → `legacy_members(legacy_member_id)` (§4.14, §4.14b): a current member claims an old-site user account.
+- `historical_persons.legacy_member_id` → `legacy_members(legacy_member_id)`: archival provenance when the source data named the legacy account. Partial UNIQUE index `ux_historical_persons_legacy_member_id` enforces at most one archival person per legacy account.
+
+Possible row combinations (all legitimate):
+
+- `members` only — new registrant with no legacy account and no historical record.
+- `legacy_members` only — imported legacy account that hasn't been claimed and wasn't linked to any historical person.
+- `historical_persons` only — imported competitor whose legacy account (if any) isn't known.
+- `members` + `historical_persons` — member who claims their archival identity directly (no legacy account).
+- `members` + `legacy_members` — member who claims their legacy account; the legacy account had no historical-person link.
+- `legacy_members` + `historical_persons` — imported legacy account linked to an archival record, not yet claimed.
+- All three — member who claimed a legacy account that was already linked to a historical person.
+
+**Governance note:** Imported `historical_persons` rows are public historical record surfaces only. They do not confer member-account status, searchability, or contactability. The imported aggregate fields (`event_count`, `placement_count`, freestyle metrics, etc.) are migration-era metadata — not automatic public statistics. Any aggregate field shown publicly must satisfy the historian-value and completeness/caveat requirements in `docs/GOVERNANCE.md`. When `members.historical_person_id` links a current member to a historical person, the historical public pages must continue to show only historical-record data; the link does not escalate the historical identity into a searchable or contactable current-member account.
 
 #### Results
 `event_result_entries.discipline_id` is nullable (NULL = discipline-agnostic / general ranking). `UNIQUE(event_id, discipline_id, placement)` prevents duplicate placements for discipline-specific rows. For general-ranking rows (`discipline_id IS NULL`), the partial unique index `ux_result_entries_general_placement` on `(event_id, placement) WHERE discipline_id IS NULL` prevents duplicates — required because SQLite treats `NULL` values as distinct in `UNIQUE` constraints.
@@ -779,7 +826,7 @@ Security tokens for email verification, password reset, and data export requests
 - Both TTL values are Administrator-configurable via `system_config_current` (see §4.23).
 - **Multiple outstanding tokens are allowed** per member per type. The index `idx_account_tokens_active` on `(member_id, token_type)` is non-unique; it supports lookup performance but does not limit the number of active tokens.
 - `token_type` represents the token purpose. Values: `email_verify`, `password_reset`, `data_export`, `account_claim`.
-- `account_claim` tokens are used in the self-serve legacy account claim flow. They are single-use, time-limited (default 24 hours, configurable via `account_claim_expiry_hours`), and carry a dual binding: `member_id` (the requesting authenticated account) and `target_member_id` (the imported placeholder row being claimed). A token may only be consumed while authenticated as the same `member_id` that initiated the request. `target_member_id` uses `ON DELETE CASCADE`: when the imported placeholder row is deleted after a successful claim, all outstanding claim tokens pointing at it are automatically removed.
+- `account_claim` tokens are used in the self-serve legacy account claim flow. They are single-use, time-limited (default 24 hours, configurable via `account_claim_expiry_hours`), and carry a dual binding: `member_id` (the requesting authenticated account) and `target_legacy_member_id` (the `legacy_members` row being claimed). A token may only be consumed while authenticated as the same `member_id` that initiated the request. `target_legacy_member_id` uses `ON DELETE NO ACTION`; `legacy_members` rows are never deleted in normal flow (they are marked claimed, not removed).
 - `used_at` records when the token was consumed (single-use); `NULL` means not yet consumed.
 - A presented token is valid only when `used_at IS NULL AND now < expires_at`.
 - `idx_account_tokens_expires` supports the background cleanup job, which deletes expired or consumed tokens older than the configured threshold (`token_cleanup_threshold_days`).
@@ -1094,7 +1141,7 @@ Admin grant/revoke is application-only logic:
 
 ### APP-019 — Ballot receipt token scrubbing
 
-**After successfully delivering a voting confirmation email that contains a plaintext receipt token in `outbox_emails.body_text`, the sender worker must scrub the plaintext token from `body_text` (e.g., replace with a placeholder).** The `ballots.receipt_token_hash` is the persistent record; the plaintext is transient and must not be retained in the outbox after delivery.
+**After successfully delivering a voting confirmation email that contains a plaintext receipt token in `outbox_emails.body_text`, the sender worker must set `outbox_emails.body_text = NULL`.** The `ballots.receipt_token_hash` is the persistent record; the plaintext is transient and must not be retained in the outbox after delivery. The schema column is nullable specifically to support this scrub (see DD §5.4).
 
 ---
 

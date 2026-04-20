@@ -55,8 +55,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
   bucket = aws_s3_bucket.media.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_key.main.arn
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -65,8 +64,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "snapshots" {
   bucket = aws_s3_bucket.snapshots.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_key.main.arn
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -75,8 +73,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "dr" {
   bucket = aws_s3_bucket.dr.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_key.main.arn
+      sse_algorithm = "AES256"
     }
   }
 }

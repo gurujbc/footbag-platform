@@ -14,27 +14,28 @@ import path from 'path';
 import {
   insertTag,
   insertClub,
+  insertMember,
   insertHistoricalPerson,
   insertLegacyClubCandidate,
   insertLegacyPersonClubAffiliation,
+  createTestSessionJwt,
 } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
 
-const TEST_DB_PATH = path.join(process.cwd(), `test-clubs-auth-${Date.now()}.db`);
+const TEST_DB_PATH      = path.join(process.cwd(), `test-clubs-auth-${Date.now()}.db`);
 
-process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
-process.env.PORT             = '3002';
-process.env.NODE_ENV         = 'test';
-process.env.LOG_LEVEL        = 'error';
-process.env.PUBLIC_BASE_URL  = 'http://localhost:3002';
-process.env.SESSION_SECRET   = 'test-secret-clubs-auth';
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
+process.env.FOOTBAG_DB_PATH          = TEST_DB_PATH;
+process.env.PORT                     = '3002';
+process.env.NODE_ENV                 = 'test';
+process.env.LOG_LEVEL                = 'error';
+process.env.PUBLIC_BASE_URL          = 'http://localhost:3002';
+process.env.SESSION_SECRET           = 'test-secret-clubs-auth';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: typeof import('../../src/app').createApp;
 
-const TEST_SECRET = process.env.SESSION_SECRET!;
 function authCookie(): string {
-  return `footbag_session=${createSessionCookie('test-user', 'admin', TEST_SECRET)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: 'test-user', role: 'admin' })}`;
 }
 
 beforeAll(async () => {
@@ -43,6 +44,15 @@ beforeAll(async () => {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(schema);
+
+  // Admin test-user for authCookie()
+  insertMember(db, {
+    id: 'test-user',
+    slug: 'test_user_admin',
+    login_email: 'test-user@example.com',
+    display_name: 'Test Admin',
+    is_admin: 1,
+  });
 
   // Club with a known tag key
   const clubId = insertClub(db, {

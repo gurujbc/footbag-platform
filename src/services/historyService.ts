@@ -3,7 +3,7 @@ import { PublicPlayerResultRow, FreestyleRecordRow, PlayerCareerStatRow, PlayerP
 import { NotFoundError } from './serviceErrors';
 import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
-import { getPhotoStorage } from '../adapters/photoStorageInstance';
+import { getPhotoStorageAdapter } from '../adapters/photoStorageAdapter';
 import { PageViewModel } from '../types/page';
 import { groupPlayerResults } from './playerShaping';
 import type { PlayerEventGroup, PlayerHeroData } from '../types/playerProfile';
@@ -33,7 +33,7 @@ interface CareerCategoryStat {
 
 interface PartnershipViewModel {
   partnerName: string;
-  partnerHref: string;
+  partnerHref: string | null;
   category: string;
   categoryLabel: string;
   appearances: number;
@@ -123,7 +123,7 @@ export const historyService = {
         account.findMemberBySlug.get(linkedRow.slug),
       ) as { avatar_thumb_key: string | null; avatar_media_id: string | null } | undefined;
       if (memberRow?.avatar_thumb_key) {
-        const base = getPhotoStorage().constructURL(memberRow.avatar_thumb_key);
+        const base = getPhotoStorageAdapter().constructURL(memberRow.avatar_thumb_key);
         avatarThumbUrl = memberRow.avatar_media_id
           ? `${base}?v=${encodeURIComponent(memberRow.avatar_media_id)}`
           : base;
@@ -171,7 +171,7 @@ export const historyService = {
       }
       return {
         partnerName:   r.partner_name,
-        partnerHref:   `/history/${r.partner_person_id}`,
+        partnerHref:   personHref(r.partner_member_slug, r.partner_person_id),
         category:      r.category,
         categoryLabel: CATEGORY_LABELS[r.category] ?? r.category,
         appearances:   r.appearances,

@@ -423,6 +423,11 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /clubs/:key` | Clubs shared handler | Dispatches to country page or club detail | Current |
 | `GET /login` | Login | Member login | Current |
 | `GET /register` | Register | Member registration | Current |
+| `GET /register/check-email` | Check-email landing | Generic post-registration and post-resend landing | Current |
+| `GET /verify/:token` | Email-verify link | Consume verification token; issue session; route to legacy-claim or dashboard | Current |
+| `GET /password/forgot` | Password forgot | Form to request a password-reset email | Current |
+| `GET /password/reset/:token` | Password reset | Form to set a new password from an email link | Current |
+| `GET /members/:memberKey/edit/password` | Member password edit | Own-profile change-password form | Current |
 | `GET /hof` | HoF landing | Footbag Hall of Fame editorial/informational landing page | Current stub |
 | `GET /freestyle` | Freestyle landing | Freestyle section entry page | Current |
 | `GET /freestyle/records` | Freestyle records | Freestyle world records (authoritative list) | Current |
@@ -457,6 +462,12 @@ Visual token baseline (from `src/public/css/style.css`):
 - `GET /clubs/:key` is the shared Express handler for both the country page and the club detail page. The controller dispatches by prefix: a key beginning with `club_` routes to the club detail handler; any other key routes to the country page handler. Public country URLs take the form `/clubs/{countryKey}`. Public club URLs take the form `/clubs/{clubKey}` where `clubKey` matches the `club_...` standard form.
 - `GET /login` is the member login route. `POST /login` and `POST /logout` are form-action handlers, not cataloged pages.
 - `GET /register` is the member registration route. `POST /register` is its form-action handler and is not a separate cataloged page.
+- `GET /register/check-email` is the generic post-registration and post-resend landing. It never reveals whether an account exists for a given address.
+- `GET /verify/:token` consumes an email-verification token. Success issues a session cookie and redirects to the legacy-link check when the member's email matches a legacy row, or to the member dashboard otherwise. Invalid/expired/used tokens render an identical generic error page (enumeration-safe).
+- `POST /verify/resend` is the form-action handler for the resend form on `/register/check-email`. The response is identical regardless of membership or rate-limit state.
+- `GET /password/forgot` is the password-reset request form. `POST /password/forgot` is its form-action handler; the response is identical regardless of membership.
+- `GET /password/reset/:token` is the password-reset form reached from the emailed link. `POST /password/reset/:token` is its form-action handler; on success it issues a fresh session cookie (new `passwordVersion`) and redirects to `/members`.
+- `GET /members/:memberKey/edit/password` is the own-profile change-password form. `POST /members/:memberKey/edit/password` is its form-action handler; on success it re-issues the session cookie with the bumped `passwordVersion` so the current browser stays authenticated.
 - `GET /hof` is the canonical HoF section entry route.
 - `GET /freestyle` is the canonical freestyle section entry route. Sub-routes `/freestyle/records`, `/freestyle/leaders`, `/freestyle/about`, `/freestyle/moves`, and `/freestyle/tricks/:slug` are all public and unauthenticated.
 - `GET /records` is the canonical records section entry route and the single page in the records section.
@@ -723,17 +734,17 @@ This page consumes the generic public rendering standard and the §4.2 page cont
 - optional `page.eyebrow` — e.g. `"Historical member record"`
 - optional `page.intro`
 - optional `page.notice`
-- `navigation.contextLinks` — typed back link to `GET /history` (service-computed)
+- `navigation.contextLinks` — typed back link to `GET /members` (service-computed)
 - `content.personId`
 - `content.displayName` — the person's display name
 - optional `content.honorificNickname` — BAP nickname when present; rendered in a styled span alongside `displayName` in the h1
-- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, hasDetailColumn, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; `hasDetailColumn` is true when any result row has teammates or `scoreText`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, `detailPrefix`, and `teammates: { name, memberHref? }[]` where `memberHref` is service-computed as `"/history/{personId}"` when a historical person link exists; `detailPrefix` is a per-row label: `"With partner: "`, `"With partners: "`, `"Tied with: "`, or empty; the detail column is suppressed entirely when `hasDetailColumn` is false
+- `content.eventGroups` — `{ eventKey, eventHref, eventTitle, startDate, city, eventCountry, hasDetailColumn, results[] }[]`; service computes `eventHref` as `"/events/{eventKey}"`; `hasDetailColumn` is true when any result row has teammates or `scoreText`; each result entry includes `disciplineName`, `disciplineCategory`, `teamType`, `placement`, `scoreText`, `detailPrefix`, and `teammates: { name, participantHref? }[]` where `participantHref` is computed via `personHref()` per DD §2.4 rule 2 (resolves to `/members/{slug}` for claimed members, `/history/{personId}` otherwise); `detailPrefix` is a per-row label: `"With partner: "`, `"With partners: "`, `"Tied with: "`, or empty; the detail column is suppressed entirely when `hasDetailColumn` is false
 
 ### Navigation outputs
 
 - `GET /events/:eventKey` (via `content.eventGroups[].eventHref`)
 - `GET /events/year/:year`
-- `GET /history` (via `navigation.contextLinks`)
+- `GET /members` (via `navigation.contextLinks`)
 
 ### Empty state
 
@@ -1541,8 +1552,7 @@ Not applicable. Legal content is static and always present.
 
 Most pages in this catalog are public visitor pages. The following routes require authentication and redirect unauthenticated visitors to `/login?returnTo=<originalUrl>`:
 
-- `GET /history` — historical players index (controller-enforced)
-- `GET /history/:personId` — historical player detail (public for HoF/BAP persons; auth required otherwise)
+- `GET /history/:personId` — historical player detail (public for HoF/BAP persons; auth required otherwise). Note: `GET /history` (no id) is a public 301 redirect to `/members` and is not auth-gated.
 - `GET /history/claim` — auth required (route middleware)
 - `POST /history/claim` — auth required (route middleware)
 - `POST /history/claim/confirm` — auth required (route middleware)

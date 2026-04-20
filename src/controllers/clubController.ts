@@ -43,7 +43,7 @@ export const clubController = {
 
   /**
    * Maps service errors to HTTP responses.
-   * NotFoundError and ValidationError both render 404 — validation detail
+   * NotFoundError and ValidationError both render 404, validation detail
    * must not be exposed to public visitors.
    */
   _handleError(err: unknown, res: Response, next: NextFunction): void {

@@ -1828,3 +1828,16 @@ section.home-media { padding-top: 0; }
   border: 1px solid var(--border);
   color: var(--text);
 }
+
+.flash-banner {
+  padding: 10px 16px;
+  margin: 0 auto 16px;
+  max-width: var(--wrapper-max, 1100px);
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.flash-logout {
+  background: #e8f4fd;
+  border: 1px solid #b6dcf5;
+  color: #1a5a8a;
+}

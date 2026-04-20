@@ -146,6 +146,7 @@ No contact field (email, phone, social handle) is visible on any public page or 
 ## 9. Logging and observability hygiene
 
 - Logs must not contain raw email addresses, tokens, passwords, or other sensitive PII.
+- The same prohibition extends explicitly to infrastructure-level secrets: `SESSION_SECRET`, AWS access key IDs and secret access keys, raw JWT cookie values, account-token raw strings (only their SHA-256 hashes ever land in storage), and any signing-key material. KMS key ARNs are not secrets but should not be logged at request scope.
 - Member-search queries may be logged for abuse monitoring but must be anonymized or pseudonymized before persistence.
 - Audit records for sensitive visibility checks (member-search, export, admin data access) must be kept as privacy-safe structured events.
 - Public route access logs do not require special hygiene beyond standard web server practice.

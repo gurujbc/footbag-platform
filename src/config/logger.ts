@@ -4,8 +4,9 @@
  * Intentionally simple: a thin wrapper around console.log/error that
  * outputs newline-delimited JSON. No external logging dependencies.
  * Log level is compared by severity so that e.g. LOG_LEVEL=warn suppresses
- * info and debug output.
+ * info and debug output. Log level is read from the config singleton.
  */
+import { config } from './env';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -56,4 +57,4 @@ export function createLogger(level: string): Logger {
   };
 }
 
-export const logger: Logger = createLogger(process.env.LOG_LEVEL ?? 'info');
+export const logger: Logger = createLogger(config.logLevel);

@@ -4,18 +4,26 @@ import cookieParser from 'cookie-parser';
 import { engine } from 'express-handlebars';
 import { logger } from './config/logger';
 import { config } from './config/env';
-import { authStub } from './middleware/authStub';
+import { authMiddleware } from './middleware/auth';
+import { FLASH_LOGOUT_COOKIE, FLASH_LOGOUT_VALUE } from './controllers/authController';
 import { healthRouter }   from './routes/healthRoutes';
 import { internalRouter } from './routes/internalRoutes';
 import { publicRouter }   from './routes/publicRoutes';
 
 /**
- * Factory function — returns a configured Express application without
+ * Factory that returns a configured Express application without
  * binding to a port. Keeping this as a factory (not a module singleton)
  * lets integration tests call createApp() directly without an HTTP server.
  */
 export function createApp(): express.Application {
   const app = express();
+
+  // Express trust-proxy setting, driven by TRUST_PROXY env via config.
+  // Production default is 2 (nginx container peer + CloudFront edge);
+  // dev/test default is 0. Operators can override with an integer,
+  // boolean, or subnet list without a code change. Revisit when
+  // CloudFront origin-bypass hardening (IP deviation #12 / 1-F) lands.
+  app.set('trust proxy', config.trustProxy);
 
   // ── Static assets ────────────────────────────────────────────────────────
   // Served from src/public/ so .hbs templates can reference /css/style.css etc.
@@ -113,10 +121,10 @@ export function createApp(): express.Application {
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
 
-  // ── Auth stub ────────────────────────────────────────────────────────────
-  app.use(authStub(config.sessionSecret));
+  // ── Auth (JWT session + per-request passwordVersion check) ──────────────
+  app.use(authMiddleware());
 
-  // ── No-store on authenticated responses (DD §6.7) ────────────────────────
+  // ── No-store on authenticated responses ──────────────────────────────────
   // Prevents CloudFront (and other shared caches) from storing personalized
   // HTML. Without this, post-upload redirects serve cached HTML carrying
   // stale avatar version tokens, making new uploads appear to not take effect.
@@ -141,6 +149,17 @@ export function createApp(): express.Application {
       : '';
     res.locals.isAuthenticated = req.isAuthenticated;
     res.locals.currentUser = req.user;
+    if (req.cookies?.[FLASH_LOGOUT_COOKIE] === FLASH_LOGOUT_VALUE) {
+      res.locals.flashLoggedOut = true;
+      // Clear only when the banner actually renders, not on redirects.
+      // Otherwise a logout that redirects through an auth-gated page consumes
+      // the cookie on the 302 response before the banner ever surfaces.
+      const origRender = res.render.bind(res);
+      res.render = ((...args: Parameters<typeof origRender>) => {
+        res.clearCookie(FLASH_LOGOUT_COOKIE, { path: '/' });
+        return origRender(...args);
+      }) as typeof res.render;
+    }
     next();
   });
 

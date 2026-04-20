@@ -30,7 +30,7 @@ export const eventController = {
 
   /**
    * GET /events/year/:year
-   * Full-year archive page — all completed events for a given year.
+   * Full-year archive page, all completed events for a given year.
    */
   year(req: Request, res: Response, next: NextFunction): void {
     try {
@@ -69,7 +69,7 @@ export const eventController = {
 
   /**
    * Maps service errors to HTTP responses.
-   * NotFoundError and ValidationError both render 404 — validation detail
+   * NotFoundError and ValidationError both render 404, validation detail
    * must not be exposed to public visitors.
    */
   _handleError(err: unknown, res: Response, next: NextFunction): void {

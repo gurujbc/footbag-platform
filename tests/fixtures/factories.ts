@@ -9,6 +9,7 @@
  * For mutation tests, use a fresh per-test DB or wrap in a transaction and roll back.
  */
 import BetterSqlite3 from 'better-sqlite3';
+import { signJwtLocalSync } from './signJwt';
 
 const TS  = '2025-01-01T00:00:00.000Z';
 const SYS = 'system';
@@ -30,6 +31,7 @@ export interface MemberOverrides {
   country?: string;
   password_hash?: string;
   email_verified_at?: string | null;
+  is_admin?: 0 | 1;
   is_hof?: 0 | 1;
   is_bap?: 0 | 1;
   is_deceased?: 0 | 1;
@@ -40,6 +42,7 @@ export interface MemberOverrides {
   first_competition_year?: number | null;
   bio?: string;
   searchable?: 0 | 1;
+  password_version?: number;
 }
 
 export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}): string {
@@ -49,33 +52,40 @@ export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}
   const display = o.display_name  ?? name;
   const purged  = o.personal_data_purged_at ?? null;
 
-  // Three-way credential-state invariant: when purged, all credential fields must be NULL.
+  // Two-way credential-state invariant: live OR purged. Purged => all credential fields NULL.
   const email            = purged ? null : (o.login_email ?? `test-${uid()}@example.com`);
   const emailNormalized  = email ? email.toLowerCase() : null;
   const emailVerifiedAt  = purged ? null : (o.email_verified_at !== undefined ? o.email_verified_at : TS);
   const passwordHash     = purged ? null : (o.password_hash ?? '[TEST_HASH]');
   const passwordChanged  = purged ? null : TS;
 
+  if (o.legacy_member_id) {
+    const existing = db.prepare(`SELECT 1 FROM legacy_members WHERE legacy_member_id = ?`).get(o.legacy_member_id);
+    if (!existing) {
+      insertLegacyMember(db, { legacy_member_id: o.legacy_member_id });
+    }
+  }
+
   db.prepare(`
     INSERT INTO members (
       id, slug,
       login_email, login_email_normalized, email_verified_at,
-      password_hash, password_changed_at,
+      password_hash, password_changed_at, password_version,
       real_name, display_name, display_name_normalized,
       bio, city, country,
-      is_hof, is_bap, is_deceased,
+      is_admin, is_hof, is_bap, is_deceased,
       searchable,
       deleted_at, personal_data_purged_at,
       show_competitive_results, legacy_member_id, first_competition_year,
       created_at, created_by, updated_at, updated_by, version
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
   `).run(
     id, slug,
     email, emailNormalized, emailVerifiedAt,
-    passwordHash, passwordChanged,
+    passwordHash, passwordChanged, o.password_version ?? 1,
     name, display, display.toLowerCase(),
     o.bio ?? '', o.city ?? 'Testville', o.country ?? 'US',
-    o.is_hof ?? 0, o.is_bap ?? 0, o.is_deceased ?? 0,
+    o.is_admin ?? 0, o.is_hof ?? 0, o.is_bap ?? 0, o.is_deceased ?? 0,
     o.searchable ?? 1,
     o.deleted_at ?? null, purged,
     o.show_competitive_results ?? 1, o.legacy_member_id ?? null, o.first_competition_year ?? null,
@@ -84,58 +94,139 @@ export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}
   return id;
 }
 
-// ── Imported placeholder (pre-credential legacy member) ──────────────────────
+// ── Session JWT helper ──────────────────────────────────────────────────────
+//
+// Mints a JWT using the same LocalJwtAdapter keypair the app middleware verifies
+// against. Tests that set `.set('Cookie', 'footbag_session=...')` should call
+// this helper with the member's id + role + password_version.
+//
+// The target member row must already exist in the test DB: the middleware
+// does a DB lookup and rejects unknown sub ids. Default passwordVersion=1
+// matches insertMember's default.
 
-export interface ImportedPlaceholderOverrides {
-  id?: string;
-  display_name?: string;
-  real_name?: string;
+export interface TestSessionJwtOpts {
+  memberId: string;
+  role?: 'admin' | 'member';
+  passwordVersion?: number;
+  kid?: string;
+  ttlSeconds?: number;
+}
+
+export function createTestSessionJwt(opts: TestSessionJwtOpts): string {
+  const keypairPath = process.env.JWT_LOCAL_KEYPAIR_PATH;
+  if (!keypairPath) {
+    throw new Error('JWT_LOCAL_KEYPAIR_PATH must be set (setTestEnv does this).');
+  }
+  return signJwtLocalSync(
+    keypairPath,
+    {
+      sub: opts.memberId,
+      role: opts.role ?? 'member',
+      passwordVersion: opts.passwordVersion ?? 1,
+    },
+    {
+      kid: opts.kid,
+      ttlSeconds: opts.ttlSeconds,
+    },
+  );
+}
+
+// ── Legacy member (three-table design per DD §2.4) ───────────────────────────
+//
+// Row in legacy_members table — the imported-legacy-account entity.
+// Returns the legacy_member_id (PK).
+// ---------------------------------------------------------------------------
+export interface LegacyMemberOverrides {
   legacy_member_id?: string;
-  legacy_user_id?: string;
-  legacy_email?: string;
-  bio?: string;
+  legacy_user_id?: string | null;
+  legacy_email?: string | null;
+  real_name?: string | null;
+  display_name?: string | null;
   city?: string | null;
   region?: string | null;
   country?: string | null;
+  bio?: string | null;
   birth_date?: string | null;
+  street_address?: string | null;
+  postal_code?: string | null;
   ifpa_join_date?: string | null;
+  first_competition_year?: number | null;
   is_hof?: 0 | 1;
   is_bap?: 0 | 1;
+  legacy_is_admin?: 0 | 1;
+  import_source?: string | null;
+  claimed_by_member_id?: string | null;
+  claimed_at?: string | null;
 }
 
-export function insertImportedPlaceholder(db: BetterSqlite3.Database, o: ImportedPlaceholderOverrides = {}): string {
-  const id      = o.id              ?? `placeholder-${uid()}`;
-  const name    = o.real_name       ?? 'Legacy Player';
-  const display = o.display_name    ?? name;
+export function insertLegacyMember(db: BetterSqlite3.Database, o: LegacyMemberOverrides = {}): string {
+  const legacyId = o.legacy_member_id ?? `legmem-${uid()}`;
+  const name     = o.real_name        ?? 'Legacy Member';
+  const display  = o.display_name     ?? name;
+  // Upsert: an earlier insertHistoricalPerson or insertMember may have
+  // auto-created a stub legacy_members row; replace with this fuller row.
   db.prepare(`
-    INSERT INTO members (
-      id, slug,
-      login_email, login_email_normalized, email_verified_at,
-      password_hash, password_changed_at,
+    INSERT INTO legacy_members (
+      legacy_member_id,
+      legacy_user_id, legacy_email,
       real_name, display_name, display_name_normalized,
-      legacy_member_id, legacy_user_id, legacy_email,
-      bio, city, region, country,
-      birth_date, ifpa_join_date,
-      is_hof, is_bap,
-      created_at, created_by, updated_at, updated_by, version
-    ) VALUES (?, NULL, NULL, NULL, NULL, NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'import', ?, 'import', 1)
+      city, region, country,
+      bio, birth_date, street_address, postal_code,
+      ifpa_join_date, first_competition_year,
+      is_hof, is_bap, legacy_is_admin,
+      import_source, imported_at,
+      version
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    ON CONFLICT(legacy_member_id) DO UPDATE SET
+      legacy_user_id = excluded.legacy_user_id,
+      legacy_email = excluded.legacy_email,
+      real_name = excluded.real_name,
+      display_name = excluded.display_name,
+      display_name_normalized = excluded.display_name_normalized,
+      city = excluded.city,
+      region = excluded.region,
+      country = excluded.country,
+      bio = excluded.bio,
+      birth_date = excluded.birth_date,
+      street_address = excluded.street_address,
+      postal_code = excluded.postal_code,
+      ifpa_join_date = excluded.ifpa_join_date,
+      first_competition_year = excluded.first_competition_year,
+      is_hof = excluded.is_hof,
+      is_bap = excluded.is_bap,
+      legacy_is_admin = excluded.legacy_is_admin,
+      import_source = excluded.import_source,
+      imported_at = excluded.imported_at
   `).run(
-    id,
-    name, display, display.toLowerCase(),
-    o.legacy_member_id ?? null,
+    legacyId,
     o.legacy_user_id ?? null,
     o.legacy_email ?? null,
-    o.bio ?? '',
+    name,
+    display,
+    display.toLowerCase(),
     o.city ?? null,
     o.region ?? null,
     o.country ?? null,
+    o.bio ?? null,
     o.birth_date ?? null,
+    o.street_address ?? null,
+    o.postal_code ?? null,
     o.ifpa_join_date ?? null,
+    o.first_competition_year ?? null,
     o.is_hof ?? 0,
     o.is_bap ?? 0,
-    TS, TS,
+    o.legacy_is_admin ?? 0,
+    o.import_source ?? 'test',
+    TS,
   );
-  return id;
+  if (o.claimed_by_member_id && o.claimed_at) {
+    db.prepare(`
+      UPDATE legacy_members
+      SET claimed_by_member_id = ?, claimed_at = ?, version = version + 1
+      WHERE legacy_member_id = ?
+    `).run(o.claimed_by_member_id, o.claimed_at, legacyId);
+  }
+  return legacyId;
 }
 
 // ── Tag ───────────────────────────────────────────────────────────────────────
@@ -426,6 +517,12 @@ export interface HistoricalPersonOverrides {
 
 export function insertHistoricalPerson(db: BetterSqlite3.Database, o: HistoricalPersonOverrides = {}): string {
   const id = o.person_id ?? `person-test-${uid()}`;
+  if (o.legacy_member_id) {
+    const existing = db.prepare(`SELECT 1 FROM legacy_members WHERE legacy_member_id = ?`).get(o.legacy_member_id);
+    if (!existing) {
+      insertLegacyMember(db, { legacy_member_id: o.legacy_member_id, real_name: o.person_name });
+    }
+  }
   db.prepare(`
     INSERT INTO historical_persons (person_id, person_name, legacy_member_id, country, event_count, placement_count, bap_member, hof_member, source, source_scope, aliases)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)

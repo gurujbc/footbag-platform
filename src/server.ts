@@ -1,4 +1,4 @@
-// dotenv MUST be imported first — before any module that reads process.env
+// dotenv MUST be imported first, before any module that reads process.env
 import 'dotenv/config';
 
 import { config } from './config/env';

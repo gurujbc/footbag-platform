@@ -6,16 +6,15 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { setTestEnv, createTestDb, cleanupTestDb, importApp } from '../fixtures/testDb';
-import { insertMember, insertHistoricalPerson } from '../fixtures/factories';
-import { createSessionCookie } from '../../src/middleware/authStub';
+import { insertMember, insertHistoricalPerson, createTestSessionJwt } from '../fixtures/factories';
 
-const { dbPath, sessionSecret: TEST_SECRET } = setTestEnv('3063');
+const { dbPath } = setTestEnv('3063');
 
 const SEARCHER_ID   = 'member-searcher-001';
 const SEARCHER_SLUG = 'searcher_user';
 
 function searcherCookie(): string {
-  return `footbag_session=${createSessionCookie(SEARCHER_ID, 'member', TEST_SECRET, 'Searcher', SEARCHER_SLUG)}`;
+  return `footbag_session=${createTestSessionJwt({ memberId: SEARCHER_ID })}`;
 }
 
 let createApp: Awaited<ReturnType<typeof importApp>>;

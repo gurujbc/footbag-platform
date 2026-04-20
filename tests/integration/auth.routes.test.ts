@@ -21,9 +21,10 @@ import { insertMember } from '../fixtures/factories';
 const TEST_DB_PATH       = path.join(process.cwd(), 'test-footbag-auth.db');
 const TEST_PASSWORD      = 'test-password-123';
 const TEST_MEMBER_EMAIL  = 'test-member@example.com';
-const FOOTBAG_PASSWORD   = process.env.STUB_PASSWORD ?? 'Footbag!';
+const FOOTBAG_PASSWORD   = process.env.STUB_PASSWORD!;
 
 // Set env vars BEFORE any module that reads them is imported.
+// JWT/SES env vars come from tests/setup-env.ts (per-vitest-worker defaults).
 process.env.FOOTBAG_DB_PATH  = TEST_DB_PATH;
 process.env.PORT             = '3002';
 process.env.NODE_ENV         = 'test';
@@ -138,5 +139,24 @@ describe('POST /login — DB-backed auth', () => {
     expect(res.status).toBe(200);
     expect(res.text).toContain('Invalid email or password');
     expect(res.headers['set-cookie']).toBeUndefined();
+  });
+
+  it('login rate limit engages after max attempts on the same email/IP', async () => {
+    // System-config default: login_rate_limit_max_attempts=10, window=15m.
+    for (let i = 0; i < 10; i++) {
+      const res = await request(app)
+        .post('/login')
+        .type('form')
+        .send({ email: TEST_MEMBER_EMAIL, password: 'wrong-password' });
+      expect(res.status).toBe(200);
+    }
+    // 11th attempt should be blocked with 429.
+    const blocked = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: TEST_MEMBER_EMAIL, password: 'wrong-password' });
+    expect(blocked.status).toBe(429);
+    expect(blocked.text).toContain('Too many failed login attempts');
+    expect(blocked.headers['retry-after']).toBeDefined();
   });
 });

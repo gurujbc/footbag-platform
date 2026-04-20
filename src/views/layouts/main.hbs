@@ -35,6 +35,9 @@
   </header>
 
   <main>
+    {{#if flashLoggedOut}}
+      <div class="flash-banner flash-logout" role="status">You have been logged out.</div>
+    {{/if}}
     {{{body}}}
   </main>
 

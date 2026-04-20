@@ -266,11 +266,11 @@ describe('GET /net/teams/:teamId', () => {
     expect(res.text).toContain('/events/event-net-test-2010');
   });
 
-  it('links to partner net player pages', async () => {
+  it('links to partner history pages via personHref', async () => {
     const app = createApp();
     const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain(`/net/players/${PERSON_A1}`);
-    expect(res.text).toContain(`/net/players/${PERSON_B1}`);
+    expect(res.text).toContain(`/history/${PERSON_A1}`);
+    expect(res.text).toContain(`/history/${PERSON_B1}`);
   });
 
   it('does not show rankings, win/loss, or head-to-head stats', async () => {
@@ -538,11 +538,11 @@ describe('GET /net/partnerships/:teamId', () => {
     expect(res.text).toContain('/events/');
   });
 
-  it('links player names to player pages', async () => {
+  it('links player names to history pages via personHref', async () => {
     const app = createApp();
     const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
-    expect(res.text).toContain(`/net/players/${PERSON_A1}`);
-    expect(res.text).toContain(`/net/players/${PERSON_B1}`);
+    expect(res.text).toContain(`/history/${PERSON_A1}`);
+    expect(res.text).toContain(`/history/${PERSON_B1}`);
   });
 
   it('includes evidence disclaimer', async () => {

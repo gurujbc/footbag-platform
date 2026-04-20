@@ -65,7 +65,7 @@
               <td>Player A (linked)</td>
               <td>
                 {{#if content.candidate.playerAPersonId}}
-                  <a href="/net/players/{{content.candidate.playerAPersonId}}">{{#if content.candidate.playerAName}}{{content.candidate.playerAName}}{{else}}{{content.candidate.playerAPersonId}}{{/if}}</a>
+                  <a href="{{content.candidate.playerAHref}}">{{#if content.candidate.playerAName}}{{content.candidate.playerAName}}{{else}}{{content.candidate.playerAPersonId}}{{/if}}</a>
                 {{else}}<span class="badge badge-warn">unlinked</span>{{/if}}
               </td>
             </tr>
@@ -77,7 +77,7 @@
               <td>Player B (linked)</td>
               <td>
                 {{#if content.candidate.playerBPersonId}}
-                  <a href="/net/players/{{content.candidate.playerBPersonId}}">{{#if content.candidate.playerBName}}{{content.candidate.playerBName}}{{else}}{{content.candidate.playerBPersonId}}{{/if}}</a>
+                  <a href="{{content.candidate.playerBHref}}">{{#if content.candidate.playerBName}}{{content.candidate.playerBName}}{{else}}{{content.candidate.playerBPersonId}}{{/if}}</a>
                 {{else}}<span class="badge badge-warn">unlinked</span>{{/if}}
               </td>
             </tr>

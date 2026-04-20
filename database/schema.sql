@@ -604,7 +604,7 @@ CREATE TABLE outbox_emails (
   from_identity    TEXT,
 
   subject   TEXT NOT NULL,
-  body_text TEXT NOT NULL,
+  body_text TEXT,
 
   status TEXT NOT NULL DEFAULT 'pending'
     CHECK (status IN ('pending','sending','sent','failed','dead_letter')),
@@ -1551,7 +1551,7 @@ CREATE TABLE members (
   first_competition_year INTEGER,
   show_competitive_results INTEGER NOT NULL DEFAULT 1 CHECK (show_competitive_results IN (0,1)),
 
-  legacy_member_id TEXT,
+  legacy_member_id TEXT REFERENCES legacy_members(legacy_member_id) ON DELETE NO ACTION,
   legacy_user_id   TEXT,
   legacy_email     TEXT,
   ifpa_join_date   TEXT,
@@ -1560,10 +1560,16 @@ CREATE TABLE members (
   postal_code      TEXT,
   legacy_is_admin  INTEGER NOT NULL DEFAULT 0 CHECK (legacy_is_admin IN (0,1)),
 
-  -- Three-way credential-state invariant:
+  -- Direct FK to the archival historical-person identity this member claims.
+  -- NULL = no HP claim. Written at claim time (legacy-account claim that resolves
+  -- to a matching HP, or direct HP claim for a competitor with no legacy account).
+  -- Partial UNIQUE index below enforces at most one member per HP.
+  historical_person_id TEXT REFERENCES historical_persons(person_id) ON DELETE NO ACTION,
+
+  -- Two-way credential-state invariant:
   -- (1) live account: all credential fields present, not purged
-  -- (2) pre-credential imported placeholder: no credentials, not purged
-  -- (3) purged row: all credential fields NULL, personal_data_purged_at set
+  -- (2) purged row: all credential fields NULL, personal_data_purged_at set
+  -- Pre-credential placeholder rows live in legacy_members, not members.
   CHECK (
     (
       personal_data_purged_at IS NULL
@@ -1571,14 +1577,6 @@ CREATE TABLE members (
       AND login_email_normalized IS NOT NULL
       AND password_hash          IS NOT NULL
       AND password_changed_at    IS NOT NULL
-    )
-    OR
-    (
-      personal_data_purged_at IS NULL
-      AND login_email            IS NULL
-      AND login_email_normalized IS NULL
-      AND password_hash          IS NULL
-      AND password_changed_at    IS NULL
     )
     OR
     (
@@ -1613,6 +1611,23 @@ CREATE UNIQUE INDEX ux_members_legacy_email
 CREATE UNIQUE INDEX ux_members_legacy_user_id
   ON members(legacy_user_id)
   WHERE legacy_user_id IS NOT NULL;
+-- At most one member per historical person (partial: only enforces when set).
+-- Excludes soft-deleted and purged rows so a previously-claiming-then-purged member
+-- does not block a future claim of the same HP.
+CREATE UNIQUE INDEX ux_members_historical_person_id
+  ON members(historical_person_id)
+  WHERE historical_person_id IS NOT NULL
+    AND deleted_at IS NULL
+    AND personal_data_purged_at IS NULL;
+
+-- Non-unique lookup index for JOIN predicates of the form
+-- `members.historical_person_id = <hp>.person_id AND members.deleted_at IS NULL`.
+-- The unique index above can't serve this predicate because its partial
+-- condition also requires personal_data_purged_at IS NULL, which JOIN
+-- predicates don't include.
+CREATE INDEX idx_members_historical_person_id
+  ON members(historical_person_id)
+  WHERE historical_person_id IS NOT NULL;
 
 -- members_active: active rows (excludes soft-deleted accounts)
 CREATE VIEW members_active AS
@@ -1745,7 +1760,7 @@ CREATE TABLE historical_persons (
   person_id            TEXT PRIMARY KEY,
   person_name          TEXT NOT NULL,
   aliases              TEXT,
-  legacy_member_id     TEXT,
+  legacy_member_id     TEXT REFERENCES legacy_members(legacy_member_id) ON DELETE NO ACTION,
   country              TEXT,
   first_year           INTEGER,
   last_year            INTEGER,
@@ -1767,6 +1782,10 @@ CREATE TABLE historical_persons (
   source               TEXT,
   source_scope         TEXT
 );
+
+CREATE UNIQUE INDEX ux_historical_persons_legacy_member_id
+  ON historical_persons(legacy_member_id)
+  WHERE legacy_member_id IS NOT NULL;
 
 -- Participants (members or named non-members) for a single result entry.
 -- Supports singles (1 row) and team formats (2 rows). member_id is nullable
@@ -2043,10 +2062,11 @@ CREATE TABLE account_tokens (
   updated_by TEXT NOT NULL,
   version    INTEGER NOT NULL DEFAULT 1,
   member_id  TEXT NOT NULL REFERENCES members(id),
-  -- target_member_id: for account_claim tokens only; the imported placeholder row being claimed.
-  -- ON DELETE CASCADE: when the imported row is deleted after a successful claim,
-  -- all outstanding claim tokens pointing at it are removed automatically.
-  target_member_id TEXT REFERENCES members(id) ON DELETE CASCADE,
+  -- target_legacy_member_id: for account_claim tokens only; the legacy_members
+  -- row being claimed. Under the three-table identity redesign (DD §2.4),
+  -- claim targets are legacy_members rows, not members. legacy_members rows
+  -- are never deleted in normal flow, so ON DELETE NO ACTION.
+  target_legacy_member_id TEXT REFERENCES legacy_members(legacy_member_id) ON DELETE NO ACTION,
   -- token_type maps to the token "purpose" concept.
   token_type TEXT NOT NULL
     CHECK (token_type IN ('email_verify','password_reset','data_export','account_claim')),
@@ -2067,8 +2087,8 @@ CREATE UNIQUE INDEX ux_account_tokens_hash     ON account_tokens(token_hash);
 CREATE INDEX        idx_account_tokens_member  ON account_tokens(member_id);
 -- Index on expires_at for background cleanup job (purges expired/consumed tokens).
 CREATE INDEX        idx_account_tokens_expires ON account_tokens(expires_at);
-CREATE INDEX        idx_account_tokens_target_member ON account_tokens(target_member_id)
-  WHERE target_member_id IS NOT NULL;
+CREATE INDEX        idx_account_tokens_target_legacy_member ON account_tokens(target_legacy_member_id)
+  WHERE target_legacy_member_id IS NOT NULL;
 
 -- =============================================================================
 -- SECTION 20: MAILING LIST SUBSCRIPTIONS
@@ -2423,6 +2443,15 @@ VALUES
   ),
 
   (
+   'seed-email-outbox-paused',
+   '2000-01-01T00:00:00.000Z',
+   'email_outbox_paused', '0',
+   '2000-01-01T00:00:00.000Z',
+   'Admin pause toggle for the transactional email outbox worker (0 = draining, 1 = paused). See DD §5.4.',
+   NULL
+  ),
+
+  (
    'seed-token-cleanup-threshold-days',
    '2000-01-01T00:00:00.000Z',
    'token_cleanup_threshold_days', '7',
@@ -2648,6 +2677,69 @@ CREATE INDEX idx_member_club_affiliations_club   ON member_club_affiliations(clu
 CREATE UNIQUE INDEX ux_member_club_affiliations_one_current
   ON member_club_affiliations(member_id)
   WHERE is_current = 1;
+
+-- Permanent archival table: one row per imported legacy account from the old
+-- footbag.org mirror or Steve Goldberg's data dump. Identified by the legacy
+-- site's user-account id (legacy_member_id), which is also the external
+-- namespace pointer carried by members.legacy_member_id and
+-- historical_persons.legacy_member_id. Rows are never deleted. Claim marks
+-- (sets claimed_by_member_id + claimed_at) but does not remove the row; PII
+-- purge of the claiming member clears both claim fields so the legacy account
+-- becomes claimable again. See DD §2.4.
+CREATE TABLE legacy_members (
+  legacy_member_id TEXT PRIMARY KEY,
+
+  -- Legacy identifiers from the old-site namespace
+  legacy_user_id   TEXT,
+  legacy_email     TEXT,
+
+  -- Profile snapshot from mirror/dump (immutable post-import)
+  real_name                TEXT,
+  display_name             TEXT,
+  display_name_normalized  TEXT,
+  city                     TEXT,
+  region                   TEXT,
+  country                  TEXT,
+  bio                      TEXT,
+  birth_date               TEXT,
+  street_address           TEXT,
+  postal_code              TEXT,
+  ifpa_join_date           TEXT,
+  first_competition_year   INTEGER,
+
+  -- Honor flags from mirror/dump
+  is_hof          INTEGER NOT NULL DEFAULT 0 CHECK (is_hof IN (0,1)),
+  is_bap          INTEGER NOT NULL DEFAULT 0 CHECK (is_bap IN (0,1)),
+  legacy_is_admin INTEGER NOT NULL DEFAULT 0 CHECK (legacy_is_admin IN (0,1)),
+
+  -- Import audit
+  import_source TEXT,                 -- 'mirror' | 'steve_dump' | null pre-integration
+  imported_at   TEXT NOT NULL,
+  version       INTEGER NOT NULL DEFAULT 1,
+
+  -- Claim state (set on M_Claim_Legacy_Account completion, cleared on PII purge)
+  claimed_by_member_id TEXT REFERENCES members(id) ON DELETE NO ACTION,
+  claimed_at           TEXT,
+
+  -- Claim invariant: both NULL, or both set
+  CHECK (
+    (claimed_by_member_id IS NULL     AND claimed_at IS NULL) OR
+    (claimed_by_member_id IS NOT NULL AND claimed_at IS NOT NULL)
+  )
+);
+
+-- At most one live member can own a given legacy account.
+CREATE UNIQUE INDEX ux_legacy_members_claimed_by
+  ON legacy_members(claimed_by_member_id)
+  WHERE claimed_by_member_id IS NOT NULL;
+
+-- Claim-flow lookup indexes (MIGRATION_PLAN §8: lookup by email, user_id, member_id).
+CREATE UNIQUE INDEX ux_legacy_members_legacy_email
+  ON legacy_members(legacy_email)
+  WHERE legacy_email IS NOT NULL;
+CREATE UNIQUE INDEX ux_legacy_members_legacy_user_id
+  ON legacy_members(legacy_user_id)
+  WHERE legacy_user_id IS NOT NULL;
 
 -- Migration-only staging table: normalized mirror-derived club identities.
 -- May be dropped once all bootstrap decisions are finalized and no staging review is pending.

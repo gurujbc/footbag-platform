@@ -11,13 +11,17 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "vitest run --exclude 'tests/smoke/**'",
+    "test:watch": "vitest --exclude 'tests/smoke/**'",
     "test:unit": "vitest run tests/unit/",
     "test:integration": "vitest run tests/integration/",
-    "test:coverage": "vitest run --coverage"
+    "test:smoke": "RUN_STAGING_SMOKE=1 vitest run tests/smoke/",
+    "test:coverage": "vitest run --exclude 'tests/smoke/**' --coverage"
   },
   "dependencies": {
+    "@aws-sdk/client-kms": "3.1031.0",
+    "@aws-sdk/client-ses": "3.1031.0",
+    "@aws-sdk/client-sts": "3.1031.0",
     "@playwright/test": "^1.58.2",
     "@types/busboy": "^1.5.4",
     "argon2": "^0.44.0",

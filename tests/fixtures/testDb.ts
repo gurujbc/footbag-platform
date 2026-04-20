@@ -39,6 +39,13 @@ export function setTestEnv(port: string): { dbPath: string; sessionSecret: strin
   process.env.PUBLIC_BASE_URL = `http://localhost:${port}`;
   process.env.SESSION_SECRET  = sessionSecret;
 
+  // JWT_LOCAL_KEYPAIR_PATH / JWT_SIGNER / SES_ADAPTER / AWS_REGION are set by
+  // tests/setup-env.ts per-vitest-worker. Integration tests MUST NOT override
+  // JWT_LOCAL_KEYPAIR_PATH: src/config/env.ts freezes the path on module load
+  // (before these per-file top-level statements run under hoisted imports),
+  // so a late override here would desync the middleware's verifier keypair
+  // from the test factory's signer keypair.
+
   return { dbPath, sessionSecret };
 }
 

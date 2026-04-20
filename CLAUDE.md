@@ -33,7 +33,7 @@ Read the minimum the task requires. Default: active-slice block + code. Load doc
 2. Active-slice block in `IMPLEMENTATION_PLAN.md` — current scope, out-of-scope, accepted shortcuts, known drift
 3. Current code — implemented behavior; may contain accepted shortcuts; check the plan's drift and deviation entries before drawing conclusions from code alone
 4. When needed, targeted sections of:
-   - `docs/USER_STORIES.md` — intended behavior (large; read targeted sections only)
+   - `docs/USER_STORIES.md` — intended behavior
    - `docs/VIEW_CATALOG.md` — route/page contracts
    - `docs/SERVICE_CATALOG.md` — service contracts (derived from requirements analysis; only reliable where it overlaps with implemented code)
    - `docs/DATA_MODEL.md` — schema semantics (derived from requirements analysis; verify against `database/schema.sql` and current code)
@@ -47,9 +47,8 @@ Read the minimum the task requires. Default: active-slice block + code. Load doc
 1. Never edit documentation, `.github/`, or `.claude/` files without explicit human approval.
 2. Never take a destructive or risky action without explicit human approval.
 3. When asking the human a question, always provide context so the human can understand clearly.
-4. Refer to appropriate Claude skills whenever appropriate for the task at hand.
-5. If unclear, escalate to the human. Never guess or silently choose among materially different interpretations.
-6. Never add schema, service methods, or behavioral code without grounding in a user story, design decision, or explicit human direction in the current task. If no acceptance criteria or human approval exist for the behavior, stop and ask.
+4. If unclear, escalate to the human. Never guess or silently choose among materially different interpretations.
+5. Never add schema, service methods, or behavioral code without grounding in a user story, design decision, or explicit human direction in the current task. If no acceptance criteria or human approval exist for the behavior, stop and ask.
 
 ## Workflow rules
 
@@ -57,12 +56,11 @@ Read the minimum the task requires. Default: active-slice block + code. Load doc
 - Use Plan Mode when the task is primarily about sequencing, dependency ordering, phased planning, or architectural tradeoffs. For normal implementation work, the top active-slice/status block in `IMPLEMENTATION_PLAN.md` is sufficient.
 - Verification defaults: confirm what success looks like for the task, prefer route/integration verification first, and verify with `npm test` and `npm run build`.
 - Do not use browser automation or MCP tools unless the human explicitly asks for browser testing or verification.
-- Make surgical changes scoped to the current slice: no speculative abstraction, flexibility, or scope creep; no refactoring unrelated code, unnecessary formatting or comment changes, or moving logic across layers unless explicitly required.
+- Make surgical changes scoped to the current slice: no speculative abstraction, flexibility, or scope creep; no refactoring unrelated code, unnecessary formatting or comment changes.
 - Use the Explore sub-agent for broad codebase searches; use the Plan sub-agent for sequencing or architecture tasks. Both protect the main context window.
+- Prefer single Bash commands over compound pipelines (`cmd1 && cmd2`). Compound commands evaluate each component independently against permission rules and trigger spurious prompts even when each component is safe alone.
 
 ## Skills
-
-Only rely on skills that actually exist under `.claude/skills`.
 
 Available workflow skills and when to use them:
 
@@ -79,13 +77,10 @@ Correct sequencing when skills compose: `extend-service-contract` → `add-publi
 
 ## Memory
 
-MEMORY.md must stay under 30 lines. Promote durable rules to hooks or CLAUDE.md. See system memory instructions for all other hygiene rules.
+Promote durable rules to hooks or CLAUDE.md.
 
 ## Hooks
 
 Enforcement guardrails in `.claude/hooks/`. Secrets hard-blocked, git commit/push/pull hard-blocked, destructive operations require confirmation. See each script for details.
 
-## External access
-
-WebFetch and WebSearch are not pre-approved. First use per session will prompt. Use the `researcher` sub-agent for extended web research to keep external content out of the main context.
 

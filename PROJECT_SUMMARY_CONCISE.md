@@ -27,7 +27,7 @@ Auto memory is not authoritative for current slice status; use the plan for that
 
 ## Current implemented baseline
 
-For current routes, implementation status, and accepted deviations, see `IMPLEMENTATION_PLAN.md`.
+For current routes and implementation state, see `IMPLEMENTATION_PLAN.md`.
 
 Site is deployed on AWS staging (Lightsail + CloudFront). See `docs/DEVOPS_GUIDE.md` for ops details.
 
@@ -86,7 +86,7 @@ Major areas include:
 - Prefer small, explicit changes that preserve readability for volunteer maintainers.
 
 ### Auth / security invariants
-Auth architecture: `docs/DESIGN_DECISIONS.md` §3 (session model, CSRF, password invalidation, ballot encryption). Privacy boundaries: `docs/GOVERNANCE.md` §3-6. Current-slice auth behavior and deviations: `IMPLEMENTATION_PLAN.md` accepted deviations.
+Auth architecture: `docs/DESIGN_DECISIONS.md` §3 (session model, CSRF, password invalidation, ballot encryption). Privacy boundaries: `docs/GOVERNANCE.md` §3-6. Current-slice auth behavior: `IMPLEMENTATION_PLAN.md`.
 
 ### Data / integrity invariants
 - SQLite is the source of truth for app data (except photo/media objects in S3).

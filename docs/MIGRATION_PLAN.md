@@ -20,7 +20,7 @@ This document is the source of truth for all legacy data migration design: the t
 4. [Name model](#4-name-model)
 5. [Competition history fields](#5-competition-history-fields)
 6. [Identity and person links](#6-identity-and-person-links)
-7. [Auto-link: matching historical persons to members](#7-auto-link-matching-historical-persons-to-members)
+7. [Auto-link: matching legacy_members, historical_persons, and members](#7-auto-link-matching-legacy_members-historical_persons-and-members)
 8. [Self-serve legacy claim flow](#8-self-serve-legacy-claim-flow)
 9. [Merge rules](#9-merge-rules)
 10. [Club bootstrap and onboarding](#10-club-bootstrap-and-onboarding) (includes 10.1 classification rules, 10.3 registration onboarding flow)
@@ -195,52 +195,46 @@ Bootstrap-eligible clubs are created with:
 
 #### Imported-row model
 
-Each imported legacy member is a **pre-credential placeholder row** inserted into `members`. It looks like a member row but cannot log in and is invisible to all current-member surfaces.
+Each imported legacy member is a **row in `legacy_members`** (see DATA_MODEL §4.14b and DD §2.4). `legacy_members` is a distinct entity from `members`: it does not grant authentication, does not appear on any current-member surface, and is never deleted. It persists as the permanent archival record of a legacy account even after a current member claims it (claim sets `claimed_by_member_id` + `claimed_at`; the row itself is not mutated further).
 
 Fields present on imported rows:
 
 | Field | Notes |
 |---|---|
-| `id` | New platform UUID |
-| `legacy_member_id` | The canonical identity key; unique where non-NULL |
-| `legacy_user_id` | Legacy username column; migration metadata only |
-| `legacy_email` | Migration metadata only; not a login credential |
+| `legacy_member_id` | Primary key; the old-site user-account id |
+| `legacy_user_id` | Legacy username; migration metadata only |
+| `legacy_email` | Migration metadata only; used to deliver the one-time claim link. Never a login credential |
 | `real_name` | Best available name from export; required (use display_name as fallback). See section 4 for name model notes on imports |
 | `display_name` | From export |
 | `display_name_normalized` | Derived |
-| `city` | From export; nullable |
-| `region` | From export; nullable |
-| `country` | From export; nullable |
+| `city`, `region`, `country` | From export; nullable |
 | `bio` | From export if available |
 | `birth_date` | From export if available |
-| `street_address` | From export if available |
-| `postal_code` | From export if available |
+| `street_address`, `postal_code` | From export if available |
 | `ifpa_join_date` | From export if available |
 | `first_competition_year` | Pre-populated from `historical_persons.first_year` via COALESCE at import if a match exists |
-| `is_hof` | OR-merged at claim; set from historical_persons if matched |
-| `is_bap` | OR-merged at claim; set from historical_persons if matched |
+| `is_hof` | From export; carries to the claiming member at claim time per §9 OR-merge |
+| `is_bap` | From export; carries to the claiming member at claim time per §9 OR-merge |
+| `legacy_is_admin` | Old-site admin flag; retained for audit only, never grants live admin |
+| `import_source` | `'mirror'` or `'steve_dump'` — indicates origin batch |
+| `imported_at` | Timestamp of import |
 | `legacy_banned` | Conditional on test-load evidence (column not yet in schema) |
-| `searchable` | **Always 0** regardless of export |
-| `email_verified_at` | **Always NULL** |
-| `login_email` | **Always NULL** |
-| `login_email_normalized` | **Always NULL** |
-| `password_hash` | **Always NULL** |
-| `password_changed_at` | **Always NULL** |
 
-Fields explicitly absent:
+Fields explicitly absent from `legacy_members`:
 
-- Login credentials of any kind
+- Login credentials of any kind (no login_email / password_hash / email_verified_at)
 - Any live authentication state
 - Any mailing list subscriptions
 - Any club-governance permissions
+- Any current-platform flags (is_admin, is_board, is_deceased, searchable, tier state, Stripe identity, avatar)
 
-Imported rows are **not** current members. They do not appear in search, rosters, member broadcasts, or any governance surface. The `email_verified_at IS NULL` condition in `members_searchable` is the primary enforcement; `searchable = 0` is defense-in-depth.
+The three-table design (DD §2.4) means imported rows never occupy the `members` table; there is no pre-credential placeholder state on `members`. All the above "current-platform" fields belong to the claiming `members` row that is created at registration time and linked to `legacy_members` at claim time via `members.legacy_member_id`.
 
-**Name model note for imports:** The surname constraint (display name must share surname with real_name) applies only to new registrations and profile edits. Imported placeholders are exempt because legacy data may contain names that do not conform to the new model. Use "imported placeholder" terminology consistently when referring to these rows.
+**Name model note for imports:** The surname constraint (display name must share surname with real_name) applies only to new registrations and profile edits. `legacy_members` rows are exempt because legacy data may contain names that do not conform to the new model. Use "legacy member" (or "imported legacy account") terminology consistently when referring to these rows; the older "imported placeholder" / "pre-credential placeholder" phrasing refers to the superseded two-table design and should not be used in new writing.
 
-#### Tier handling at import
+#### Tier handling at claim
 
-For each imported row, the migration writes one ledger row in `member_tier_grants` with `reason_code = 'migration.legacy_import'`.
+Under the three-table design, `member_tier_grants` is a ledger keyed by `member_id` — so no ledger row exists for an unclaimed legacy account (there is no member yet). The mapping below is applied at **claim time**: when M_Claim_Legacy_Account completes for a given `legacy_members` row, the claim transaction writes one `member_tier_grants` row with `reason_code = 'migration.legacy_import'` using the legacy tier state captured on `legacy_members`. Legacy tier state fields (`legacy_tier_state`, `legacy_tier_expires_at`, `legacy_tier_ever_paid_tier2`) are a deferred schema extension gated on test-load validation of the dump — if the extension does not land, tier mapping falls back to the honors-only rules (HoF/BAP give `tier2_lifetime`; absence of legacy tier info gives `tier0`).
 
 Tier mapping rules:
 
@@ -290,15 +284,20 @@ Two fields on `members`:
 
 ## 6. Identity and person links
 
-- A single `personHref()` helper generates all person links. If the person has a linked member account, the link points to `/members/:slug`. Otherwise, it points to `/history/:personId`. This is implemented.
-- When a member has a linked historical person whose name differs from the member's display name, the historical name is shown on the member profile. This is implemented.
-- **Account deletion reversion:** When a member deletes their account, all person links that were pointing to `/members/:slug` must revert to `/history/:personId`. This is reflected in the M_Delete_Account user story.
+- A single `personHref()` helper generates all person links. If the person has a linked member account (via `members.historical_person_id` FK per DD §2.4 rule 3), the link points to `/members/:slug`. Otherwise, it points to `/history/:personId`. This is implemented at the service contract level; Phase 4 of the three-table redesign rewrites the slug-resolution SQL to use the FK directly.
+- When a member has a linked historical person whose name differs from the member's display name, the historical name is shown on the member profile.
+- **Account deletion reversion:** When a member's PII is purged, `members.historical_person_id` and `members.legacy_member_id` are both cleared, and the corresponding `legacy_members.claimed_by_member_id` is cleared too. Person links that were pointing to `/members/:slug` revert to `/history/:personId`. This is reflected in DD §2.4 rule 5 and the M_Delete_Account user story.
 
 ---
 
-## 7. Auto-link: matching historical persons to members
+## 7. Auto-link: matching legacy_members, historical_persons, and members
 
-Auto-link connects `historical_persons` records to `members` rows using email as the identity anchor.
+Auto-link has two goals under the three-table design (DD §2.4):
+
+1. **Provenance link** — associate each `historical_persons` row with its corresponding `legacy_members` row when the mirror named the legacy account, by setting `historical_persons.legacy_member_id`. This is a data-pipeline step owned by James's track.
+2. **Claim link** — at registration or cutover, associate a current `members` row with a `legacy_members` row (setting `members.legacy_member_id` + `legacy_members.claimed_by_member_id`) and, if the claimed legacy account has a provenance link to an HP, additionally set `members.historical_person_id`.
+
+Both uses email as the primary identity anchor. Email lives on `legacy_members.legacy_email` and on the registering member's login email; `historical_persons` does not carry email.
 
 ### Tier system
 
@@ -323,16 +322,17 @@ The Jody/Jolene Welch class (same person, completely different first name) is on
 
 ### Batch auto-link at cutover
 
-At cutover, a batch auto-link pass runs across all imported placeholder rows:
-- Tier 1 and Tier 2: auto-linked immediately, audit-logged.
-- Tier 3: flagged for admin review. These are existing IFPA members from Steve's data whose email matches but name does not. Because they have not yet registered, we cannot ask them directly, so admins resolve these cases.
+At cutover, a batch auto-link pass runs across all `legacy_members` rows:
+- Tier 1 and Tier 2: auto-linked immediately to matching `historical_persons` (via shared `legacy_member_id`) and to any pre-cutover registered members (via email match), audit-logged.
+- Tier 3: flagged for admin review. These are legacy accounts in Steve's data whose `legacy_email` matches a registered member's login email but whose name does not. Because the underlying real-world person may not have registered yet, admins resolve these cases (see A_Review_Auto_Link_Matches in USER_STORIES).
 
 ### Registration-time auto-link
 
-At first registration, when a member's email matches a historical person's legacy email, the system prompts the user inline:
-- **All tiers**: the user is always asked to confirm the link ("We found a history record, is this you?").
+At first registration, when a member's email matches a `legacy_members.legacy_email` (email is the identity anchor; `historical_persons` does not carry email), the system prompts the user inline:
+- **All tiers**: the user is always asked to confirm the link ("We found a legacy account matching your email, is this you?").
 - **High confidence (Tier 1/2)**: default answer is yes (pre-checked, confirm to proceed).
 - **Low confidence (Tier 3)**: default answer is no (user must actively opt in).
+- On confirm, the registration flow writes `members.legacy_member_id` to the matched `legacy_members.legacy_member_id` and sets `legacy_members.claimed_by_member_id` + `claimed_at` atomically. If the claimed `legacy_members` row has a matching `historical_persons.legacy_member_id`, `members.historical_person_id` is also set in the same transaction.
 - Decision is audit-logged. No admin queue is involved at registration time; the user is the authority on their own identity.
 
 ---
@@ -344,18 +344,18 @@ The claim flow is account-bound and mailbox-verified.
 ### Prerequisites
 
 - Member must have a live, authenticated modern account
-- The imported placeholder row must exist and be eligible for claim
-- The imported row must have a usable `legacy_email`
+- The `legacy_members` row must exist and be eligible for claim (unclaimed: `claimed_by_member_id IS NULL`)
+- The `legacy_members` row must have a usable `legacy_email`
 
 ### Flow
 
 1. Member logs into their modern account.
 2. Member visits **Link Legacy Account** in profile settings.
 3. Member enters one identifier: legacy email address, legacy username, or legacy member ID.
-4. System classifies the identifier type and looks up the matching imported row.
+4. System classifies the identifier type and looks up the matching `legacy_members` row.
 5. If exactly one eligible row is found, the system creates an `account_claim` token:
    - `member_id` = requesting active modern account
-   - `target_member_id` = imported legacy row (with `ON DELETE CASCADE`)
+   - target = the matched `legacy_members.legacy_member_id`. Token schema: `account_tokens.target_member_id` currently FKs to `members(id)` from the superseded two-table design. Phase 3 of the three-table redesign retargets this column (or adds a sibling `target_legacy_member_id` column) to FK to `legacy_members(legacy_member_id)` with appropriate ON DELETE behavior.
    - Token is single-use, time-limited (default 24 hours, configurable)
 6. System emails the one-time claim link to `legacy_email`.
 7. Member opens the link while logged into the same modern account.
@@ -363,19 +363,19 @@ The claim flow is account-bound and mailbox-verified.
    - Token exists, is unconsumed, is unexpired
    - `token_type = 'account_claim'`
    - Authenticated session matches token `member_id`
-   - Target imported row still exists and is still claimable
+   - Target `legacy_members` row still exists and is still unclaimed
 9. **Name reconciliation step:**
-   - Last-name mismatch between active account and imported row: **blocks** (member must update their name or contact admin)
+   - Last-name mismatch between active account and `legacy_members` row: **blocks** (member must update their name or contact admin)
    - First-name mismatch: **warns** but allows proceed
 10. System presents final confirmation naming the active account that will receive the legacy identity.
 11. If club-affiliation suggestions or leadership assignments exist for the claimed identity, member is prompted to review them (see section 10).
 12. Member confirms.
 13. Merge transaction runs atomically (see section 9).
-14. Imported row is deleted. All `account_claim` tokens pointing at it cascade-delete.
+14. The `legacy_members` row is MARKED CLAIMED — `claimed_by_member_id` set to the requesting member id, `claimed_at` set to now. The row is NOT deleted; it persists as the permanent archival record. Consumed `account_claim` tokens are marked consumed in the same transaction.
 
 ### Current implementation status
 
-The current code is an early-test shortcut: direct lookup + confirm + merge. No email verification, no token round-trip, no rate limiting, no name reconciliation guard. The full production version will require email verification (member must prove control of the placeholder's `legacy_email` before the merge executes). Placeholders without a usable `legacy_email` will require admin recovery.
+The current code is an early-test shortcut: direct lookup + confirm + merge, operating against the superseded two-table design (placeholder rows in `members`). Phases 3–7 of the three-table redesign rewrite the flow to operate on `legacy_members`. The full production version will also require email verification (member must prove control of the legacy account's `legacy_email` before the merge executes), rate limiting, and the name reconciliation guard. Legacy accounts without a usable `legacy_email` will require admin recovery.
 
 ### Non-revealing messaging
 
@@ -390,14 +390,15 @@ Recommended message: "If an eligible legacy record was found, a claim email will
 
 ### Rate limiting
 
-Claim initiation and resend must be rate-limited per requesting account, per target imported row, and per source IP/session. This prevents abuse of legacy mailboxes and limits side-channel enumeration.
+Claim initiation and resend must be rate-limited per requesting account, per target `legacy_members` row, and per source IP/session. This prevents abuse of legacy mailboxes and limits side-channel enumeration.
 
 ### Self-serve ineligibility
 
-A row is ineligible for self-serve claim when:
+A `legacy_members` row is ineligible for self-serve claim when:
 
 - No usable `legacy_email` exists
-- Duplicate imported rows matched the identifier (test-load uniqueness failure)
+- Duplicate `legacy_members` rows matched the identifier (test-load uniqueness failure on the partial UNIQUE indexes for `legacy_email` / `legacy_user_id`)
+- Already claimed (`claimed_by_member_id IS NOT NULL`)
 - `legacy_banned = 1` (if the test load validates this field as trustworthy)
 - An admin has flagged the row as review-only
 
@@ -407,25 +408,26 @@ Ineligible cases are directed to manual admin recovery.
 
 ## 9. Merge rules
 
-The active modern account always survives. The imported row is deleted after merge.
+The active modern account always survives. The `legacy_members` row is MARKED CLAIMED (`claimed_by_member_id` + `claimed_at` set) and persists as the permanent archival record — it is NOT deleted. Merge copies editable fields from `legacy_members` to the claiming `members` row so the member has their own copy to edit; the `legacy_members` row itself is not mutated beyond the two claim-state columns.
 
 | Field / category | Merge rule |
 |---|---|
-| `legacy_member_id` | Always transferred to active account |
-| `legacy_user_id` | Retained on active account as migration metadata |
-| `legacy_email` | May be retained on active account as legacy metadata; never a login credential |
-| Login and auth fields | Active account always wins |
+| `legacy_member_id` | Written to `members.legacy_member_id` (FK to `legacy_members.legacy_member_id`) |
+| `legacy_user_id` | Copied to `members.legacy_user_id` as migration metadata; `legacy_members` retains its copy |
+| `legacy_email` | Copied to `members.legacy_email` as legacy metadata; never a login credential; `legacy_members` retains its copy |
+| Login and auth fields | Active account always wins; nothing copied from `legacy_members` (which has no credentials) |
 | `display_name`, `real_name` | Active account always wins |
 | `phone`, `whatsapp` | Active account always wins |
-| `bio` | Import fills only if active `bio` is empty string |
-| `birth_date`, `street_address`, `postal_code` | Import fills only if active value is NULL |
-| `city`, `region`, `country` | Import fills only if active value is NULL or empty |
-| `ifpa_join_date` | Copy from import if present and active value absent |
-| `first_competition_year` | COALESCE: member value wins; import value fills if member is NULL |
-| `is_hof`, `is_bap` | OR semantics |
-| `announce_opt_in` | Carry forward only if the validated export contains this field and its semantics are confirmed; imported placeholder rows are never treated as active mail recipients before claim |
-| Legacy admin metadata (`legacy_is_admin`) | Retained as audit/history context only; never auto-promotes live admin role |
-| Tier | Write new `member_tier_grants` row with `reason_code = 'migration.legacy_claim_reconcile'` only if imported effective tier exceeds current effective tier |
+| `bio` | Import fills `members.bio` only if active `bio` is empty string |
+| `birth_date`, `street_address`, `postal_code` | Import fills `members.*` only if active value is NULL |
+| `city`, `region`, `country` | Import fills `members.*` only if active value is NULL or empty |
+| `ifpa_join_date` | Copied to `members.ifpa_join_date` if present and active value absent |
+| `first_competition_year` | COALESCE: member value wins; import value fills `members.first_competition_year` if member is NULL |
+| `is_hof`, `is_bap` | OR semantics — `members.is_hof` / `members.is_bap` set to 1 if `legacy_members` has the flag |
+| `historical_person_id` | If the claimed `legacy_members.legacy_member_id` matches a `historical_persons.legacy_member_id`, `members.historical_person_id` is set to that HP's `person_id` in the same transaction |
+| `announce_opt_in` | Carry forward only if the validated export contains this field and its semantics are confirmed; unclaimed `legacy_members` rows are never treated as active mail recipients |
+| Legacy admin metadata (`legacy_is_admin`) | Copied to `members.legacy_is_admin` as audit/history context only; never auto-promotes live admin role |
+| Tier | Write new `member_tier_grants` row with `reason_code = 'migration.legacy_claim_reconcile'` only if imported effective tier exceeds current effective tier. Tier mapping uses legacy tier state fields on `legacy_members` (deferred schema extension, gated on test-load validation — see §3 Tier handling at claim). |
 | Confirmed club affiliations | Write/update `member_club_affiliations` |
 | Confirmed bootstrap leadership | May promote to `club_leaders` if safe; otherwise remains provisional |
 | Discarded conflicting imported values | Preserved in audit metadata |
@@ -612,9 +614,9 @@ This replaces the narrower `M_Review_Legacy_Club_Data_During_Claim` user story w
 
 All changes below have been applied to `database/schema.sql` unless marked otherwise.
 
-### 12.1 Credential-state invariant: two-way to three-way (DONE)
+### 12.1 Credential-state invariant: two-way (DONE)
 
-Three-way CHECK on `members`: live account, pre-credential imported placeholder, or purged row.
+Two-way CHECK on `members`: live account or purged row. Imported legacy accounts live in `legacy_members` (§5), not as placeholder rows in `members`.
 
 ### 12.2 Location field nullability (DONE)
 
@@ -787,6 +789,16 @@ Name model, slug lifecycle, person links, historical name display, `first_compet
 
 ### Phase 4: Go-live
 
+External prerequisites that must land before Phase 4 starts:
+
+- **`footbag.org` domain owned by IFPA** and pointing DNS to the new platform. Blocks both the DNS switch and cutover of `SES_FROM_IDENTITY` to `noreply@footbag.org`.
+- **SES production access granted** for the AWS account. Sandbox caps are 200 sends/day and require per-recipient verification; the post-cutover notification batch is incompatible with sandbox. Production access is an AWS support ticket with a typical 24-48h approval window; start early (see State 3 readiness checklist).
+- **`noreply@footbag.org` verified in SES** (sender identity) and runtime-role `ses:SendEmail` IAM policy pinned to that sender identity ARN (post-production-access, the recipient-identity permission check goes away, so the sender-only pin is sufficient and least-privilege).
+- **JWT session TTL at the DD §3.5 baseline** (24h). Staging observability-tuned values must be reverted in code before the cutover deploy.
+- **Email-delivery smoke passes end-to-end** on the final pre-cutover release: enqueue a test row via the outbox, worker drains, SES accepts, recipient inbox receives. See §18 gate G10.
+
+Phase 4 activities:
+
 - DNS switch
 - Post-cutover notification batch (emails to all imported placeholders with reachable `legacy_email`)
 - Admin review of Tier 3 auto-link cases from Steve's data (migration-time only)
@@ -831,6 +843,9 @@ Name model, slug lifecycle, person links, historical name display, `first_compet
 - Admin review of unresolved high-impact clubs complete
 - Final cutover checklist confirmed
 - Steve briefed on final export and freeze timing
+- SES production-access ticket filed and approved (24-48h lead time; see Phase 4 prerequisites)
+- `noreply@footbag.org` sender identity verified in SES; `SES_FROM_IDENTITY` on the production host updated; runtime-role `OutboundEmail` IAM policy resource ARN set to the production sender identity
+- Email-delivery smoke passes end-to-end (§18 gate G10)
 
 ### State 4: Phase 3 (production cutover)
 
@@ -843,7 +858,7 @@ Name model, slug lifecycle, person links, historical name display, `first_compet
 7. New platform runs batch auto-link (Tier 1 and Tier 2)
 8. New platform runs validation checks
 9. DNS switch to new platform
-10. Admin verifies the new platform is operational (smoke checks, critical flows confirmed)
+10. Admin verifies the new platform is operational (smoke checks, critical flows confirmed, including one real end-to-end outbox → SES send to a verified admin inbox)
 11. Admin triggers post-cutover notification batch
 
 ### State 5: Post-cutover
@@ -878,6 +893,7 @@ The following must be confirmed at the test load before go-live. These are not o
 | G7 | Mirror-derived club normalization quality | Increase manual review threshold |
 | G8 | Sufficient high-confidence club-leader bootstrap candidates | Adjust bootstrap threshold or expand manual review scope |
 | G9 | Bootstrapped clubs produce valid, non-broken club pages | Fix UI before go-live |
+| G10 | Outbox → SES → recipient inbox path works end-to-end on the pre-cutover release (enqueue test row, worker drains within one poll interval, SES returns MessageId, message arrives in recipient inbox) | Debug before cutover; common causes are IAM Resource scope, SES sandbox state, worker container env vars, worker event-loop bugs |
 
 ---
 

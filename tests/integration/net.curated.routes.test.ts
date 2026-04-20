@@ -175,8 +175,8 @@ describe('GET /internal/net/candidates/:candidateId', () => {
     const res = await request(app).get(`/internal/net/candidates/${CAND_LINKED}`);
     expect(res.text).toContain('Alice Curated');
     expect(res.text).toContain('Bob Curated');
-    expect(res.text).toContain(`/net/players/${PERSON_A}`);
-    expect(res.text).toContain(`/net/players/${PERSON_B}`);
+    expect(res.text).toContain(`/history/${PERSON_A}`);
+    expect(res.text).toContain(`/history/${PERSON_B}`);
   });
 
   it('shows extracted score and round hint for linked candidate', async () => {

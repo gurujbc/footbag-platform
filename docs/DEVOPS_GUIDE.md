@@ -40,6 +40,8 @@ Current implementation note (current deployed public baseline): this guide cover
   - [5.4 Secret-handling rules](#54-secret-handling-rules)
   - [5.5 Stripe key and webhook-secret rotation runbook](#55-stripe-key-and-webhook-secret-rotation-runbook)
   - [5.6 JWT and ballot-key controls](#56-jwt-and-ballot-key-controls)
+  - [5.7 App-runtime access-key rotation (runbook pending)](#57-app-runtime-access-key-rotation-runbook-pending)
+  - [5.8 SESSION_SECRET rotation runbook](#58-session_secret-rotation-runbook)
 - [6. Terraform and Infrastructure Change Control](#6-terraform-and-infrastructure-change-control)
   - [6.1 Terraform authority](#61-terraform-authority)
   - [6.1.1 Manual bootstrap boundary](#611-manual-bootstrap-boundary)
@@ -265,6 +267,23 @@ The AWS side of this project must be operated as a zero-trust environment:
 | CloudTrail review for privileged activity | monthly | System Administrator lead |
 | break-glass / emergency access review | after every use | incident lead |
 
+#### Operator console sign-in
+
+AWS Console sign-in for any IAM operator user requires three credential elements:
+
+1. AWS account ID.
+2. IAM user name.
+3. Password and a time-based one-time-password (TOTP) MFA code.
+
+The account ID, password, and TOTP seed for each operator's IAM user are held in the project's operator credential vault (see §17.2), managed in KeePassXC. The vault stores the TOTP seed alongside the password, so the same tool that autofills the password also generates each MFA code.
+
+- Vault access is restricted to current project maintainers. Volunteer turnover requires explicit vault handoff through a private, unarchived channel. Never share the vault file or its master key over email, chat, any repository, or any archived medium.
+- Root sign-in is reserved for account recovery and billing. Do not use root for routine operations. See §17.2 for root MFA setup.
+- Operator IAM users are per-human. Do not share an operator user's credentials or MFA device across contributors.
+- Revoke operator access per §13.6: remove the IAM user's MFA device, deactivate and delete its access keys, and remove the vault entry. Confirm no other shared resource grants retained access.
+
+After sign-in, confirm the Console region selector (top-right) is `US East (N. Virginia) us-east-1` before making resource changes. Project resources live in `us-east-1`; wrong-region edits produce silent drift or `NotFoundException` at runtime.
+
 ### 3.4 Workload IAM model
 
 The workload AWS principal must be a narrow and explicit runtime assumed role. Do not describe it as an EC2-style role attached to the Lightsail host. Operator SSH access to the host is a separate mechanism and must not be confused with the runtime principal.
@@ -421,6 +440,32 @@ System Administrators own SES account-level and DNS-level setup:
 - monitor sender reputation and bounce/complaint rates
 - coordinate DNS, SES, and app configuration changes together
 
+#### SES sandbox behavior
+
+New AWS accounts start in SES sandbox mode. In sandbox, **both the sender identity and every recipient address must be explicitly verified in SES before `SendEmail` will succeed.** An unverified recipient returns `MessageRejected: Email address is not verified` from SES; the outbox row transitions to `failed` with that message in `last_error` and retries up to `outbox_max_retry_attempts` before dead-lettering. Sandbox is per-region; check the SES console in the app's primary region. Request production access only once the sending domain is verified end-to-end and bounce/complaint handling is wired.
+
+For staging-mode testing without enumerating every tester, AWS provides `success@simulator.amazonses.com` as an always-verified destination that accepts any send from any verified sender.
+
+#### Outbound email pipeline (stages, observable state)
+
+Transactional mail flows through four stages. Each stage fails differently; diagnose by locating the stuck stage.
+
+| Stage | Actor | Observable |
+|---|---|---|
+| 1. Enqueue | `web` container (`CommunicationService.enqueueEmail`) | new row in `outbox_emails` with `status='pending'` |
+| 2. Poll | `worker` container (polls every `outbox_poll_interval_minutes`) | row flips to `status='sending'` with `claimed_at` timestamp |
+| 3. Send | `worker` container (`LiveSesAdapter.sendEmail` → AWS SES) | on success: `status='sent'`; on failure: `status='failed'` or `dead_letter` with `last_error` populated |
+| 4. Deliver | AWS SES → recipient mailbox | outside the app; observable in SES CloudWatch metrics and recipient inbox |
+
+Diagnosis for "no email arrived":
+
+- **No outbox row at all** → enqueue never ran. Either the triggering request (registration, password-reset, password-change) never reached the app, was rejected by validation, or hit an anti-enumeration silent branch (e.g., password-reset for an unknown email deliberately no-ops to prevent account enumeration).
+- **Row stuck at `pending`** → worker not draining. Check the `worker` container is running (`docker ps`), check worker logs for startup errors, check the admin `email_outbox_paused` config flag, check the worker's AWS credential chain via `aws sts get-caller-identity` on the host.
+- **Row at `failed` / `dead_letter`** → `last_error` column names the SES rejection (unverified recipient, IAM missing `ses:SendEmail`, suppression-list hit, rate limit). Read the column; do not guess.
+- **Row at `sent`** → SES accepted the send. Check recipient spam folder and SES account suppression list (a prior hard bounce to that address silently suppresses future sends).
+
+Do not mock the DB to reproduce these states locally; the outbox schema constraints are load-bearing and must be exercised against a real SQLite file.
+
 ---
 
 ## 5. Configuration, Secrets, and Key Management
@@ -493,6 +538,7 @@ Use customer-managed KMS keys for sensitive `SecureString` parameters and for ap
 - the host stores the source AWS shared config/credential material for role assumption in a root-owned path
 - only the containers that need AWS access receive the specific config/credential material they need, mounted read-only
 - each AWS-enabled service must select its intended runtime assumed role explicitly, for example with `AWS_PROFILE`
+- `SESSION_SECRET` is generated fresh per environment with `openssl rand -hex 32` and lives only in the host's `/srv/footbag/env` (root:root 0600). The application and `scripts/deploy-rebuild.sh` both reject any value containing the substring `changeme` or shorter than 32 characters. Never reuse the value across staging and production.
 
 ### 5.5 Stripe key and webhook-secret rotation runbook
 
@@ -530,6 +576,55 @@ This is the direct operationalization of the older `SA_Rotate_Stripe_Keys` story
 - The normal runtime role may request data keys for encryption but must not hold broad decrypt permission.
 - Tally operations use a separate privileged role with tightly scoped decrypt permission.
 - Key policy changes are infrastructure changes and require code review.
+
+### 5.7 Source-profile access-key rotation (runbook pending)
+
+Access keys issued for the `footbag-staging-source-profile` IAM user (provisioned per DEV_ONBOARDING Path H, §8.7) are the long-lived AWS credentials on the staging host. The runtime role (`footbag-staging-app-runtime`) is assumed via `sts:AssumeRole` using these keys and is not itself rotated. CIS Benchmark calls for rotation at least every 90 days; current AWS IAM guidance prefers short-lived credentials overall and flags unused keys via last-accessed information. A full rotation runbook has not yet been authored in this guide and is tracked as pending work.
+
+Mechanical skeleton (to be expanded into a full procedure, modeled on §5.5):
+
+**Never delete and recreate** the `footbag-staging-source-profile` IAM user to rotate credentials. AWS resolves the runtime role's trust policy to the source-profile user's internal unique ID at save time, not the ARN text; a recreated user with the same name produces a trust that looks correct in JSON but silently refuses `AssumeRole` until the trust policy is re-edited. Rotation is always "issue a second key under the existing user" (see DEV_ONBOARDING §8.9 step 4c for the principal-ARN pitfall).
+
+1. Create a second access key for `footbag-staging-source-profile` while the first is still active.
+2. Update the key values in `/root/.aws/credentials` on the staging host under the stanza `[footbag-staging-source-profile]` (no `profile ` prefix in the credentials file; the role profile in `/root/.aws/config` is the one that takes `[profile footbag-staging-runtime]`). Swapping either stanza-prefix silently returns the source-user identity from `get-caller-identity` instead of the assumed role; see DEV_ONBOARDING §8.10 step 5a "Stanza-prefix footgun" for the full rule. Root-owned, 0600. `/srv/footbag/env` is not touched; it holds only `AWS_PROFILE` and other non-secret runtime config.
+3. Restart `footbag.service` on the host so the app re-runs the assumed-role chain with the new keys.
+4. Validate `aws sts get-caller-identity --profile footbag-staging-runtime` still returns the assumed-role ARN, then validate the new keys exercise both KMS Sign (login → JWT issue) and SES Send (password-forgot → outbox row transitions to `sent`) paths.
+5. Deactivate the old key; observe for a grace window; delete once stable.
+
+The corresponding rotation cadence for production keys will be added when production activation lands.
+
+### 5.8 SESSION_SECRET rotation runbook
+
+`SESSION_SECRET` is a per-environment secret stored only in the host's `/srv/footbag/env` (root:root 0600). It is never committed to Git, never present in any Docker image, and never echoed by the deploy script. The application and the deploy script both reject any value containing the substring `changeme` or shorter than 32 characters (defense against accidental `.env.example` carry-over).
+
+#### When to run
+
+- scheduled rotation (recommended at least annually for a per-host secret)
+- suspected exposure (host snapshot leaked, credential file inadvertently shared, operator handover)
+- after any security incident touching the host
+- as part of staging-restore drills
+
+#### Procedure
+
+1. Generate a fresh value on the host (never paste over SSH from a clipboard that may be logged):
+   ```bash
+   sudo bash -c 'NEW=$(openssl rand -hex 32) && sed -i "/^SESSION_SECRET=/d" /srv/footbag/env && echo "SESSION_SECRET=$NEW" >> /srv/footbag/env'
+   ```
+2. Confirm the new value satisfies the guards: contains no `#` (systemd EnvironmentFile parsing), no `changeme`, length ≥ 32. The deploy script enforces all three.
+3. Restart the service to load the new value:
+   ```bash
+   sudo systemctl restart footbag
+   sudo systemctl status footbag --no-pager | head -20
+   ```
+4. Expect: every active session is immediately invalidated. All currently-signed-in users will be redirected to login on their next request.
+5. Smoke-test login with a known account and confirm a fresh `footbag_session` cookie issues.
+6. Record the rotation timestamp in your operator notes.
+
+#### Required verification
+
+- service comes back cleanly (no startup error in `journalctl -u footbag`)
+- login flow works end-to-end against a known account
+- no new error spike in `/health/ready` or in the access log
 
 ---
 
@@ -967,7 +1062,7 @@ Minimum drill expectations:
 
 | Job | Cadence | Purpose | Operator concern |
 |---|---|---|---|
-| `SYS_Send_Email` | every `outbox_poll_interval_minutes` | send queued mail | dead-letter growth, bounce/complaint alarms |
+| `SYS_Send_Email` | every `outbox_poll_interval_minutes` | send queued mail from `outbox_emails` via `LiveSesAdapter` | dead-letter growth, bounce/complaint alarms, worker container crash-loop on missing shared-config env vars (see §15.4) |
 | `SYS_Check_Tier_Expiry` | daily | expire or remind annual tiers | missed runs or unusual reminder spikes |
 | `SYS_Open_Vote` | at least hourly | open scheduled votes | failed openings, admin-alerts flow |
 | `SYS_Close_Vote` | at least hourly | close scheduled votes | failed closures, tally readiness |
@@ -1237,6 +1332,7 @@ Before staging is declared ready, verify:
 | Stripe webhooks failing | webhook secret mismatch, signature validation, recent rotation, handler logs |
 | SES complaint/bounce spike | sender reputation, template issue, recipient list problem, SES status |
 | repeated `SQLITE_BUSY` | long transaction, backup overlap issue, migration, abnormal write load |
+| no transactional email arriving (verify, password reset, confirmation) | locate the stuck outbox stage per §4.5 pipeline table; check worker container status; check SES sandbox verification for sender and recipient |
 | high memory | image job pressure, worker leak, large request behavior, recent release |
 
 ### 15.3 Readiness-failure troubleshooting
@@ -1264,6 +1360,7 @@ Common causes:
 - KMS permission mismatch
 - wrong environment secret used in deployment
 - missing restart after secret change
+- container missing an env var that the shared config loader (`src/config/env.ts`) validates at module load, even if that container does not functionally use the var. The `worker` service imports the same config loader as `web` and therefore requires `PORT`, `PUBLIC_BASE_URL`, and `SESSION_SECRET` in its compose environment despite binding no port and signing no cookies; symptom is `Missing required environment variable: <NAME>` at startup and a crash-loop `Restarting (1)` status from `docker ps`.
 
 Resolution order:
 
@@ -1306,13 +1403,15 @@ If SSH access fails:
 
 - change approved
 - new value created
-- stored under correct `/footbag/{env}/...` path
+- stored under correct `/footbag/{env}/...` path (or `/srv/footbag/env` for `SESSION_SECRET` per §5.8)
 - staging validated
 - deploy/restart completed
 - live verification completed
 - grace period observed if dual-key flow used
 - old value removed
 - audit note recorded
+
+Per-secret runbooks: §5.5 (Stripe), §5.6 (JWT/KMS — pending full procedure; tracked in `IMPLEMENTATION_PLAN.md` drift notes), §5.7 (source-profile access keys — pending full procedure; tracked in `IMPLEMENTATION_PLAN.md`), §5.8 (`SESSION_SECRET`).
 
 ### 16.3 Snapshot restore checklist
 
@@ -1397,12 +1496,13 @@ constraints are, and what to do when things go wrong.
 Do not use root again except to complete the next bootstrap step (creating the first operator
 identity), then only in an account-recovery emergency.
 
-**Team secrets vault:** The project uses KeePassXC with a shared encrypted vault file
-(`footbag-platform-aws.kdbx`) on shared Google Drive. The vault holds: root email and
-password, root MFA TOTP secret, `footbag-operator` access key ID and secret, and any
-additional shared secrets as they are added. The vault master password is shared out of band
-(Signal or in person — never email or Slack). To revoke access: remove the contributor from
-the Google Drive share and rotate the master password and all secrets in the vault.
+**Team secrets vault:** Shared administrative credentials (root sign-in and MFA seed,
+initial operator IAM access keys, and additional shared secrets as they accrue) are kept
+in an encrypted vault managed in KeePassXC. Vault access is restricted to current project
+maintainers. The vault file and its master key are transferred only through a private,
+unarchived channel; never through email, chat, any repository, or any other archived
+medium. To revoke access: remove the departing contributor from the channel used to share
+the vault file, rotate the master password, and rotate every secret the vault contains.
 
 ---
 

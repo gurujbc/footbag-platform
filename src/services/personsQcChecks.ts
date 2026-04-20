@@ -1,7 +1,7 @@
 /**
  * Pure-function QC checks for historical_persons names.
  * Mirrors the person-likeness gate in pipeline/platform/export_canonical_platform.py.
- * No DB access, no Express imports — easily testable.
+ * No DB access, no Express imports, easily testable.
  */
 
 export interface PersonQcRow {
@@ -38,7 +38,7 @@ export interface PersonQcIssue {
   detail: string;
 }
 
-// ── Regexes — mirrors Python gate in export_canonical_platform.py ─────────────
+// ── Regexes, mirrors Python gate in export_canonical_platform.py ─────────────
 
 // Encoding artifacts (Windows-1250 mojibake)
 const RE_MOJIBAKE = /[¶¦±¼¿¸¹º³]/;
@@ -118,7 +118,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       country: p.country,
     };
 
-    // 1. Encoding corruption — mojibake characters
+    // 1. Encoding corruption, mojibake characters
     if (RE_MOJIBAKE.test(name)) {
       issues.push({
         ...base,
@@ -128,7 +128,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       });
     }
 
-    // 2. Encoding corruption — question mark embedded in word
+    // 2. Encoding corruption, question mark embedded in word
     if (RE_EMBEDDED_QUESTION.test(name)) {
       issues.push({
         ...base,
@@ -148,7 +148,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       });
     }
 
-    // 4. Junk markers — trailing asterisk
+    // 4. Junk markers, trailing asterisk
     if (RE_TRAILING_JUNK.test(name) && name.split(/\s+/).length >= 2) {
       issues.push({
         ...base,
@@ -158,7 +158,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       });
     }
 
-    // 5. Junk markers — bad characters (+=\|)
+    // 5. Junk markers, bad characters (+=\|)
     if (RE_BAD_CHARS.test(name)) {
       issues.push({
         ...base,
@@ -168,7 +168,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       });
     }
 
-    // 6. Junk markers — embedded rank prefix ("2. Name")
+    // 6. Junk markers, embedded rank prefix ("2. Name")
     if (RE_EMBED_RANK.test(name)) {
       issues.push({
         ...base,
@@ -178,7 +178,7 @@ export function runPersonsQcChecks(persons: PersonQcRow[]): PersonQcIssue[] {
       });
     }
 
-    // 7. Incomplete name — standalone question mark word
+    // 7. Incomplete name, standalone question mark word
     if (RE_STANDALONE_QUESTION.test(name)) {
       issues.push({
         ...base,

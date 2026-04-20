@@ -272,9 +272,9 @@ describe('GET /internal/net/candidates', () => {
   it('shows linked candidate with person name links', async () => {
     const app = createApp();
     const res = await request(app).get('/internal/net/candidates');
-    expect(res.text).toContain(`/net/players/${PERSON_C}`);
+    expect(res.text).toContain(`/history/${PERSON_C}`);
     expect(res.text).toContain('Candidate Charlie');
-    expect(res.text).toContain(`/net/players/${PERSON_D}`);
+    expect(res.text).toContain(`/history/${PERSON_D}`);
     expect(res.text).toContain('Candidate Delta');
   });
 
