@@ -37,12 +37,24 @@ import {
   insertNetRawFragment,
   insertNetCandidateMatch,
   insertNetCuratedMatch,
+  insertMember,
+  createTestSessionJwt,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3101');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
+
+const VIEWER_ID = 'viewer-net-curated';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
+function internalPost(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).post(path).set('Cookie', COOKIE);
+}
 
 const PERSON_A   = 'person-curated-aa-test';
 const PERSON_B   = 'person-curated-bb-test';
@@ -123,6 +135,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-net-curated', display_name: 'Viewer' });
   setupDb(db);
   db.close();
   createApp = await importApp();
@@ -135,44 +148,44 @@ afterAll(() => cleanupTestDb(dbPath));
 describe('GET /internal/net/candidates/:candidateId', () => {
   it('returns 200 for an existing candidate', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.status).toBe(200);
   });
 
   it('returns 404 for an unknown candidate', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates/not-a-real-id');
+    const res = await internalGet(app, '/internal/net/candidates/not-a-real-id');
     expect(res.status).toBe(404);
   });
 
   it('shows the candidate raw text', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('Alice defeated Bob 11-7');
   });
 
   it('shows confidence label and score', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('high');
     expect(res.text).toContain('0.9');
   });
 
   it('shows source file', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('CURATED_TEST.txt');
   });
 
   it('shows unlinked badge when players are not linked', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('unlinked');
   });
 
   it('shows player links when candidate is fully linked', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_LINKED}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_LINKED}`);
     expect(res.text).toContain('Alice Curated');
     expect(res.text).toContain('Bob Curated');
     expect(res.text).toContain(`/history/${PERSON_A}`);
@@ -181,20 +194,20 @@ describe('GET /internal/net/candidates/:candidateId', () => {
 
   it('shows extracted score and round hint for linked candidate', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_LINKED}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_LINKED}`);
     expect(res.text).toContain('11-7');
     expect(res.text).toContain('final');
   });
 
   it('shows year hint', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('2005');
   });
 
   it('shows approve and reject forms when not yet curated', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('/approve');
     expect(res.text).toContain('/reject');
     expect(res.text).toContain('Approve');
@@ -203,7 +216,7 @@ describe('GET /internal/net/candidates/:candidateId', () => {
 
   it('shows curated banner for pre-approved candidate and hides action forms', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_PRE_APPROVED}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_PRE_APPROVED}`);
     expect(res.text).toContain('Approved');
     expect(res.text).toContain('already been curated');
     // Forms should not appear
@@ -212,14 +225,14 @@ describe('GET /internal/net/candidates/:candidateId', () => {
 
   it('shows curated banner for pre-rejected candidate with note', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_PRE_REJECTED}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_PRE_REJECTED}`);
     expect(res.text).toContain('Rejected');
     expect(res.text).toContain('Too ambiguous');
   });
 
   it('includes back link to candidates list', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates/${CAND_BASIC}`);
+    const res = await internalGet(app, `/internal/net/candidates/${CAND_BASIC}`);
     expect(res.text).toContain('/internal/net/candidates');
   });
 });
@@ -229,8 +242,7 @@ describe('GET /internal/net/candidates/:candidateId', () => {
 describe('POST /internal/net/candidates/:candidateId/approve', () => {
   it('redirects to detail page after approval', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post(`/internal/net/candidates/${CAND_BASIC}/approve`)
+    const res = await internalPost(app, `/internal/net/candidates/${CAND_BASIC}/approve`)
       .type('form')
       .send({ note: '' });
     expect(res.status).toBe(302);
@@ -260,8 +272,7 @@ describe('POST /internal/net/candidates/:candidateId/approve', () => {
   it('stores curator note when provided', async () => {
     // Use CAND_LINKED for this test (fresh candidate, no prior curation)
     const app = createApp();
-    await request(app)
-      .post(`/internal/net/candidates/${CAND_LINKED}/approve`)
+    await internalPost(app, `/internal/net/candidates/${CAND_LINKED}/approve`)
       .type('form')
       .send({ note: 'Verified from video footage' });
 
@@ -275,8 +286,7 @@ describe('POST /internal/net/candidates/:candidateId/approve', () => {
 
   it('returns 409 on double-approve', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post(`/internal/net/candidates/${CAND_PRE_APPROVED}/approve`)
+    const res = await internalPost(app, `/internal/net/candidates/${CAND_PRE_APPROVED}/approve`)
       .type('form')
       .send({});
     expect(res.status).toBe(409);
@@ -284,8 +294,7 @@ describe('POST /internal/net/candidates/:candidateId/approve', () => {
 
   it('returns 404 for unknown candidate', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/candidates/does-not-exist/approve')
+    const res = await internalPost(app, '/internal/net/candidates/does-not-exist/approve')
       .type('form')
       .send({});
     expect(res.status).toBe(404);
@@ -311,8 +320,7 @@ describe('POST /internal/net/candidates/:candidateId/reject', () => {
 
   it('redirects to detail page after rejection', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post(`/internal/net/candidates/${CAND_FOR_REJECT}/reject`)
+    const res = await internalPost(app, `/internal/net/candidates/${CAND_FOR_REJECT}/reject`)
       .type('form')
       .send({ note: 'Noise line not a match' });
     expect(res.status).toBe(302);
@@ -340,8 +348,7 @@ describe('POST /internal/net/candidates/:candidateId/reject', () => {
 
   it('returns 409 on double-reject', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post(`/internal/net/candidates/${CAND_PRE_REJECTED}/reject`)
+    const res = await internalPost(app, `/internal/net/candidates/${CAND_PRE_REJECTED}/reject`)
       .type('form')
       .send({});
     expect(res.status).toBe(409);
@@ -349,8 +356,7 @@ describe('POST /internal/net/candidates/:candidateId/reject', () => {
 
   it('returns 404 for unknown candidate', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/candidates/ghost-candidate/reject')
+    const res = await internalPost(app, '/internal/net/candidates/ghost-candidate/reject')
       .type('form')
       .send({});
     expect(res.status).toBe(404);

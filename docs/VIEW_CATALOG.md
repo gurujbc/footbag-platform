@@ -200,7 +200,7 @@ The generic slot `TContent` is the page-specific content shape. Each page declar
 **Naming conventions:**
 
 - Page-content interfaces are `<PageName>Content` (e.g. `LoginContent`, `RecordsContent`, `NetTeamsContent`).
-- Row-level view-model interfaces that appear inside a `*Content` shape are `<Entity>ViewModel` (e.g. `FreestyleRecordViewModel`, `NetTeamViewModel`, `NetPartnershipViewModel`).
+- Row-level view-model interfaces that appear inside a `*Content` shape are `<Entity>ViewModel` (e.g. `FreestyleRecordViewModel`, `NetTeamViewModel`, `NetTeamListViewModel`).
 - Controllers are `<domain>Controller.ts`; templates live under `src/views/<section>/<page>.hbs`. Service and prepared-statement naming are defined in `docs/SERVICE_CATALOG.md` §1.
 
 Enforcement:
@@ -480,13 +480,10 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /freestyle/history` | Freestyle history | Editorial history + pioneers + eras (static curated content) | Current |
 | `GET /freestyle/insights` | Freestyle insights | Analytical insights (most-used tricks, transitions, difficulty eras, narratives) | Current |
 | `GET /records` | Consecutive records | Consecutive kicks world records | Current |
-| `GET /net` | Footbag Net landing | Footbag Net section entry page (hero with mascot, "What is Footbag Net?" narrative, Singles/Doubles competition-format cards, Explore cards into teams/partnerships/events, notable partnerships, notable players, recent events) | Current |
-| `GET /net/teams` | Net teams list | Doubles net team list ordered by appearance count | Current |
-| `GET /net/teams/:teamId` | Net team detail | Doubles net team competition history | Current |
-| `GET /net/partnerships` | Net partnerships list | League-table view of top net doubles partnerships, filterable by division | Current |
-| `GET /net/partnerships/:teamId` | Net partnership detail | Partnership detail with summary stats + appearance timeline | Current |
+| `GET /net` | Footbag Net landing | Footbag Net section entry page (hero with mascot, "What is Footbag Net?" narrative, Singles/Doubles competition-format cards, Explore cards into teams and events, notable teams, notable players, recent events) | Current |
+| `GET /net/teams` | Net teams list | League-table view of all net doubles teams, filterable by division and player search | Current |
+| `GET /net/teams/:teamId` | Net team detail | Team detail with summary stats, competitive timeline, and year-grouped competition history | Current |
 | `GET /net/events` | Net events list | Net events ordered by recency, with team/appearance counts | Current |
-| `GET /net/events/:eventId` | Net event detail | Net event detail grouped by discipline | Current |
 | `GET /legal` | Legal | Privacy, Terms of Use, and Copyright & Trademarks on a single page with anchored sections | Current |
 | `GET /health/live` | Operational endpoint | Liveness check | Not a cataloged page |
 | `GET /health/ready` | Operational endpoint | Readiness check | Not a cataloged page |

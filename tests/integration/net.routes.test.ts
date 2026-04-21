@@ -28,6 +28,7 @@ import {
 import {
   insertHistoricalPerson,
   insertEvent,
+  insertTag,
   insertDiscipline,
   insertMember,
   insertResultsUpload,
@@ -57,10 +58,14 @@ function setupDb(db: BetterSqlite3.Database): void {
   insertHistoricalPerson(db, { person_id: PERSON_A2, person_name: 'Carol Net' });
   insertHistoricalPerson(db, { person_id: PERSON_B2, person_name: 'Dave Net' });
 
-  // Events
-  const event1 = insertEvent(db, { id: 'event-net-test-2010', title: 'Net Open 2010', start_date: '2010-07-01', city: 'Chicago', country: 'US' });
-  const event2 = insertEvent(db, { id: 'event-net-test-2015', title: 'Net Open 2015', start_date: '2015-07-01', city: 'Denver', country: 'US' });
-  const event3 = insertEvent(db, { id: 'event-net-test-2012', title: 'European Net 2012', start_date: '2012-06-01', city: 'Berlin', country: 'DE' });
+  // Events — each has an explicit canonical-pattern tag_normalized so that
+  // href assertions can verify the canonical /events/event_{year}_{slug} shape.
+  const tag1 = insertTag(db, { tag_normalized: '#event_2010_net_open' });
+  const tag2 = insertTag(db, { tag_normalized: '#event_2015_net_open' });
+  const tag3 = insertTag(db, { tag_normalized: '#event_2012_european_net' });
+  const event1 = insertEvent(db, { id: 'event-net-test-2010', hashtag_tag_id: tag1, title: 'Net Open 2010',      start_date: '2010-07-01', city: 'Chicago', country: 'US' });
+  const event2 = insertEvent(db, { id: 'event-net-test-2015', hashtag_tag_id: tag2, title: 'Net Open 2015',      start_date: '2015-07-01', city: 'Denver',  country: 'US' });
+  const event3 = insertEvent(db, { id: 'event-net-test-2012', hashtag_tag_id: tag3, title: 'European Net 2012',  start_date: '2012-06-01', city: 'Berlin',  country: 'DE' });
 
   // Disciplines
   const disc1 = insertDiscipline(db, event1, { id: 'disc-net-test-open-2010', name: 'Open Doubles Net', discipline_category: 'net', team_type: 'doubles' });
@@ -94,7 +99,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
   const entry1 = insertResultEntry(db, event1, upload1, disc1, { id: 'entry-net-test-01', placement: 1 });
   const entry2 = insertResultEntry(db, event2, upload2, disc2, { id: 'entry-net-test-02', placement: 2 });
-  const entry3 = insertResultEntry(db, event1, upload1, disc1, { id: 'entry-net-test-03', placement: 3 });
+  insertResultEntry(db, event1, upload1, disc1, { id: 'entry-net-test-03', placement: 3 });
   const entry4 = insertResultEntry(db, event3, upload3, disc3, { id: 'entry-net-test-04', placement: 1 });
   // Entry for inferred_partial test (team 1 at event 3 — should be hidden)
   const entry5 = insertResultEntry(db, event3, upload3, disc3, { id: 'entry-net-test-05', placement: 2 });
@@ -141,6 +146,8 @@ beforeAll(async () => {
 afterAll(() => cleanupTestDb(dbPath));
 
 // ---------------------------------------------------------------------------
+// GET /net/teams
+// ---------------------------------------------------------------------------
 
 describe('GET /net/teams', () => {
   it('returns 200', async () => {
@@ -149,13 +156,19 @@ describe('GET /net/teams', () => {
     expect(res.status).toBe(200);
   });
 
+  it('shows the page title', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    expect(res.text).toContain('Net Teams');
+  });
+
   it('includes the evidence disclaimer', async () => {
     const app = createApp();
     const res = await request(app).get('/net/teams');
-    expect(res.text).toContain('may not reflect official partnerships');
+    expect(res.text).toContain('algorithmically constructed');
   });
 
-  it('shows team names', async () => {
+  it('shows both teams (Alice/Bob and Carol/Dave)', async () => {
     const app = createApp();
     const res = await request(app).get('/net/teams');
     expect(res.text).toContain('Alice Net');
@@ -174,300 +187,137 @@ describe('GET /net/teams', () => {
     expect(posTeam1).toBeLessThan(posTeam2);
   });
 
-  it('shows team detail links', async () => {
+  it('shows win and podium columns', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    expect(res.text).toContain('Wins');
+    expect(res.text).toContain('Podiums');
+  });
+
+  it('shows year span for multi-year teams', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    // Team 1: first_year=2010, last_year=2015
+    expect(res.text).toContain('2010');
+    expect(res.text).toContain('2015');
+  });
+
+  it('links team rows to the canonical team detail at /net/teams/:teamId', async () => {
     const app = createApp();
     const res = await request(app).get('/net/teams');
     expect(res.text).toContain(`/net/teams/${TEAM_1_ID}`);
   });
 
-  it('does not show rankings, win/loss, or head-to-head stats', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/teams');
-    const lower = res.text.toLowerCase();
-    expect(lower).not.toContain('win/loss');
-    expect(lower).not.toContain('ranking');
-    expect(lower).not.toContain('head-to-head');
-    expect(lower).not.toContain('rating');
-  });
-});
-
-// ---------------------------------------------------------------------------
-
-describe('GET /net/teams/:teamId', () => {
-  it('returns 200 for a valid team', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.status).toBe(200);
-  });
-
-  it('returns 404 for an unknown teamId', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/teams/not-a-real-team-id');
-    expect(res.status).toBe(404);
-  });
-
-  it('shows both partner names', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain('Alice Net');
-    expect(res.text).toContain('Bob Net');
-  });
-
-  it('includes the evidence disclaimer', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain('may not reflect official partnerships');
-  });
-
-  it('shows both canonical_only appearances', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain('Net Open 2010');
-    expect(res.text).toContain('Net Open 2015');
-  });
-
-  it('groups appearances by year (2015 section before 2010 section)', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    // Search for year-heading elements specifically to avoid matching yearSpan "2010–2015" in the hero
-    const pos2015 = res.text.indexOf('year-heading">2015');
-    const pos2010 = res.text.indexOf('year-heading">2010');
-    expect(pos2015).toBeGreaterThan(-1);
-    expect(pos2010).toBeGreaterThan(-1);
-    expect(pos2015).toBeLessThan(pos2010);
-  });
-
-  it('does NOT show inferred_partial appearances', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    // The inferred_partial appearance is at event3 (European Net 2012)
-    // It should not appear because the view filters to canonical_only
-    expect(res.text).not.toContain('European Net 2012');
-  });
-
-  it('renders raw discipline name when conflict_flag=1', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_2_ID}`);
-    // disc3 has conflict_flag=1; raw name is 'Footbag Net: Singles'
-    // canonical_group is 'uncategorized' which maps to '' in GROUP_LABELS
-    // service should use raw discipline_name
-    expect(res.text).toContain('Footbag Net: Singles');
-  });
-
-  it('shows placement labels', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain('1st');
-  });
-
-  it('links to event pages', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain('/events/event-net-test-2010');
-  });
-
-  it('links to partner history pages via personHref', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    expect(res.text).toContain(`/history/${PERSON_A1}`);
-    expect(res.text).toContain(`/history/${PERSON_B1}`);
-  });
-
-  it('does not show rankings, win/loss, or head-to-head stats', async () => {
-    const app = createApp();
-    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
-    const lower = res.text.toLowerCase();
-    expect(lower).not.toContain('win/loss');
-    expect(lower).not.toContain('ranking');
-    expect(lower).not.toContain('head-to-head');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// GET /net/partnerships
-// ---------------------------------------------------------------------------
-
-describe('GET /net/partnerships', () => {
-  it('returns 200', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.status).toBe(200);
-  });
-
-  it('shows the page title', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('Top Net Partnerships');
-  });
-
-  it('includes the evidence disclaimer', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('algorithmically constructed');
-  });
-
-  it('shows team 1 (Alice/Bob, 2 appearances) which meets the >=2 threshold', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('Alice Net');
-    expect(res.text).toContain('Bob Net');
-  });
-
-  it('excludes team 2 (Carol/Dave, 1 appearance) which does not meet the >=2 threshold', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).not.toContain('Carol Net');
-    expect(res.text).not.toContain('Dave Net');
-  });
-
-  it('shows win count (team 1 has 1 win at placement=1)', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    // The table has columns: Appearances, Wins, Podiums
-    // Team 1: 2 appearances, 1 win (placement 1 at event 2010), 1 podium (placement 2 at 2015)
-    expect(res.text).toContain('Wins');
-  });
-
-  it('shows podium count', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('Podiums');
-  });
-
-  it('shows year span', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    // Team 1: first_year=2010, last_year=2015 → "2010–2015"
-    expect(res.text).toContain('2010');
-    expect(res.text).toContain('2015');
-  });
-
-  it('links partnership names to partnership detail page', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain(`/net/partnerships/${TEAM_1_ID}`);
-  });
-
   it('does not include inferred_partial appearances in counts', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships');
+    const res = await request(app).get('/net/teams');
     // Team 1 has 2 canonical + 1 inferred_partial. Only 2 should count.
-    // The appearance_count column for team 1 should show "2", not "3"
-    // (The inferred_partial is filtered by the net_team_appearance_canonical view)
     expect(res.text).toContain('Alice Net');
-    // There should only be one team row, and it should show 2 appearances
     const matches = res.text.match(/<td class="col-num">(\d+)<\/td>/g) || [];
     // First col-num in the row = appearance count = 2
     expect(matches[0]).toContain('2');
   });
 
+  it('shows total teams count', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    expect(res.text).toContain('2 teams shown');
+  });
+
+  it('shows division filter dropdown', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    expect(res.text).toContain('name="division"');
+    expect(res.text).toContain('All divisions');
+  });
+
+  it('shows open_doubles in division options', async () => {
+    const app = createApp();
+    const res = await request(app).get('/net/teams');
+    expect(res.text).toContain('open_doubles');
+  });
+
   it('does not contain forbidden stat language', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships');
+    const res = await request(app).get('/net/teams');
     const lower = res.text.toLowerCase();
     expect(lower).not.toContain('head-to-head');
     expect(lower).not.toContain('ranking');
     expect(lower).not.toContain('win/loss');
     expect(lower).not.toContain('rating');
   });
-
-  it('shows total partnerships count', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('1 partnerships shown');
-  });
-
-  it('links to partnership detail page', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain(`/net/partnerships/${TEAM_1_ID}`);
-  });
-
-  it('shows division filter dropdown', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('name="division"');
-    expect(res.text).toContain('All divisions');
-  });
-
-  it('shows Open Doubles in division options', async () => {
-    const app = createApp();
-    const res = await request(app).get('/net/partnerships');
-    expect(res.text).toContain('open_doubles');
-  });
 });
 
-describe('GET /net/partnerships?division=open_doubles', () => {
+describe('GET /net/teams?division=open_doubles', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    const res = await request(app).get('/net/teams?division=open_doubles');
     expect(res.status).toBe(200);
   });
 
   it('shows division in page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    const res = await request(app).get('/net/teams?division=open_doubles');
     expect(res.text).toContain('Open Doubles');
   });
 
   it('shows team 1 (which plays in open doubles)', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    const res = await request(app).get('/net/teams?division=open_doubles');
     expect(res.text).toContain('Alice Net');
   });
 
   it('marks the selected division as selected in dropdown', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    const res = await request(app).get('/net/teams?division=open_doubles');
     expect(res.text).toContain('value="open_doubles" selected');
   });
 
   it('shows clear filter link when division is active', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles');
+    const res = await request(app).get('/net/teams?division=open_doubles');
     expect(res.text).toContain('Clear');
   });
 
-  it('returns empty for a division with no partnerships', async () => {
+  it('returns empty for a division with no teams', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=masters_doubles');
+    const res = await request(app).get('/net/teams?division=masters_doubles');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('No partnerships found');
+    expect(res.text).toContain('No teams found');
   });
 
   it('ignores unknown division values gracefully', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=not_real');
+    const res = await request(app).get('/net/teams?division=not_real');
     expect(res.status).toBe(200);
-    // Unknown division = empty results, not an error
-    expect(res.text).toContain('No partnerships found');
+    expect(res.text).toContain('No teams found');
   });
 });
 
-describe('GET /net/partnerships?q=Alice', () => {
-  it('returns 200 and shows matching partnership', async () => {
+describe('GET /net/teams?q=Alice', () => {
+  it('returns 200 and shows matching team', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?q=Alice');
+    const res = await request(app).get('/net/teams?q=Alice');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Alice Net');
   });
 
-  it('does not show non-matching partnerships', async () => {
+  it('does not show non-matching teams', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?q=Nonexistent');
+    const res = await request(app).get('/net/teams?q=Nonexistent');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('No partnerships found');
+    expect(res.text).toContain('No teams found');
   });
 
   it('shows search input with current value', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?q=Alice');
+    const res = await request(app).get('/net/teams?q=Alice');
     expect(res.text).toContain('value="Alice"');
   });
 
   it('ignores search queries shorter than 2 characters', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?q=A');
+    const res = await request(app).get('/net/teams?q=A');
     expect(res.status).toBe(200);
     // Short query ignored → shows default results
     expect(res.text).toContain('Alice Net');
@@ -475,33 +325,33 @@ describe('GET /net/partnerships?q=Alice', () => {
 
   it('combines division and search filters', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships?division=open_doubles&q=Alice');
+    const res = await request(app).get('/net/teams?division=open_doubles&q=Alice');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Alice Net');
   });
 });
 
 // ---------------------------------------------------------------------------
-// GET /net/partnerships/:teamId
+// GET /net/teams/:teamId
 // ---------------------------------------------------------------------------
 
-describe('GET /net/partnerships/:teamId', () => {
+describe('GET /net/teams/:teamId', () => {
   it('returns 200 for valid team', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.status).toBe(200);
   });
 
   it('shows both partner names in title', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.text).toContain('Alice Net');
     expect(res.text).toContain('Bob Net');
   });
 
   it('shows summary stats', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     // Team 1: 2 canonical appearances (placement 1 + placement 2)
     expect(res.text).toContain('2 appearances');
     expect(res.text).toContain('1 wins');
@@ -510,7 +360,7 @@ describe('GET /net/partnerships/:teamId', () => {
 
   it('shows competitive timeline', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.text).toContain('Competitive Timeline');
     expect(res.text).toContain('Net Open 2010');
     expect(res.text).toContain('Net Open 2015');
@@ -518,42 +368,62 @@ describe('GET /net/partnerships/:teamId', () => {
 
   it('orders timeline by year ascending', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     const idx2010 = res.text.indexOf('Net Open 2010');
     const idx2015 = res.text.indexOf('Net Open 2015');
     expect(idx2010).toBeGreaterThan(0);
     expect(idx2015).toBeGreaterThan(idx2010);
   });
 
+  it('renders a Competition History section grouped by year, descending', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
+    expect(res.text).toContain('Competition History');
+    const pos2015 = res.text.indexOf('year-heading">2015');
+    const pos2010 = res.text.indexOf('year-heading">2010');
+    expect(pos2015).toBeGreaterThan(-1);
+    expect(pos2010).toBeGreaterThan(-1);
+    expect(pos2015).toBeLessThan(pos2010);
+  });
+
+  it('renders raw discipline name when conflict_flag=1', async () => {
+    const app = createApp();
+    const res = await request(app).get(`/net/teams/${TEAM_2_ID}`);
+    // disc3 has conflict_flag=1; raw name is 'Footbag Net: Singles'
+    expect(res.text).toContain('Footbag Net: Singles');
+  });
+
   it('shows placement labels (1st, 2nd)', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.text).toContain('1st');
     expect(res.text).toContain('2nd');
   });
 
-  it('links event names to event pages', async () => {
+  it('links event names to canonical /events/event_{year}_{slug} pages', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
-    expect(res.text).toContain('/events/');
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
+    expect(res.text).toMatch(/\/events\/event_\d{4}_[a-z0-9_]+/);
+    expect(res.text).toContain('/events/event_2010_net_open');
+    expect(res.text).toContain('/events/event_2015_net_open');
   });
 
   it('links player names to history pages via personHref', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.text).toContain(`/history/${PERSON_A1}`);
     expect(res.text).toContain(`/history/${PERSON_B1}`);
   });
 
   it('includes evidence disclaimer', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     expect(res.text).toContain('algorithmically constructed');
   });
 
   it('excludes inferred_partial appearances from timeline and summary', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
     // Team 1 has 2 canonical + 1 inferred_partial. Should show 2 appearances.
     expect(res.text).toContain('2 appearances');
     // European Net 2012 was the inferred_partial event — should NOT appear
@@ -562,14 +432,14 @@ describe('GET /net/partnerships/:teamId', () => {
 
   it('returns 404 for unknown team', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/partnerships/not-a-real-team');
+    const res = await request(app).get('/net/teams/not-a-real-team');
     expect(res.status).toBe(404);
   });
 
-  it('shows breadcrumb back to partnerships list', async () => {
+  it('shows breadcrumb back to teams list', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/partnerships/${TEAM_1_ID}`);
-    expect(res.text).toContain('/net/partnerships');
-    expect(res.text).toContain('Partnerships');
+    const res = await request(app).get(`/net/teams/${TEAM_1_ID}`);
+    expect(res.text).toContain('/net/teams');
+    expect(res.text).toContain('Teams');
   });
 });

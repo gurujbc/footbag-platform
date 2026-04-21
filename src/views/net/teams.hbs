@@ -1,18 +1,39 @@
-{{! /net/teams — doubles team list }}
+{{! /net/teams — doubles teams with division filter }}
 
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
     {{#if page.intro}}<p class="hero-subtitle">{{page.intro}}</p>{{/if}}
-    {{#if content.totalTeams}}
+    {{#if content.totalShown}}
     <div class="hero-stats">
-      <span>{{content.totalTeams}} teams</span>
+      <span>{{content.totalShown}} teams shown</span>
     </div>
     {{/if}}
   </div>
 </div>
 
 <div class="wrapper">
+
+  <form method="GET" action="/net/teams" class="filter-bar">
+    <label>
+      Division
+      <select name="division" onchange="this.form.submit()">
+        {{#each content.divisionOptions}}
+        <option value="{{value}}"{{#if selected}} selected{{/if}}>{{label}}{{#if count}} ({{count}}){{/if}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <label>
+      Search
+      <input type="text" name="q" value="{{content.activeSearch}}" placeholder="Player name..." />
+    </label>
+    <button type="submit">Filter</button>
+    {{#if content.activeDivision}}
+    <a href="/net/teams" class="btn-link">Clear</a>
+    {{else if content.activeSearch}}
+    <a href="/net/teams" class="btn-link">Clear</a>
+    {{/if}}
+  </form>
 
   <p class="source-note">{{content.disclaimer}}</p>
 
@@ -22,8 +43,10 @@
       <thead>
         <tr>
           <th class="col-rank">#</th>
-          <th>Partners</th>
-          <th class="col-num">Events</th>
+          <th>Team</th>
+          <th class="col-num">Appearances</th>
+          <th class="col-num">Wins</th>
+          <th class="col-num">Podiums</th>
           <th>Years</th>
         </tr>
       </thead>
@@ -31,8 +54,12 @@
         {{#each content.teams}}
         <tr>
           <td class="col-rank">{{add @index 1}}</td>
-          <td><a href="{{teamHref}}">{{teamName}}</a></td>
+          <td>
+            <a href="{{{teamHref}}}">{{teamName}}</a>
+          </td>
           <td class="col-num">{{appearanceCount}}</td>
+          <td class="col-num">{{winCount}}</td>
+          <td class="col-num">{{podiumCount}}</td>
           <td>{{#if yearSpan}}{{yearSpan}}{{else}}&mdash;{{/if}}</td>
         </tr>
         {{/each}}
@@ -40,7 +67,7 @@
     </table>
   </div>
   {{else}}
-  <div class="empty-state">No teams found.</div>
+  <div class="empty-state">No teams found for this division.</div>
   {{/if}}
 
 </div>

@@ -5,6 +5,7 @@
 // Never linked from the public site.
 
 import {
+  netEvents, NetEventSummaryRow, NetEventAppearanceRow,
   netTeamCorrectionApproval,
   netRecoverySignals, RecoveryPartnerRepeatRow, RecoveryAbbreviationRow,
                       RecoveryHighValueRow,
@@ -29,6 +30,15 @@ import {
 } from '../../db/db';
 import { NotFoundError, ConflictError, ValidationError } from '../../services/serviceErrors';
 import { personHref } from '../../services/personLink';
+import { shapePartnershipPair } from '../../services/playerShaping';
+import {
+  NetEventViewModel,
+  TEAM_DISCLAIMER,
+  placementLabel,
+  teamName,
+  disciplineLabel,
+  shapeEventSummary,
+} from '../../services/netService';
 import { PageViewModel } from '../../types/page';
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
@@ -585,7 +595,7 @@ function shapeReviewItem(row: NetReviewItemRow): NetReviewItemViewModel {
     message:        row.message,
     eventId:        row.event_id,
     eventTitle:     row.event_title,
-    eventHref:      row.event_id ? `/net/events/${row.event_id}` : null,
+    eventHref:      row.event_id ? `/internal/net/events/${row.event_id}` : null,
     disciplineId:   row.discipline_id,
     disciplineName: row.discipline_name,
     reviewStage:    row.review_stage,
@@ -743,7 +753,7 @@ function shapeCandidate(row: NetCandidateRow): NetCandidateViewModel {
     confidenceClass: confidenceClass(row.confidence_score),
     eventId:         row.event_id,
     eventTitle:      row.event_title,
-    eventHref:       row.event_id ? `/net/events/${row.event_id}` : null,
+    eventHref:       row.event_id ? `/internal/net/events/${row.event_id}` : null,
     sourceFile:      row.source_file,
     yearHint:        row.year_hint,
     reviewStatus:    row.review_status,
@@ -763,7 +773,7 @@ function shapeCuratedBrowseItem(row: NetCuratedBrowseRow): NetCuratedBrowseItemV
     curatedAt:       row.curated_at.slice(0, 10),
     eventId:         row.event_id,
     eventTitle:      row.event_title,
-    eventHref:       row.event_id ? `/net/events/${row.event_id}` : null,
+    eventHref:       row.event_id ? `/internal/net/events/${row.event_id}` : null,
     disciplineId:    row.discipline_id,
     disciplineName:  row.discipline_name,
     playerAPersonId: row.player_a_person_id,
@@ -833,7 +843,7 @@ function shapeCandEventSummary(row: NetCandidateEventSummaryRow): NetCandidatesE
   return {
     eventId:        row.event_id,
     eventTitle:     row.event_title ?? row.event_id ?? '(no event)',
-    eventHref:      row.event_id ? `/net/events/${row.event_id}` : null,
+    eventHref:      row.event_id ? `/internal/net/events/${row.event_id}` : null,
     candidateCount: row.candidate_count,
     linkedCount:    row.linked_candidate_count,
     linkedPct:      fmtPct(row.linked_candidate_count, row.candidate_count),
@@ -940,7 +950,7 @@ export const netQcService = {
           startDate: evRow.start_date,
           city:      evRow.city,
           country:   evRow.country,
-          href:      `/net/events/${evRow.event_id}`,
+          href:      `/internal/net/events/${evRow.event_id}`,
         };
       }
     }
@@ -1516,7 +1526,7 @@ export const netQcService = {
       confidenceClass: confidenceClass(row.confidence_score),
       eventId:         row.event_id,
       eventTitle:      row.event_title,
-      eventHref:       row.event_id ? `/net/events/${row.event_id}` : null,
+      eventHref:       row.event_id ? `/internal/net/events/${row.event_id}` : null,
       disciplineId:    row.discipline_id,
       disciplineName:  row.discipline_name,
       sourceFile:      row.source_file,
@@ -1684,4 +1694,95 @@ export const netQcService = {
       },
     };
   },
+
+  // ── Net event detail (QC reviewer view) ─────────────────────────────────
+  // /internal/net/events/:eventId — net-specific discipline grouping with
+  // conflict_flag-aware labels and QC hints (multi-stage, unknown-team
+  // excluded count, discipline review count). Internal use only: the public
+  // surface routes to the canonical /events/:eventKey page instead.
+
+  getNetEventDetailPage(eventId: string): PageViewModel<NetEventDetailContent> {
+    const eventRow = netEvents.getEventSummary.get(eventId) as NetEventSummaryRow | undefined;
+    if (!eventRow) throw new NotFoundError(`Net event not found: ${eventId}`);
+
+    const appearanceRows = netEvents.listAppearancesByEventId.all(eventId) as NetEventAppearanceRow[];
+
+    return {
+      seo:  { title: `${eventRow.event_title} — Net QC` },
+      page: {
+        sectionKey: 'net',
+        pageKey:    'net_event_detail',
+        title:      eventRow.event_title,
+      },
+      content: {
+        event:        shapeEventSummary(eventRow),
+        byDiscipline: groupAppearancesByDiscipline(appearanceRows),
+        disclaimer:   TEAM_DISCLAIMER,
+      },
+    };
+  },
 };
+
+// ── Net event detail helpers (local to this service) ────────────────────────
+
+interface NetEventAppearanceViewModel {
+  teamId:         string;
+  teamName:       string;
+  teamHref:       string;
+  personIdA:      string;
+  personNameA:    string;
+  hrefA:          string | null;
+  personIdB:      string;
+  personNameB:    string;
+  hrefB:          string | null;
+  placement:      number;
+  placementLabel: string;
+  scoreText:      string | null;
+}
+
+interface NetEventDisciplineGroup {
+  disciplineId:    string;
+  disciplineLabel: string;
+  hasConflictFlag: boolean;
+  appearances:     NetEventAppearanceViewModel[];
+}
+
+interface NetEventDetailContent {
+  event:        NetEventViewModel;
+  byDiscipline: NetEventDisciplineGroup[];
+  disclaimer:   string;
+}
+
+function shapeEventAppearance(row: NetEventAppearanceRow): NetEventAppearanceViewModel {
+  return {
+    teamId:         row.team_id,
+    teamName:       teamName(row.person_name_a, row.person_name_b),
+    teamHref:       `/net/teams/${row.team_id}`,
+    ...shapePartnershipPair(row),
+    placement:      row.placement,
+    placementLabel: placementLabel(row.placement),
+    scoreText:      row.score_text,
+  };
+}
+
+function groupAppearancesByDiscipline(
+  rows: NetEventAppearanceRow[],
+): NetEventDisciplineGroup[] {
+  const map = new Map<string, { label: string; hasConflictFlag: boolean; appearances: NetEventAppearanceViewModel[] }>();
+  for (const row of rows) {
+    if (!map.has(row.discipline_id)) {
+      map.set(row.discipline_id, {
+        label:           disciplineLabel(row.discipline_name, row.canonical_group, row.conflict_flag),
+        hasConflictFlag: row.conflict_flag === 1,
+        appearances:     [],
+      });
+    }
+    map.get(row.discipline_id)!.appearances.push(shapeEventAppearance(row));
+  }
+  return [...map.entries()].map(([disciplineId, v]) => ({
+    disciplineId,
+    disciplineLabel: v.label,
+    hasConflictFlag: v.hasConflictFlag,
+    appearances:     v.appearances,
+  }));
+}

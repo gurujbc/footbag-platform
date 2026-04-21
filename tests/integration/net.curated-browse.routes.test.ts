@@ -41,12 +41,21 @@ import {
   insertNetRawFragment,
   insertNetCandidateMatch,
   insertNetCuratedMatch,
+  insertMember,
+  createTestSessionJwt,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3102');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
+
+const VIEWER_ID = 'viewer-net-curated-browse';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
 
 // Fixed IDs for assertions
 const PERSON_X   = 'person-browse-xx';
@@ -173,6 +182,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-net-curated-browse', display_name: 'Viewer' });
   setupDb(db);
   db.close();
   createApp = await importApp();
@@ -185,45 +195,45 @@ afterAll(() => cleanupTestDb(dbPath));
 describe('GET /internal/net/curated', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.status).toBe(200);
   });
 
   it('shows page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Net Curated Matches');
   });
 
   it('includes internal-only disclaimer', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Not shown on public pages');
   });
 
   it('shows total curated count in summary', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     // 4 total curated rows
     expect(res.text).toContain('4');
   });
 
   it('shows approved count and percentage', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Approved');
     expect(res.text).toContain('50%');  // 2 approved of 4
   });
 
   it('shows rejected count', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Rejected');
   });
 
   it('shows no forbidden public-stat language', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).not.toMatch(/head-to-head|ranking|win\/loss|rating/i);
   });
 });
@@ -233,14 +243,14 @@ describe('GET /internal/net/curated', () => {
 describe('Summary tables', () => {
   it('renders by-source summary', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('OLD_RESULTS_1998.txt');
     expect(res.text).toContain('WORLDS_2001.txt');
   });
 
   it('source filter links are not HTML-encoded', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     // Must not contain &#x3D; encoding from double-stache hrefs
     expect(res.text).not.toContain('&#x3D;');
     expect(res.text).toContain('source=');
@@ -248,20 +258,20 @@ describe('Summary tables', () => {
 
   it('renders by-event summary when event_id present', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain(EVENT_ID);
   });
 
   it('renders by-year summary', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('1998');
     expect(res.text).toContain('2001');
   });
 
   it('year filter links use correct format', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('year=1998');
   });
 });
@@ -271,21 +281,21 @@ describe('Summary tables', () => {
 describe('Curated items table', () => {
   it('shows approved badge for approved rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('badge-ok');
     expect(res.text).toContain('approved');
   });
 
   it('shows rejected badge for rejected rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('badge-muted');
     expect(res.text).toContain('rejected');
   });
 
   it('shows linked player names with links for fully-linked rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Xavier Browse');
     expect(res.text).toContain('Yvonne Browse');
     expect(res.text).toContain(`/history/${PERSON_X}`);
@@ -294,7 +304,7 @@ describe('Curated items table', () => {
 
   it('shows raw names and unlinked badge for unlinked rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Alice');
     expect(res.text).toContain('Bob');
     expect(res.text).toContain('unlinked');
@@ -302,33 +312,33 @@ describe('Curated items table', () => {
 
   it('shows extracted score', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('11-7');
   });
 
   it('shows round hint', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('semi');
     expect(res.text).toContain('final');
   });
 
   it('shows curator note', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('Confirmed via program');
     expect(res.text).toContain('Not a competitive match');
   });
 
   it('shows source file in rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain('OLD_RESULTS_1998.txt');
   });
 
   it('includes candidate detail link for each row', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated');
+    const res = await internalGet(app, '/internal/net/curated');
     expect(res.text).toContain(`/internal/net/candidates/${CAND_APP_1}`);
     expect(res.text).toContain(`/internal/net/candidates/${CAND_REJ_1}`);
   });
@@ -339,7 +349,7 @@ describe('Curated items table', () => {
 describe('Filter: status=approved', () => {
   it('returns only approved rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?status=approved');
+    const res = await internalGet(app, '/internal/net/curated?status=approved');
     expect(res.status).toBe(200);
     expect(res.text).toContain('approved');
     expect(res.text).not.toContain('badge-muted');
@@ -347,7 +357,7 @@ describe('Filter: status=approved', () => {
 
   it('excludes rejected rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?status=approved');
+    const res = await internalGet(app, '/internal/net/curated?status=approved');
     expect(res.text).not.toContain('Not a competitive match');
   });
 });
@@ -355,7 +365,7 @@ describe('Filter: status=approved', () => {
 describe('Filter: status=rejected', () => {
   it('returns only rejected rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?status=rejected');
+    const res = await internalGet(app, '/internal/net/curated?status=rejected');
     expect(res.status).toBe(200);
     expect(res.text).toContain('rejected');
     expect(res.text).not.toContain('badge-ok');
@@ -365,7 +375,7 @@ describe('Filter: status=rejected', () => {
 describe('Filter: source=', () => {
   it('returns only rows from that source', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?source=WORLDS_2001.txt');
+    const res = await internalGet(app, '/internal/net/curated?source=WORLDS_2001.txt');
     expect(res.status).toBe(200);
     expect(res.text).toContain('WORLDS_2001.txt');
     // The other source should not appear in items (may still appear in summary)
@@ -373,7 +383,7 @@ describe('Filter: source=', () => {
 
   it('returns empty state for unknown source', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?source=NONEXISTENT.txt');
+    const res = await internalGet(app, '/internal/net/curated?source=NONEXISTENT.txt');
     expect(res.status).toBe(200);
     expect(res.text).toContain('No curated matches match');
   });
@@ -382,21 +392,21 @@ describe('Filter: source=', () => {
 describe('Filter: year=', () => {
   it('returns rows for the given year', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?year=1998');
+    const res = await internalGet(app, '/internal/net/curated?year=1998');
     expect(res.status).toBe(200);
     expect(res.text).toContain('11-7');
   });
 
   it('excludes rows from other years', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?year=1998');
+    const res = await internalGet(app, '/internal/net/curated?year=1998');
     // WORLDS_2001.txt candidate should not appear
     expect(res.text).not.toContain('9-11 11-4 11-6');
   });
 
   it('ignores malformed year values', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?year=bad');
+    const res = await internalGet(app, '/internal/net/curated?year=bad');
     expect(res.status).toBe(200);   // falls back to unfiltered
   });
 });
@@ -404,14 +414,14 @@ describe('Filter: year=', () => {
 describe('Filter: event=', () => {
   it('returns rows for the given event', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/curated?event=${EVENT_ID}`);
+    const res = await internalGet(app, `/internal/net/curated?event=${EVENT_ID}`);
     expect(res.status).toBe(200);
     expect(res.text).toContain(EVENT_ID);
   });
 
   it('empty state for unknown event', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?event=not-real-event');
+    const res = await internalGet(app, '/internal/net/curated?event=not-real-event');
     expect(res.status).toBe(200);
     expect(res.text).toContain('No curated matches match');
   });
@@ -420,7 +430,7 @@ describe('Filter: event=', () => {
 describe('Filter: linked=true', () => {
   it('returns only fully-linked rows', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?linked=true');
+    const res = await internalGet(app, '/internal/net/curated?linked=true');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Xavier Browse');
     // Unlinked row should not appear
@@ -433,7 +443,7 @@ describe('Filter: linked=true', () => {
 describe('Empty state', () => {
   it('shows empty state when no items match the filter', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/curated?event=no-such-event-id');
+    const res = await internalGet(app, '/internal/net/curated?event=no-such-event-id');
     expect(res.status).toBe(200);
     expect(res.text).toContain('No curated matches match');
   });

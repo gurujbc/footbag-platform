@@ -1,9 +1,9 @@
 /**
- * Integration tests for public net event routes.
+ * Integration tests for net event routes.
  *
  * Covers:
- *   GET /net/events              — event list
- *   GET /net/events/:eventId     — event detail
+ *   GET /net/events                       — public event list
+ *   GET /internal/net/events/:eventId     — QC reviewer event detail
  *
  * Verifies:
  *   - 200 for valid routes, 404 for unknown eventId
@@ -28,6 +28,7 @@ import {
 import {
   insertHistoricalPerson,
   insertEvent,
+  insertTag,
   insertDiscipline,
   insertMember,
   insertResultsUpload,
@@ -35,12 +36,20 @@ import {
   insertNetTeam,
   insertNetTeamMember,
   insertNetTeamAppearance,
+  createTestSessionJwt,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3097');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
+
+const VIEWER_ID = 'viewer-net-events';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
 
 // Person IDs
 const PERSON_A = 'person-evt-aa-test-1';
@@ -65,21 +74,26 @@ function setupDb(db: BetterSqlite3.Database): void {
   insertHistoricalPerson(db, { person_id: PERSON_C, person_name: 'Eve Gamma' });
   insertHistoricalPerson(db, { person_id: PERSON_D, person_name: 'Eve Delta' });
 
-  // Events
+  // Events — each has an explicit canonical-pattern tag_normalized so that
+  // href assertions can verify the canonical /events/event_{year}_{slug} shape.
+  const tag2015 = insertTag(db, { tag_normalized: '#event_2015_net_worlds' });
+  const tag2012 = insertTag(db, { tag_normalized: '#event_2012_net_open' });
+  const tag2010 = insertTag(db, { tag_normalized: '#event_2010_no_net' });
+  const tag2008 = insertTag(db, { tag_normalized: '#event_2008_inferred_only' });
   const ev2015 = insertEvent(db, {
-    id: EVENT_2015_ID, title: 'Net Worlds 2015',
+    id: EVENT_2015_ID, hashtag_tag_id: tag2015, title: 'Net Worlds 2015',
     start_date: '2015-08-01', city: 'Portland', country: 'US',
   });
   const ev2012 = insertEvent(db, {
-    id: EVENT_2012_ID, title: 'Net Open 2012',
+    id: EVENT_2012_ID, hashtag_tag_id: tag2012, title: 'Net Open 2012',
     start_date: '2012-06-15', city: 'Berlin', country: 'DE',
   });
   const ev2010 = insertEvent(db, {
-    id: EVENT_2010_ID, title: 'No Net 2010',
+    id: EVENT_2010_ID, hashtag_tag_id: tag2010, title: 'No Net 2010',
     start_date: '2010-05-01', city: 'Chicago', country: 'US',
   });
   const ev2008 = insertEvent(db, {
-    id: EVENT_2008_ID, title: 'Inferred Only 2008',
+    id: EVENT_2008_ID, hashtag_tag_id: tag2008, title: 'Inferred Only 2008',
     start_date: '2008-03-01', city: 'Denver', country: 'US',
   });
 
@@ -138,7 +152,7 @@ function setupDb(db: BetterSqlite3.Database): void {
   insertNetTeamAppearance(db, { team_id: TEAM_AB, event_id: ev2015, discipline_id: disc2015a, result_entry_id: entry_ab_2015_open,   placement: 1, event_year: 2015 });
   insertNetTeamAppearance(db, { team_id: TEAM_AB, event_id: ev2015, discipline_id: disc2015b, result_entry_id: entry_ab_2015_womens, placement: 1, event_year: 2015 });
   insertNetTeamAppearance(db, { team_id: TEAM_AB, event_id: ev2012, discipline_id: disc2012,  result_entry_id: entry_ab_2012_open,   placement: 3, event_year: 2012 });
-  // inferred_partial at ev2008 — must NOT cause ev2008 to appear in /net/events or /net/events/:eventId
+  // inferred_partial at ev2008 — must NOT cause ev2008 to appear in /net/events or /internal/net/events/:eventId
   insertNetTeamAppearance(db, { team_id: TEAM_AB, event_id: ev2008, discipline_id: disc2008, result_entry_id: entry_ab_2008_infer, placement: 1, event_year: 2008, evidence_class: 'inferred_partial' });
 
   // Team CD: Eve Gamma + Eve Delta
@@ -185,6 +199,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-net-events', display_name: 'Viewer' });
   setupDb(db);
   db.close();
   createApp = await importApp();
@@ -230,10 +245,13 @@ describe('GET /net/events', () => {
     expect(pos2015).toBeLessThan(pos2012);
   });
 
-  it('links to event detail pages', async () => {
+  it('links to canonical /events/event_{year}_{slug} pages (public list does not expose internal QC route)', async () => {
     const app = createApp();
     const res = await request(app).get('/net/events');
-    expect(res.text).toContain(`/net/events/${EVENT_2015_ID}`);
+    expect(res.text).toContain('/events/event_2015_net_worlds');
+    expect(res.text).toContain('/events/event_2012_net_open');
+    // Public list never links to the internal QC reviewer view
+    expect(res.text).not.toContain('/internal/net/events/');
   });
 
   it('shows multi-stage QC badge for ev2015', async () => {
@@ -261,40 +279,40 @@ describe('GET /net/events', () => {
 
 // ---------------------------------------------------------------------------
 
-describe('GET /net/events/:eventId', () => {
+describe('GET /internal/net/events/:eventId (QC reviewer view)', () => {
   it('returns 200 for a valid event', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.status).toBe(200);
   });
 
   it('returns 404 for an unknown eventId', async () => {
     const app = createApp();
-    const res = await request(app).get('/net/events/not-a-real-event');
+    const res = await internalGet(app, '/internal/net/events/not-a-real-event');
     expect(res.status).toBe(404);
   });
 
   it('returns 404 for an event with no canonical net appearances', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2010_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2010_ID}`);
     expect(res.status).toBe(404);
   });
 
   it('shows the event title', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('Net Worlds 2015');
   });
 
   it('includes the evidence disclaimer', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('may not reflect official partnerships');
   });
 
   it('groups results by discipline', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     // Both disciplines at ev2015 should be present (raw names: no net_discipline_group mapping in test data)
     // Handlebars HTML-escapes apostrophes as &#x27; in double-curly expressions
     expect(res.text).toContain('Open Doubles Net');
@@ -303,7 +321,7 @@ describe('GET /net/events/:eventId', () => {
 
   it('shows player names with links', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('Eve Alpha');
     expect(res.text).toContain('Eve Beta');
     expect(res.text).toContain(`/history/${PERSON_A}`);
@@ -312,26 +330,26 @@ describe('GET /net/events/:eventId', () => {
 
   it('shows placement labels', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('1st');
     expect(res.text).toContain('2nd');
   });
 
   it('shows multi-stage notice on ev2015', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     expect(res.text).toContain('Multi-stage results');
   });
 
   it('shows unknown_team excluded notice on ev2012', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2012_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2012_ID}`);
     expect(res.text).toContain('2 result(s) not shown');
   });
 
   it('renders raw discipline name when conflict_flag=1', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2012_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2012_ID}`);
     // disc2012_conflict has conflict_flag=1; raw name is 'Footbag Net: Mixed'
     expect(res.text).toContain('Footbag Net: Mixed');
   });
@@ -346,13 +364,13 @@ describe('GET /net/events/:eventId', () => {
 
   it('returns 404 for an event that exists but has only inferred_partial appearances', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2008_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2008_ID}`);
     expect(res.status).toBe(404);
   });
 
   it('does not show rankings, win/loss, or head-to-head stats', async () => {
     const app = createApp();
-    const res = await request(app).get(`/net/events/${EVENT_2015_ID}`);
+    const res = await internalGet(app, `/internal/net/events/${EVENT_2015_ID}`);
     const lower = res.text.toLowerCase();
     expect(lower).not.toContain('win/loss');
     expect(lower).not.toContain('ranking');

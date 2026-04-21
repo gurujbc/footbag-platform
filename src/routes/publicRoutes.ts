@@ -39,16 +39,10 @@ publicRouter.get('/records', recordsController.records);
 // IMPORTANT: /net must be registered before all /net/* sub-routes
 publicRouter.get('/net',                  netController.homePage);
 
-// IMPORTANT: /net/events/:eventId must be registered after /net/events
-publicRouter.get('/net/events',           netController.eventsPage);
-publicRouter.get('/net/events/:eventId',  netController.eventDetailPage);
+publicRouter.get('/net/events', netController.eventsPage);
 
-publicRouter.get('/net/partnerships',             netController.partnershipsPage);
-publicRouter.get('/net/partnerships/:teamId',    netController.partnershipDetail);
-
-// IMPORTANT: /net/teams/:teamId must be registered after /net/teams
-publicRouter.get('/net/teams',          netController.teams);
-publicRouter.get('/net/teams/:teamId',  netController.teamDetail);
+publicRouter.get('/net/teams',             netController.teamsPage);
+publicRouter.get('/net/teams/:teamId',    netController.teamDetail);
 
 // IMPORTANT: /events/year/:year MUST be registered before /events/:eventKey.
 // Express matches routes in registration order. Without this ordering,

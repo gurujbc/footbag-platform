@@ -587,12 +587,12 @@ For the current public routes, `EventService` is responsible for:
 
 ### 4.6 `NetService`
 
-**Purpose/Boundary:** Owns public Footbag Net page reads including the `GET /net` portal landing (hero, narrative, Singles/Doubles competition-format cards, notable partnerships, notable players, recent events) and the `GET /net/teams` / `GET /net/teams/:teamId` team list and detail pages. Enforces the statistics firewall: only `evidence_class = 'canonical_only'` data is exposed. Handles conflict-flag-aware discipline label resolution: when `conflict_flag = 1` on a `net_discipline_group` row, the raw canonical discipline name is used instead of the canonical group label. Team-data pages always render the disclaimer: "Team identities are algorithmically constructed from placement data and may not reflect official partnerships." (not conditioned on a flag). Does not expose win/loss records, head-to-head stats, or rankings.
+**Purpose/Boundary:** Owns public Footbag Net page reads including the `GET /net` portal landing (hero, narrative, Singles/Doubles competition-format cards, notable teams, notable players, recent events) and the `GET /net/teams` / `GET /net/teams/:teamId` team list and detail pages. Enforces the statistics firewall: only `evidence_class = 'canonical_only'` data is exposed. Handles conflict-flag-aware discipline label resolution: when `conflict_flag = 1` on a `net_discipline_group` row, the raw canonical discipline name is used instead of the canonical group label. Team-data pages always render the disclaimer: "Team identities are algorithmically constructed from placement data and may not reflect official partnerships." (not conditioned on a flag). Does not expose win/loss records, head-to-head stats, or rankings.
 
 **Consumers:** Public net controller
 
 **Key Methods:**
-- `getNetHomePage() -> NetHomePageViewModel` — portal landing; shapes hero/mascot, intro narrative, competition formats, Explore-card data-driven grey-out, notable partnerships/players buckets, recent events
+- `getNetHomePage() -> NetHomePageViewModel` — portal landing; shapes hero/mascot, intro narrative, competition formats, Explore-card data-driven grey-out, notable teams and notable players buckets, recent events
 - `getTeamsPage() -> NetTeamsPageViewModel` — team list ordered by appearance count descending
 - `getTeamDetailPage(teamId) -> NetTeamDetailViewModel` — team detail with appearances grouped by year, descending; throws `NotFoundError` for unknown team IDs
 

@@ -45,12 +45,23 @@ import {
   insertNetTeamAppearance,
   insertNetReviewQueueItem,
   insertNetRecoveryAliasCandidate,
+  createTestSessionJwt,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3099');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
+
+const VIEWER_ID = 'viewer-net-review';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
+function internalPost(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).post(path).set('Cookie', COOKIE);
+}
 
 const EVENT_2018_ID = 'event-rv-2018';
 const EVENT_2014_ID = 'event-rv-2014';
@@ -219,6 +230,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-net-review', display_name: 'Viewer' });
   setupDb(db);
   db.close();
   createApp = await importApp();
@@ -231,26 +243,26 @@ afterAll(() => cleanupTestDb(dbPath));
 describe('GET /internal/net/review', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Net Review / QC');
   });
 
   it('shows the operator description', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Operator review');
     expect(res.text).toContain('Not shown in public pages');
   });
 
   it('shows summary counts by reason_code', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('unknown_team');
     expect(res.text).toContain('multi_stage_result');
     expect(res.text).toContain('discipline_team_type_mismatch');
@@ -258,7 +270,7 @@ describe('GET /internal/net/review', () => {
 
   it('shows summary counts by priority', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // Priority 1 (Critical) and 2 (High) and 3 (Structural) are all present
     expect(res.text).toContain('Critical');
     expect(res.text).toContain('High');
@@ -267,21 +279,21 @@ describe('GET /internal/net/review', () => {
 
   it('shows summary counts by status', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('open');
     expect(res.text).toContain('resolved');
   });
 
   it('shows total item count', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // 4 total items
     expect(res.text).toContain('4');
   });
 
   it('renders all 4 review items by default', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Team not resolved at 2018 event');
     expect(res.text).toContain('Multi-stage bracket at 2018 event');
     expect(res.text).toContain('Team type mismatch at 2014 event');
@@ -290,33 +302,33 @@ describe('GET /internal/net/review', () => {
 
   it('shows event titles in the items table', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Review Open 2018');
   });
 
   it('shows discipline names in the items table', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Open Doubles Net');
   });
 
   it('shows the discipline mapping section with conflict_flag entry', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Discipline Mappings');
     expect(res.text).toContain('Footbag Net: Conflict');
   });
 
   it('shows review_needed entry in discipline mappings', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // disc2018 has review_needed=1
     expect(res.text).toContain('disc-rv-open-2018');
   });
 
   it('renders the filter form', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('name="reason"');
     expect(res.text).toContain('name="priority"');
     expect(res.text).toContain('name="status"');
@@ -325,7 +337,7 @@ describe('GET /internal/net/review', () => {
 
   it('does not show forbidden public-stat language', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     const lower = res.text.toLowerCase();
     expect(lower).not.toContain('head-to-head');
     expect(lower).not.toContain('ranking');
@@ -337,7 +349,7 @@ describe('GET /internal/net/review', () => {
 describe('GET /internal/net/review?reason=unknown_team', () => {
   it('filters items to only unknown_team reason code', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?reason=unknown_team');
+    const res = await internalGet(app, '/internal/net/review?reason=unknown_team');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Team not resolved at 2018 event');
     expect(res.text).toContain('Duplicate team identity detected');
@@ -348,7 +360,7 @@ describe('GET /internal/net/review?reason=unknown_team', () => {
 
   it('marks the reason dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?reason=unknown_team');
+    const res = await internalGet(app, '/internal/net/review?reason=unknown_team');
     // The option value="unknown_team" should be selected
     expect(res.text).toContain('value="unknown_team" selected');
   });
@@ -357,7 +369,7 @@ describe('GET /internal/net/review?reason=unknown_team', () => {
 describe('GET /internal/net/review?priority=1', () => {
   it('filters items to only priority 1', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?priority=1');
+    const res = await internalGet(app, '/internal/net/review?priority=1');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Duplicate team identity detected');
     expect(res.text).not.toContain('Team not resolved at 2018 event');
@@ -368,7 +380,7 @@ describe('GET /internal/net/review?priority=1', () => {
 describe('GET /internal/net/review?status=resolved', () => {
   it('filters items to resolved only', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?status=resolved');
+    const res = await internalGet(app, '/internal/net/review?status=resolved');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Team type mismatch at 2014 event');
     expect(res.text).not.toContain('Team not resolved at 2018 event');
@@ -378,7 +390,7 @@ describe('GET /internal/net/review?status=resolved', () => {
 describe('GET /internal/net/review?event=event-rv-2018', () => {
   it('filters items to ev2018 only', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/review?event=${EVENT_2018_ID}`);
+    const res = await internalGet(app, `/internal/net/review?event=${EVENT_2018_ID}`);
     expect(res.status).toBe(200);
     expect(res.text).toContain('Team not resolved at 2018 event');
     expect(res.text).toContain('Multi-stage bracket at 2018 event');
@@ -388,16 +400,16 @@ describe('GET /internal/net/review?event=event-rv-2018', () => {
 
   it('shows event context banner when event filter is active', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/review?event=${EVENT_2018_ID}`);
+    const res = await internalGet(app, `/internal/net/review?event=${EVENT_2018_ID}`);
     expect(res.text).toContain('Review Open 2018');
     expect(res.text).toContain('Seattle');
-    // Link to net event page
-    expect(res.text).toContain(`/net/events/${EVENT_2018_ID}`);
+    // Link to internal net event QC detail page
+    expect(res.text).toContain(`/internal/net/events/${EVENT_2018_ID}`);
   });
 
   it('shows no event context for an unknown event_id', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?event=not-a-real-event');
+    const res = await internalGet(app, '/internal/net/review?event=not-a-real-event');
     expect(res.status).toBe(200);
     // No event context banner — just no items match either
     expect(res.text).not.toContain('Filtered to event:');
@@ -407,7 +419,7 @@ describe('GET /internal/net/review?event=event-rv-2018', () => {
 describe('Classification columns in review items table', () => {
   it('renders new filter dropdowns in the filter form', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('name="classification"');
     expect(res.text).toContain('name="fix_type"');
     expect(res.text).toContain('name="decision"');
@@ -415,7 +427,7 @@ describe('Classification columns in review items table', () => {
 
   it('renders the classification label for a classified item (not raw value)', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // Item 5 has classification=retag_team_type → label is "Retag Team Type"
     expect(res.text).toContain('Retag Team Type');
     // Item 6 has classification=split_merged_discipline → label is "Split Merged Discipline"
@@ -424,7 +436,7 @@ describe('Classification columns in review items table', () => {
 
   it('renders decision status labels (not raw values)', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // Item 5: fix_active → "Fix Active"
     expect(res.text).toContain('Fix Active');
     // Item 6: fix_encoded → "Fix Encoded"
@@ -433,7 +445,7 @@ describe('Classification columns in review items table', () => {
 
   it('renders confidence labels for classified items', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('Confirmed');
     expect(res.text).toContain('Tentative');
   });
@@ -441,7 +453,7 @@ describe('Classification columns in review items table', () => {
   it('renders em-dash for classification columns on unclassified items', async () => {
     const app = createApp();
     // Items 1–4 have no classification — the table should show "—" (em-dash entity or literal)
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // The page renders many "—" for unclassified rows; just confirm it doesn't crash
     expect(res.status).toBe(200);
     expect(res.text).toContain('Team not resolved at 2018 event');  // unclassified item still renders
@@ -451,7 +463,7 @@ describe('Classification columns in review items table', () => {
 describe('GET /internal/net/review?classification=retag_team_type', () => {
   it('filters items to only retag_team_type classification', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?classification=retag_team_type');
+    const res = await internalGet(app, '/internal/net/review?classification=retag_team_type');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Singles disc tagged as doubles');
     // Items without this classification must not appear
@@ -461,7 +473,7 @@ describe('GET /internal/net/review?classification=retag_team_type', () => {
 
   it('marks the classification dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?classification=retag_team_type');
+    const res = await internalGet(app, '/internal/net/review?classification=retag_team_type');
     expect(res.text).toContain('value="retag_team_type" selected');
   });
 });
@@ -469,7 +481,7 @@ describe('GET /internal/net/review?classification=retag_team_type', () => {
 describe('GET /internal/net/review?fix_type=split_merged_discipline', () => {
   it('filters items to only split_merged_discipline fix type', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?fix_type=split_merged_discipline');
+    const res = await internalGet(app, '/internal/net/review?fix_type=split_merged_discipline');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Two competitions merged into one discipline');
     expect(res.text).not.toContain('Singles disc tagged as doubles');
@@ -479,7 +491,7 @@ describe('GET /internal/net/review?fix_type=split_merged_discipline', () => {
 describe('GET /internal/net/review?decision=fix_active', () => {
   it('filters items to only fix_active decision', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?decision=fix_active');
+    const res = await internalGet(app, '/internal/net/review?decision=fix_active');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Singles disc tagged as doubles');
     expect(res.text).not.toContain('Two competitions merged into one discipline');
@@ -487,7 +499,7 @@ describe('GET /internal/net/review?decision=fix_active', () => {
 
   it('marks the decision dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?decision=fix_active');
+    const res = await internalGet(app, '/internal/net/review?decision=fix_active');
     expect(res.text).toContain('value="fix_active" selected');
   });
 });
@@ -495,20 +507,20 @@ describe('GET /internal/net/review?decision=fix_active', () => {
 describe('Classification summary cards', () => {
   it('shows byClassification summary card when classified items exist', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.status).toBe(200);
     expect(res.text).toContain('By Classification');
   });
 
   it('shows byDecision summary card when items with decisions exist', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('By Decision');
   });
 
   it('summary classification links filter the page', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // The byClassification summary links should contain the classification value in href
     expect(res.text).toContain('/internal/net/review?classification=');
   });
@@ -517,7 +529,7 @@ describe('Classification summary cards', () => {
 describe('Invalid filter values are silently ignored', () => {
   it('ignores unknown classification value and shows all items', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?classification=not_a_real_classification');
+    const res = await internalGet(app, '/internal/net/review?classification=not_a_real_classification');
     expect(res.status).toBe(200);
     // Invalid value stripped → unfiltered results
     expect(res.text).toContain('Team not resolved at 2018 event');
@@ -525,13 +537,13 @@ describe('Invalid filter values are silently ignored', () => {
 
   it('ignores unknown fix_type value', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?fix_type=bogus');
+    const res = await internalGet(app, '/internal/net/review?fix_type=bogus');
     expect(res.status).toBe(200);
   });
 
   it('ignores unknown decision value', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?decision=invalid');
+    const res = await internalGet(app, '/internal/net/review?decision=invalid');
     expect(res.status).toBe(200);
   });
 });
@@ -543,8 +555,7 @@ describe('Invalid filter values are silently ignored', () => {
 describe('POST /internal/net/review/:id/classify', () => {
   it('valid classification persists and redirects', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-1/classify')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-1/classify')
       .type('form')
       .send({
         classification: 'retag_team_type',
@@ -555,21 +566,19 @@ describe('POST /internal/net/review/:id/classify', () => {
     expect(res.headers['location']).toBe('/internal/net/review');
 
     // Verify the value persisted by checking the review page
-    const page = await request(app).get('/internal/net/review');
+    const page = await internalGet(app, '/internal/net/review');
     expect(page.text).toContain('Retag Team Type');
   });
 
   it('clears classification when empty string is sent', async () => {
     const app = createApp();
     // First set a value
-    await request(app)
-      .post('/internal/net/review/rq-rv-2/classify')
+    await internalPost(app, '/internal/net/review/rq-rv-2/classify')
       .type('form')
       .send({ classification: 'parser_improvement' });
 
     // Then clear it
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-2/classify')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-2/classify')
       .type('form')
       .send({ classification: '' });
     expect(res.status).toBe(302);
@@ -577,8 +586,7 @@ describe('POST /internal/net/review/:id/classify', () => {
 
   it('returns 400 for invalid classification value', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-1/classify')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-1/classify')
       .type('form')
       .send({ classification: 'not_a_valid_classification' });
     expect(res.status).toBe(400);
@@ -586,8 +594,7 @@ describe('POST /internal/net/review/:id/classify', () => {
 
   it('returns 400 for invalid proposed_fix_type value', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-1/classify')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-1/classify')
       .type('form')
       .send({ proposed_fix_type: 'bogus_fix_type' });
     expect(res.status).toBe(400);
@@ -595,8 +602,7 @@ describe('POST /internal/net/review/:id/classify', () => {
 
   it('returns 400 for invalid classification_confidence value', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-1/classify')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-1/classify')
       .type('form')
       .send({ classification_confidence: 'maybe' });
     expect(res.status).toBe(400);
@@ -604,8 +610,7 @@ describe('POST /internal/net/review/:id/classify', () => {
 
   it('returns 404 for unknown review item id', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/not-a-real-id/classify')
+    const res = await internalPost(app, '/internal/net/review/not-a-real-id/classify')
       .type('form')
       .send({ classification: 'unresolved' });
     expect(res.status).toBe(404);
@@ -615,13 +620,12 @@ describe('POST /internal/net/review/:id/classify', () => {
     const app = createApp();
     // Item rq-rv-5 has decision_status=fix_active from setup.
     // Updating classification should not clear decision_status.
-    await request(app)
-      .post('/internal/net/review/rq-rv-5/classify')
+    await internalPost(app, '/internal/net/review/rq-rv-5/classify')
       .type('form')
       .send({ classification: 'parser_improvement' });
 
     // decision filter should still find item 5
-    const page = await request(app).get('/internal/net/review?decision=fix_active');
+    const page = await internalGet(app, '/internal/net/review?decision=fix_active');
     expect(page.text).toContain('Singles disc tagged as doubles');
   });
 });
@@ -633,8 +637,7 @@ describe('POST /internal/net/review/:id/classify', () => {
 describe('POST /internal/net/review/:id/decision', () => {
   it('valid decision update persists and redirects', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-3/decision')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-3/decision')
       .type('form')
       .send({
         decision_status: 'deferred',
@@ -644,14 +647,13 @@ describe('POST /internal/net/review/:id/decision', () => {
     expect(res.headers['location']).toBe('/internal/net/review');
 
     // Verify decision persisted
-    const page = await request(app).get('/internal/net/review?decision=deferred');
+    const page = await internalGet(app, '/internal/net/review?decision=deferred');
     expect(page.text).toContain('Team type mismatch at 2014 event');
   });
 
   it('decision notes are saved correctly', async () => {
     const app = createApp();
-    await request(app)
-      .post('/internal/net/review/rq-rv-4/decision')
+    await internalPost(app, '/internal/net/review/rq-rv-4/decision')
       .type('form')
       .send({
         decision_status: 'wont_fix',
@@ -659,14 +661,13 @@ describe('POST /internal/net/review/:id/decision', () => {
       });
 
     // The notes are not displayed in the table columns, but the decision_status is
-    const page = await request(app).get('/internal/net/review?decision=wont_fix');
+    const page = await internalGet(app, '/internal/net/review?decision=wont_fix');
     expect(page.text).toContain('Duplicate team identity detected');
   });
 
   it('returns 400 for invalid decision_status value', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/rq-rv-1/decision')
+    const res = await internalPost(app, '/internal/net/review/rq-rv-1/decision')
       .type('form')
       .send({ decision_status: 'approved' });
     expect(res.status).toBe(400);
@@ -674,8 +675,7 @@ describe('POST /internal/net/review/:id/decision', () => {
 
   it('returns 404 for unknown review item id', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/review/nonexistent/decision')
+    const res = await internalPost(app, '/internal/net/review/nonexistent/decision')
       .type('form')
       .send({ decision_status: 'deferred' });
     expect(res.status).toBe(404);
@@ -685,13 +685,12 @@ describe('POST /internal/net/review/:id/decision', () => {
     const app = createApp();
     // Item rq-rv-6 has classification=split_merged_discipline from setup.
     // Updating decision should not clear classification.
-    await request(app)
-      .post('/internal/net/review/rq-rv-6/decision')
+    await internalPost(app, '/internal/net/review/rq-rv-6/decision')
       .type('form')
       .send({ decision_status: 'deferred' });
 
     // classification filter should still find item 6
-    const page = await request(app).get('/internal/net/review?classification=split_merged_discipline');
+    const page = await internalGet(app, '/internal/net/review?classification=split_merged_discipline');
     expect(page.text).toContain('Two competitions merged into one discipline');
   });
 });
@@ -703,28 +702,28 @@ describe('POST /internal/net/review/:id/decision', () => {
 describe('Inline edit forms in review items', () => {
   it('renders edit details toggle for each item', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('<details>');
     expect(res.text).toContain('Edit');
   });
 
   it('renders classify form with POST action', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('/classify');
     expect(res.text).toContain('Save Classification');
   });
 
   it('renders decision form with POST action', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('/decision');
     expect(res.text).toContain('Save Decision');
   });
 
   it('pre-selects current classification value for classified items', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     // Item rq-rv-5 has classification=retag_team_type — the form should pre-select it
     expect(res.text).toContain('value="retag_team_type" selected');
   });
@@ -737,7 +736,7 @@ describe('Inline edit forms in review items', () => {
 describe('Regression: existing review page behavior', () => {
   it('page still loads with all items', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.status).toBe(200);
     // 6 total items now (4 original + 2 classified)
     expect(res.text).toContain('Team not resolved at 2018 event');
@@ -747,7 +746,7 @@ describe('Regression: existing review page behavior', () => {
 
   it('existing filters still work after POST operations', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review?priority=1');
+    const res = await internalGet(app, '/internal/net/review?priority=1');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Duplicate team identity detected');
   });
@@ -760,33 +759,33 @@ describe('Regression: existing review page behavior', () => {
 describe('GET /internal/net/review/summary', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('Priority Summary');
   });
 
   it('shows totals section with correct total count', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     // 6 items seeded (4 unclassified + 2 classified)
     expect(res.text).toContain('Total items');
   });
 
   it('shows classified percentage', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     // 2 classified out of 6 = 33%
     expect(res.text).toContain('Classified');
   });
 
   it('shows classification breakdown with labels', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     // Items 5 and 6 have classifications
     expect(res.text).toContain('Retag Team Type');
     expect(res.text).toContain('Split Merged Discipline');
@@ -794,13 +793,13 @@ describe('GET /internal/net/review/summary', () => {
 
   it('shows fix type breakdown with labels', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('By Fix Type');
   });
 
   it('shows decision status breakdown with labels', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     // After earlier POST tests mutate data: fix_active (rq-rv-5), deferred (rq-rv-3,6), wont_fix (rq-rv-4)
     expect(res.text).toContain('Fix Active');
     expect(res.text).toContain('Deferred');
@@ -808,7 +807,7 @@ describe('GET /internal/net/review/summary', () => {
 
   it('shows actionable fixes section (fix_encoded + fix_active with fix type)', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('Ready-to-Fix Pipeline Work');
     // Both classified items have proposed_fix_type + decision_status in fix_encoded/fix_active
     expect(res.text).toContain('View items');
@@ -816,13 +815,13 @@ describe('GET /internal/net/review/summary', () => {
 
   it('actionable fix links contain correct filter params', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('decision=fix_active');
   });
 
   it('shows top events with issues', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('Top Events with Issues');
     // Events from test setup have items linked
     expect(res.text).toContain('Review Open 2018');
@@ -830,25 +829,25 @@ describe('GET /internal/net/review/summary', () => {
 
   it('classification links point to filtered review page', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('/internal/net/review?classification=');
   });
 
   it('decision links point to filtered review page', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('/internal/net/review?decision=');
   });
 
   it('event links point to filtered review page', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('/internal/net/review?event=');
   });
 
   it('back link to review page is present', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.text).toContain('/internal/net/review');
   });
 });
@@ -858,7 +857,7 @@ describe('Review summary with empty classifications', () => {
   // (4 of 6 items in our test fixture have no classification)
   it('shows empty-state messages for sections without data', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review/summary');
+    const res = await internalGet(app, '/internal/net/review/summary');
     expect(res.status).toBe(200);
     // The page always renders; empty sections show fallback text
     // Since we DO have classified items, the "no items classified" message should NOT appear
@@ -869,7 +868,7 @@ describe('Review summary with empty classifications', () => {
 describe('Review page links to summary', () => {
   it('review page contains link to summary', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('/internal/net/review/summary');
     expect(res.text).toContain('Priority Summary');
   });
@@ -882,43 +881,43 @@ describe('Review page links to summary', () => {
 describe('GET /internal/net/recovery-signals', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('Net Recovery Signals');
   });
 
   it('shows stub count', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('stub persons remaining');
   });
 
   it('renders High-Value Recovery Candidates section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('High-Value Recovery Candidates');
   });
 
   it('renders Unresolved Partner Repeats section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('Unresolved Partner Repeats');
   });
 
   it('renders Abbreviation Clusters section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('Abbreviation Clusters');
   });
 
   it('handles empty data gracefully', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     // Test DB has no stub persons, so sections show empty-state messages
     expect(res.status).toBe(200);
   });
@@ -932,7 +931,7 @@ describe('GET /internal/net/recovery-signals', () => {
 
   it('review page links to recovery signals', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/review');
+    const res = await internalGet(app, '/internal/net/review');
     expect(res.text).toContain('/internal/net/recovery-signals');
     expect(res.text).toContain('Recovery Signals');
   });
@@ -945,38 +944,38 @@ describe('GET /internal/net/recovery-signals', () => {
 describe('GET /internal/net/recovery-candidates', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('Recovery Candidates');
   });
 
   it('shows alias candidates section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('Alias Candidates');
   });
 
   it('shows likely new persons section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('Likely New Persons');
   });
 
   it('shows totals in hero stats', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('alias candidates');
     expect(res.text).toContain('likely new persons');
   });
 
   it('handles empty data gracefully', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     // Test DB has no stubs, so empty-state messages render
     expect(res.status).toBe(200);
   });
@@ -989,7 +988,7 @@ describe('GET /internal/net/recovery-candidates', () => {
 
   it('recovery signals page links to candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-signals');
+    const res = await internalGet(app, '/internal/net/recovery-signals');
     expect(res.text).toContain('/internal/net/recovery-candidates');
   });
 });
@@ -1001,8 +1000,7 @@ describe('GET /internal/net/recovery-candidates', () => {
 describe('POST /internal/net/recovery-candidates/:id/decision', () => {
   it('valid approve persists and redirects', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/rc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/rc-test-1/decision')
       .type('form')
       .send({ decision: 'approve', notes: 'Confirmed via event overlap' });
     expect(res.status).toBe(302);
@@ -1011,8 +1009,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('valid reject persists', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/rc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/rc-test-1/decision')
       .type('form')
       .send({ decision: 'reject' });
     expect(res.status).toBe(302);
@@ -1020,8 +1017,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('valid defer persists', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/rc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/rc-test-1/decision')
       .type('form')
       .send({ decision: 'defer' });
     expect(res.status).toBe(302);
@@ -1029,8 +1025,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('returns 400 for invalid decision', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/rc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/rc-test-1/decision')
       .type('form')
       .send({ decision: 'invalid_value' });
     expect(res.status).toBe(400);
@@ -1038,8 +1033,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('returns 400 for empty decision', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/rc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/rc-test-1/decision')
       .type('form')
       .send({ decision: '' });
     expect(res.status).toBe(400);
@@ -1047,8 +1041,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('returns 404 for unknown candidate id', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/recovery-candidates/nonexistent/decision')
+    const res = await internalPost(app, '/internal/net/recovery-candidates/nonexistent/decision')
       .type('form')
       .send({ decision: 'approve' });
     expect(res.status).toBe(404);
@@ -1057,7 +1050,7 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
   it('approved candidate shows on page with correct styling', async () => {
     const app = createApp();
     // rc-test-2 was inserted as approved in setup
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('D. Greer');
     expect(res.text).toContain('Dan Greer');
     expect(res.text).toContain('rc-approved');
@@ -1065,14 +1058,14 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 
   it('rejected candidate shows with reject styling', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('X. Fake');
     expect(res.text).toContain('rc-rejected');
   });
 
   it('shows approved count and export hint when approvals exist', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/recovery-candidates');
+    const res = await internalGet(app, '/internal/net/recovery-candidates');
     expect(res.text).toContain('approved');
     expect(res.text).toContain('export_approved_aliases.py');
   });
@@ -1085,19 +1078,19 @@ describe('POST /internal/net/recovery-candidates/:id/decision', () => {
 describe('GET /internal/net/team-corrections', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.text).toContain('Team Corrections Triage');
   });
 
   it('shows overview stats', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.text).toContain('anomalies');
     expect(res.text).toContain('HIGH');
     expect(res.text).toContain('MEDIUM');
@@ -1105,7 +1098,7 @@ describe('GET /internal/net/team-corrections', () => {
 
   it('shows filter controls', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.text).toContain('name="severity"');
     expect(res.text).toContain('name="type"');
     expect(res.text).toContain('name="event"');
@@ -1113,14 +1106,14 @@ describe('GET /internal/net/team-corrections', () => {
 
   it('shows worklist section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.text).toContain('Worklist');
   });
 
   it('handles empty CSV gracefully', async () => {
     // Test DB has no CSV file in the test working directory — should still render
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.status).toBe(200);
   });
 
@@ -1132,19 +1125,19 @@ describe('GET /internal/net/team-corrections', () => {
 
   it('supports severity filter', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections?severity=HIGH');
+    const res = await internalGet(app, '/internal/net/team-corrections?severity=HIGH');
     expect(res.status).toBe(200);
   });
 
   it('supports event filter', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections?event=1998_worlds_montreal');
+    const res = await internalGet(app, '/internal/net/team-corrections?event=1998_worlds_montreal');
     expect(res.status).toBe(200);
   });
 
   it('shows approved count', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/team-corrections');
+    const res = await internalGet(app, '/internal/net/team-corrections');
     expect(res.text).toContain('approved');
   });
 });
@@ -1171,8 +1164,7 @@ describe('POST /internal/net/team-corrections/:id/decision', () => {
     `).run();
     db.close();
 
-    const res = await request(app)
-      .post('/internal/net/team-corrections/tc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/team-corrections/tc-test-1/decision')
       .type('form')
       .send({ decision: 'approve', player_a: 'Alice', player_b: 'Bob' });
     expect(res.status).toBe(302);
@@ -1180,8 +1172,7 @@ describe('POST /internal/net/team-corrections/:id/decision', () => {
 
   it('returns 400 for invalid decision', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/team-corrections/tc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/team-corrections/tc-test-1/decision')
       .type('form')
       .send({ decision: 'invalid' });
     expect(res.status).toBe(400);
@@ -1189,8 +1180,7 @@ describe('POST /internal/net/team-corrections/:id/decision', () => {
 
   it('returns 404 for unknown candidate', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/team-corrections/nonexistent/decision')
+    const res = await internalPost(app, '/internal/net/team-corrections/nonexistent/decision')
       .type('form')
       .send({ decision: 'approve' });
     expect(res.status).toBe(404);
@@ -1198,8 +1188,7 @@ describe('POST /internal/net/team-corrections/:id/decision', () => {
 
   it('returns 400 for empty decision', async () => {
     const app = createApp();
-    const res = await request(app)
-      .post('/internal/net/team-corrections/tc-test-1/decision')
+    const res = await internalPost(app, '/internal/net/team-corrections/tc-test-1/decision')
       .type('form')
       .send({ decision: '' });
     expect(res.status).toBe(400);

@@ -40,12 +40,21 @@ import {
   insertHistoricalPerson,
   insertNetRawFragment,
   insertNetCandidateMatch,
+  insertMember,
+  createTestSessionJwt,
 } from '../fixtures/factories';
 
 const { dbPath } = setTestEnv('3100');
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
+
+const VIEWER_ID = 'viewer-net-candidates';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
 
 const PERSON_C  = 'person-cand-cc-test';
 const PERSON_D  = 'person-cand-dd-test';
@@ -154,6 +163,7 @@ function setupDb(db: BetterSqlite3.Database): void {
 
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-net-candidates', display_name: 'Viewer' });
   setupDb(db);
   db.close();
   createApp = await importApp();
@@ -166,19 +176,19 @@ afterAll(() => cleanupTestDb(dbPath));
 describe('GET /internal/net/candidates', () => {
   it('returns 200', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.status).toBe(200);
   });
 
   it('shows the page title', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('Net Match Candidates');
   });
 
   it('shows the operator description with evidence class label', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('unresolved_candidate');
     expect(res.text).toContain('Read-only');
   });
@@ -187,7 +197,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows total fragment and candidate counts', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     // 4 fragments total, 4 candidates total
     expect(res.text).toContain('Total fragments');
     expect(res.text).toContain('Total candidates');
@@ -195,7 +205,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows promote rate (candidates / fragments)', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     // 4 candidates / 4 fragments = 100%
     expect(res.text).toContain('Promote rate');
     expect(res.text).toContain('100%');
@@ -203,7 +213,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows linked rate metric', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     // 1 fully linked out of 4 = 25%
     expect(res.text).toContain('Linked rate');
     expect(res.text).toContain('25%');
@@ -211,7 +221,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows confidence bucket counts', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     // 2 high (cand-1 and cand-4), 2 medium (cand-2 and cand-3)
     expect(res.text).toContain('high');
     expect(res.text).toContain('medium');
@@ -221,7 +231,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows source summary section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('By Source File');
     expect(res.text).toContain('OLD_RESULTS.txt');
     expect(res.text).toContain('EXTRA_SOURCE.txt');
@@ -229,7 +239,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('source rows link to filtered view', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('source=OLD_RESULTS.txt');
   });
 
@@ -237,14 +247,14 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows event summary section when candidates have event_id', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('By Event');
     expect(res.text).toContain(EVENT_ID);
   });
 
   it('event rows link to filtered view', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain(`event=${EVENT_ID}`);
   });
 
@@ -252,7 +262,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows year summary section', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('By Year');
     expect(res.text).toContain('2019');
     expect(res.text).toContain('2020');
@@ -262,7 +272,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('renders all 4 candidates by default', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
     expect(res.text).toContain('Unknown Player A beat Unknown Player B');
     expect(res.text).toContain('Alpha beat Beta');
@@ -271,7 +281,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows linked candidate with person name links', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain(`/history/${PERSON_C}`);
     expect(res.text).toContain('Candidate Charlie');
     expect(res.text).toContain(`/history/${PERSON_D}`);
@@ -280,7 +290,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('shows unlinked candidate with raw names and unlinked badge', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('Unknown Player A');
     expect(res.text).toContain('Unknown Player B');
     expect(res.text).toContain('unlinked');
@@ -288,7 +298,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('renders the filter form with all controls', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     expect(res.text).toContain('name="status"');
     expect(res.text).toContain('name="linked"');
     expect(res.text).toContain('name="event"');
@@ -299,7 +309,7 @@ describe('GET /internal/net/candidates', () => {
 
   it('does not show forbidden public-stat language', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates');
+    const res = await internalGet(app, '/internal/net/candidates');
     const lower = res.text.toLowerCase();
     expect(lower).not.toContain('head-to-head');
     expect(lower).not.toContain('ranking');
@@ -315,7 +325,7 @@ describe('GET /internal/net/candidates', () => {
 describe('GET /internal/net/candidates?status=accepted', () => {
   it('filters to only accepted candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?status=accepted');
+    const res = await internalGet(app, '/internal/net/candidates?status=accepted');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Alpha beat Beta');
     expect(res.text).not.toContain('Candidate Charlie defeated Candidate Delta 15-10');
@@ -324,7 +334,7 @@ describe('GET /internal/net/candidates?status=accepted', () => {
 
   it('marks the status dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?status=accepted');
+    const res = await internalGet(app, '/internal/net/candidates?status=accepted');
     expect(res.text).toContain('value="accepted" selected');
   });
 });
@@ -336,7 +346,7 @@ describe('GET /internal/net/candidates?status=accepted', () => {
 describe('GET /internal/net/candidates?linked=true', () => {
   it('filters to only fully-linked candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?linked=true');
+    const res = await internalGet(app, '/internal/net/candidates?linked=true');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
     expect(res.text).not.toContain('Unknown Player A beat Unknown Player B');
@@ -346,7 +356,7 @@ describe('GET /internal/net/candidates?linked=true', () => {
 
   it('marks the linked filter dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?linked=true');
+    const res = await internalGet(app, '/internal/net/candidates?linked=true');
     expect(res.text).toContain('value="true" selected');
   });
 });
@@ -358,7 +368,7 @@ describe('GET /internal/net/candidates?linked=true', () => {
 describe('GET /internal/net/candidates?event=event-cand-2020', () => {
   it('filters to only candidates for that event', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates?event=${EVENT_ID}`);
+    const res = await internalGet(app, `/internal/net/candidates?event=${EVENT_ID}`);
     expect(res.status).toBe(200);
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
     expect(res.text).not.toContain('Unknown Player A beat Unknown Player B');
@@ -367,7 +377,7 @@ describe('GET /internal/net/candidates?event=event-cand-2020', () => {
 
   it('populates the event input with the filter value', async () => {
     const app = createApp();
-    const res = await request(app).get(`/internal/net/candidates?event=${EVENT_ID}`);
+    const res = await internalGet(app, `/internal/net/candidates?event=${EVENT_ID}`);
     expect(res.text).toContain(`value="${EVENT_ID}"`);
   });
 });
@@ -379,7 +389,7 @@ describe('GET /internal/net/candidates?event=event-cand-2020', () => {
 describe('GET /internal/net/candidates?source=EXTRA_SOURCE.txt', () => {
   it('filters to only candidates from that source', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?source=EXTRA_SOURCE.txt');
+    const res = await internalGet(app, '/internal/net/candidates?source=EXTRA_SOURCE.txt');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Echo def. Foxtrot 11-6');
     expect(res.text).not.toContain('Candidate Charlie defeated Candidate Delta 15-10');
@@ -388,7 +398,7 @@ describe('GET /internal/net/candidates?source=EXTRA_SOURCE.txt', () => {
 
   it('populates the source input with the filter value', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?source=EXTRA_SOURCE.txt');
+    const res = await internalGet(app, '/internal/net/candidates?source=EXTRA_SOURCE.txt');
     expect(res.text).toContain('value="EXTRA_SOURCE.txt"');
   });
 });
@@ -400,7 +410,7 @@ describe('GET /internal/net/candidates?source=EXTRA_SOURCE.txt', () => {
 describe('GET /internal/net/candidates?min_confidence=0.85', () => {
   it('filters to only high-confidence candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?min_confidence=0.85');
+    const res = await internalGet(app, '/internal/net/candidates?min_confidence=0.85');
     expect(res.status).toBe(200);
     // cand-1 (0.90) and cand-4 (0.90) pass; cand-2 (0.75) and cand-3 (0.75) do not
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
@@ -411,7 +421,7 @@ describe('GET /internal/net/candidates?min_confidence=0.85', () => {
 
   it('marks the confidence dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?min_confidence=0.85');
+    const res = await internalGet(app, '/internal/net/candidates?min_confidence=0.85');
     expect(res.text).toContain('value="0.85" selected');
   });
 });
@@ -423,7 +433,7 @@ describe('GET /internal/net/candidates?min_confidence=0.85', () => {
 describe('GET /internal/net/candidates?group=event', () => {
   it('returns 200 and shows grouped view with event group header', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?group=event');
+    const res = await internalGet(app, '/internal/net/candidates?group=event');
     expect(res.status).toBe(200);
     // Should see group label for the event (event-cand-2020 since no event title in test DB)
     expect(res.text).toContain(EVENT_ID);
@@ -431,13 +441,13 @@ describe('GET /internal/net/candidates?group=event', () => {
 
   it('marks group dropdown as selected', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?group=event');
+    const res = await internalGet(app, '/internal/net/candidates?group=event');
     expect(res.text).toContain('value="event" selected');
   });
 
   it('shows candidates within groups', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?group=event');
+    const res = await internalGet(app, '/internal/net/candidates?group=event');
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
   });
 });
@@ -449,7 +459,7 @@ describe('GET /internal/net/candidates?group=event', () => {
 describe('GET /internal/net/candidates?group=source', () => {
   it('returns 200 and shows source group headers', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?group=source');
+    const res = await internalGet(app, '/internal/net/candidates?group=source');
     expect(res.status).toBe(200);
     expect(res.text).toContain('OLD_RESULTS.txt');
     expect(res.text).toContain('EXTRA_SOURCE.txt');
@@ -463,7 +473,7 @@ describe('GET /internal/net/candidates?group=source', () => {
 describe('GET /internal/net/candidates?group=year', () => {
   it('returns 200 and shows year group headers', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?group=year');
+    const res = await internalGet(app, '/internal/net/candidates?group=year');
     expect(res.status).toBe(200);
     expect(res.text).toContain('2019');
     expect(res.text).toContain('2020');
@@ -477,7 +487,7 @@ describe('GET /internal/net/candidates?group=year', () => {
 describe('GET /internal/net/candidates?status=rejected', () => {
   it('shows empty state when no candidates match', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?status=rejected');
+    const res = await internalGet(app, '/internal/net/candidates?status=rejected');
     expect(res.status).toBe(200);
     expect(res.text).toContain('No candidates match the current filter');
   });
@@ -490,7 +500,7 @@ describe('GET /internal/net/candidates?status=rejected', () => {
 describe('GET /internal/net/candidates combined filters', () => {
   it('status=pending + linked=true returns only linked pending candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?status=pending&linked=true');
+    const res = await internalGet(app, '/internal/net/candidates?status=pending&linked=true');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');
     expect(res.text).not.toContain('Unknown Player A beat Unknown Player B');
@@ -499,7 +509,7 @@ describe('GET /internal/net/candidates combined filters', () => {
 
   it('min_confidence=0.85 + linked=true returns only high-conf linked candidates', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/net/candidates?min_confidence=0.85&linked=true');
+    const res = await internalGet(app, '/internal/net/candidates?min_confidence=0.85&linked=true');
     expect(res.status).toBe(200);
     // Only cand-1 (linked + 0.90 confidence) should appear
     expect(res.text).toContain('Candidate Charlie defeated Candidate Delta 15-10');

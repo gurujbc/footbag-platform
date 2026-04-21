@@ -28,25 +28,8 @@ export const netController = {
     }
   },
 
-  /** GET /net/events/:eventId */
-  eventDetailPage(req: Request, res: Response, next: NextFunction): void {
-    try {
-      const vm = netService.getEventDetailPage(req.params['eventId'] ?? '');
-      res.render('net/event-detail', vm);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404).render('errors/not-found', {
-          seo:  { title: 'Page Not Found' },
-          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
-        });
-        return;
-      }
-      handleControllerError(err, res, next, 'net controller');
-    }
-  },
-
-  /** GET /net/partnerships */
-  partnershipsPage(req: Request, res: Response, next: NextFunction): void {
+  /** GET /net/teams */
+  teamsPage(req: Request, res: Response, next: NextFunction): void {
     try {
       const rawDivision = req.query['division'];
       const rawSearch   = req.query['q'];
@@ -54,34 +37,7 @@ export const netController = {
         ? rawDivision.trim() : undefined;
       const search = typeof rawSearch === 'string' && rawSearch.trim().length >= 2
         ? rawSearch.trim() : undefined;
-      const vm = netService.getPartnershipsPage(division, search);
-      res.render('net/partnerships', vm);
-    } catch (err) {
-      handleControllerError(err, res, next, 'net controller');
-    }
-  },
-
-  /** GET /net/partnerships/:teamId */
-  partnershipDetail(req: Request, res: Response, next: NextFunction): void {
-    try {
-      const vm = netService.getPartnershipDetailPage(req.params['teamId'] ?? '');
-      res.render('net/partnership-detail', vm);
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        res.status(404).render('errors/not-found', {
-          seo:  { title: 'Page Not Found' },
-          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
-        });
-        return;
-      }
-      handleControllerError(err, res, next, 'net controller');
-    }
-  },
-
-  /** GET /net/teams */
-  teams(_req: Request, res: Response, next: NextFunction): void {
-    try {
-      const vm = netService.getTeamsPage();
+      const vm = netService.getTeamsPage(division, search);
       res.render('net/teams', vm);
     } catch (err) {
       handleControllerError(err, res, next, 'net controller');
@@ -104,4 +60,5 @@ export const netController = {
       handleControllerError(err, res, next, 'net controller');
     }
   },
+
 };

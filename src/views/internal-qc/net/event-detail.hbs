@@ -1,10 +1,9 @@
-{{! /net/events/:eventId — net event detail }}
+{{! /internal/net/events/:eventId — net event detail (QC reviewer view) }}
 
 <div class="hero hero-sm">
   <div>
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="/net">Net</a> <span class="breadcrumb-sep">/</span>
-      <a href="/net/events">Events</a> <span class="breadcrumb-sep">/</span>
+      <a href="/internal/net/review">Net QC Review</a> <span class="breadcrumb-sep">/</span>
       <span>{{page.title}}</span>
     </nav>
     <h1>{{page.title}}</h1>
@@ -52,7 +51,7 @@
           <td class="col-rank">{{placementLabel}}</td>
           <td>
             <a href="{{{hrefA}}}">{{personNameA}}</a> / <a href="{{{hrefB}}}">{{personNameB}}</a>
-            <a href="{{{teamHref}}}" class="detail-muted" title="Partnership history">&rarr;</a>
+            <a href="{{{teamHref}}}" class="detail-muted" title="Team history">&rarr;</a>
           </td>
         </tr>
         {{/each}}

@@ -1221,7 +1221,8 @@ export const consecutiveKicksRecords = {
 // view, which enforces evidence_class = 'canonical_only' at the DB layer.
 // Never query net_team_appearance directly from this statement group.
 //
-// Routes: /net/teams  |  /net/teams/:teamId
+// Consumed by /net/teams and /net/teams/:teamId (netService.getTeamsPage,
+// getTeamDetailPage) and by the /net home notable-teams buckets.
 // ---------------------------------------------------------------------------
 export interface NetTeamSummaryRow {
   team_id:          string;
@@ -1239,49 +1240,45 @@ export interface NetTeamSummaryRow {
 }
 
 export interface NetTeamAppearanceRow {
-  appearance_id:    string;
-  event_id:         string;
-  event_title:      string;
-  event_city:       string;
-  event_country:    string;
-  start_date:       string;
-  discipline_name:  string;
-  canonical_group:  string | null;
-  conflict_flag:    number;           // 0 or 1 — 1 = use raw discipline_name
-  placement:        number;
-  score_text:       string | null;
-  event_year:       number;
+  appearance_id:        string;
+  event_id:             string;
+  event_tag_normalized: string;       // #event_{year}_{slug} — used to build /events/ hrefs
+  event_title:          string;
+  event_city:           string;
+  event_country:        string;
+  start_date:           string;
+  discipline_name:      string;
+  canonical_group:      string | null;
+  conflict_flag:        number;       // 0 or 1 — 1 = use raw discipline_name
+  placement:            number;
+  score_text:           string | null;
+  event_year:           number;
+}
+
+export interface NetTeamStatsRow {
+  team_id:          string;
+  person_id_a:      string;
+  person_name_a:    string;
+  country_a:        string | null;
+  member_slug_a:    string | null;
+  person_id_b:      string;
+  person_name_b:    string;
+  country_b:        string | null;
+  member_slug_b:    string | null;
+  appearance_count: number;
+  win_count:        number;
+  podium_count:     number;
+  first_year:       number | null;
+  last_year:        number | null;
+}
+
+export interface NetDivisionOptionRow {
+  canonical_group:  string;
+  appearance_count: number;
 }
 
 export const netTeams = {
   // STATS FIREWALL: queries net_team_appearance_canonical view (canonical_only enforced at DB layer)
-
-  listAll: db.prepare(`
-    SELECT
-      t.team_id,
-      t.person_id_a,
-      pa.person_name  AS person_name_a,
-      pa.country      AS country_a,
-      ma.slug         AS member_slug_a,
-      t.person_id_b,
-      pb.person_name  AS person_name_b,
-      pb.country      AS country_b,
-      mb.slug         AS member_slug_b,
-      t.first_year,
-      t.last_year,
-      t.appearance_count
-    FROM net_team t
-    JOIN historical_persons pa ON pa.person_id = t.person_id_a
-    JOIN historical_persons pb ON pb.person_id = t.person_id_b
-    LEFT JOIN members ma
-      ON ma.historical_person_id = pa.person_id
-      AND ma.deleted_at IS NULL
-    LEFT JOIN members mb
-      ON mb.historical_person_id = pb.person_id
-      AND mb.deleted_at IS NULL
-    WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
-    ORDER BY t.appearance_count DESC, t.last_year DESC, pa.person_name ASC
-  `),
 
   getById: db.prepare(`
     SELECT
@@ -1313,6 +1310,7 @@ export const netTeams = {
     SELECT
       a.id            AS appearance_id,
       a.event_id,
+      t.tag_normalized AS event_tag_normalized,
       e.title         AS event_title,
       e.city          AS event_city,
       e.country       AS event_country,
@@ -1325,41 +1323,17 @@ export const netTeams = {
       a.event_year
     FROM net_team_appearance_canonical a
     JOIN events e           ON e.id  = a.event_id
+    JOIN tags t             ON t.id  = e.hashtag_tag_id
     JOIN event_disciplines ed ON ed.id = a.discipline_id
     LEFT JOIN net_discipline_group dg ON dg.discipline_id = a.discipline_id
     WHERE a.team_id = ?
     ORDER BY a.event_year DESC, e.start_date DESC, a.placement ASC
   `),
-} as const;
 
-// ---------------------------------------------------------------------------
-// netPartnerships
-//
-// Top partnerships page, aggregated stats from net_team_appearance_canonical.
-// STATISTICS FIREWALL: queries net_team_appearance_canonical view only.
-// Route: /net/partnerships
-// ---------------------------------------------------------------------------
-
-export interface NetPartnershipRow {
-  team_id:          string;
-  person_id_a:      string;
-  person_name_a:    string;
-  country_a:        string | null;
-  member_slug_a:    string | null;
-  person_id_b:      string;
-  person_name_b:    string;
-  country_b:        string | null;
-  member_slug_b:    string | null;
-  appearance_count: number;
-  win_count:        number;
-  podium_count:     number;
-  first_year:       number | null;
-  last_year:        number | null;
-}
-
-export const netPartnerships = {
-  // STATS FIREWALL: queries net_team_appearance_canonical (canonical_only enforced at DB layer)
-  listTopPartnerships: db.prepare(`
+  /** All net teams (with ≥1 canonical appearance), sorted by appearance count desc.
+   *  No HAVING threshold and no LIMIT: this is the single public entry for browsing
+   *  all teams, with division/search filters handled via queryFilteredTeams. */
+  listAll: db.prepare(`
     SELECT
       t.team_id,
       t.person_id_a,
@@ -1387,9 +1361,7 @@ export const netPartnerships = {
       AND mb.deleted_at IS NULL
     WHERE pa.person_name != 'Unknown' AND pb.person_name != 'Unknown'
     GROUP BY t.team_id
-    HAVING COUNT(*) >= 2
     ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
-    LIMIT 50
   `),
 
   /** Division filter options, distinct canonical groups with appearance counts. */
@@ -1402,7 +1374,7 @@ export const netPartnerships = {
     ORDER BY appearance_count DESC
   `),
 
-  /** Wider pool for notable partnership buckets, top 100 with >=3 appearances. */
+  /** Wider pool for notable-team buckets, top 100 with >=3 appearances. */
   listNotablePool: db.prepare(`
     SELECT
       t.team_id,
@@ -1437,19 +1409,14 @@ export const netPartnerships = {
   `),
 } as const;
 
-export interface NetDivisionOptionRow {
-  canonical_group:  string;
-  appearance_count: number;
-}
-
 /**
- * Dynamic partnership query with optional division (canonical_group) filter.
- * Uses runtime db.prepare() for the optional JOIN clause.
+ * Dynamic team query with optional division (canonical_group) and player-search
+ * filters. Uses runtime db.prepare() for the optional JOIN clause.
  */
-export function queryFilteredPartnerships(filters: {
+export function queryFilteredTeams(filters: {
   division?: string;
   search?: string;
-}): NetPartnershipRow[] {
+}): NetTeamStatsRow[] {
   const joins: string[] = [];
   const conditions: string[] = [];
   const params: string[] = [];
@@ -1502,7 +1469,7 @@ export function queryFilteredPartnerships(filters: {
     HAVING COUNT(*) >= 2
     ORDER BY appearance_count DESC, win_count DESC, last_year DESC, pa.person_name ASC
     LIMIT 50
-  `).all(...params) as NetPartnershipRow[];
+  `).all(...params) as NetTeamStatsRow[];
 }
 
 // ---- QC-only (delete with pipeline-qc subsystem) ----
@@ -1857,6 +1824,7 @@ export const netRecoveryApproval = {
 // ---------------------------------------------------------------------------
 export interface NetEventSummaryRow {
   event_id:                    string;
+  event_tag_normalized:        string;   // #event_{year}_{slug} — used to build /events/ hrefs
   event_title:                 string;
   start_date:                  string;
   city:                        string;
@@ -1893,6 +1861,7 @@ export interface NetEventAppearanceRow {
 const EVENT_SUMMARY_SELECT = `
     SELECT
       e.id                            AS event_id,
+      t.tag_normalized                AS event_tag_normalized,
       e.title                         AS event_title,
       e.start_date,
       e.city,
@@ -1923,6 +1892,7 @@ const EVENT_SUMMARY_SELECT = `
         )
       ) AS discipline_review_count
     FROM events e
+    JOIN tags t                          ON t.id = e.hashtag_tag_id
     JOIN net_team_appearance_canonical a ON a.event_id = e.id
 `;
 
@@ -2027,6 +1997,7 @@ export interface NetNotablePlayerRow {
 
 export interface NetHomeRecentEventRow {
   event_id:             string;
+  event_tag_normalized: string;   // #event_{year}_{slug} — used to build /events/ hrefs
   event_title:          string;
   start_date:           string;
   event_year:           number;
@@ -2100,6 +2071,7 @@ export const netHome = {
     -- STATS FIREWALL: only events with canonical appearances
     SELECT
       e.id                                AS event_id,
+      t.tag_normalized                    AS event_tag_normalized,
       e.title                             AS event_title,
       e.start_date,
       CAST(SUBSTR(e.start_date, 1, 4) AS INTEGER) AS event_year,
@@ -2109,6 +2081,7 @@ export const netHome = {
         WHERE rq.event_id = e.id AND rq.reason_code = 'multi_stage_result' LIMIT 1
       ), 0) AS has_multi_stage_hint
     FROM events e
+    JOIN tags t                          ON t.id = e.hashtag_tag_id
     JOIN net_team_appearance_canonical a ON a.event_id = e.id
     GROUP BY e.id
     ORDER BY e.start_date DESC

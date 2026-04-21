@@ -9,8 +9,8 @@
  *   - Hero with mascot + "What is Footbag Net?" narrative
  *   - Demo video (self-hosted webm/mp4) renders in intro section
  *   - Competition Formats cards (Singles + Doubles) with YouTube embeds
- *   - Explore cards link to real sub-routes (/net/teams, /net/partnerships, /net/events)
- *   - No stats on the landing: no partnership/player/event tables
+ *   - Explore cards link to real sub-routes (/net/teams, /net/events)
+ *   - No stats on the landing: no team/player/event tables
  *   - No forbidden terms: "ranking", "head-to-head", "win/loss"
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -155,11 +155,9 @@ describe('GET /net', () => {
   it('shows Explore cards linking to existing net sub-routes', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('Partnerships');
     expect(res.text).toContain('Teams');
     expect(res.text).toContain('Events');
     expect(res.text).toContain('href="/net/teams"');
-    expect(res.text).toContain('href="/net/partnerships"');
     expect(res.text).toContain('href="/net/events"');
   });
 
@@ -172,7 +170,7 @@ describe('GET /net', () => {
     expect(lower).not.toContain('head-to-head');
   });
 
-  it('does not render notable partnership, notable player, or recent event tables', async () => {
+  it('does not render notable team, notable player, or recent event tables', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
     expect(res.text).not.toContain('Most Wins');

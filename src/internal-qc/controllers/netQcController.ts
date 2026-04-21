@@ -8,6 +8,23 @@ import { NotFoundError, ConflictError, ValidationError } from '../../services/se
 import { handleControllerError } from '../../lib/controllerErrors';
 
 export const netQcController = {
+  /** GET /internal/net/events/:eventId */
+  eventDetailPage(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const vm = netQcService.getNetEventDetailPage(req.params['eventId'] ?? '');
+      res.render('internal-qc/net/event-detail', vm);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        res.status(404).render('errors/not-found', {
+          seo:  { title: 'Page Not Found' },
+          page: { sectionKey: '', pageKey: 'error_404', title: 'Page Not Found' },
+        });
+        return;
+      }
+      handleControllerError(err, res, next, 'net qc controller');
+    }
+  },
+
   /** GET /internal/net/curated */
   curatedPage(req: Request, res: Response, next: NextFunction): void {
     try {

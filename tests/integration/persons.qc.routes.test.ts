@@ -19,7 +19,7 @@ import {
   cleanupTestDb,
   importApp,
 } from '../fixtures/testDb';
-import { insertHistoricalPerson } from '../fixtures/factories';
+import { insertHistoricalPerson, insertMember, createTestSessionJwt } from '../fixtures/factories';
 import { runPersonsQcChecks, PersonQcRow } from '../../src/services/personsQcChecks';
 
 const { dbPath } = setTestEnv('3115');
@@ -27,8 +27,16 @@ const { dbPath } = setTestEnv('3115');
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 let createApp: Awaited<ReturnType<typeof importApp>>;
 
+const VIEWER_ID = 'viewer-persons-qc';
+const COOKIE = `footbag_session=${createTestSessionJwt({ memberId: VIEWER_ID })}`;
+
+function internalGet(app: ReturnType<typeof createApp>, path: string) {
+  return request(app).get(path).set('Cookie', COOKIE);
+}
+
 beforeAll(async () => {
   const db = createTestDb(dbPath);
+  insertMember(db, { id: VIEWER_ID, slug: 'viewer-persons-qc', display_name: 'Viewer' });
 
   // Clean persons — should NOT be flagged
   insertHistoricalPerson(db, { person_name: 'Alice Johnson', country: 'US' });
@@ -61,7 +69,7 @@ afterAll(() => cleanupTestDb(dbPath));
 describe('GET /internal/persons/qc', () => {
   it('returns 200 with QC page content', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/persons/qc');
+    const res = await internalGet(app, '/internal/persons/qc');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Persons QC');
     expect(res.text).toContain('persons');
@@ -70,7 +78,7 @@ describe('GET /internal/persons/qc', () => {
 
   it('shows flagged persons in the response', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/persons/qc');
+    const res = await internalGet(app, '/internal/persons/qc');
     expect(res.text).toContain('Pawe\u00B3 Ro\u00BCek');
     expect(res.text).toContain('Ale? Pelko');
     expect(res.text).toContain('Homola');
@@ -80,7 +88,7 @@ describe('GET /internal/persons/qc', () => {
 
   it('does not flag clean persons', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/persons/qc');
+    const res = await internalGet(app, '/internal/persons/qc');
     // Clean names should not appear in the issues table.
     // They ARE in the DB but should not be flagged.
     // The table only shows flagged items, so "Alice Johnson" should not be in a <code> tag.
@@ -90,7 +98,7 @@ describe('GET /internal/persons/qc', () => {
 
   it('filters by category', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/persons/qc?category=encoding_corruption');
+    const res = await internalGet(app, '/internal/persons/qc?category=encoding_corruption');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Pawe\u00B3 Ro\u00BCek');
     // Single-word issue should not appear under encoding_corruption filter
@@ -99,7 +107,7 @@ describe('GET /internal/persons/qc', () => {
 
   it('filters by source', async () => {
     const app = createApp();
-    const res = await request(app).get('/internal/persons/qc?source=CLUB');
+    const res = await internalGet(app, '/internal/persons/qc?source=CLUB');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Homola');
   });

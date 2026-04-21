@@ -1,8 +1,8 @@
 import {
   netTeams,      NetTeamSummaryRow, NetTeamAppearanceRow,
-  netPartnerships, NetPartnershipRow, NetDivisionOptionRow,
-  queryFilteredPartnerships,
-  netEvents,     NetEventSummaryRow, NetEventAppearanceRow,
+                 NetTeamStatsRow, NetDivisionOptionRow,
+  queryFilteredTeams,
+  netEvents,     NetEventSummaryRow,
   netHome,       NetHomeRecentEventRow,
                  NetNotablePlayerRow,
 } from '../db/db';
@@ -14,7 +14,7 @@ import { PageViewModel } from '../types/page';
 // ---------------------------------------------------------------------------
 // Evidence disclaimer, always rendered on net pages (not conditioned on data)
 // ---------------------------------------------------------------------------
-const TEAM_DISCLAIMER =
+export const TEAM_DISCLAIMER =
   'Team identities are algorithmically constructed from placement data and may not reflect official partnerships.';
 
 // ---------------------------------------------------------------------------
@@ -31,8 +31,8 @@ export interface NetHomeRecentEventViewModel {
 }
 
 interface NotableBucketViewModel {
-  title:        string;
-  partnerships: NetPartnershipViewModel[];
+  title: string;
+  teams: NetTeamListViewModel[];
 }
 
 interface NotablePlayerItemViewModel {
@@ -73,7 +73,7 @@ interface NetDemoVideo {
 }
 
 interface NetExploreCard {
-  slug:       'teams' | 'partnerships' | 'events';
+  slug:       'teams' | 'events';
   label:      string;
   href:       string;
   paragraph:  string;
@@ -89,7 +89,7 @@ interface NetHomeContent {
   competitionFormats:    NetCompetitionFormat[];
   exploreCards:          NetExploreCard[];
   recentEvents:          NetHomeRecentEventViewModel[];
-  notablePartnerships:   NotableBucketViewModel[];
+  notableTeams:          NotableBucketViewModel[];
   notablePlayers:        NotablePlayerBucketViewModel[];
 }
 
@@ -159,33 +159,22 @@ export interface NetAppearanceYearGroup {
   appearances: NetAppearanceViewModel[];
 }
 
-interface NetTeamsContent {
-  teams:      NetTeamViewModel[];
-  totalTeams: number;
-  disclaimer: string;
-}
-
-interface NetTeamDetailContent {
-  team:        NetTeamViewModel;
-  byYear:      NetAppearanceYearGroup[];
-  disclaimer:  string;
-}
-
-interface NetPartnershipSummaryViewModel {
+interface NetTeamStatsViewModel {
   appearanceCount: number;
   winCount:        number;
   podiumCount:     number;
   yearSpan:        string | null;
 }
 
-interface NetPartnershipDetailContent {
+interface NetTeamDetailContent {
   team:         NetTeamViewModel;
-  summary:      NetPartnershipSummaryViewModel;
-  appearances:  NetAppearanceViewModel[];
+  summary:      NetTeamStatsViewModel;
+  appearances:  NetAppearanceViewModel[];   // timeline asc
+  byYear:       NetAppearanceYearGroup[];   // grouped desc
   disclaimer:   string;
 }
 
-export interface NetPartnershipViewModel {
+export interface NetTeamListViewModel {
   teamId:          string;
   teamName:        string;
   teamHref:        string;
@@ -208,8 +197,8 @@ interface DivisionFilterOption {
   selected: boolean;
 }
 
-interface NetPartnershipsContent {
-  partnerships:    NetPartnershipViewModel[];
+interface NetTeamsContent {
+  teams:           NetTeamListViewModel[];
   totalShown:      number;
   divisionOptions: DivisionFilterOption[];
   activeDivision:  string | null;
@@ -237,53 +226,28 @@ export interface NetEventViewModel {
   qcHints:          NetEventQcHints;
 }
 
-export interface NetEventAppearanceViewModel {
-  teamId:           string;
-  teamName:         string;
-  teamHref:         string;
-  personIdA:        string;
-  personNameA:      string;
-  hrefA:            string | null;
-  personIdB:        string;
-  personNameB:      string;
-  hrefB:            string | null;
-  placement:        number;
-  placementLabel:   string;
-  scoreText:        string | null;
-}
-
-export interface NetEventDisciplineGroup {
-  disciplineId:    string;
-  disciplineLabel: string;
-  hasConflictFlag: boolean;
-  appearances:     NetEventAppearanceViewModel[];
-}
-
 interface NetEventsContent {
   events:      NetEventViewModel[];
   totalEvents: number;
   disclaimer:  string;
 }
 
-interface NetEventDetailContent {
-  event:         NetEventViewModel;
-  byDiscipline:  NetEventDisciplineGroup[];
-  disclaimer:    string;
-}
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function eventHref(eventId: string): string {
-  return `/events/${eventId}`;
+// Canonical public event URL is /events/{eventKey} where eventKey is
+// tag_normalized with any leading '#' stripped. The stored events.id (e.g.
+// "1980_worlds") does not match the public route pattern and must not be
+// used as a URL fragment. Match the pattern used in playerShaping.ts.
+function publicEventHref(tagNormalized: string): string {
+  const key = tagNormalized.startsWith('#')
+    ? tagNormalized.slice(1)
+    : tagNormalized;
+  return `/events/${key}`;
 }
 
-function netEventHref(eventId: string): string {
-  return `/net/events/${eventId}`;
-}
-
-function teamName(nameA: string, nameB: string): string {
+export function teamName(nameA: string, nameB: string): string {
   return `${nameA} / ${nameB}`;
 }
 
@@ -293,7 +257,7 @@ function yearSpan(first: number | null, last: number | null): string | null {
   return `${first}–${last}`;
 }
 
-function placementLabel(n: number): string {
+export function placementLabel(n: number): string {
   if (n === 1) return '1st';
   if (n === 2) return '2nd';
   if (n === 3) return '3rd';
@@ -318,7 +282,7 @@ const GROUP_LABELS: Record<string, string> = {
   uncategorized:         '',
 };
 
-function disciplineLabel(disciplineName: string, canonicalGroup: string | null, conflictFlag: number): string {
+export function disciplineLabel(disciplineName: string, canonicalGroup: string | null, conflictFlag: number): string {
   // If conflict_flag=1 or no canonical_group, use the raw discipline name
   if (conflictFlag || !canonicalGroup) return disciplineName;
   return GROUP_LABELS[canonicalGroup] || disciplineName;
@@ -343,7 +307,7 @@ function shapeAppearance(row: NetTeamAppearanceRow): NetAppearanceViewModel {
   return {
     eventId:         row.event_id,
     eventTitle:      row.event_title,
-    eventHref:       eventHref(row.event_id),
+    eventHref:       publicEventHref(row.event_tag_normalized),
     eventCity:       row.event_city,
     eventCountry:    row.event_country,
     startDate:       row.start_date,
@@ -374,18 +338,18 @@ function shapeHomeRecentEvent(row: NetHomeRecentEventRow): NetHomeRecentEventVie
   return {
     eventId:           row.event_id,
     eventTitle:        row.event_title,
-    eventHref:         netEventHref(row.event_id),
+    eventHref:         publicEventHref(row.event_tag_normalized),
     eventYear:         row.event_year,
     appearanceCount:   row.appearance_count,
     hasMultiStageHint: row.has_multi_stage_hint === 1,
   };
 }
 
-function shapeEventSummary(row: NetEventSummaryRow): NetEventViewModel {
+export function shapeEventSummary(row: NetEventSummaryRow): NetEventViewModel {
   return {
     eventId:         row.event_id,
     eventTitle:      row.event_title,
-    eventHref:       netEventHref(row.event_id),
+    eventHref:       publicEventHref(row.event_tag_normalized),
     startDate:       row.start_date,
     city:            row.city,
     country:         row.country,
@@ -401,55 +365,21 @@ function shapeEventSummary(row: NetEventSummaryRow): NetEventViewModel {
   };
 }
 
-function shapeEventAppearance(row: NetEventAppearanceRow): NetEventAppearanceViewModel {
-  return {
-    teamId:        row.team_id,
-    teamName:      teamName(row.person_name_a, row.person_name_b),
-    teamHref:      `/net/partnerships/${row.team_id}`,
-    ...shapePartnershipPair(row),
-    placement:     row.placement,
-    placementLabel: placementLabel(row.placement),
-    scoreText:     row.score_text,
-  };
-}
-
-function groupAppearancesByDiscipline(
-  rows: NetEventAppearanceRow[],
-): NetEventDisciplineGroup[] {
-  const map = new Map<string, { label: string; hasConflictFlag: boolean; appearances: NetEventAppearanceViewModel[] }>();
-  for (const row of rows) {
-    if (!map.has(row.discipline_id)) {
-      map.set(row.discipline_id, {
-        label:          disciplineLabel(row.discipline_name, row.canonical_group, row.conflict_flag),
-        hasConflictFlag: row.conflict_flag === 1,
-        appearances:    [],
-      });
-    }
-    map.get(row.discipline_id)!.appearances.push(shapeEventAppearance(row));
-  }
-  return [...map.entries()].map(([disciplineId, v]) => ({
-    disciplineId,
-    disciplineLabel: v.label,
-    hasConflictFlag: v.hasConflictFlag,
-    appearances:     v.appearances,
-  }));
-}
-
 // ---------------------------------------------------------------------------
 
 export const netService = {
   getNetHomePage(): PageViewModel<NetHomeContent> {
-    const recentEventRows = netHome.getRecentEvents.all()         as NetHomeRecentEventRow[];
-    const notablePool     = netPartnerships.listNotablePool.all() as NetPartnershipRow[];
+    const recentEventRows = netHome.getRecentEvents.all()      as NetHomeRecentEventRow[];
+    const notablePool     = netTeams.listNotablePool.all()     as NetTeamStatsRow[];
 
     // Build notable buckets from the shared pool (different sort orders, top 5 each)
     const BUCKET_SIZE = 5;
 
-    function shapePoolRow(r: NetPartnershipRow): NetPartnershipViewModel {
+    function shapePoolRow(r: NetTeamStatsRow): NetTeamListViewModel {
       return {
         teamId:          r.team_id,
         teamName:        teamName(r.person_name_a, r.person_name_b),
-        teamHref:        `/net/partnerships/${r.team_id}`,
+        teamHref:        `/net/teams/${r.team_id}`,
         ...shapePartnershipPair(r),
         appearanceCount: r.appearance_count,
         winCount:        r.win_count,
@@ -471,16 +401,16 @@ export const netService = {
     });
 
     // Each bucket independently picks its top entries
-    const notablePartnerships: NotableBucketViewModel[] = [];
+    const notableTeams: NotableBucketViewModel[] = [];
 
     const winsB = byWins.slice(0, BUCKET_SIZE).map(shapePoolRow);
-    if (winsB.length) notablePartnerships.push({ title: 'Most Wins', partnerships: winsB });
+    if (winsB.length) notableTeams.push({ title: 'Most Wins', teams: winsB });
 
     const podiumsB = byPodiums.slice(0, BUCKET_SIZE).map(shapePoolRow);
-    if (podiumsB.length) notablePartnerships.push({ title: 'Most Podium Finishes', partnerships: podiumsB });
+    if (podiumsB.length) notableTeams.push({ title: 'Most Podium Finishes', teams: podiumsB });
 
     const spanB = bySpan.slice(0, BUCKET_SIZE).map(shapePoolRow);
-    if (spanB.length) notablePartnerships.push({ title: 'Longest Spans', partnerships: spanB });
+    if (spanB.length) notableTeams.push({ title: 'Longest Spans', teams: spanB });
 
     // Notable players, buckets from player aggregate pool
     const playerPool = netHome.listNotablePlayerPool.all() as NetNotablePlayerRow[];
@@ -530,14 +460,12 @@ export const netService = {
 
     // Grey-out rule: an explore card is "coming soon" when its underlying
     // data is thin enough that the linked sub-page would be an empty stub.
-    const hasTeams        = notablePool.length > 0;
-    const hasPartnerships = notablePartnerships.length > 0;
-    const hasEvents       = recentEventRows.length > 0;
+    const hasTeams  = notablePool.length > 0;
+    const hasEvents = recentEventRows.length > 0;
 
     const exploreCards: NetExploreCard[] = [
-      { slug: 'teams',        label: 'Teams',        href: '/net/teams',        paragraph: 'Doubles partnerships and their full competition record, reconstructed from placement data.', linkLabel: 'Browse teams',     comingSoon: !hasTeams },
-      { slug: 'partnerships', label: 'Partnerships', href: '/net/partnerships', paragraph: 'Notable net doubles partnerships ranked by wins, podiums, and active span.',             linkLabel: 'View partnerships', comingSoon: !hasPartnerships },
-      { slug: 'events',       label: 'Events',       href: '/net/events',       paragraph: 'Archive of net doubles competitions with per-event appearance counts.',                   linkLabel: 'Event archive',    comingSoon: !hasEvents },
+      { slug: 'teams',  label: 'Teams',  href: '/net/teams',  paragraph: 'Doubles teams with full competition records: wins, podiums, and active span. Filter by division or search by player.', linkLabel: 'Browse teams',   comingSoon: !hasTeams },
+      { slug: 'events', label: 'Events', href: '/net/events', paragraph: 'Archive of net doubles competitions with per-event appearance counts.',                                                linkLabel: 'Event archive',  comingSoon: !hasEvents },
     ];
 
     return {
@@ -561,40 +489,22 @@ export const netService = {
         competitionFormats:  NET_COMPETITION_FORMATS,
         exploreCards,
         recentEvents:        recentEventRows.map(shapeHomeRecentEvent),
-        notablePartnerships,
+        notableTeams,
         notablePlayers,
       },
     };
   },
 
-  getTeamsPage(): PageViewModel<NetTeamsContent> {
-    const rows = netTeams.listAll.all() as NetTeamSummaryRow[];
-    return {
-      seo:  { title: 'Net Teams' },
-      page: {
-        sectionKey: 'net',
-        pageKey:    'net_teams',
-        title:      'Net Doubles Teams',
-        intro:      'Doubles partnerships from IFPA net competition results.',
-      },
-      content: {
-        teams:      rows.map(shapeTeam),
-        totalTeams: rows.length,
-        disclaimer: TEAM_DISCLAIMER,
-      },
-    };
-  },
-
-  getPartnershipsPage(division?: string, search?: string): PageViewModel<NetPartnershipsContent> {
+  getTeamsPage(division?: string, search?: string): PageViewModel<NetTeamsContent> {
     const hasFilter = !!(division || search);
     const rows = hasFilter
-      ? queryFilteredPartnerships({ division, search })
-      : netPartnerships.listTopPartnerships.all() as NetPartnershipRow[];
+      ? queryFilteredTeams({ division, search })
+      : netTeams.listAll.all() as NetTeamStatsRow[];
 
-    const partnerships: NetPartnershipViewModel[] = rows.map(r => ({
+    const teams: NetTeamListViewModel[] = rows.map(r => ({
       teamId:          r.team_id,
       teamName:        teamName(r.person_name_a, r.person_name_b),
-      teamHref:        `/net/partnerships/${r.team_id}`,
+      teamHref:        `/net/teams/${r.team_id}`,
       ...shapePartnershipPair(r),
       appearanceCount: r.appearance_count,
       winCount:        r.win_count,
@@ -602,7 +512,7 @@ export const netService = {
       yearSpan:        yearSpan(r.first_year, r.last_year),
     }));
 
-    const divisionRows = netPartnerships.listDivisionOptions.all() as NetDivisionOptionRow[];
+    const divisionRows = netTeams.listDivisionOptions.all() as NetDivisionOptionRow[];
     const divisionOptions: DivisionFilterOption[] = [
       { value: '', label: 'All divisions', count: 0, selected: !division },
       ...divisionRows.map(r => ({
@@ -617,16 +527,16 @@ export const netService = {
     const titleSuffix = divisionLabel ? ` — ${divisionLabel}` : '';
 
     return {
-      seo:  { title: `Net Partnerships${titleSuffix}` },
+      seo:  { title: `Net Teams${titleSuffix}` },
       page: {
         sectionKey: 'net',
-        pageKey:    'net_partnerships',
-        title:      `Top Net Partnerships${titleSuffix}`,
-        intro:      'The most significant doubles partnerships in footbag net history, ranked by competitive appearances.',
+        pageKey:    'net_teams',
+        title:      `Net Teams${titleSuffix}`,
+        intro:      'All doubles teams in footbag net history, sorted by competitive appearances. Filter by division or search by player name.',
       },
       content: {
-        partnerships,
-        totalShown:      partnerships.length,
+        teams,
+        totalShown:      teams.length,
         divisionOptions,
         activeDivision:  division ?? null,
         activeSearch:    search ?? null,
@@ -637,47 +547,28 @@ export const netService = {
 
   getTeamDetailPage(teamId: string): PageViewModel<NetTeamDetailContent> {
     const teamRow = netTeams.getById.get(teamId) as NetTeamSummaryRow | undefined;
-    if (!teamRow) throw new NotFoundError(`Net team not found: ${teamId}`);
+    if (!teamRow) throw new NotFoundError(`Team not found: ${teamId}`);
 
     const appearanceRows = netTeams.listAppearancesByTeamId.all(teamId) as NetTeamAppearanceRow[];
     const shaped = appearanceRows.map(shapeAppearance);
 
-    return {
-      seo:  { title: `${teamName(teamRow.person_name_a, teamRow.person_name_b)} — Net Team` },
-      page: {
-        sectionKey: 'net',
-        pageKey:    'net_team_detail',
-        title:      teamName(teamRow.person_name_a, teamRow.person_name_b),
-      },
-      content: {
-        team:       shapeTeam(teamRow),
-        byYear:     groupAppearancesByYear(shaped),
-        disclaimer: TEAM_DISCLAIMER,
-      },
-    };
-  },
+    // Timeline view: ascending by year, then placement
+    const timeline = [...shaped].sort((a, b) => a.eventYear - b.eventYear || a.placement - b.placement);
 
-  getPartnershipDetailPage(teamId: string): PageViewModel<NetPartnershipDetailContent> {
-    const teamRow = netTeams.getById.get(teamId) as NetTeamSummaryRow | undefined;
-    if (!teamRow) throw new NotFoundError(`Partnership not found: ${teamId}`);
-
-    const appearanceRows = netTeams.listAppearancesByTeamId.all(teamId) as NetTeamAppearanceRow[];
-    const shaped = appearanceRows.map(shapeAppearance);
-
-    // Sort ascending by year then placement for timeline view
-    shaped.sort((a, b) => a.eventYear - b.eventYear || a.placement - b.placement);
+    // By-year view: descending groups
+    const byYear = groupAppearancesByYear(shaped);
 
     // Compute summary from appearances
-    const winCount   = shaped.filter(a => a.placement === 1).length;
+    const winCount    = shaped.filter(a => a.placement === 1).length;
     const podiumCount = shaped.filter(a => a.placement <= 3).length;
 
     const title = teamName(teamRow.person_name_a, teamRow.person_name_b);
 
     return {
-      seo:  { title: `${title} — Partnership` },
+      seo:  { title: `${title} — Team` },
       page: {
         sectionKey: 'net',
-        pageKey:    'net_partnership_detail',
+        pageKey:    'net_team_detail',
         title,
       },
       content: {
@@ -688,7 +579,8 @@ export const netService = {
           podiumCount,
           yearSpan: yearSpan(teamRow.first_year, teamRow.last_year),
         },
-        appearances: shaped,
+        appearances: timeline,
+        byYear,
         disclaimer:  TEAM_DISCLAIMER,
       },
     };
@@ -712,24 +604,4 @@ export const netService = {
     };
   },
 
-  getEventDetailPage(eventId: string): PageViewModel<NetEventDetailContent> {
-    const eventRow = netEvents.getEventSummary.get(eventId) as NetEventSummaryRow | undefined;
-    if (!eventRow) throw new NotFoundError(`Net event not found: ${eventId}`);
-
-    const appearanceRows = netEvents.listAppearancesByEventId.all(eventId) as NetEventAppearanceRow[];
-
-    return {
-      seo:  { title: `${eventRow.event_title} — Net` },
-      page: {
-        sectionKey: 'net',
-        pageKey:    'net_event_detail',
-        title:      eventRow.event_title,
-      },
-      content: {
-        event:        shapeEventSummary(eventRow),
-        byDiscipline: groupAppearancesByDiscipline(appearanceRows),
-        disclaimer:   TEAM_DISCLAIMER,
-      },
-    };
-  },
 };

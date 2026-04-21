@@ -1,0 +1,57 @@
+{{! /internal/dev-outbox — stub SES adapter in-memory message log (dev only) }}
+
+<style>
+.do-body { white-space: pre-wrap; max-height: 200px; overflow: auto; margin: 0; font-size: 0.85em; }
+.do-table td { vertical-align: top; }
+.do-msgid { font-size: 0.75em; color: #888; }
+</style>
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p class="hero-subtitle">
+      Dev-only. Restart clears the buffer. Returns 404 when SES_ADAPTER is not stub.
+    </p>
+    <div class="hero-stats">
+      <span>{{content.messages.length}} message(s)</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section class="content-section">
+    {{#if content.messages.length}}
+    <div class="records-table-wrap" style="overflow-x:auto">
+      <table class="records-table records-table-sm do-table">
+        <thead>
+          <tr>
+            <th>To</th>
+            <th>From</th>
+            <th>Subject</th>
+            <th>Delivered At</th>
+            <th>Link</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content.messages}}
+          <tr>
+            <td>{{to}}</td>
+            <td>{{from}}</td>
+            <td>
+              {{subject}}
+              <div class="do-msgid">{{messageId}}</div>
+            </td>
+            <td>{{deliveredAt}}</td>
+            <td>{{#if firstUrl}}<a href="{{firstUrl}}">Open</a>{{/if}}</td>
+            <td><pre class="do-body">{{bodyText}}</pre></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{else}}
+    <div class="empty-state">No messages sent yet.</div>
+    {{/if}}
+  </section>
+</div>
