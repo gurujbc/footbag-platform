@@ -38,7 +38,7 @@ import pandas as pd
 # Make pipeline.identity importable when this script is run directly.
 _THIS_FILE = Path(__file__).resolve()
 sys.path.insert(0, str(_THIS_FILE.parents[2]))  # legacy_data/
-from pipeline.identity.alias_resolver import AliasResolver  # noqa: E402
+from pipeline.identity.alias_resolver import AliasResolver, normalize_name  # noqa: E402
 
 
 def _build_alias_resolver(persons_df: pd.DataFrame) -> AliasResolver | None:
@@ -70,8 +70,14 @@ _AUTO_PERSON_NS = uuid.UUID("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 
 
 def auto_person_id(display_name: str) -> str:
-    """Return a stable UUID5 derived from a normalised display name."""
-    return str(uuid.uuid5(_AUTO_PERSON_NS, display_name.strip().lower()))
+    """Return a stable UUID5 derived from a normalised display name.
+
+    Uses pipeline.identity.alias_resolver.normalize_name so that diacritic /
+    casing / hyphen / apostrophe variants of the same name collapse to a
+    single stub UUID — preventing cases like "Jyri Ryyppo" vs "Jyri Ryyppö"
+    producing two distinct stub person rows.
+    """
+    return str(uuid.uuid5(_AUTO_PERSON_NS, normalize_name(display_name)))
 
 
 # ── Person-likeness gate (mirrors export_canonical_platform.py step 5b) ───────
