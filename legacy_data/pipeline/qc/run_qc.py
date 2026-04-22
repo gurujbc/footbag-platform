@@ -38,6 +38,16 @@ DEFAULT_STAGE2_EVENTS = DEFAULT_ROOT / "out" / "stage2_canonical_events.csv"
 DEFAULT_WORKBOOK = DEFAULT_ROOT / "Footbag_Results_Community_FINAL_v13.xlsx"
 
 OPTIONAL_CHECKS = [
+    # Canonical-CSV alias-duplicate detector. HARD FAIL: the authoritative
+    # out/canonical/persons.csv must not contain person rows whose normalized
+    # name matches an alias that resolves to a different person_id.
+    {
+        "name": "alias_duplicate_persons",
+        "path": "pipeline/qc/check_alias_duplicate_persons.py",
+        "severity": "hard",
+        "needs_workbook": False,
+        "args": ["--source", "csv"],
+    },
     # Community workbook matters, but qc_spreadsheet_gate.py expects a different workbook shape.
     {
         "name": "workbook_qc",
@@ -518,6 +528,9 @@ def run_optional_check(root: Path, workbook_path: Path | None, item: dict, colle
         return
 
     cmd = [python_exe, str(script_path)]
+    extra_args = item.get("args") or []
+    if extra_args:
+        cmd.extend(str(a) for a in extra_args)
     if name in {"workbook_qc", "qc3_hygiene"} and workbook_path is not None:
         cmd.append(str(workbook_path))
 

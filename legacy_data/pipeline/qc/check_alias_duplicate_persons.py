@@ -1,26 +1,31 @@
 """
 QC: alias-duplicate persons detector.
 
-Permanent regression check for the identity pipeline. Loads
-historical_persons from the SQLite DB and the shared AliasResolver, and
-asserts the invariant:
+Permanent regression check for the identity pipeline. Loads canonical
+persons from either a CSV or a SQLite DB table plus the shared
+AliasResolver, and asserts the invariant:
 
-    For every alias whose target person_id exists in historical_persons,
-    no OTHER person row has a normalized name matching that alias.
+    For every alias whose target person_id exists in the canonical
+    persons source, no OTHER person row has a normalized name matching
+    that alias.
 
 If a violation is found it means the upstream pipeline emitted a stub or
 duplicate person row for a name that should have been alias-resolved to the
 canonical person. This is the regression class fixed by the alias-aware
-patches in scripts 03, 07, M1, C1, C5, P1, P2, and P5 — this check ensures
-no future change reintroduces it.
+patch in event_results/scripts/07_build_mvfp_seed_full.py — this check
+ensures no future change reintroduces it.
 
-Reads:  database/footbag.db
-        legacy_data/overrides/person_aliases.csv
-        legacy_data/event_results/canonical_input/persons.csv
-Writes: legacy_data/out/alias_duplicate_persons.csv
+Two sources are supported:
 
-Run from legacy_data/ with the venv active:
-    python pipeline/qc/check_alias_duplicate_persons.py [--db <path>] [--out <path>] [--warn-only]
+    --source db   (default in footbag-platform)
+                  reads historical_persons from --db (SQLite)
+    --source csv  (used by the canonical-CSV gate in run_qc.py; also
+                  the native mode for FOOTBAG_DATA, which is CSV-only)
+                  reads legacy_data/out/canonical/persons.csv (or --persons-csv)
+
+Aliases always come from overrides/person_aliases.csv (or --aliases-csv).
+
+Writes: legacy_data/out/alias_duplicate_persons.csv (or --out).
 
 Exit codes:
     0 — no violations (or --warn-only)
@@ -32,10 +37,6 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
-try:
-    import pysqlite3 as sqlite3
-except ImportError:
-    import sqlite3
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -47,25 +48,61 @@ sys.path.insert(0, str(LEGACY_ROOT))
 from pipeline.identity.alias_resolver import AliasResolver, normalize_name  # noqa: E402
 
 
-DEFAULT_DB = REPO_ROOT / "database" / "footbag.db"
-DEFAULT_OUT = LEGACY_ROOT / "out" / "alias_duplicate_persons.csv"
+DEFAULT_PERSONS_CSV = LEGACY_ROOT / "out" / "canonical" / "persons.csv"
 DEFAULT_ALIASES_CSV = LEGACY_ROOT / "overrides" / "person_aliases.csv"
+DEFAULT_OUT = LEGACY_ROOT / "out" / "alias_duplicate_persons.csv"
+DEFAULT_DB = REPO_ROOT / "database" / "footbag.db"
 
 
-def find_violations(db_path: Path, aliases_csv: Path) -> list[dict]:
-    """Return a list of {alias, expected_pid, expected_name, duplicate_pid, duplicate_name} dicts."""
-    conn = sqlite3.connect(db_path)
+def _load_persons_csv(persons_csv: Path) -> list[tuple[str, str]]:
+    """Return (person_id, person_name) pairs from the canonical persons CSV.
+
+    Accepts either `person_name` or `person_canon` as the name column so this
+    works against both post-05p5 canonical output and the identity-lock
+    Persons_Truth_Final_vN.csv files.
+    """
+    if not persons_csv.exists():
+        raise FileNotFoundError(f"Persons CSV not found: {persons_csv}")
+    rows: list[tuple[str, str]] = []
+    with persons_csv.open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            pid = (r.get("person_id") or "").strip()
+            name = (r.get("person_name") or r.get("person_canon") or r.get("name") or "").strip()
+            if pid and name:
+                rows.append((pid, name))
+    return rows
+
+
+def _load_persons_db(db_path: Path) -> list[tuple[str, str]]:
+    """Return (person_id, person_name) pairs from historical_persons in SQLite."""
+    if not db_path.exists():
+        raise FileNotFoundError(f"SQLite DB not found: {db_path}")
+    try:
+        import pysqlite3 as sqlite3  # type: ignore[import-not-found]
+    except ImportError:
+        import sqlite3  # type: ignore[no-redef]
+    conn = sqlite3.connect(str(db_path))
     try:
         rows = conn.execute(
-            "SELECT person_id, person_name FROM historical_persons WHERE person_name IS NOT NULL"
+            "SELECT person_id, person_name FROM historical_persons "
+            "WHERE person_name IS NOT NULL"
         ).fetchall()
     finally:
         conn.close()
+    return [(pid, name) for pid, name in rows if pid and name]
 
-    pairs = [(pid, name) for pid, name in rows if pid and name]
+
+def find_violations(
+    pairs: list[tuple[str, str]],
+    aliases_csv: Path,
+) -> list[dict]:
+    """Given (person_id, person_name) pairs, flag alias-duplicate persons.
+
+    Source-agnostic: the caller loads `pairs` from CSV or DB.
+    """
     resolver = AliasResolver(aliases_csv=aliases_csv, canonical_persons=pairs)
 
-    # Build normalized-name → list of person_ids for the DB.
     by_norm: dict[str, list[tuple[str, str]]] = {}
     for pid, name in pairs:
         by_norm.setdefault(normalize_name(name), []).append((pid, name))
@@ -75,7 +112,7 @@ def find_violations(db_path: Path, aliases_csv: Path) -> list[dict]:
         return violations
 
     seen_alias_keys: set[str] = set()
-    with open(aliases_csv, newline="", encoding="utf-8") as f:
+    with aliases_csv.open(newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             alias_raw = (row.get("alias") or "").strip()
             if not alias_raw:
@@ -87,13 +124,13 @@ def find_violations(db_path: Path, aliases_csv: Path) -> list[dict]:
 
             expected_pid = resolver.resolve(alias_raw)
             if not expected_pid:
-                continue  # alias can't resolve (e.g. stale target); not a duplicate-detection case
+                # Alias can't resolve (stale target); handled by the retarget
+                # data-fix task, not this duplicate-detection check.
+                continue
 
-            # Look up every person row whose normalized name matches the alias.
-            matches = by_norm.get(alias_norm, [])
-            for matched_pid, matched_name in matches:
+            for matched_pid, matched_name in by_norm.get(alias_norm, []):
                 if matched_pid == expected_pid:
-                    continue  # this row IS the canonical — no violation
+                    continue
                 violations.append({
                     "alias": alias_raw,
                     "alias_norm": alias_norm,
@@ -108,32 +145,53 @@ def find_violations(db_path: Path, aliases_csv: Path) -> list[dict]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="QC: alias-duplicate persons detector")
-    parser.add_argument("--db", default=str(DEFAULT_DB))
+    parser.add_argument("--source", choices=["csv", "db"], default="db",
+                        help="Persons source: 'db' (default; SQLite historical_persons) or 'csv'")
+    parser.add_argument("--persons-csv", default=str(DEFAULT_PERSONS_CSV),
+                        help="Canonical persons CSV (used when --source csv)")
+    parser.add_argument("--db", default=str(DEFAULT_DB),
+                        help="SQLite DB path (used when --source db)")
     parser.add_argument("--aliases-csv", default=str(DEFAULT_ALIASES_CSV))
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--warn-only", action="store_true",
                         help="Always exit 0 even when violations are found")
     args = parser.parse_args()
 
-    violations = find_violations(Path(args.db), Path(args.aliases_csv))
+    aliases_csv = Path(args.aliases_csv)
+
+    if args.source == "csv":
+        persons_csv = Path(args.persons_csv)
+        pairs = _load_persons_csv(persons_csv)
+        source_label = f"csv:{persons_csv}"
+    else:
+        db_path = Path(args.db)
+        pairs = _load_persons_db(db_path)
+        source_label = f"db:{db_path}"
+
+    violations = find_violations(pairs, aliases_csv)
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=["alias", "alias_norm", "expected_pid", "expected_name", "duplicate_pid", "duplicate_name"],
+            fieldnames=[
+                "alias", "alias_norm", "expected_pid", "expected_name",
+                "duplicate_pid", "duplicate_name",
+            ],
         )
         writer.writeheader()
         writer.writerows(violations)
 
     print(f"alias-duplicate persons report → {out_path}")
+    print(f"  source: {source_label}")
+    print(f"  persons loaded: {len(pairs)}")
     print(f"  violations: {len(violations)}")
     if violations:
-        # Print up to first 10 for quick triage
         for v in violations[:10]:
-            print(f"    alias='{v['alias']}' expected_pid={v['expected_pid'][:8]}... ({v['expected_name']}) "
-                  f"duplicate_pid={v['duplicate_pid'][:8]}... ({v['duplicate_name']})")
+            print(f"    alias='{v['alias']}' expected_pid={v['expected_pid'][:8]}... "
+                  f"({v['expected_name']}) duplicate_pid={v['duplicate_pid'][:8]}... "
+                  f"({v['duplicate_name']})")
         if len(violations) > 10:
             print(f"    ... and {len(violations) - 10} more (see {out_path})")
 

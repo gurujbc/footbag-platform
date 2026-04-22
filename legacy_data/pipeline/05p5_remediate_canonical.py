@@ -80,8 +80,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from discipline_repair import reshape_discipline, REPAIR_THRESHOLD
 
+# Shared alias resolution (see pipeline/identity/alias_resolver.py)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from pipeline.identity.alias_resolver import AliasResolver
+
 ROOT      = Path(__file__).resolve().parents[1]
 CANONICAL = ROOT / "out" / "canonical"
+ALIASES_CSV = ROOT / "overrides" / "person_aliases.csv"
 OVERRIDES = ROOT / "inputs" / "keep_doubles_overrides.csv"
 COVERAGE_FLAG_OVERRIDES = ROOT / "overrides" / "coverage_flag_overrides.csv"
 DISCIPLINE_FIXES = ROOT / "inputs" / "canonical_discipline_fixes.csv"
@@ -1256,6 +1261,128 @@ persons = [p for p in persons if p["person_id"] not in (_remap_old_ids - _still_
 if _alias_remapped:
     print(f"\n[Alias remap] {_alias_remapped} participant row(s) remapped; "
           f"{len(_PERSON_REMAP)} merged person(s) removed from persons.csv")
+
+# ── General alias-driven person merge (ported from export step 5a) ────────────
+# For every person row whose name matches an alias in person_aliases.csv that
+# resolves to a DIFFERENT surviving canonical person_id, remap participant
+# references to the survivor and drop the duplicate person row. Runs here
+# (canonical generation) so the authoritative out/canonical/*.csv reflects the
+# merge; export_canonical_platform.py's equivalent step 5a becomes a no-op
+# (left in place as a safety net for this PR).
+
+print("\n[Alias merge] Resolving alias-duplicate persons…")
+_pairs_for_resolver: list[tuple[str, str]] = [
+    (p["person_id"].strip(), p["person_name"].strip())
+    for p in persons
+    if p.get("person_id", "").strip() and p.get("person_name", "").strip()
+]
+_resolver = AliasResolver(
+    aliases_csv=ALIASES_CSV,
+    canonical_persons=_pairs_for_resolver,
+)
+
+# Determine duplicate → survivor mapping: for each person whose name resolves
+# via the alias registry to a DIFFERENT extant person_id, schedule a remap.
+_alias_pid_remap: dict[str, str] = {}
+for p in persons:
+    pname = (p.get("person_name") or "").strip()
+    pid = (p.get("person_id") or "").strip()
+    if not pname or not pid:
+        continue
+    target = _resolver.resolve(pname)
+    if target and target != pid:
+        _alias_pid_remap[pid] = target
+
+if _alias_pid_remap:
+    # Resolve transitive chains (A→B, B→C ⇒ A→C).
+    def _resolve_chain(pid: str, remap: dict[str, str]) -> str:
+        visited: set[str] = set()
+        cur = pid
+        while cur in remap and cur not in visited:
+            visited.add(cur)
+            cur = remap[cur]
+        return cur
+    _alias_pid_remap = {
+        k: _resolve_chain(k, _alias_pid_remap) for k in _alias_pid_remap
+    }
+
+    # Remap participant references and update display_name to the survivor's
+    # canonical name (mirrors the manual _PERSON_REMAP block above so the
+    # eventual canonical output is self-consistent).
+    #
+    # Edge case: the remap can collapse a doubles pair when the source data
+    # records the same person twice under two name variants (e.g. "Tu Vu /
+    # Tuan Vu" at heartoffootbag/open_doubles_net/p3). Left alone, downstream
+    # Fix 7 would drop the second row and break the doubles count. Detect
+    # these collisions and ghost the later participant_order with the existing
+    # __UNKNOWN_PARTNER__ sentinel, consistent with Fix 5's ghost-partner
+    # mechanism. This preserves doubles integrity without keeping a duplicate
+    # person row.
+    _n_alias_parts = 0
+    _collisions: list[tuple[str, str, str]] = []  # (event_key, discipline_key, placement)
+    # First pass: record (ek, dk, pl) → list of (participant_order, row_index, new_pid)
+    _slot_new_pids: dict[tuple[str, str, str], list[tuple[int, int, str]]] = {}
+    for idx, row in enumerate(participants):
+        rpid = (row.get("person_id") or "").strip()
+        if rpid in _alias_pid_remap:
+            new_pid = _alias_pid_remap[rpid]
+            key = (row.get("event_key", ""), row.get("discipline_key", ""),
+                   row.get("placement", ""))
+            po = int(row.get("participant_order", "0") or "0")
+            _slot_new_pids.setdefault(key, []).append((po, idx, new_pid))
+
+    # Second pass: also record rows NOT being remapped, so we detect when a
+    # remapped pid collides with a pre-existing same-slot pid.
+    _slot_existing_pids: dict[tuple[str, str, str], set[str]] = {}
+    for row in participants:
+        rpid = (row.get("person_id") or "").strip()
+        if rpid and rpid not in _alias_pid_remap:
+            key = (row.get("event_key", ""), row.get("discipline_key", ""),
+                   row.get("placement", ""))
+            _slot_existing_pids.setdefault(key, set()).add(rpid)
+
+    # Apply remaps, ghosting any participant that would collide in-slot.
+    _ghosted = 0
+    for key, entries in _slot_new_pids.items():
+        # Sort by participant_order so earliest keeps the canonical pid.
+        entries.sort()
+        seen_in_slot: set[str] = set(_slot_existing_pids.get(key, set()))
+        for po, idx, new_pid in entries:
+            row = participants[idx]
+            if new_pid in seen_in_slot:
+                # Collision: ghost this participant rather than collapsing.
+                row["person_id"] = ""
+                row["display_name"] = "__UNKNOWN_PARTNER__"
+                _ghosted += 1
+                _collisions.append(key)
+            else:
+                row["person_id"] = new_pid
+                canon = person_name_map.get(new_pid)
+                if canon and row.get("display_name") != canon:
+                    row["display_name"] = canon
+                seen_in_slot.add(new_pid)
+                _n_alias_parts += 1
+
+    # Drop the duplicate person rows.
+    persons = [p for p in persons if p["person_id"] not in _alias_pid_remap]
+
+    # Refresh person_name_map for any downstream code that reads it.
+    person_name_map = {r["person_id"]: r["person_name"] for r in persons}
+
+    print(
+        f"[Alias merge] remapped {len(_alias_pid_remap)} person(s), "
+        f"{_n_alias_parts} participant reference(s); "
+        f"persons.csv reduced by {len(_alias_pid_remap)} row(s)"
+    )
+    if _ghosted:
+        print(
+            f"[Alias merge] ghosted {_ghosted} same-slot collision(s) "
+            f"(source recorded same person twice in one doubles pair): "
+            + ", ".join(f"{ek}/{dk}/p{pl}" for ek, dk, pl in _collisions[:5])
+            + ("..." if len(_collisions) > 5 else "")
+        )
+else:
+    print("[Alias merge] 0 alias-duplicate persons detected")
 
 # ── Inject verified_new events (non-mirror, 2002) ─────────────────────────────
 #
