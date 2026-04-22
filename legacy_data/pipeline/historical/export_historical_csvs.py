@@ -1266,10 +1266,10 @@ _HONOR_OVERRIDES: dict[str, str] = {
     "vasek klouda":             "Vaclav Klouda",
     "vaclav (vasek) klouda":    "Vaclav Klouda",
     "tina aberli":              "Tina Aeberli",
-    "eli piltz":                "Eliott Piltz Galan",
-    "eliott piltz galan":       "Eliott Piltz Galan",
-    "evanne lamarch":           "Evanne Lemarche",
-    "evanne lamarche":          "Evanne Lemarche",
+    "eli piltz":                "Eliot Piltz Galán",
+    "eliott piltz galan":       "Eliot Piltz Galán",
+    "evanne lamarch":           "Evanne LaMarche",
+    "evanne lamarche":          "Evanne LaMarche",
     "arek dzudzinski":          "Arkadiusz Dudzinski",
     "martin cote":              "Martin Cote",
     "sebastien duchesne":       "Sebastien Duchesne",
@@ -1290,10 +1290,10 @@ _HONOR_OVERRIDES: dict[str, str] = {
     "p.t. lovern":              "P.T. Lovern",
     "kendall kic":              "Kendall KIC",
     "wiktor debski":            "Wiktor Debski",
-    "florian gotze":            "Florian Gotze",
+    "florian gotze":            "Florian Goetze",
     "chantelle laurent":        "Chantelle Laurent",
     # BAP members with name variants
-    "red husted":               "Red Fred Husted",
+    "red husted":               "Ethan Husted",
     "dave holton":              "David Holton",
     "gordon scott bevier":      "Gordon Bevier",
     "bryan fournier":           "Brian Fournier",
@@ -1301,7 +1301,7 @@ _HONOR_OVERRIDES: dict[str, str] = {
     "phillip morrison":         "Phil Morrison",
     "olav piwowar":             "Olaf Piwowar",
     "jindra smola":             "Jindrich Smola",
-    "rene ruhr":                "Ren Ruhr",
+    "rene ruhr":                "Rene Ruehr",
 }
 
 # Build norm → person_id lookup from PT
