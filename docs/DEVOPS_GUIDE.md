@@ -453,7 +453,7 @@ Transactional mail flows through four stages. Each stage fails differently; diag
 | Stage | Actor | Observable |
 |---|---|---|
 | 1. Enqueue | `web` container (`CommunicationService.enqueueEmail`) | new row in `outbox_emails` with `status='pending'` |
-| 2. Poll | `worker` container (polls every `outbox_poll_interval_minutes`) | row flips to `status='sending'` with `claimed_at` timestamp |
+| 2. Poll | `worker` container (polls every `outbox_poll_interval_seconds`) | row flips to `status='sending'` with `claimed_at` timestamp |
 | 3. Send | `worker` container (`LiveSesAdapter.sendEmail` → AWS SES) | on success: `status='sent'`; on failure: `status='failed'` or `dead_letter` with `last_error` populated |
 | 4. Deliver | AWS SES → recipient mailbox | outside the app; observable in SES CloudWatch metrics and recipient inbox |
 
@@ -1062,7 +1062,7 @@ Minimum drill expectations:
 
 | Job | Cadence | Purpose | Operator concern |
 |---|---|---|---|
-| `SYS_Send_Email` | every `outbox_poll_interval_minutes` | send queued mail from `outbox_emails` via `LiveSesAdapter` | dead-letter growth, bounce/complaint alarms, worker container crash-loop on missing shared-config env vars (see §15.4) |
+| `SYS_Send_Email` | every `outbox_poll_interval_seconds` | send queued mail from `outbox_emails` via `LiveSesAdapter` | dead-letter growth, bounce/complaint alarms, worker container crash-loop on missing shared-config env vars (see §15.4) |
 | `SYS_Check_Tier_Expiry` | daily | expire or remind annual tiers | missed runs or unusual reminder spikes |
 | `SYS_Open_Vote` | at least hourly | open scheduled votes | failed openings, admin-alerts flow |
 | `SYS_Close_Vote` | at least hourly | close scheduled votes | failed closures, tally readiness |

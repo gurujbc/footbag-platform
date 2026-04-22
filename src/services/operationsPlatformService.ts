@@ -42,9 +42,9 @@ export class OperationsPlatformService {
    * pin the worker in a hot loop.
    */
   getOutboxPollIntervalMs(): number {
-    const minutes = readIntConfig('outbox_poll_interval_minutes', 5);
-    const clamped = Math.max(1, minutes);
-    return clamped * 60 * 1000;
+    const seconds = readIntConfig('outbox_poll_interval_seconds', 30);
+    const clamped = Math.max(1, seconds);
+    return clamped * 1000;
   }
 
   checkReadiness(): ReadinessStatus {

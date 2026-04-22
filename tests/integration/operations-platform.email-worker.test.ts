@@ -113,11 +113,11 @@ describe('OperationsPlatformService.runEmailWorker', () => {
     db2.close();
   });
 
-  it('getOutboxPollIntervalMs respects seed and clamps to >=1 minute', () => {
+  it('getOutboxPollIntervalMs respects seed and clamps to >=1 second', () => {
     const ms = operationsPlatformService.getOutboxPollIntervalMs();
-    expect(ms).toBeGreaterThanOrEqual(60_000);
-    // seed-outbox-poll-interval-minutes = 5 → 300_000
-    expect(ms).toBe(5 * 60 * 1000);
+    expect(ms).toBeGreaterThanOrEqual(1000);
+    // seed-outbox-poll-interval-seconds = 30 → 30_000
+    expect(ms).toBe(30 * 1000);
   });
 
   // Outbox worker per-email observability (USER_STORIES §SYS_Send_Email lines

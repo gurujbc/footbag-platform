@@ -43,6 +43,7 @@ services:
       JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
       SES_ADAPTER: ${SES_ADAPTER}
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
+      SES_SANDBOX_MODE: ${SES_SANDBOX_MODE}
       FOOTBAG_DB_PATH: /app/db/footbag.db
     deploy:
       resources:
@@ -71,6 +72,7 @@ services:
       JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
       SES_ADAPTER: ${SES_ADAPTER}
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
+      SES_SANDBOX_MODE: ${SES_SANDBOX_MODE}
       FOOTBAG_DB_PATH: /app/db/footbag.db
     deploy:
       resources:

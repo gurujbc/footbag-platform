@@ -1954,7 +1954,7 @@ Seed these defaults into the database-backed configuration store during initial 
 ### Email / Notifications / Outbox
 
 - `outbox_max_retry_attempts = 5`
-- `outbox_poll_interval_minutes = 5 minutes`
+- `outbox_poll_interval_seconds = 30 seconds`
 - `email_sending_paused = 0` (admin-only emergency kill switch; DB literal `0/1`)
 - `event_registration_reminder_days = 7 days`
 

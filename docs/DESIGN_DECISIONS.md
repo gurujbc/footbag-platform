@@ -1484,7 +1484,7 @@ Impact:
 
 - Controllers only enqueue outbox entries; they never call SES directly.
 
-- Services enqueue emails by creating outbox entities with recipient, subject, body, status. The background worker scans for pending entries on a system-wide configurable interval (default: every 5 minutes; configuration key `outbox_poll_interval_minutes`). After successful send via SES, it updates entry status. After failure, it increments retryCount and updates status. Maximum retries are controlled by the system-wide configuration value outbox_max_retry_attempts (not a per-row outbox override field); when retryCount reaches the configured limit, the worker moves the entry to dead_letter for admin review.
+- Services enqueue emails by creating outbox entities with recipient, subject, body, status. The background worker scans for pending entries on a system-wide configurable interval (default: every 30 seconds; configuration key `outbox_poll_interval_seconds`). After successful send via SES, it updates entry status. After failure, it increments retryCount and updates status. Maximum retries are controlled by the system-wide configuration value outbox_max_retry_attempts (not a per-row outbox override field); when retryCount reaches the configured limit, the worker moves the entry to dead_letter for admin review.
 
 - Member profiles include subscription preferences derived from MailingList and MailingListSubscription: the UI renders checkboxes from MailingList records that are flagged as member-manageable (for example, newsletter, board-announcements, event-notifications, technical-updates in Phase 1), and changes are applied by updating MailingListSubscription and keeping Member.subscriptions in sync.
 

@@ -987,7 +987,7 @@ Future-scope methods (not implemented in the current slice; retained here as the
 
 **Key Methods:**
 - `runTierExpiryCheck() -> {ok}` — SYS_Check_Tier_Expiry; daily; evaluates all Tier 1/2 Annual memberships; sends reminders at `tier_expiry_reminder_days_1` and `tier_expiry_reminder_days_2` offsets (never more than once per day per member per offset); delegates all tier writes to `MembershipTieringService.processExpiry()`; logs counts and failure metrics to CloudWatch
-- `runEmailWorker() -> {ok}` — SYS_Send_Email; polls outbox every `outbox_poll_interval_minutes`; delegates to `CommunicationService.processSendQueue()`
+- `runEmailWorker() -> {ok}` — SYS_Send_Email; polls outbox every `outbox_poll_interval_seconds`; delegates to `CommunicationService.processSendQueue()`
 - `openPendingVotes() -> {ok}` — SYS_Open_Vote; at minimum hourly; delegates to `VotingElectionService.openVote()`; sends admin-alerts email per opened vote; audit-logs
 - `closePendingVotes() -> {ok}` — SYS_Close_Vote; at minimum hourly; delegates to `VotingElectionService.closeVote()`; sends admin-alerts email per closed vote; audit-logs
 - `runPaymentWebhookProcessor(payload, sig) -> {ok}` — SYS_Process_One_Time_Payments / SYS_Process_Recurring_Donations; validates Stripe signature; delegates to `PaymentService.handleStripeWebhook()`; idempotent

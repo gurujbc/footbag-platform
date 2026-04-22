@@ -4,9 +4,8 @@
 //  - dev:      SES_ADAPTER=stub. Returns the captured in-memory messages
 //              from StubSesAdapter so the developer can finish email flows
 //              without leaving the page.
-//  - sandbox:  SES_ADAPTER=live AND SES_SANDBOX_MODE=1. Returns a static
-//              warning view-model naming the SES mailbox-simulator
-//              recipient addresses and the tester-allow-list contact.
+//  - sandbox:  SES_ADAPTER=live AND SES_SANDBOX_MODE=1. Returns a marker
+//              view-model so the page renders a one-line staging notice.
 //  - null:     SES_ADAPTER=live AND SES_SANDBOX_MODE=0. Real production:
 //              no card is rendered.
 //
@@ -29,31 +28,11 @@ export interface SimulatedEmailMessage {
   firstUrl:    string | null;
 }
 
-export interface SimulatedEmailSimulatorAddress {
-  address:     string;
-  description: string;
-}
-
 export type SimulatedEmailPreview =
   | { mode: 'dev'; messages: SimulatedEmailMessage[] }
-  | {
-      mode:                'sandbox';
-      contactEmail:        string;
-      simulatorAddresses:  SimulatedEmailSimulatorAddress[];
-      docsUrl:             string;
-    };
+  | { mode: 'sandbox' };
 
 const URL_PATTERN = /https?:\/\/\S+/;
-
-const SANDBOX_CONTACT_EMAIL = 'trainedape@gmail.com';
-const SANDBOX_DOCS_URL =
-  'https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-simulator.html';
-const SANDBOX_SIMULATOR_ADDRESSES: SimulatedEmailSimulatorAddress[] = [
-  { address: 'success@simulator.amazonses.com',         description: 'delivered normally' },
-  { address: 'bounce@simulator.amazonses.com',          description: 'hard bounce' },
-  { address: 'complaint@simulator.amazonses.com',       description: 'complaint feedback loop' },
-  { address: 'suppressionlist@simulator.amazonses.com', description: 'rejected (on suppression list)' },
-];
 
 export const simulatedEmailService = {
   async getEmailPreview(): Promise<SimulatedEmailPreview | null> {
@@ -88,12 +67,7 @@ export const simulatedEmailService = {
     }
 
     if (config.sesSandboxMode) {
-      return {
-        mode:               'sandbox',
-        contactEmail:       SANDBOX_CONTACT_EMAIL,
-        simulatorAddresses: SANDBOX_SIMULATOR_ADDRESSES,
-        docsUrl:            SANDBOX_DOCS_URL,
-      };
+      return { mode: 'sandbox' };
     }
 
     return null;

@@ -2281,7 +2281,7 @@ VALUES
 --   tier_expiry_reminder_days_1     First tier-expiry reminder offset (days before expiry)
 --   tier_expiry_reminder_days_2     Second tier-expiry reminder offset (days before expiry)
 --   outbox_max_retry_attempts       Max email retries before dead-letter queue
---   outbox_poll_interval_minutes    Outbox worker polling interval (minutes)
+--   outbox_poll_interval_seconds    Outbox worker polling interval (seconds)
 --   token_cleanup_threshold_days    Age threshold (days) for expired/consumed token cleanup
 --   deceased_cleanup_grace_days     Grace period (days) before PII removal after marked deceased
 --   data_export_link_expiry_hours   Hours before a data export download link expires
@@ -2434,11 +2434,11 @@ VALUES
   ),
 
   (
-   'seed-outbox-poll-interval-minutes',
+   'seed-outbox-poll-interval-seconds',
    '2000-01-01T00:00:00.000Z',
-   'outbox_poll_interval_minutes', '5',
+   'outbox_poll_interval_seconds', '30',
    '2000-01-01T00:00:00.000Z',
-   'Outbox worker polling interval in minutes (default: 5).',
+   'Outbox worker polling interval in seconds (default: 30).',
    NULL
   ),
 

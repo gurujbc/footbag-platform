@@ -39,13 +39,11 @@ describe('GET /register/check-email — sandbox mode (SES_ADAPTER=live, SES_SAND
     const app = createApp();
     const res = await request(app).get('/register/check-email');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('Staging: email delivery is restricted');
-    expect(res.text).toContain('trainedape@gmail.com');
-    expect(res.text).toContain('success@simulator.amazonses.com');
-    expect(res.text).toContain('bounce@simulator.amazonses.com');
-    expect(res.text).toContain('complaint@simulator.amazonses.com');
-    expect(res.text).toContain('suppressionlist@simulator.amazonses.com');
-    expect(res.text).toContain('docs.aws.amazon.com/ses');
+    expect(res.text).toContain('Staging: SES sandbox');
+    expect(res.text).toContain('Ask Dave to be added');
+    expect(res.text).not.toContain('@gmail.com');
+    expect(res.text).not.toContain('mailto:');
+    expect(res.text).not.toContain('@simulator.amazonses.com');
   });
 
   it('does not render the dev stub-message table', async () => {

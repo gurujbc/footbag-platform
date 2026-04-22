@@ -1,7 +1,7 @@
 {{! Simulated email card. Rendered on email-gated pages when the service
     returns a non-null view-model. Three modes: dev (table of captured stub
-    messages), sandbox (warning + SES mailbox-simulator help). Production
-    renders nothing because the service returns null. }}
+    messages), sandbox (one-line notice). Production renders nothing because
+    the service returns null. }}
 
 <style>
 .sec-card { border: 1px solid #d0d7de; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; background: #f6f8fa; }
@@ -61,23 +61,7 @@
 
 {{#if (eq mode "sandbox")}}
 <section class="sec-card sec-card-sandbox" aria-label="Staging email delivery notice">
-  <h2>Staging: email delivery is restricted</h2>
-  <p>
-    This environment runs AWS SES in sandbox mode, so email is delivered only to
-    pre-verified recipient addresses. If you registered with an unverified
-    address, your account was saved but no verification email was sent.
-  </p>
-  <p><strong>To test as a real new user:</strong> email Dave at
-    <a href="mailto:{{contactEmail}}">{{contactEmail}}</a> to be added to the
-    SES verified-recipients list.</p>
-  <p><strong>To test delivery behavior without verification:</strong> register
-    with one of the AWS SES mailbox-simulator addresses below. These work in
-    sandbox without prior verification and don't consume the daily quota.</p>
-  <ul>
-    {{#each simulatorAddresses}}
-      <li><code>{{address}}</code> — {{description}}</li>
-    {{/each}}
-  </ul>
-  <p><a href="{{docsUrl}}" rel="noopener noreferrer" target="_blank">AWS mailbox-simulator documentation</a></p>
+  <h2>Staging: SES sandbox</h2>
+  <p>Only pre-verified recipients get real mail. Ask Dave to be added.</p>
 </section>
 {{/if}}

@@ -3,7 +3,7 @@
  *
  * Polling loop:
  *   1. Call operationsPlatformService.runEmailWorker() to drain a batch.
- *   2. Sleep for outbox_poll_interval_minutes (read per-iteration so admin
+ *   2. Sleep for outbox_poll_interval_seconds (read per-iteration so admin
  *      config changes take effect on the next tick).
  *   3. Exit cleanly on SIGTERM/SIGINT.
  *

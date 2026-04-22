@@ -36,6 +36,7 @@ Cross-track changes require explicit human coordination.
 - **Post-auth-hardening carryovers:** audit logging for password-change and login rate-limit threshold crossings (US M_Change_Password line 550, M_Login line 512); daily token-cleanup job (DD §3.8 line 969); SES bounce/complaint webhook (DD §5.4, SERVICE_CATALOG line 973); JWT key rotation with 24h overlap (DD §3.4 line 813); login rate-limit cooldown wiring (`login_cooldown_minutes` seed row); SES domain identity + production-access ticket.
 - **1-G CloudWatch agent** (S). Unblocks richer `/health/ready` memory-pressure gating per DD §8.4.
 - **Backup/restore workflow** (M). S3 bucket scaffolded, no producer, no restore drill. Must land before prod data is at risk.
+- **Docker log rotation** (S). `docker-compose.prod.yml` has no `logging:` block for `web`/`worker`/`nginx`; container stdout/stderr grow unbounded on the Lightsail host. Add `driver: json-file`, `max-size: "10m"`, `max-file: "3"` per service. Disk-fill risk, especially once worker poll tightens.
 - **Preserve clubs-map anchor hooks** (XS). Retain `id="region-{regionSlug}"` on region sections and `data-club-id="{clubId}"` on club entries on `/clubs/:countrySlug`; intentional anchor-jump targets for the future interactive map.
 
 **Post-sprint infra tidy-up (not blocking sprint closure):** install Node 22 on staging host via nodesource; extend `scripts/deploy-rebuild.sh` rsync includes to ship `tests/` so operator can run `npm run test:smoke` on-host.

@@ -905,7 +905,7 @@ To change any value: INSERT a new row into `system_config` with the desired `val
 | `tier_expiry_reminder_days_1` | `30` | First tier-expiry reminder offset (days before expiry) |
 | `tier_expiry_reminder_days_2` | `7` | Second tier-expiry reminder offset (days before expiry) |
 | `outbox_max_retry_attempts` | `5` | Max email retry attempts before moving to dead-letter queue |
-| `outbox_poll_interval_minutes` | `5` | Outbox worker polling interval (minutes) |
+| `outbox_poll_interval_seconds` | `30` | Outbox worker polling interval (seconds) |
 | `token_cleanup_threshold_days` | `7` | Age threshold (days) for cleanup of expired/consumed account tokens |
 | `deceased_cleanup_grace_days` | `30` | Grace period (days) before PII removal after member marked deceased |
 | `data_export_link_expiry_hours` | `72` | Hours before a personal data export download link expires |

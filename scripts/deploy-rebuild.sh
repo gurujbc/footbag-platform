@@ -222,6 +222,15 @@ if run_sudo grep -q '^FOOTBAG_DB_PATH=/srv/footbag/footbag.db$' "$ENV_PATH"; the
   run_sudo rm -f /srv/footbag/footbag.db /srv/footbag/footbag.db-wal /srv/footbag/footbag.db-shm
 fi
 
+# One-shot migration: SES_SANDBOX_MODE was added 2026-04-22. Staging runs SES
+# in sandbox mode; seed '1' if the env file predates this var. Production will
+# flip this to '0' once SES production access is granted; update the default
+# at that point.
+if ! run_sudo grep -q '^SES_SANDBOX_MODE=' "$ENV_PATH"; then
+  echo "    Seeding SES_SANDBOX_MODE=1 into env file (staging sandbox default)..."
+  run_sudo bash -c "echo 'SES_SANDBOX_MODE=1' >> \"$ENV_PATH\""
+fi
+
 NODE_ENV_VAL=$(require_env NODE_ENV)
 LOG_LEVEL_VAL=$(require_env LOG_LEVEL)
 DB_PATH=$(require_env FOOTBAG_DB_PATH)
@@ -231,6 +240,7 @@ JWT_SIGNER_VAL=$(require_env JWT_SIGNER)
 JWT_KMS_KEY_ID_VAL=$(require_env JWT_KMS_KEY_ID)
 SES_ADAPTER_VAL=$(require_env SES_ADAPTER)
 SES_FROM_IDENTITY_VAL=$(require_env SES_FROM_IDENTITY)
+SES_SANDBOX_MODE_VAL=$(require_env SES_SANDBOX_MODE)
 AWS_REGION_VAL=$(require_env AWS_REGION)
 AWS_PROFILE_VAL=$(require_env AWS_PROFILE)
 
