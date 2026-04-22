@@ -1465,7 +1465,8 @@ SESSION_SECRET_VAL=$(openssl rand -hex 32)
 sudo tee /srv/footbag/env > /dev/null <<EOF
 NODE_ENV=production
 LOG_LEVEL=info
-FOOTBAG_DB_PATH=/srv/footbag/footbag.db
+FOOTBAG_DB_PATH=/srv/footbag/db/footbag.db
+FOOTBAG_DB_DIR=/srv/footbag/db
 PUBLIC_BASE_URL=https://<cloudfront_domain from terraform output>
 SESSION_SECRET=${SESSION_SECRET_VAL}
 EOF
@@ -1481,6 +1482,7 @@ Required values in this minimum deployment:
 - `NODE_ENV`
 - `LOG_LEVEL`
 - `FOOTBAG_DB_PATH`
+- `FOOTBAG_DB_DIR`
 - `PUBLIC_BASE_URL`
 - `SESSION_SECRET`
 
@@ -1531,7 +1533,7 @@ sudo chown -R root:root /srv/footbag
 On first deploy only:
 
 ```bash
-sudo sqlite3 /srv/footbag/footbag.db < /srv/footbag/database/schema.sql
+sudo sqlite3 /srv/footbag/db/footbag.db < /srv/footbag/database/schema.sql
 ```
 
 To load seed data (run the seed pipeline from the repo root):
@@ -1543,8 +1545,8 @@ bash scripts/reset-local-db.sh
 Then lock down the DB file:
 
 ```bash
-sudo chown root:root /srv/footbag/footbag.db
-sudo chmod 600 /srv/footbag/footbag.db
+sudo chown root:root /srv/footbag/db/footbag.db
+sudo chmod 600 /srv/footbag/db/footbag.db
 ```
 
 On later deploys, reuse the existing DB file.
@@ -1552,7 +1554,7 @@ On later deploys, reuse the existing DB file.
 > [!NOTE]
 > **Runtime user note:**
 >
-> If the web container runs as root and systemd runs as root, the bind-mounted root-owned SQLite file and any WAL/SHM sidecar files are writable as deployed. If you later add a non-root `USER` to the Dockerfile, update host ownership and modes on `/srv/footbag/` and `/srv/footbag/footbag.db` to match.
+> The web container runs as root and the bind-mounted directory `/srv/footbag/db` is root-owned, so the SQLite main file and its WAL/SHM sidecars are writable as deployed. If you later add a non-root `USER` to the Dockerfile, update host ownership and modes on `/srv/footbag/` and `/srv/footbag/db/` to match.
 
 #### 6. Install and verify footbag.service
 
@@ -1931,10 +1933,11 @@ At minimum, the host env file must define:
 - `NODE_ENV`
 - `LOG_LEVEL`
 - `FOOTBAG_DB_PATH`
+- `FOOTBAG_DB_DIR`
 - `PUBLIC_BASE_URL`
 - `SESSION_SECRET`
 
-`docker/docker-compose.prod.yml` bind-mounts `${FOOTBAG_DB_PATH}` into `/app/footbag.db`, and `footbag.service` starts Docker Compose with `--env-file /srv/footbag/env`. If the env file is wrong, the deploy can succeed mechanically but still fail at runtime.
+`docker/docker-compose.prod.yml` bind-mounts `${FOOTBAG_DB_DIR}` into `/app/db`, and `footbag.service` starts Docker Compose with `--env-file /srv/footbag/env`. If the env file is wrong, the deploy can succeed mechanically but still fail at runtime.
 
 Warning: do not use `#` in env file values. systemd `EnvironmentFile` parsing treats `#` as an inline comment delimiter.
 
@@ -2712,7 +2715,7 @@ A systemd timer is preferred over cron because it integrates with journalctl and
    export AWS_SHARED_CREDENTIALS_FILE=/root/.aws/credentials-backup
    export AWS_PROFILE=backup
    BUCKET="<your-snapshots-bucket-name>"
-   DB_PATH="${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}"
+   DB_PATH="${FOOTBAG_DB_PATH:-/srv/footbag/db/footbag.db}"
    TS="$(date -u +%Y%m%dT%H%M%SZ)"
    OUT="/tmp/footbag-${TS}.db"
 
@@ -2815,7 +2818,7 @@ Rehearse this before any migration-related work. Completing the drill is a gate 
 
    ```bash
    ssh footbag-staging
-   sudo sqlite3 /srv/footbag/footbag.db 'SELECT COUNT(*) FROM members;' > /tmp/members-baseline.txt
+   sudo sqlite3 /srv/footbag/db/footbag.db 'SELECT COUNT(*) FROM members;' > /tmp/members-baseline.txt
    ```
 
 2. Stop the service:
@@ -2842,7 +2845,7 @@ Rehearse this before any migration-related work. Completing the drill is a gate 
 5. Replace the live DB in place:
 
    ```bash
-   sudo install -o root -g root -m 600 /tmp/restore.db /srv/footbag/footbag.db
+   sudo install -o root -g root -m 600 /tmp/restore.db /srv/footbag/db/footbag.db
    ```
 
 6. Restart the service:
@@ -2855,7 +2858,7 @@ Rehearse this before any migration-related work. Completing the drill is a gate 
 
    ```bash
    BASE_URL=https://<public-url> bash scripts/smoke-local.sh
-   sudo sqlite3 /srv/footbag/footbag.db 'SELECT COUNT(*) FROM members;'
+   sudo sqlite3 /srv/footbag/db/footbag.db 'SELECT COUNT(*) FROM members;'
    ```
 
    Confirm the smoke passes and the member count matches expectations for the snapshot age.
@@ -3298,6 +3301,7 @@ sudo tee -a /srv/footbag/env > /dev/null <<'EOF'
 JWT_SIGNER=kms
 JWT_KMS_KEY_ID=<KMS_KEY_ARN_FROM_STEP_1>
 SES_ADAPTER=live
+SES_SANDBOX_MODE=1
 SES_FROM_IDENTITY=noreply@footbag.org
 AWS_REGION=us-east-1
 AWS_PROFILE=footbag-staging-runtime
@@ -3322,6 +3326,7 @@ Local-dev reference. The equivalent block for a contributor's local `.env` (comm
 # JWT_KMS_KEY_ID=arn:aws:kms:us-east-1:<ACCOUNT>:key/<KEY_ID>
 # JWT_LOCAL_KEYPAIR_PATH=database/dev-jwt-keypair.pem
 # SES_ADAPTER=stub
+# SES_SANDBOX_MODE=0
 # SES_FROM_IDENTITY=noreply@footbag.org
 # AWS_REGION=us-east-1
 # AWS_PROFILE=footbag-staging-runtime
@@ -3377,7 +3382,7 @@ On the staging host, insert an outbox row directly. The column set below covers 
 ```bash
 ssh footbag-staging
 
-sudo sqlite3 /srv/footbag/footbag.db <<'EOF'
+sudo sqlite3 /srv/footbag/db/footbag.db <<'EOF'
 INSERT INTO outbox_emails
   (id, created_at, created_by, updated_at, updated_by,
    subject, body_text, recipient_email)
@@ -3394,7 +3399,7 @@ EOF
 The worker container runs continuously (`restart: unless-stopped` in `docker/docker-compose.prod.yml`) and polls the outbox on its own interval (see `src/worker.ts`); you do not need to trigger it manually. Wait for the poll to elapse, then confirm:
 
 ```bash
-sudo sqlite3 /srv/footbag/footbag.db \
+sudo sqlite3 /srv/footbag/db/footbag.db \
   "SELECT id, status, sent_at, last_error FROM outbox_emails \
    WHERE recipient_email = 'success@simulator.amazonses.com' \
    ORDER BY created_at DESC LIMIT 1;"
@@ -3418,7 +3423,7 @@ On the staging host, confirm the outbox row transitioned:
 ```bash
 ssh footbag-staging
 
-sudo sqlite3 /srv/footbag/footbag.db \
+sudo sqlite3 /srv/footbag/db/footbag.db \
   "SELECT id, status, sent_at, last_error FROM outbox_emails \
    ORDER BY created_at DESC LIMIT 1;"
 ```

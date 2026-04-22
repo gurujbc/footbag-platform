@@ -772,7 +772,7 @@ CI must at minimum:
 6b. confirm only the intended containers receive the required AWS config/credential mounts, read-only
 6c. confirm each AWS-enabled service selects the intended runtime profile explicitly
 6d. verify effective caller identity for the AWS-enabled service path before declaring deployment success
-7. Confirm the host SQLite file exists and is mounted into the compose stack as `/app/footbag.db`.
+7. Confirm the host SQLite file exists and its parent directory is mounted into the compose stack at `/app/db`, with the DB visible inside the container at `/app/db/footbag.db`.
 8. Start or restart the compose stack through the documented service wrapper.
 9. Verify `/health/live` on the origin directly.
 10. Verify `/health/ready` on the origin directly.
@@ -1805,14 +1805,15 @@ sudo mkdir -p /srv/footbag
 sudo tee /srv/footbag/env > /dev/null <<EOF
 NODE_ENV=production
 LOG_LEVEL=info
-FOOTBAG_DB_PATH=/srv/footbag/footbag.db
+FOOTBAG_DB_PATH=/srv/footbag/db/footbag.db
+FOOTBAG_DB_DIR=/srv/footbag/db
 PUBLIC_BASE_URL=https://<cloudfront_domain from terraform output>
 EOF
 sudo chown root:root /srv/footbag/env
 sudo chmod 600 /srv/footbag/env
 ```
 
-Required values: `NODE_ENV`, `LOG_LEVEL`, `FOOTBAG_DB_PATH`, `PUBLIC_BASE_URL`.
+Required values: `NODE_ENV`, `LOG_LEVEL`, `FOOTBAG_DB_PATH`, `FOOTBAG_DB_DIR`, `PUBLIC_BASE_URL`.
 
 **Do not add runtime AWS credentials.** The current slice makes no runtime AWS API calls.
 See §3.4 and §17.9 for the full runtime credential model.
@@ -1854,10 +1855,10 @@ sudo chown -R root:root /srv/footbag
 #### Step 5 — Initialize the database (first deploy only)
 
 ```bash
-sudo sqlite3 /srv/footbag/footbag.db < /srv/footbag/database/schema.sql
+sudo sqlite3 /srv/footbag/db/footbag.db < /srv/footbag/database/schema.sql
 # Then load seed data: run scripts/reset-local-db.sh from the repo root
-sudo chown root:root /srv/footbag/footbag.db
-sudo chmod 600 /srv/footbag/footbag.db
+sudo chown root:root /srv/footbag/db/footbag.db
+sudo chmod 600 /srv/footbag/db/footbag.db
 ```
 
 On later deploys, reuse the existing DB file — do not re-run this step.

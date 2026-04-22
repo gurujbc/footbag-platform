@@ -40,13 +40,14 @@ services:
       NODE_ENV: production
       PORT: "3000"
       LOG_LEVEL: info
-      FOOTBAG_DB_PATH: /app/footbag.db
+      FOOTBAG_DB_PATH: /app/db/footbag.db
       PUBLIC_BASE_URL: http://localhost
       SESSION_SECRET: ${SESSION_SECRET}
     volumes:
-      # Mount the local seed DB into the container read-write.
-      # The app applies SQLite startup pragmas, so must be able to write..
-      - ../database/footbag.db:/app/footbag.db:rw
+      # Directory bind mount so SQLite WAL/SHM sidecars live on the host and
+      # are shared between web and worker containers. A file bind mount would
+      # create container-local sidecars and split the WAL.
+      - ../database:/app/db:rw
       # Local media uploads (avatars, photos).
       - ../data/media:/app/data/media:rw
     restart: unless-stopped
@@ -67,7 +68,8 @@ services:
     environment:
       NODE_ENV: production
       LOG_LEVEL: info
-      FOOTBAG_DB_PATH: /app/footbag.db
+      FOOTBAG_DB_PATH: /app/db/footbag.db
     volumes:
-      - ../database/footbag.db:/app/footbag.db:rw
+      # Directory bind mount — must match web so WAL/SHM sidecars are shared.
+      - ../database:/app/db:rw
     restart: "no"

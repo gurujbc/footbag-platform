@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { SESSION_COOKIE_NAME } from '../middleware/auth';
-import { config } from '../config/env';
 import { createSessionJwt } from '../services/jwtService';
 import { issueSessionCookie } from '../lib/sessionCookie';
 import { identityAccessService } from '../services/identityAccessService';
 import { RateLimitedError, ValidationError } from '../services/serviceErrors';
+import { simulatedEmailService, SimulatedEmailPreview } from '../services/simulatedEmailService';
 import { PageViewModel } from '../types/page';
 
 export const FLASH_LOGOUT_COOKIE = 'footbag_flash_logout';
@@ -25,11 +25,8 @@ interface RegisterContent {
 
 interface CheckEmailContent {
   resent?: boolean;
-  /** Dev-only: path to /internal/dev-outbox. Populated only when SES_ADAPTER=stub. */
-  devOutboxUrl?: string;
+  emailPreview?: SimulatedEmailPreview;
 }
-
-const DEV_OUTBOX_URL = config.sesAdapter === 'stub' ? '/internal/dev-outbox' : undefined;
 
 interface VerifyResultContent {
   ok: boolean;
@@ -153,12 +150,17 @@ async function postRegister(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
-function getCheckEmail(_req: Request, res: Response): void {
-  res.render('auth/check-email', {
-    seo: { title: 'Check your email' },
-    page: { sectionKey: '', pageKey: 'check_email', title: 'Check your email' },
-    content: { devOutboxUrl: DEV_OUTBOX_URL },
-  } satisfies PageViewModel<CheckEmailContent>);
+async function getCheckEmail(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const emailPreview = (await simulatedEmailService.getEmailPreview()) ?? undefined;
+    res.render('auth/check-email', {
+      seo: { title: 'Check your email' },
+      page: { sectionKey: '', pageKey: 'check_email', title: 'Check your email' },
+      content: { emailPreview },
+    } satisfies PageViewModel<CheckEmailContent>);
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function getVerify(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -197,10 +199,11 @@ async function postVerifyResend(req: Request, res: Response, next: NextFunction)
     next(err);
     return;
   }
+  const emailPreview = (await simulatedEmailService.getEmailPreview()) ?? undefined;
   res.render('auth/check-email', {
     seo: { title: 'Check your email' },
     page: { sectionKey: '', pageKey: 'check_email', title: 'Check your email' },
-    content: { resent: true, devOutboxUrl: DEV_OUTBOX_URL },
+    content: { resent: true, emailPreview },
   } satisfies PageViewModel<CheckEmailContent>);
 }
 

@@ -195,7 +195,7 @@ The version column on mutable tables supports optimistic lost-update detection f
 
 ## 1.4 Development Parity
 
-Local development and deployed environments use the same application code, the same fixed SQLite runtime filename (`footbag.db`), the same prepared statements, and the same Dockerized process boundaries. The host-side SQLite path may differ by environment, but Docker/Compose mounts it into the application working directory as `./footbag.db`. Backup jobs may be disabled locally, but backup behavior is validated in staging and production.
+Local development and deployed environments use the same application code, the same fixed SQLite runtime filename (`footbag.db`), the same prepared statements, and the same Dockerized process boundaries. Docker/Compose mounts the host directory that contains the DB into the application working directory at `/app/db`, so the WAL and SHM sidecar files live on the host alongside the main DB file and are shared across the web and worker containers. Backup jobs may be disabled locally, but backup behavior is validated in staging and production.
 
 ## 1.5 Photo Data in S3
 
@@ -1548,6 +1548,44 @@ Impact:
 - Cloudflare Email Routing is configured with one forwarding rule per receive address (`admin@`, `announce@` inbound, `brat@`, `directors@`, `ops-alert@`, `sanctioning@`) pointing to an operator-designated destination inbox. `brat@`, `directors@`, and `sanctioning@` are in-use contacts carried over from the legacy site and must be routed at cutover so no mail is lost.
 - Any additional address (e.g., `privacy@`, `legal@`, `support@`, `info@`) must be justified against this list and added here before it is introduced. The default is to route new purposes to `admin@footbag.org` unless volume or scope warrants a split.
 - Handover to IFPA: ownership of these addresses transfers as part of the operational handover; the addresses themselves and their purposes do not change.
+
+## 5.6 Dev and Staging Email Preview
+
+Decision:
+
+Email-gated landing pages (e.g., post-registration `/register/check-email`, and future equivalents for password reset and change-email) render a conditional in-page preview card whose content is driven by two configuration flags: `config.sesAdapter` and `config.sesSandboxMode`. A single shared service (`simulatedEmailService.getEmailPreview()`) and Handlebars partial (`simulated-email-card`) produce the three rendering modes so every email-gated page in the application uses the same preview pattern.
+
+| `sesAdapter` | `sesSandboxMode` | Card | Purpose |
+|---|---|---|---|
+| `stub` | (ignored) | Dev preview | Table of captured `StubSesAdapter` in-memory messages with subject, body, and extracted action link. Newest first. Empty state when no messages have been sent. |
+| `live` | `true` | Staging sandbox warning | Warning card naming the SES sandbox constraint, the tester-allow-list contact, and the four AWS SES mailbox-simulator recipient addresses (success, bounce, complaint, suppressionlist) with a link to AWS documentation. |
+| `live` | `false` | (no card) | Real production. Page renders the standard "check your email" copy with no developer or staging affordance. |
+
+Rationale:
+
+- Dev needs to see the just-sent email inline to complete email-gated flows quickly. A separate dev-outbox page requires an extra navigation hop and hides the fact that an email was actually captured.
+- Staging runs under AWS SES sandbox until production access is granted (see §5.4 and `docs/MIGRATION_PLAN.md` §28.8). Testers who register with an unverified address otherwise receive a silently broken flow: account is saved, no email arrives, no indication why. The staging card explains the constraint and steers testers to either the allow-list or the AWS mailbox simulator.
+- Decoupling the sandbox-state signal (`SES_SANDBOX_MODE`) from the adapter choice (`SES_ADAPTER`) means a future staging-with-production-access or pre-prod-with-sandbox environment renders correctly without code changes.
+- The AWS SES mailbox-simulator addresses (`success@`, `bounce@`, `complaint@`, `suppressionlist@` at `simulator.amazonses.com`) work in sandbox without recipient verification, do not count against the daily quota, and do not affect reputation metrics. They are the AWS-documented way to exercise delivery, bounce, and complaint paths during staging testing.
+
+Requirements:
+
+- `simulatedEmailService.getEmailPreview()` returns a discriminated-union view-model: `{mode: 'dev', messages}` when `sesAdapter === 'stub'`; `{mode: 'sandbox', contactEmail, simulatorAddresses, docsUrl}` when `sesAdapter === 'live'` and `sesSandboxMode === true`; `null` otherwise.
+- The partial is reusable across any email-gated page. Controllers pass the result as `content.emailPreview` on the `PageViewModel`; the template renders the partial when the value is truthy.
+- Dev-mode preview reads from the `StubSesAdapter` in-memory buffer, not from `outbox_emails`. This preserves the §5.4 body-text scrub contract: the scrub operates on the DB row, while adapter memory is scrub-exempt and holds the original content for the lifetime of the process.
+- Sandbox-mode copy enumerates the four mailbox-simulator addresses explicitly. Testers do not need to consult AWS documentation to exercise delivery-path variants.
+- `SES_SANDBOX_MODE` env var is boolean (accepts `1`, `0`, `true`, `false`), default `false`, fail-fast on any other value. The flag is ignored when `SES_ADAPTER === 'stub'`.
+
+Trade-offs:
+
+- Two SES-related env vars (`SES_ADAPTER` and `SES_SANDBOX_MODE`) instead of one. Separation is intentional: `SES_ADAPTER` chooses the code path; `SES_SANDBOX_MODE` signals the AWS account state. Conflating them would require a code change to handle post-production-access staging or pre-prod-with-sandbox combinations.
+- An in-app dev preview rather than an external mail catcher (MailHog, Mailpit, Mailtrap) keeps local setup zero-dependency but means emails cannot be inspected in a real email client during dev. An operator who needs real-client rendering can point the staging host at a test inbox.
+
+Impact:
+
+- Currently wired on `/register/check-email`. Any future email-gated landing page (password-reset-sent, change-email-confirmation, announce-send-receipt, event-registration-confirmation) reuses the same service and partial.
+- The previously separate `/internal/dev-outbox` page and its route, controller, service, template, and tests are retired.
+- CommunicationService and the outbox worker are unchanged; the preview is a read-only view of `StubSesAdapter` memory in dev and a static warning in staging.
 
 # 6. External Services and Integrations
 

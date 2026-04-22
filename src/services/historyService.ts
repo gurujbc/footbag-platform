@@ -1,5 +1,5 @@
 import { PublicPlayerResultRow, FreestyleRecordRow, PlayerCareerStatRow, PlayerPartnerRow,
-         publicPlayers, freestyleRecords, account } from '../db/db';
+         publicPlayers, freestyleRecords, account, legacyClaim } from '../db/db';
 import { NotFoundError } from './serviceErrors';
 import { personHref } from './personLink';
 import { runSqliteRead } from './sqliteRetry';
@@ -8,6 +8,7 @@ import { PageViewModel } from '../types/page';
 import { groupPlayerResults } from './playerShaping';
 import type { PlayerEventGroup, PlayerHeroData } from '../types/playerProfile';
 import { FreestyleRecordViewModel, shapeFreestyleRecord } from './freestyleRecordShaping';
+import { surnameKey } from './identityAccessService';
 
 interface HistoricalPlayer {
   personId: string;
@@ -57,6 +58,8 @@ export interface HistoryDetailContent {
   freestyleRecords: FreestyleRecordViewModel[];
   partnerships: PartnershipViewModel[];
   hasPartnerships: boolean;
+  canClaim: boolean;
+  claimHref: string | null;
 }
 
 export type HistoryDetailResult =
@@ -65,7 +68,11 @@ export type HistoryDetailResult =
   | { action: 'render'; vm: PageViewModel<HistoryDetailContent> };
 
 export const historyService = {
-  getHistoricalPlayerPage(personId: string, isAuthenticated: boolean): HistoryDetailResult {
+  getHistoricalPlayerPage(
+    personId: string,
+    isAuthenticated: boolean,
+    viewerMemberId?: string,
+  ): HistoryDetailResult {
     const row = runSqliteRead('getHistoricalPlayerById', () =>
       publicPlayers.getById.get(personId),
     );
@@ -180,6 +187,25 @@ export const historyService = {
       };
     });
 
+    // Claim eligibility for the authenticated viewer (scenarios D and E).
+    // Show the CTA when: viewer is signed in, viewer has no HP linked yet,
+    // HP is unclaimed (the `linkedRow` above already redirected claimed HPs),
+    // and the viewer's real_name surname matches the HP's person_name surname.
+    let canClaim = false;
+    let claimHref: string | null = null;
+    if (viewerMemberId) {
+      const viewerRow = runSqliteRead('findClaimingMemberForHpCta', () =>
+        legacyClaim.findClaimingMember.get(viewerMemberId),
+      ) as { id: string; real_name: string; historical_person_id: string | null } | undefined;
+      if (viewerRow
+        && !viewerRow.historical_person_id
+        && surnameKey(viewerRow.real_name) === surnameKey(player.personName)
+      ) {
+        canClaim = true;
+        claimHref = `/history/${encodeURIComponent(player.personId)}/claim`;
+      }
+    }
+
     return {
       action: 'render',
       vm: {
@@ -208,6 +234,8 @@ export const historyService = {
           freestyleRecords:      freestyleRows.map(shapeFreestyleRecord),
           partnerships,
           hasPartnerships:       partnerships.length > 0,
+          canClaim,
+          claimHref,
         },
       },
     };

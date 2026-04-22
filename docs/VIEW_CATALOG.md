@@ -89,8 +89,9 @@ This document covers:
   - Register
   - HoF landing
 - the implemented claim pages:
-  - Claim initiation (`GET /history/claim`, `POST /history/claim`)
-  - Claim confirmation (`POST /history/claim/confirm`)
+  - Legacy-account claim initiation (`GET /history/claim`, `POST /history/claim`)
+  - Legacy-account claim confirmation (`POST /history/claim/confirm`)
+  - Historical-person direct claim (`GET /history/:personId/claim`, `POST /history/:personId/claim/confirm`) for registrants without an old-site user account (scenarios D and E per MIGRATION_PLAN §8)
 - the rules future pages must follow to join the catalog
 
 `docs/USER_STORIES.md` remains broader than this file. This catalog is authoritative for the views it includes; it does not attempt to catalog the full future product yet.
@@ -458,6 +459,8 @@ Visual token baseline (from `src/public/css/style.css`):
 | `GET /history/claim` | Claim initiation | Legacy account claim form | Current (early-test shortcut) |
 | `POST /history/claim` | Claim lookup | Legacy account lookup handler | Current (early-test shortcut) |
 | `POST /history/claim/confirm` | Claim confirmation | Legacy account merge handler | Current (early-test shortcut) |
+| `GET /history/:personId/claim` | HP claim confirmation | Historical-person direct claim (scenarios D/E) confirm page, with surname reconciliation and first-name-variant warning | Current |
+| `POST /history/:personId/claim/confirm` | HP claim execution | Direct HP claim handler; sets `members.historical_person_id` and transitively claims the linked `legacy_members` row when present | Current |
 | `GET /clubs` | Clubs index | Country-grouped clubs directory entry page | Current |
 | `GET /clubs/:key` | Clubs shared handler | Dispatches to country page or club detail | Current |
 | `GET /login` | Login | Member login | Current |
@@ -1601,6 +1604,8 @@ Most pages in this catalog are public visitor pages. The following routes requir
 - `GET /history/claim` — auth required (route middleware)
 - `POST /history/claim` — auth required (route middleware)
 - `POST /history/claim/confirm` — auth required (route middleware)
+- `GET /history/:personId/claim` — auth required (route middleware)
+- `POST /history/:personId/claim/confirm` — auth required (route middleware)
 - `GET /members` — auth-gated member dashboard with search
 - `GET /members/:memberKey` — own profile when authenticated as that member; limited public read-only HoF/BAP view otherwise; non-HoF/BAP public access fails closed
 - `GET /members/:memberKey/edit`, `POST /members/:memberKey/edit` — auth required, own-profile only

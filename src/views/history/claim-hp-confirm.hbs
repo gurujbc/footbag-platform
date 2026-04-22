@@ -1,0 +1,46 @@
+{{! Historical-person claim confirmation page }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p>A historical player record is a read-only entry from the competitive footbag archive. Claiming it links your current account to this competitor identity so Hall of Fame status, country, and career results appear on your profile.</p>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <section>
+    {{#if content.error}}
+      <p class="form-error" role="alert">{{content.error}}</p>
+      <p style="margin-top:24px"><a href="{{content.cancelHref}}">Back</a></p>
+    {{else}}
+      <div class="card" style="margin-bottom:24px;">
+        <p style="margin:0; font-weight:500;">Historical record: {{content.personName}}</p>
+        {{#if content.country}}
+          <p style="margin:4px 0 0; color:#666;">Country: {{content.country}}</p>
+        {{/if}}
+        {{#if content.isHof}}
+          <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">Hall of Fame member</p>
+        {{/if}}
+        {{#if content.isBap}}
+          <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">BAP member</p>
+        {{/if}}
+      </div>
+
+      {{#if content.firstNameWarning}}
+        <div class="card" style="margin:16px 0; border-left: 4px solid #b45309; background: #fffbeb;">
+          <p style="margin:0; color:#92400e;">First-name difference: the historical record's first name does not exactly match the first name on your account. This is allowed if you use a common variant (e.g. Dave vs David). Proceed only if this record is you.</p>
+        </div>
+      {{/if}}
+
+      <p>This will link your current account to the historical record and carry forward country, Hall of Fame status, and induction year where applicable. Your display name and login credentials will not be changed.</p>
+
+      <form method="POST" action="/history/{{content.personId}}/claim/confirm">
+        <button type="submit" class="btn btn-primary">Yes, this is me — link the record</button>
+      </form>
+
+      <p style="margin-top:16px"><a href="{{content.cancelHref}}">Cancel</a></p>
+    {{/if}}
+  </section>
+
+</div>

@@ -57,7 +57,7 @@ beforeAll(async () => {
   testDb.exec(schema);
 
   insertMember(testDb, { id: CLAIMER_ID, slug: CLAIMER_SLUG, display_name: 'Claim Tester', login_email: 'claimer@example.com' });
-  insertMember(testDb, { id: OTHER_ID, slug: OTHER_SLUG, display_name: 'Other Tester', login_email: 'other@example.com' });
+  insertMember(testDb, { id: OTHER_ID, slug: OTHER_SLUG, display_name: 'Other Tester', login_email: 'other@example.com', country: null });
 
   insertLegacyMember(testDb, {
     legacy_member_id: LEGACY_NO_HP,
@@ -78,14 +78,16 @@ beforeAll(async () => {
     legacy_member_id: LEGACY_WITH_HP,
     country: 'NZ',
     hof_member: 1,
+    hof_induction_year: 2005,
     bap_member: 0,
+    first_year: 1988,
   });
   insertLegacyMember(testDb, {
     legacy_member_id: LEGACY_WITH_HP,
     real_name: 'Historical Claimant',
     display_name: 'Historical Claimant',
-    country: 'NZ',
-    is_hof: 1,
+    country: null,
+    is_hof: 0,
     is_bap: 0,
   });
 
@@ -246,7 +248,7 @@ describe('POST /history/claim/confirm — merge (no HP match)', () => {
 // ── POST /history/claim/confirm — merge (HP match exists) ────────────────────
 
 describe('POST /history/claim/confirm — merge (HP match)', () => {
-  it('successful claim sets members.historical_person_id from the matching HP', async () => {
+  it('successful claim sets members.historical_person_id and carries forward HP country/HoF/induction year', async () => {
     const app = createApp();
     const res = await request(app)
       .post('/history/claim/confirm').set('Cookie', otherCookie())
@@ -254,12 +256,77 @@ describe('POST /history/claim/confirm — merge (HP match)', () => {
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe(`/members/${OTHER_SLUG}`);
 
+    // HP carry-forward: legacy_members had country=NULL and is_hof=0, but the
+    // linked historical_persons row had country='NZ', hof_member=1,
+    // hof_induction_year=2005, first_year=1988. The member row must reflect
+    // those because the claim also merges HP fields (three-table design).
     const member = testDb.prepare(
-      'SELECT legacy_member_id, historical_person_id, is_hof FROM members WHERE id = ?',
-    ).get(OTHER_ID) as { legacy_member_id: string | null; historical_person_id: string | null; is_hof: number };
+      `SELECT legacy_member_id, historical_person_id, country, is_hof, is_bap,
+              hof_inducted_year, first_competition_year
+       FROM members WHERE id = ?`,
+    ).get(OTHER_ID) as {
+      legacy_member_id: string | null;
+      historical_person_id: string | null;
+      country: string | null;
+      is_hof: number;
+      is_bap: number;
+      hof_inducted_year: number | null;
+      first_competition_year: number | null;
+    };
     expect(member.legacy_member_id).toBe(LEGACY_WITH_HP);
     expect(member.historical_person_id).toBe(HP_PERSON_ID);
+    expect(member.country).toBe('NZ');
     expect(member.is_hof).toBe(1);
+    expect(member.is_bap).toBe(0);
+    expect(member.hof_inducted_year).toBe(2005);
+    expect(member.first_competition_year).toBe(1988);
+  });
+
+  it('HP carry-forward does not overwrite a member-row country that was already set', async () => {
+    const claimerId = insertMember(testDb, {
+      slug: 'hp_no_overwrite', display_name: 'HP NoOverwrite',
+      login_email: 'hp-no-overwrite@example.com',
+      country: 'DE',
+    });
+    const legacyId = 'LM-HP-NO-OVERWRITE';
+    insertLegacyMember(testDb, {
+      legacy_member_id: legacyId,
+      real_name: 'HP NoOverwrite',
+      display_name: 'HP NoOverwrite',
+      country: null,
+    });
+    insertHistoricalPerson(testDb, {
+      person_id: 'hp-no-overwrite-001',
+      person_name: 'HP NoOverwrite',
+      legacy_member_id: legacyId,
+      country: 'NZ',
+      hof_member: 0,
+      bap_member: 1,
+    });
+
+    const app = createApp();
+    const res = await request(app)
+      .post('/history/claim/confirm')
+      .set('Cookie', `footbag_session=${createTestSessionJwt({ memberId: claimerId })}`)
+      .type('form').send({ legacyMemberId: legacyId });
+    expect(res.status).toBe(302);
+
+    const row = testDb.prepare(
+      'SELECT country, is_hof, is_bap FROM members WHERE id = ?',
+    ).get(claimerId) as { country: string | null; is_hof: number; is_bap: number };
+    expect(row.country).toBe('DE');   // member had DE; HP did not overwrite.
+    expect(row.is_hof).toBe(0);       // both 0.
+    expect(row.is_bap).toBe(1);       // OR semantics from HP.
+  });
+
+  it('HP carry-forward is a no-op when the claimed legacy account has no linked HP', async () => {
+    // Uses the LEGACY_NO_HP row exercised earlier — the claimer has already
+    // claimed it in the first merge describe block. Verify the member row
+    // has no historical_person_id, confirming no HP merge happened.
+    const row = testDb.prepare(
+      'SELECT historical_person_id FROM members WHERE id = ?',
+    ).get(CLAIMER_ID) as { historical_person_id: string | null };
+    expect(row.historical_person_id).toBeNull();
   });
 });
 

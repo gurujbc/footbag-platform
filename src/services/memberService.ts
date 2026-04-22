@@ -45,7 +45,9 @@ export interface OwnProfileContent {
   isHof: boolean;
   isBap: boolean;
   hasLegacyLink: boolean;
+  hasHistoricalLink: boolean;
   historicalPersonName: string | null;
+  historicalPersonHref: string | null;
   firstCompetitionYear: number | null;
   showCompetitiveResults: boolean;
   heroData?: PlayerHeroData;
@@ -140,10 +142,14 @@ function rowToContent(row: MemberProfileRow): OwnProfileContent {
     isAdmin:         Boolean(row.is_admin),
     isHof:           Boolean(row.is_hof),
     isBap:           Boolean(row.is_bap),
-    hasLegacyLink:   row.legacy_member_id !== null,
+    hasLegacyLink:      row.legacy_member_id !== null,
+    hasHistoricalLink:  row.historical_person_id !== null,
+    historicalPersonName: row.historical_person_name ?? null,
+    historicalPersonHref: row.historical_person_id
+      ? `/history/${encodeURIComponent(row.historical_person_id)}`
+      : null,
     firstCompetitionYear: row.first_competition_year ?? row.historical_first_year ?? null,
     showCompetitiveResults: row.show_competitive_results !== 0,
-    historicalPersonName: resolveHistoricalName(row),
     avatarThumbUrl:  buildAvatarUrl(row.avatar_thumb_key, row.avatar_media_id),
   };
 }

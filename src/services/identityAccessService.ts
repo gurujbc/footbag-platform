@@ -116,8 +116,9 @@ async function attemptLogin(
  */
 /**
  * Extract the surname (last word) from a name after stripping common suffixes.
+ * Exported so other services (e.g., historyService) can reuse the same rule.
  */
-function extractSurname(name: string): string {
+export function extractSurname(name: string): string {
   const suffixes = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'phd', 'md']);
   const words = name.trim().split(/\s+/);
   // Strip trailing suffixes
@@ -130,7 +131,7 @@ function extractSurname(name: string): string {
 /**
  * Strip accents for comparison (Unicode NFD decomposition, remove combining marks).
  */
-function stripAccents(s: string): string {
+export function stripAccents(s: string): string {
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
@@ -412,7 +413,213 @@ function claimLegacyAccount(requestingMemberId: string, targetLegacyMemberId: st
     const hp = legacyClaim.findHistoricalPersonByLegacyId.get(row.legacy_member_id) as HistoricalPersonClaimRow | undefined;
     if (hp) {
       legacyMembers.setMemberHistoricalPersonId.run(hp.person_id, now, requestingMemberId);
+      legacyClaim.mergeHistoricalPersonFields.run(
+        hp.country,
+        hp.hof_member,
+        hp.bap_member,
+        hp.hof_induction_year,
+        hp.first_year,
+        now,
+        requestingMemberId,
+      );
     }
+  });
+}
+
+// ── Historical-person direct claim (scenarios D and E) ──────────────────────
+//
+// For registrants who were competitors but never had an old-site user account
+// (scenario D), or whose legacy_members row and historical_persons row were
+// not pipeline-linked (scenario E). Email cannot be the anchor because
+// historical_persons carries no email, so the identity anchor is surname
+// reconciliation against the member's real_name. Flow:
+//   1. Member views /history/:personId (the HP detail page).
+//   2. If eligible, member clicks "Claim this identity".
+//   3. Confirm page shows HP name + the first-name mismatch warning if any.
+//      Surname mismatch blocks the claim outright.
+//   4. On confirm, members.historical_person_id is set, HP fields are merged
+//      in, and if the HP has a legacy_member_id back-link, the legacy_members
+//      row is transitively claimed in the same transaction.
+
+export interface HistoricalPersonClaimLookup {
+  personId: string;
+  personName: string;
+  country: string | null;
+  isHof: boolean;
+  isBap: boolean;
+  firstNameWarning: boolean;
+}
+
+export function surnameKey(name: string | null | undefined): string {
+  if (!name) return '';
+  return stripAccents(extractSurname(name)).toLowerCase();
+}
+
+function normalizedSurnamesMatch(a: string | null, b: string | null): boolean {
+  if (!a || !b) return false;
+  return surnameKey(a) === surnameKey(b);
+}
+
+function extractFirstName(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  return words[0] ?? '';
+}
+
+function firstNamesMatch(a: string | null, b: string | null): boolean {
+  if (!a || !b) return false;
+  return stripAccents(extractFirstName(a)).toLowerCase() ===
+         stripAccents(extractFirstName(b)).toLowerCase();
+}
+
+interface ClaimingMemberRow {
+  id: string;
+  slug: string;
+  real_name: string;
+  legacy_member_id: string | null;
+  historical_person_id: string | null;
+}
+
+function lookupHistoricalPersonForClaim(
+  requestingMemberId: string,
+  personId: string,
+): HistoricalPersonClaimLookup | null {
+  const member = legacyClaim.findClaimingMember.get(requestingMemberId) as ClaimingMemberRow | undefined;
+  if (!member) return null;
+  if (member.historical_person_id) {
+    throw new ValidationError('Your account is already linked to a historical player record.');
+  }
+
+  const hp = legacyClaim.findHistoricalPersonById.get(personId) as HistoricalPersonClaimRow | undefined;
+  if (!hp) return null;
+
+  // Not already claimed by another member.
+  const existing = legacyClaim.findMemberClaimingHp.get(personId) as { id: string; slug: string } | undefined;
+  if (existing) {
+    throw new ValidationError('This historical record has already been claimed by another member.');
+  }
+
+  // Surname reconciliation is required to proceed. Mismatch blocks the claim
+  // entirely; callers should not render the confirm page.
+  if (!normalizedSurnamesMatch(member.real_name, hp.person_name)) {
+    throw new ValidationError(
+      'Your name does not match this historical record. If you believe this is your identity, contact an administrator.',
+    );
+  }
+
+  // If the HP has a legacy_member_id back-link, the claim will transitively
+  // act on legacy_members. Reject if the member already holds a different
+  // legacy linkage, so we never leave two incompatible legacy ids on one
+  // account.
+  if (hp.legacy_member_id) {
+    if (member.legacy_member_id && member.legacy_member_id !== hp.legacy_member_id) {
+      throw new ValidationError(
+        'This historical record is tied to a different legacy account than the one already linked to your profile.',
+      );
+    }
+    const lm = legacyMembers.findByLegacyMemberId.get(hp.legacy_member_id) as LegacyMemberRow | undefined;
+    if (lm && lm.claimed_by_member_id && lm.claimed_by_member_id !== requestingMemberId) {
+      throw new ValidationError(
+        'The legacy account tied to this historical record has already been claimed by another member.',
+      );
+    }
+  }
+
+  return {
+    personId: hp.person_id,
+    personName: hp.person_name,
+    country: hp.country,
+    isHof: Boolean(hp.hof_member),
+    isBap: Boolean(hp.bap_member),
+    firstNameWarning: !firstNamesMatch(member.real_name, hp.person_name),
+  };
+}
+
+function claimHistoricalPerson(
+  requestingMemberId: string,
+  personId: string,
+): void {
+  transaction(() => {
+    const member = legacyClaim.findClaimingMember.get(requestingMemberId) as ClaimingMemberRow | undefined;
+    if (!member) {
+      throw new ValidationError('Your account cannot be found.');
+    }
+    if (member.historical_person_id) {
+      throw new ValidationError('Your account is already linked to a historical player record.');
+    }
+
+    const hp = legacyClaim.findHistoricalPersonById.get(personId) as HistoricalPersonClaimRow | undefined;
+    if (!hp) {
+      throw new ValidationError('The historical record is no longer available for claim.');
+    }
+
+    const existing = legacyClaim.findMemberClaimingHp.get(personId) as { id: string; slug: string } | undefined;
+    if (existing) {
+      throw new ValidationError('This historical record has already been claimed by another member.');
+    }
+
+    if (!normalizedSurnamesMatch(member.real_name, hp.person_name)) {
+      throw new ValidationError(
+        'Your name does not match this historical record. If you believe this is your identity, contact an administrator.',
+      );
+    }
+
+    const now = new Date().toISOString();
+
+    // Transitive legacy claim when the HP is back-linked to a legacy account.
+    if (hp.legacy_member_id) {
+      if (member.legacy_member_id && member.legacy_member_id !== hp.legacy_member_id) {
+        throw new ValidationError(
+          'This historical record is tied to a different legacy account than the one already linked to your profile.',
+        );
+      }
+      const lm = legacyMembers.findByLegacyMemberId.get(hp.legacy_member_id) as LegacyMemberRow | undefined;
+      if (lm && !lm.claimed_by_member_id) {
+        const marked = legacyMembers.markClaimed.run(requestingMemberId, now, hp.legacy_member_id);
+        if (marked.changes === 0) {
+          throw new ValidationError(
+            'The legacy account tied to this historical record has already been claimed by another member.',
+          );
+        }
+        if (!member.legacy_member_id) {
+          legacyClaim.transferLegacyFields.run(
+            lm.legacy_member_id,
+            lm.legacy_user_id,
+            lm.legacy_email,
+            lm.bio ?? '',
+            lm.birth_date,
+            lm.street_address,
+            lm.postal_code,
+            lm.city,
+            lm.region,
+            lm.country,
+            lm.ifpa_join_date,
+            lm.is_hof,
+            lm.is_bap,
+            lm.first_competition_year,
+            now,
+            requestingMemberId,
+          );
+        }
+      } else if (lm && lm.claimed_by_member_id && lm.claimed_by_member_id !== requestingMemberId) {
+        throw new ValidationError(
+          'The legacy account tied to this historical record has already been claimed by another member.',
+        );
+      }
+    }
+
+    // Set the member↔HP link. Partial UNIQUE index enforces one live member per HP.
+    legacyMembers.setMemberHistoricalPersonId.run(hp.person_id, now, requestingMemberId);
+
+    // Carry country / HoF / BAP / hof_inducted_year / first_competition_year from HP.
+    legacyClaim.mergeHistoricalPersonFields.run(
+      hp.country,
+      hp.hof_member,
+      hp.bap_member,
+      hp.hof_induction_year,
+      hp.first_year,
+      now,
+      requestingMemberId,
+    );
   });
 }
 
@@ -583,4 +790,4 @@ async function completePasswordReset(
   };
 }
 
-export const identityAccessService = { verifyMemberCredentials, attemptLogin, registerMember, lookupLegacyAccount, claimLegacyAccount, changePassword, verifyEmailByToken, resendVerifyEmail, requestPasswordReset, completePasswordReset };
+export const identityAccessService = { verifyMemberCredentials, attemptLogin, registerMember, lookupLegacyAccount, claimLegacyAccount, lookupHistoricalPersonForClaim, claimHistoricalPerson, changePassword, verifyEmailByToken, resendVerifyEmail, requestPasswordReset, completePasswordReset };

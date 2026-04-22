@@ -373,9 +373,24 @@ The claim flow is account-bound and mailbox-verified.
 13. Merge transaction runs atomically (see section 9).
 14. The `legacy_members` row is MARKED CLAIMED — `claimed_by_member_id` set to the requesting member id, `claimed_at` set to now. The row is NOT deleted; it persists as the permanent archival record. Consumed `account_claim` tokens are marked consumed in the same transaction.
 
+### Direct historical-person claim (scenarios D and E)
+
+The legacy-account flow above covers scenarios where the registrant had an old-site user account (`legacy_members`). Two further scenarios exist:
+
+- **Scenario D:** registrant was a competitor but never had an old-site user account. `historical_persons` row exists with no `legacy_member_id` back-link. No email anchor is available.
+- **Scenario E:** registrant had both an old-site account and a competitive record, but the historical pipeline did not link them (`historical_persons.legacy_member_id IS NULL` or points at a different row). The legacy-account flow claims only the account; the competitive record stays orphaned.
+
+A parallel direct-HP claim flow handles both cases. Entry point is the historical detail page: `GET /history/:personId`. When an authenticated viewer's `real_name` surname matches the HP's `person_name` surname and the HP is unclaimed, the page surfaces a "Claim this identity" CTA. The confirmation page (`GET /history/:personId/claim`) shows the record's country and honor status plus a first-name warning when the member's first name is a variant (Dave vs David, etc.). On `POST /history/:personId/claim/confirm`:
+
+- Surname reconciliation runs again server-side (mismatch blocks even if the form was bypassed).
+- If the HP carries a `legacy_member_id` back-link (scenario E) and that legacy row is unclaimed, the claim transitively marks the `legacy_members` row claimed and runs the legacy-field merge, so the member ends up linked to both records. If the legacy row is already claimed by someone else, the HP claim is rejected rather than leaving inconsistent state.
+- `members.historical_person_id` is set. HP identity fields are carried forward per the merge rules in §9 ("historical_persons-sourced fields").
+
+Anti-abuse: the same surname rule as §8 gates direct claims. The partial UNIQUE index on `members.historical_person_id` prevents double-claim. A member can claim at most one HP; attempting to claim a second returns a clean 422.
+
 ### Current implementation status
 
-The current code is an early-test shortcut: direct lookup + confirm + merge, operating against the superseded two-table design (placeholder rows in `members`). Phases 3–7 of the three-table redesign rewrite the flow to operate on `legacy_members`. The full production version will also require email verification (member must prove control of the legacy account's `legacy_email` before the merge executes), rate limiting, and the name reconciliation guard. Legacy accounts without a usable `legacy_email` will require admin recovery.
+Phases 3–7 of the three-table redesign rewrite the flow to operate on `legacy_members`. The current code is still the early-test shortcut for the legacy-account entry point (direct lookup + confirm + merge with no email verification); the direct-HP claim flow is live end-to-end. The full production version of the legacy-account flow will also require email verification (member must prove control of the legacy account's `legacy_email` before the merge executes), rate limiting, and the name reconciliation guard. Legacy accounts without a usable `legacy_email` will require admin recovery.
 
 ### Non-revealing messaging
 
@@ -424,7 +439,8 @@ The active modern account always survives. The `legacy_members` row is MARKED CL
 | `ifpa_join_date` | Copied to `members.ifpa_join_date` if present and active value absent |
 | `first_competition_year` | COALESCE: member value wins; import value fills `members.first_competition_year` if member is NULL |
 | `is_hof`, `is_bap` | OR semantics — `members.is_hof` / `members.is_bap` set to 1 if `legacy_members` has the flag |
-| `historical_person_id` | If the claimed `legacy_members.legacy_member_id` matches a `historical_persons.legacy_member_id`, `members.historical_person_id` is set to that HP's `person_id` in the same transaction |
+| `historical_person_id` | Set to the HP's `person_id` whenever the claim resolves an HP: (a) legacy-account claim where `legacy_members.legacy_member_id` matches a `historical_persons.legacy_member_id` back-link, or (b) direct HP claim (scenarios D/E). Partial UNIQUE index enforces one live member per HP. |
+| `historical_persons`-sourced fields | Whenever `members.historical_person_id` is being set, the same transaction also runs the HP merge: `country` fill-if-empty from `historical_persons.country`; `is_hof` / `is_bap` OR semantics from `hof_member` / `bap_member`; `hof_inducted_year` fill-if-empty from `hof_induction_year`; `first_competition_year` COALESCE from `first_year`. This ensures honors and country propagate onto the member row from whichever archival table carries the authoritative value. |
 | `announce_opt_in` | Carry forward only if the validated export contains this field and its semantics are confirmed; unclaimed `legacy_members` rows are never treated as active mail recipients |
 | Legacy admin metadata (`legacy_is_admin`) | Copied to `members.legacy_is_admin` as audit/history context only; never auto-promotes live admin role |
 | Tier | Write new `member_tier_grants` row with `reason_code = 'migration.legacy_claim_reconcile'` only if imported effective tier exceeds current effective tier. Tier mapping uses legacy tier state fields on `legacy_members` (deferred schema extension, gated on test-load validation — see §3 Tier handling at claim). |
@@ -1111,6 +1127,7 @@ Before Phase 4 cutover, the following staging-observability-only deviations must
 2. SES sender cutover: `SES_FROM_IDENTITY` in `/srv/footbag/env` and the `OutboundEmail` IAM policy `Resource` ARN switched from the interim sender to the canonical `noreply@footbag.org` identity.
 3. STUB_PASSWORD rotation: staging preview-user credential rotated in local `.env`, redeployed, and the vault entry updated before any external tester receives the credential.
 4. Lightsail SSH firewall rule restore: `terraform apply` from `terraform/staging/` to remove Console-applied loosening of the port-22 rule and return to the `operator_cidrs`-constrained ingress.
+5. SES sandbox-mode flip: `SES_SANDBOX_MODE` in `/srv/footbag/env` cleared (removed or set to `0`) once SES production access has been granted for the account. Clears the staging-warning card rendered on email-gated pages (DD §5.6).
 
 Sign-off on this checklist is a prerequisite for §17 State 3 → State 4 transition.
 

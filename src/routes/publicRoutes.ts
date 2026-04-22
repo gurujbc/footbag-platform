@@ -59,6 +59,11 @@ publicRouter.get('/history', (_req, res) => { res.redirect(301, '/members'); });
 publicRouter.get('/history/claim',                requireAuth, claimController.getClaim);
 publicRouter.post('/history/claim',               requireAuth, claimController.postClaim);
 publicRouter.post('/history/claim/confirm',       requireAuth, claimController.postClaimConfirm);
+// HP-only self-serve claim (scenarios D and E). /history/:personId/claim routes
+// sit at a deeper path than /history/:personId, so ordering is not strictly
+// required, but keeping claim routes grouped.
+publicRouter.get('/history/:personId/claim',         requireAuth, claimController.getClaimHp);
+publicRouter.post('/history/:personId/claim/confirm', requireAuth, claimController.postClaimHpConfirm);
 publicRouter.get('/history/:personId',   historyController.detail);
 
 // IMPORTANT: /members/:memberKey/edit and /members/:memberKey/avatar must be

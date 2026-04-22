@@ -42,6 +42,7 @@ function clearAwsWiring(): void {
   delete process.env.JWT_LOCAL_KEYPAIR_PATH;
   delete process.env.SES_ADAPTER;
   delete process.env.SES_FROM_IDENTITY;
+  delete process.env.SES_SANDBOX_MODE;
   delete process.env.AWS_REGION;
 }
 
@@ -206,6 +207,61 @@ describe('env config: prod-mode fail-fast (staging runtime)', () => {
     expect(config.sesAdapter).toBe('live');
     expect(config.sesFromIdentity).toBe('noreply@footbag.org');
     expect(config.awsRegion).toBe('us-east-1');
+  });
+});
+
+describe('env config: SES_SANDBOX_MODE', () => {
+  let snap: EnvSnapshot;
+  beforeEach(() => {
+    snap = snapshotEnv();
+    vi.resetModules();
+  });
+  afterEach(() => restoreEnv(snap));
+
+  it('defaults to false when unset', async () => {
+    baselineRequired();
+    clearAwsWiring();
+    process.env.NODE_ENV = 'development';
+    const { config } = await import('../../src/config/env');
+    expect(config.sesSandboxMode).toBe(false);
+  });
+
+  it('accepts "1" and "true" as true', async () => {
+    baselineRequired();
+    clearAwsWiring();
+    process.env.NODE_ENV = 'development';
+    process.env.SES_SANDBOX_MODE = '1';
+    const { config } = await import('../../src/config/env');
+    expect(config.sesSandboxMode).toBe(true);
+
+    vi.resetModules();
+    process.env.SES_SANDBOX_MODE = 'true';
+    const { config: c2 } = await import('../../src/config/env');
+    expect(c2.sesSandboxMode).toBe(true);
+  });
+
+  it('accepts "0" and "false" as false', async () => {
+    baselineRequired();
+    clearAwsWiring();
+    process.env.NODE_ENV = 'development';
+    process.env.SES_SANDBOX_MODE = '0';
+    const { config } = await import('../../src/config/env');
+    expect(config.sesSandboxMode).toBe(false);
+
+    vi.resetModules();
+    process.env.SES_SANDBOX_MODE = 'false';
+    const { config: c2 } = await import('../../src/config/env');
+    expect(c2.sesSandboxMode).toBe(false);
+  });
+
+  it('throws on any other value', async () => {
+    baselineRequired();
+    clearAwsWiring();
+    process.env.NODE_ENV = 'development';
+    process.env.SES_SANDBOX_MODE = 'yes';
+    await expect(import('../../src/config/env')).rejects.toThrow(
+      /SES_SANDBOX_MODE must be '1', '0', 'true', or 'false', got: yes/,
+    );
   });
 });
 

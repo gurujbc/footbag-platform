@@ -27,10 +27,8 @@
       </div>
     </form>
 
-    {{#if content.devOutboxUrl}}
-      <p class="dev-only-note">
-        Dev mode: open the <a href="{{content.devOutboxUrl}}">dev outbox</a> to read the verification email (no real mail is sent on localhost).
-      </p>
+    {{#if content.emailPreview}}
+      {{> simulated-email-card content.emailPreview}}
     {{/if}}
   </section>
 </div>

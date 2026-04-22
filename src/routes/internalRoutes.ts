@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { netQcController } from '../internal-qc/controllers/netQcController';
-import { devOutboxController } from '../internal-qc/controllers/devOutboxController';
 import { personsController } from '../controllers/personsController';
 import { requireAuth } from '../middleware/auth';
 
@@ -11,12 +10,6 @@ import { requireAuth } from '../middleware/auth';
  * Mount point: /internal
  */
 export const internalRouter = Router();
-
-// Dev outbox: registered BEFORE requireAuth so a localhost developer can
-// read the stub outbox without an existing session (needed to complete
-// the very first email-verification flow). The SES_ADAPTER=stub gate
-// inside devOutboxService 404s this route in any non-dev environment.
-internalRouter.get('/dev-outbox',                                  devOutboxController.page);
 
 internalRouter.use(requireAuth);
 

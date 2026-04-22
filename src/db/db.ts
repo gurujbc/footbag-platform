@@ -2978,6 +2978,7 @@ export interface MemberProfileRow {
   first_competition_year: number | null;
   show_competitive_results: number;
   legacy_member_id: string | null;
+  historical_person_id: string | null;
   login_email: string;
   avatar_thumb_key: string | null;
   avatar_media_id: string | null;
@@ -3034,6 +3035,7 @@ export const account = {
       m.first_competition_year,
       m.show_competitive_results,
       m.legacy_member_id,
+      m.historical_person_id,
       m.login_email,
       mi.s3_key_thumb AS avatar_thumb_key,
       mi.id           AS avatar_media_id,
@@ -3046,7 +3048,7 @@ export const account = {
     LEFT JOIN media_items AS mi
       ON mi.id = m.avatar_media_id
     LEFT JOIN historical_persons AS hp
-      ON hp.legacy_member_id = m.legacy_member_id
+      ON hp.person_id = m.historical_person_id
       AND m.legacy_member_id IS NOT NULL
     WHERE m.slug = ?
       AND m.personal_data_purged_at IS NULL
@@ -3476,18 +3478,29 @@ export interface AlreadyClaimedRow {
 export interface HistoricalPersonClaimRow {
   person_id: string;
   person_name: string;
-  legacy_member_id: string;
+  legacy_member_id: string | null;
   country: string | null;
   hof_member: number;
   bap_member: number;
+  hof_induction_year: number | null;
+  bap_induction_year: number | null;
   first_year: number | null;
 }
 
 export const legacyClaim = {
   findHistoricalPersonByLegacyId: db.prepare(`
-    SELECT person_id, person_name, legacy_member_id, country, hof_member, bap_member, first_year
+    SELECT person_id, person_name, legacy_member_id, country,
+           hof_member, bap_member, hof_induction_year, bap_induction_year, first_year
     FROM historical_persons
     WHERE legacy_member_id = ?
+    LIMIT 1
+  `),
+
+  findHistoricalPersonById: db.prepare(`
+    SELECT person_id, person_name, legacy_member_id, country,
+           hof_member, bap_member, hof_induction_year, bap_induction_year, first_year
+    FROM historical_persons
+    WHERE person_id = ?
     LIMIT 1
   `),
 
@@ -3527,6 +3540,56 @@ export const legacyClaim = {
       updated_by       = 'claim_merge',
       version          = version + 1
     WHERE id = ?
+  `),
+
+  // Copies identity-defining fields from a linked historical_persons row into
+  // the claiming members row. Called in the same transaction as
+  // setMemberHistoricalPersonId so search / hero / profile surfaces reflect
+  // the HP's country, HoF/BAP status, and induction years on the member row.
+  // Fill-if-empty for free-text fields, OR semantics for boolean honors.
+  mergeHistoricalPersonFields: db.prepare(`
+    UPDATE members
+    SET
+      country                = CASE WHEN country IS NULL OR country = '' THEN ? ELSE country END,
+      is_hof                 = MAX(is_hof, ?),
+      is_bap                 = MAX(is_bap, ?),
+      hof_inducted_year      = COALESCE(hof_inducted_year, ?),
+      first_competition_year = COALESCE(first_competition_year, ?),
+      updated_at             = ?,
+      updated_by             = 'claim_merge',
+      version                = version + 1
+    WHERE id = ?
+  `),
+
+  // Used by the HP-only claim flow (scenarios D and E): check that no other
+  // live member already owns this HP. The partial UNIQUE index on
+  // members.historical_person_id ultimately enforces this at write time; this
+  // read is for a friendly error rather than a raw constraint failure.
+  findMemberClaimingHp: db.prepare(`
+    SELECT id, slug
+    FROM members
+    WHERE historical_person_id = ?
+      AND deleted_at IS NULL
+      AND personal_data_purged_at IS NULL
+    LIMIT 1
+  `),
+
+  checkMemberHasHp: db.prepare(`
+    SELECT historical_person_id
+    FROM members
+    WHERE id = ?
+      AND historical_person_id IS NOT NULL
+  `),
+
+  // Read the identifying fields needed to evaluate a claim: the member's slug
+  // (for post-claim redirect), real_name (for surname reconciliation against
+  // the HP or legacy account), and existing linkage state.
+  findClaimingMember: db.prepare(`
+    SELECT id, slug, real_name, legacy_member_id, historical_person_id
+    FROM members
+    WHERE id = ?
+      AND deleted_at IS NULL
+      AND personal_data_purged_at IS NULL
   `),
 } as const;
 

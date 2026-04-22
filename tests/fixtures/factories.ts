@@ -27,8 +27,8 @@ export interface MemberOverrides {
   login_email?: string;
   real_name?: string;
   display_name?: string;
-  city?: string;
-  country?: string;
+  city?: string | null;
+  country?: string | null;
   password_hash?: string;
   email_verified_at?: string | null;
   is_admin?: 0 | 1;
@@ -84,7 +84,7 @@ export function insertMember(db: BetterSqlite3.Database, o: MemberOverrides = {}
     email, emailNormalized, emailVerifiedAt,
     passwordHash, passwordChanged, o.password_version ?? 1,
     name, display, display.toLowerCase(),
-    o.bio ?? '', o.city ?? 'Testville', o.country ?? 'US',
+    o.bio ?? '', o.city === null ? null : (o.city ?? 'Testville'), o.country === null ? null : (o.country ?? 'US'),
     o.is_admin ?? 0, o.is_hof ?? 0, o.is_bap ?? 0, o.is_deceased ?? 0,
     o.searchable ?? 1,
     o.deleted_at ?? null, purged,
@@ -505,11 +505,14 @@ export interface HistoricalPersonOverrides {
   person_id?: string;
   person_name?: string;
   legacy_member_id?: string | null;
-  country?: string;
+  country?: string | null;
+  first_year?: number | null;
   event_count?: number;
   placement_count?: number;
   bap_member?: 0 | 1;
+  bap_induction_year?: number | null;
   hof_member?: 0 | 1;
+  hof_induction_year?: number | null;
   source?: string | null;
   source_scope?: string;
   aliases?: string | null;
@@ -524,20 +527,28 @@ export function insertHistoricalPerson(db: BetterSqlite3.Database, o: Historical
     }
   }
   db.prepare(`
-    INSERT INTO historical_persons (person_id, person_name, legacy_member_id, country, event_count, placement_count, bap_member, hof_member, source, source_scope, aliases)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO historical_persons (
+      person_id, person_name, legacy_member_id, country, first_year,
+      event_count, placement_count,
+      bap_member, bap_induction_year, hof_member, hof_induction_year,
+      source, source_scope, aliases
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     id,
-    o.person_name     ?? 'Test Person',
-    o.legacy_member_id ?? null,
-    o.country         ?? 'US',
-    o.event_count     ?? 0,
-    o.placement_count ?? 0,
-    o.bap_member      ?? 0,
-    o.hof_member      ?? 0,
-    o.source          ?? null,
-    o.source_scope    ?? 'CANONICAL',
-    o.aliases         ?? null,
+    o.person_name         ?? 'Test Person',
+    o.legacy_member_id    ?? null,
+    o.country             ?? 'US',
+    o.first_year          ?? null,
+    o.event_count         ?? 0,
+    o.placement_count     ?? 0,
+    o.bap_member          ?? 0,
+    o.bap_induction_year  ?? null,
+    o.hof_member          ?? 0,
+    o.hof_induction_year  ?? null,
+    o.source              ?? null,
+    o.source_scope        ?? 'CANONICAL',
+    o.aliases             ?? null,
   );
   return id;
 }

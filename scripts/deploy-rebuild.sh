@@ -205,6 +205,23 @@ require_path "compose prod file" "$RELEASE_DIR/docker/docker-compose.prod.yml"
 run_sudo test -f /root/.aws/credentials || { echo "Missing /root/.aws/credentials (see DEV_ONBOARDING Path H §8.10 5a)" >&2; exit 1; }
 run_sudo test -f /root/.aws/config       || { echo "Missing /root/.aws/config (see DEV_ONBOARDING Path H §8.10 5a)"       >&2; exit 1; }
 
+# One-shot migration: the DB layout switched from a file bind mount
+# (/srv/footbag/footbag.db) to a directory bind mount (/srv/footbag/db/...)
+# so SQLite WAL/SHM sidecars live on the host and are shared between the
+# web and worker containers. Detect the old-style env and migrate in place.
+if run_sudo grep -q '^FOOTBAG_DB_PATH=/srv/footbag/footbag.db$' "$ENV_PATH"; then
+  echo "    Migrating env file to directory-mount DB layout..."
+  run_sudo sed -i.bak \
+    -e 's|^FOOTBAG_DB_PATH=/srv/footbag/footbag.db$|FOOTBAG_DB_PATH=/srv/footbag/db/footbag.db|' \
+    "$ENV_PATH"
+  if ! run_sudo grep -q '^FOOTBAG_DB_DIR=' "$ENV_PATH"; then
+    run_sudo bash -c "echo 'FOOTBAG_DB_DIR=/srv/footbag/db' >> \"$ENV_PATH\""
+  fi
+  # The old host-side DB file is orphaned now (deploy-rebuild is destructive
+  # anyway). Remove it and its sidecars so nothing stale lingers.
+  run_sudo rm -f /srv/footbag/footbag.db /srv/footbag/footbag.db-wal /srv/footbag/footbag.db-shm
+fi
+
 NODE_ENV_VAL=$(require_env NODE_ENV)
 LOG_LEVEL_VAL=$(require_env LOG_LEVEL)
 DB_PATH=$(require_env FOOTBAG_DB_PATH)
@@ -251,7 +268,9 @@ run_sudo rsync -a --delete --exclude=/env --exclude=/footbag.db --exclude=/media
 
 echo "    Replacing live DB..."
 run_sudo mkdir -p "$(dirname "$DB_PATH")"
-run_sudo rm -rf "$DB_PATH"
+# Remove the main DB plus any stale WAL/SHM sidecars. A stale -wal next to a
+# fresh main file would shadow the new data on first open.
+run_sudo rm -f "$DB_PATH" "${DB_PATH}-wal" "${DB_PATH}-shm"
 run_sudo install -o root -g root -m 600 "$NEW_DB" "$DB_PATH"
 run_sudo chown -R root:root "$LIVE_DIR"
 

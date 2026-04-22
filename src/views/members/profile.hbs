@@ -49,13 +49,36 @@
         {{/if}}
 
         <div class="profile-section">
+          <h2 class="profile-section-heading">Your footbag history</h2>
+          <p class="text-muted" style="margin:0 0 12px;">The IFPA site has two separate archival records you may be able to link to your account:</p>
+          <ul class="profile-account-list">
+            <li>
+              <strong>Old footbag.org account:</strong>
+              {{#if content.hasLegacyLink}}
+                <span class="text-muted">linked</span>
+              {{else}}
+                <a href="/history/claim">Link your old-site account</a>
+                <span class="text-muted">(looks up your old forum login by email, username, or member ID)</span>
+              {{/if}}
+            </li>
+            <li>
+              <strong>Historical competitive record:</strong>
+              {{#if content.hasHistoricalLink}}
+                {{#if content.historicalPersonHref}}
+                  <a href="{{content.historicalPersonHref}}">{{content.historicalPersonName}}</a>
+                {{else}}
+                  <span class="text-muted">linked</span>
+                {{/if}}
+              {{else}}
+                <span class="text-muted">none linked. If you played in IFPA tournaments, find your name in the <a href="/members">member search</a> and claim your historical record from its page.</span>
+              {{/if}}
+            </li>
+          </ul>
+        </div>
+
+        <div class="profile-section">
           <h2 class="profile-section-heading">Account</h2>
           <ul class="profile-account-list">
-            {{#if content.hasLegacyLink}}
-              <li><span class="text-muted">Legacy account linked</span></li>
-            {{else}}
-              <li><a href="/history/claim">Link Legacy Account</a></li>
-            {{/if}}
             <li><span class="disabled">Account Settings</span></li>
             <li><a href="{{content.profileBase}}/edit/password">Change Password</a></li>
             <li><span class="disabled">Download My Data</span></li>

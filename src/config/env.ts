@@ -25,6 +25,7 @@ export interface AppConfig {
   jwtLocalKeypairPath: string;
   awsRegion: string | undefined;
   sesAdapter: 'live' | 'stub';
+  sesSandboxMode: boolean;
   sesFromIdentity: string | undefined;
   // Value for Express's `trust proxy` setting. Number, boolean, or
   // comma-separated subnet/IP list — anything Express's setting accepts.
@@ -87,6 +88,18 @@ function loadConfig(): AppConfig {
     throw new Error('SES_FROM_IDENTITY is required when SES_ADAPTER=live');
   }
 
+  const rawSesSandbox = process.env.SES_SANDBOX_MODE;
+  let sesSandboxMode: boolean;
+  if (rawSesSandbox === undefined || rawSesSandbox === '') {
+    sesSandboxMode = false;
+  } else if (rawSesSandbox === '1' || rawSesSandbox === 'true') {
+    sesSandboxMode = true;
+  } else if (rawSesSandbox === '0' || rawSesSandbox === 'false') {
+    sesSandboxMode = false;
+  } else {
+    throw new Error(`SES_SANDBOX_MODE must be '1', '0', 'true', or 'false', got: ${rawSesSandbox}`);
+  }
+
   const awsRegion = process.env.AWS_REGION || undefined;
   if ((jwtSigner === 'kms' || sesAdapter === 'live') && !awsRegion) {
     throw new Error('AWS_REGION is required when JWT_SIGNER=kms or SES_ADAPTER=live');
@@ -131,6 +144,7 @@ function loadConfig(): AppConfig {
     jwtLocalKeypairPath,
     awsRegion,
     sesAdapter,
+    sesSandboxMode,
     sesFromIdentity,
     trustProxy,
   };

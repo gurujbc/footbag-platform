@@ -24,10 +24,11 @@ services:
   web:
     restart: always
     volumes:
-      # Production DB is managed on the host; path comes from env at deploy time.
-      # The host operator sets FOOTBAG_DB_PATH in the systemd environment file
-      # or passes it via `docker compose --env-file`.
-      - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+      # Directory bind mount so SQLite WAL/SHM sidecars live on the host and
+      # are shared between web and worker containers. A file bind mount would
+      # create container-local sidecars and split the WAL, making the worker
+      # unable to see writes committed by web.
+      - ${FOOTBAG_DB_DIR:-/srv/footbag/db}:/app/db:rw
       # Media uploads (avatars, photos). Persisted on host across deploys.
       - ${FOOTBAG_MEDIA_DIR:-/srv/footbag/media}:/app/data/media:rw
       # AWS config/credentials for the source-profile -> assumed-role chain.
@@ -42,6 +43,7 @@ services:
       JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
       SES_ADAPTER: ${SES_ADAPTER}
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
+      FOOTBAG_DB_PATH: /app/db/footbag.db
     deploy:
       resources:
         limits:
@@ -54,7 +56,8 @@ services:
     # systemd stop.
     restart: unless-stopped
     volumes:
-      - ${FOOTBAG_DB_PATH:-/srv/footbag/footbag.db}:/app/footbag.db:rw
+      # Directory bind mount — must match web so WAL/SHM sidecars are shared.
+      - ${FOOTBAG_DB_DIR:-/srv/footbag/db}:/app/db:rw
       # AWS config/credentials for the email-outbox worker (activates in the
       # auth-hardening sprint Phase 8). Matches the web-service mount above.
       - /root/.aws:/root/.aws:ro
@@ -68,6 +71,7 @@ services:
       JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID}
       SES_ADAPTER: ${SES_ADAPTER}
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
+      FOOTBAG_DB_PATH: /app/db/footbag.db
     deploy:
       resources:
         limits:

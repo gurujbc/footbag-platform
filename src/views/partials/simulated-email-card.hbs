@@ -1,0 +1,83 @@
+{{! Simulated email card. Rendered on email-gated pages when the service
+    returns a non-null view-model. Three modes: dev (table of captured stub
+    messages), sandbox (warning + SES mailbox-simulator help). Production
+    renders nothing because the service returns null. }}
+
+<style>
+.sec-card { border: 1px solid #d0d7de; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; background: #f6f8fa; }
+.sec-card-dev { border-left: 4px solid #1f883d; }
+.sec-card-sandbox { border-left: 4px solid #bf8700; background: #fff8c5; }
+.sec-card h2 { margin-top: 0; font-size: 1.1rem; }
+.sec-card .sec-body { white-space: pre-wrap; max-height: 200px; overflow: auto; margin: 0; font-size: 0.85em; }
+.sec-card .sec-table td { vertical-align: top; }
+.sec-card .sec-msgid { font-size: 0.75em; color: #656d76; }
+.sec-card ul { margin: 0.25rem 0 0.5rem 1.25rem; }
+.sec-card code { background: rgba(0,0,0,0.05); padding: 0 0.25rem; border-radius: 3px; }
+</style>
+
+{{#if (eq mode "dev")}}
+<section class="sec-card sec-card-dev" aria-label="Simulated email (dev)">
+  <h2>Simulated email (dev)</h2>
+  <p>
+    <code>SES_ADAPTER=stub</code> — no real mail was sent.
+    Showing {{messages.length}} captured message(s); newest first.
+    Restarting the server clears the buffer.
+  </p>
+  {{#if messages.length}}
+    <div class="records-table-wrap" style="overflow-x:auto">
+      <table class="records-table records-table-sm sec-table">
+        <thead>
+          <tr>
+            <th>To</th>
+            <th>From</th>
+            <th>Subject</th>
+            <th>Delivered At</th>
+            <th>Link</th>
+            <th>Body</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each messages}}
+            <tr>
+              <td>{{to}}</td>
+              <td>{{from}}</td>
+              <td>
+                {{subject}}
+                <div class="sec-msgid">{{messageId}}</div>
+              </td>
+              <td>{{deliveredAt}}</td>
+              <td>{{#if firstUrl}}<a href="{{firstUrl}}">Open</a>{{/if}}</td>
+              <td><pre class="sec-body">{{bodyText}}</pre></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{else}}
+    <div class="empty-state">No messages sent yet.</div>
+  {{/if}}
+</section>
+{{/if}}
+
+{{#if (eq mode "sandbox")}}
+<section class="sec-card sec-card-sandbox" aria-label="Staging email delivery notice">
+  <h2>Staging: email delivery is restricted</h2>
+  <p>
+    This environment runs AWS SES in sandbox mode, so email is delivered only to
+    pre-verified recipient addresses. If you registered with an unverified
+    address, your account was saved but no verification email was sent.
+  </p>
+  <p><strong>To test as a real new user:</strong> email Dave at
+    <a href="mailto:{{contactEmail}}">{{contactEmail}}</a> to be added to the
+    SES verified-recipients list.</p>
+  <p><strong>To test delivery behavior without verification:</strong> register
+    with one of the AWS SES mailbox-simulator addresses below. These work in
+    sandbox without prior verification and don't consume the daily quota.</p>
+  <ul>
+    {{#each simulatorAddresses}}
+      <li><code>{{address}}</code> — {{description}}</li>
+    {{/each}}
+  </ul>
+  <p><a href="{{docsUrl}}" rel="noopener noreferrer" target="_blank">AWS mailbox-simulator documentation</a></p>
+</section>
+{{/if}}

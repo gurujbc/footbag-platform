@@ -2,6 +2,14 @@
 
 <div class="wrapper">
 
+  {{#if content.canClaim}}
+  <div class="card" style="margin-bottom:24px; border-left: 4px solid #0b5e6b; background: #ecfeff;">
+    <p style="margin:0 0 8px; font-weight:500; color:#0b5e6b;">Is this you?</p>
+    <p style="margin:0 0 12px;">Your account's last name matches this historical record. Link it to your profile so your competitive history and honors appear on your public page.</p>
+    <p style="margin:0;"><a href="{{content.claimHref}}" class="btn btn-primary">Claim this identity</a></p>
+  </div>
+  {{/if}}
+
   {{#if content.avatarThumbUrl}}
   <div style="text-align:center; margin-bottom:24px">
     <img src="{{content.avatarThumbUrl}}" alt="{{content.displayName}}" class="profile-avatar-img" />

@@ -10,78 +10,47 @@ Three developers work in parallel. **AI assistants: read only the track section 
 
 | Dev | Handle | Track | Section |
 |---|---|---|---|
-| Dave | (primary maintainer) | Auth hardening + email activation (back-end infra + security) | "Sprint: Auth hardening + email activation" |
+| Dave | (primary maintainer) | Tier 2 hardening + pre-cutover (CloudWatch, backup, audit logging, catalog audit) | "Sprint: Tier 2 hardening + pre-cutover checklist" |
 | James | JamesLeberknight | Historical pipeline completion (data import / legacy migration) | "James's sprint" |
 | John | guruJBC | Look-and-feel enhancements (visual / design polish) | "John's track" |
 
 Cross-track changes require explicit human coordination.
 
-### Sprint: Auth hardening + email activation
+### Sprint: Tier 2 hardening + pre-cutover checklist
 
-**Status:** All code complete; staging deployed and behaviorally smoke-validated end-to-end (login → KMS-signed JWT; register → outbox → SES → recipient inbox). Three-table identity refactor fully landed (members + historical_persons FKs to `legacy_members`; UNIQUE indexes in place; `legacy_members` temporarily populated with 2,507 rows from `legacy_data/scripts/load_legacy_members_seed.py` pending the legacy-account export — see item 12 in James's sprint). Tests: 833/833; tsc clean.
+**Pre-prod cutover checklist (deferred, do not start):**
 
-**Active gotcha — must revert before prod cutover:** JWT `exp` and session-cookie `maxAge` temporarily reduced from 24h to 10 minutes for staging observability. `src/services/jwtService.ts DEFAULT_TTL_SECONDS` and `src/middleware/auth.ts SESSION_COOKIE_MAX_AGE_MS`. DD §3.5 baseline is 24h.
+1. JWT TTL revert: `exp` + session-cookie `maxAge` from staging 10min back to 24h baseline. `src/services/jwtService.ts DEFAULT_TTL_SECONDS`, `src/middleware/auth.ts SESSION_COOKIE_MAX_AGE_MS`. DD §3.5.
+2. SES sender cutover to `noreply@footbag.org`: re-run `docs/DEV_ONBOARDING.md` §8.8 against the canonical address, update `SES_FROM_IDENTITY` in `/srv/footbag/env` and the `OutboundEmail` policy `Resource` ARN to the canonical identity, restart the app. Env + IAM only, no code. Blocked on IFPA domain acquisition.
+3. SES sandbox-mode flip: once the SES production-access ticket is approved (see post-auth-hardening carryover below), set `SES_SANDBOX_MODE=0` in `/srv/footbag/env` or remove the line, then restart. Clears the staging-warning card on email-gated pages (DD §5.6). Env only, no code.
+4. `terraform apply` from `terraform/staging/` to restore tight port-22 rule (Path H §8.10 browser-SSH override loosened beyond `operator_cidrs`).
 
-**Known deviation — staging SES sender (pending `footbag.org` domain acquisition):** `SES_FROM_IDENTITY` and the `OutboundEmail` IAM policy resource ARN point to a Google Workspace email alias on an institutional (non-`footbag.org`) domain the project controls (specific address recorded in local operator notes, never committed) instead of `noreply@footbag.org` because the domain is not yet owned by IFPA. Documented target values in `docs/DEV_ONBOARDING.md` §8.8 / §8.9 4b / §8.10b remain correct and are not rewritten.
+**Staging wiring readiness probe:** long-term test `tests/smoke/staging-readiness.test.ts` (run via `npm run test:smoke`, gated behind `RUN_STAGING_SMOKE=1`, excluded from default `npm test`) asserts the permanent contract that staging runtime identity reaches AWS and KMS/SES calls succeed. Operator runs it from the Lightsail host or a workstation with the staging profile on every subsequent staging AWS wiring change (blocked on host-Node install below).
 
-Substitute-aware operating notes for a volunteer executing Path H while this deviation is active:
+**In scope (review tasks first, then build):**
 
-- §8.8: skip the Cloudflare Email Routing preflight (it targets `footbag.org` routing and is not relevant to the substitute domain). Before triggering the SES verification email for the substitute, send a manual test from an external account to the substitute address and confirm it arrives at the primary Workspace user's inbox; Workspace alias propagation is usually immediate but can take a few minutes on first-ever alias use. Verify the substitute address in SES in place of the canonical.
-- §8.9 step 4b: the `OutboundEmail` policy `Resource` ARN is the substitute identity ARN (shape `arn:aws:ses:us-east-1:<ACCOUNT_ID>:identity/<SUBSTITUTE_ADDRESS>`), not the canonical ARN. The `JwtSigning` statement is unaffected by the substitute pattern.
-- §8.10 step 5b: `SES_FROM_IDENTITY` on the host is the substitute address.
+- **Catalog completeness audit** (M). `docs/VIEW_CATALOG.md` + `docs/SERVICE_CATALOG.md` invariant sweep: `PageViewModel<TContent>` contract, thin-controller discipline, db.ts purity, service-owned URL construction, adapter pattern, file-naming conventions (`<domain>Service.ts`, `<domain>Controller.ts`, `<PageName>Content`, `<Entity>ViewModel`), error-class naming (`<Kind>Error`), shared shaping helpers (`personHref`, `shapePartnershipPair`, `shapeFreestyleRecord`, `groupPlayerResults`), HTTP helpers (`issueSessionCookie`, `handleControllerError`), Handlebars helpers, cross-catalog consistency.
+- **QC code separation audit** (M). Before go-live, confirm QC internal code is 100% separated from public release per `PIPELINE_QC.md`. Mixed files: `src/services/netService.ts` (~38% public / 62% QC), `src/controllers/netController.ts`, `src/views/net/` (target split: `src/views/internal-qc/net/`), `src/db/db.ts` QC-only statement groups (`netReview`, `netCandidates`, `netCurated`, `netCuratedBrowse`, `netRecoverySignals`, `netRecoveryCandidates`, `netReviewSummary`, `netTeamCorrectionApproval`, `personsQc`), `database/schema.sql` QC-only tables (`net_raw_fragment`, `net_candidate_match`, `net_curated_match`, `net_recovery_alias_candidate`, `net_review_queue`). 100% QC files: `personsService.ts`, `personsQcChecks.ts`, `personsController.ts`, `src/views/persons/`. Sweep public templates for pipeline-curation columns (confidence, notes, date_precision, source_reference); prior findings 11.1 and 11.2 flagged two sites in freestyle.
+- **Net player-route redirect cleanup** (S). `/net/players/:personId` and `/net/players/:personId/partners/:teamId` (`src/routes/publicRoutes.ts:55-59`) only 302 to `/history/:personId` and `/net/teams/:teamId`. Grep for consumers; if none, delete both handlers and remove VIEW_CATALOG §5 entries. Audit other redirect-only routes beyond the intentional `/history` to `/members` canonical.
+- **Approval-fatigue review v2** (S). Decide per class hook-regex vs `permissions.allow` prefix vs behavioral-only rule: `Bash(find:* -exec*)` + `-execdir*` mechanical backstop on top of the behavioral ban, read-only `for`/`while` loops, `xargs`, command substitution, subshells, pipelines, `if [[ -f x ]]` tests. Reference: repo-root `approval_fatigue.md`.
+- **Post-auth-hardening carryovers:** audit logging for password-change and login rate-limit threshold crossings (US M_Change_Password line 550, M_Login line 512); daily token-cleanup job (DD §3.8 line 969); SES bounce/complaint webhook (DD §5.4, SERVICE_CATALOG line 973); JWT key rotation with 24h overlap (DD §3.4 line 813); login rate-limit cooldown wiring (`login_cooldown_minutes` seed row); SES domain identity + production-access ticket.
+- **1-G CloudWatch agent** (S). Unblocks richer `/health/ready` memory-pressure gating per DD §8.4.
+- **Backup/restore workflow** (M). S3 bucket scaffolded, no producer, no restore drill. Must land before prod data is at risk.
+- **Preserve clubs-map anchor hooks** (XS). Retain `id="region-{regionSlug}"` on region sections and `data-club-id="{clubId}"` on club entries on `/clubs/:countrySlug`; intentional anchor-jump targets for the future interactive map.
 
-Cutover to `noreply@footbag.org` once the domain is acquired: re-run §8.8 against the canonical address, then update `SES_FROM_IDENTITY` in `/srv/footbag/env` and the `OutboundEmail` policy `Resource` ARN to point at the canonical identity, then restart the app. Later, SES domain identity with DKIM is a separate production-access activation. Env-var and IAM-policy resource-ARN update only; no code change.
+**Post-sprint infra tidy-up (not blocking sprint closure):** install Node 22 on staging host via nodesource; extend `scripts/deploy-rebuild.sh` rsync includes to ship `tests/` so operator can run `npm run test:smoke` on-host.
 
-**Staging wiring readiness probe:** long-term test `tests/smoke/staging-readiness.test.ts` (run via `npm run test:smoke`, gated behind `RUN_STAGING_SMOKE=1`, excluded from default `npm test`) asserts the permanent contract that staging runtime identity reaches AWS and KMS/SES calls succeed. Operator runs it from the Lightsail host or a workstation with the staging profile on every subsequent staging AWS wiring change (blocked on host-Node install per Path H carryover §3).
-
-**Goal:** Close DD §3.2-3.5, §3.8 and USER_STORIES M_Login / M_Change_Password / M_Reset_Password / V_Register_Account. Unblocks organizer write flows, admin work queue, and all future state-changing routes.
-
-**Path H carryovers to reconcile before prod cutover** (details in `AWS_PROJECT_SPECIFICS.md` §21.9):
-
-1. **Lightsail browser SSH firewall override.** Console change made during §8.10 sshd-hang recovery loosened the port-22 rule beyond `operator_cidrs`. Next `terraform apply` from `terraform/staging/` will restore the tighter rule. Unblock: run `terraform apply`.
-2. **STUB_PASSWORD exposed in chat.** Staging preview-user password leaked during §8.11 login test. Rotate by updating local `.env`, redeploying (which re-seeds with the new hash), and updating the vault entry. Unblock: complete rotation before any external tester receives the preview credential.
-3. **Host Node runtime + tests dir absent.** DEV_ONBOARDING §8.11 implicitly assumes `node` on host PATH; no such install exists, and `scripts/deploy-rebuild.sh` rsync excludes `tests/`. Permanent fix: install Node 22 via `nodesource` and extend the rsync includes. Unblock: post-sprint infrastructure tidy-up.
-
-**AWS prerequisite (Deliverable 0):** Operator completes the steps in `docs/DEV_ONBOARDING.md` Path H (§8): KMS asymmetric RSA-2048 SIGN_VERIFY key `alias/footbag-staging-jwt`; source-profile IAM user `footbag-staging-source-profile` (single `sts:AssumeRole` statement); runtime role `footbag-staging-app-runtime` extended with KMS Sign/GetPublicKey on the JWT key and `ses:SendEmail` (not SendRawEmail) scoped to the `noreply@footbag.org` identity, and its trust policy replaced to trust the source-profile user; SES sandbox identity for `noreply@footbag.org` and test recipient; host credential wiring in `/root/.aws/credentials` + `/root/.aws/config` (root-owned, 0600); non-secret env additions in `/srv/footbag/env`. No AWS mutation by AI assistants.
-
-**In scope:**
-- JWT sessions via AWS KMS asymmetric RSA-2048, `kid` header, 24h expiry (DD §3.5).
-- Per-request DB `password_version` check; mismatch rejects JWT.
-- Swappable JWT signing adapter: `LocalJwtAdapter` in dev/test (local keypair), `KmsJwtAdapter` in staging/prod. Selection via `JWT_SIGNER` env var. Both implement the `JwtSigningAdapter` interface.
-- CSRF per DD §3.3: SameSite + verb discipline + Content-Type checks; no synchronizer tokens.
-- Rate-limit utility (fixed window per DD §8.3) wired into login, change-password, password-reset, verify-resend.
-- Email verification at registration (block-until-verified). Legacy-link check at verify-success redirect.
-- Password reset flow with 5/hour per-email rate limit (DD §3.8).
-- Confirmation emails for password change and password reset.
-- `CommunicationService` (DD §5.5) with swappable SES adapter (`StubSesAdapter` dev/test, `LiveSesAdapter` staging/prod). Outbox drain via `OperationsPlatformService.runEmailWorker`.
-- `accountTokenService` per DD §3.8 (random + SHA-256 at rest, single-use).
-- Remove env-var login stub fallback (`STUB_USERNAME`/`STUB_PASSWORD`) per DD §3.9.
-
-**Out of scope this sprint (drift notes):**
-- Audit logging for password-change and login rate-limit threshold crossings (US M_Change_Password line 550 and M_Login line 512).
-- Login rate-limit cooldown (`login_cooldown_minutes` seed row remains unwired; simple fixed-window only).
-- Password-reset IP bucket (DD §3.8 says email-only; US M_Reset_Password line 525 says email+IP; followed DD).
-- Daily token-cleanup job (DD §3.8 line 969).
-- SES bounce/complaint webhook handling (DD §5.4, SERVICE_CATALOG line 973).
-- JWT key rotation procedure with 24h overlap (DD §3.4 line 813).
-- "Change unverified email" flow.
-- SES domain identity, SES production-access, custom domain, CloudFront changes.
-- JWT session re-issue on near-expiry (DD §3.4 line 807 — re-issue when `exp` < 6h). Middleware currently validates only; no re-issue.
-- `SecretsAdapter` (DD §3.6) scaffold deferred until first SSM-backed secret consumer lands (Stripe API keys / admin bootstrap tokens). Add `EnvSecretsAdapter` + `SsmSecretsAdapter` together with the first consumer.
-
-**Post-deploy one-time operator action (pending first staging deploy):**
-
-- Backfill existing `sent` outbox rows: `sudo sqlite3 /srv/footbag/footbag.db "UPDATE outbox_emails SET body_text=NULL WHERE status='sent';"` (scrub applies to new sends automatically via `markSent`).
-
-**Footbag Hacky** (seeded preview-user): explicitly preserved. `seed_members.py` sets `email_verified_at` so block-until-verified does not lock it out.
-
-**Dev/prod parity:** `JWT_SIGNER=local` + `SES_ADAPTER=stub` in dev and CI; `JWT_SIGNER=kms` + `SES_ADAPTER=live` in staging/prod. Same code paths, same tests, differences confined to adapter wiring per DD §7.1.
-
-**Verification:** `npm test` and `npm run build` per phase. Staging verification of PR1 requires AWS setup complete and code deployed; see `docs/DEV_ONBOARDING.md` Path H §8.11 for the post-deploy curl checks.
+**Verification:** `npm test` and `npm run build` per change.
 
 ### Open production-rewrite item (carried over)
 
 **Legacy account claim:** current code is the early-test shortcut (direct lookup + confirm + merge via `identityAccessService.lookupLegacyAccount` / `claimLegacyAccount`; routes `POST /history/claim` + `POST /history/claim/confirm`). Production rewrite moves to a dedicated `LegacyMigrationService` with email-verified token flow (`GET /history/claim/verify/:token` per `docs/SERVICE_CATALOG.md`), name reconciliation, and rate limiting. Deferred to Phase 4.
+
+**Historical-person direct claim (scenarios D and E per MIGRATION_PLAN §8):** shipped. `identityAccessService.lookupHistoricalPersonForClaim` / `claimHistoricalPerson`; routes `GET /history/:personId/claim` + `POST /history/:personId/claim/confirm`; `/history/:personId` shows a "Claim this identity" CTA for authenticated viewers whose `real_name` surname matches the HP `person_name`. Surname mismatch blocks; first-name variant warns. Transitive legacy_members claim runs atomically when the HP carries an unclaimed `legacy_member_id` back-link. Will fold into `LegacyMigrationService` when that service is extracted in Phase 4.
+
+**HP field carry-forward on claim:** shipped. Both claim paths now merge `historical_persons.country`, `hof_member`, `bap_member`, `hof_induction_year`, and `first_year` onto the member row in the same transaction that sets `members.historical_person_id`, so search / hero / public profile surfaces reflect the HP honors and country. Backfill for already-claimed members runs via the one-shot SQL in `scripts/` (below).
+
+**Registration-time auto-link (MIGRATION_PLAN §7):** not yet implemented. Requires seeding the `name_variants` table (James's sprint §5) and wiring the tier classifier into `verifyEmailByToken`. Deferred to Phase 4-F'.
 
 **Routing invariants:** `/members` dashboard (auth) or welcome (public); `/members/:memberKey/*` profiles; `/history/:personId` historical detail; `/history` 301s to `/members`; `/register` registration; home Media Gallery is coming-soon (no `/media` route).
 
@@ -110,7 +79,7 @@ Deferred candidates: avatar server-side processing (media/S3 sprint); stub pages
 
 ### Out of scope this sprint
 
-Email verification, password reset, S3 media pipeline, account deletion, data export, `M_Review_Legacy_Club_Data_During_Claim`, registration slug customization, public member directory, membership tiers/dues, email outbox activation, auth hardening (Phase 4-A').
+S3 media pipeline, account deletion, data export, `M_Review_Legacy_Club_Data_During_Claim`, registration slug customization, public member directory, membership tiers/dues, legacy claim production rewrite (Phase 4-F').
 
 **Account-deletion implementation hook:** when PII purge lands (see M_Delete_Account in `docs/USER_STORIES.md` + DD §2.4 rule 5), the purge transaction must call `legacyClaim.clearClaim(legacy_member_id)` alongside setting `personal_data_purged_at`. Prepared statement already exists at `src/db/db.ts` `legacyClaim.clearClaim`.
 
@@ -121,21 +90,6 @@ Email verification, password reset, S3 media pipeline, account deletion, data ex
 ### Verification
 
 Canonical commands: `npm test` and `npm run build`. Not yet covered by tests: 500 handler, world-record routes, honor-roll routes, worker behavior, browser/UI. Browser verification is explicit-human-request-only.
-
----
-
-## Next sprint (after auth hardening + email activation lands)
-
-Tier 1 items (4-A' auth hardening and 4-D email outbox worker) are now the active Dave sprint above. These Tier 2 items remain for the sprint that follows.
-
-- **1-G CloudWatch agent** (S)
-- **Backup/restore workflow** (M): bucket scaffolded, no producer; must be in place before production data is at risk.
-- **Post-auth-hardening carryovers** from the active sprint's drift notes: audit logging for password change + login rate-limit threshold, daily token-cleanup job, SES bounce/complaint webhook handling, JWT key rotation procedure with 24h overlap, login rate-limit cooldown wiring, SES domain identity + production-access ticket.
-- **Catalog completeness audit** (M): VIEW_CATALOG + SERVICE_CATALOG invariant sweep. Missing items to verify are documented: `PageViewModel<TContent>` contract, thin-controller discipline, db.ts purity, service-owned URL construction, adapter pattern, file-naming conventions (`<domain>Service.ts`, `<domain>Controller.ts`, `<PageName>Content`, `<Entity>ViewModel`), error-class naming (`<Kind>Error`), shared shaping helpers (`personHref`, `shapePartnershipPair`, `shapeFreestyleRecord`, `groupPlayerResults`), HTTP helpers (`issueSessionCookie`, `handleControllerError`), Handlebars helpers, cross-catalog consistency (service entries pair with page entries).
-- **Net player-route redirect cleanup** (S): `/net/players/:personId` and `/net/players/:personId/partners/:teamId` (`src/routes/publicRoutes.ts:55-59`) exist only to 302 to `/history/:personId` and `/net/teams/:teamId`. Grep for consumers; if none, delete both handlers and remove VIEW_CATALOG §5 entries. Audit other routes that exist solely to redirect beyond the intentional `/history` → `/members` canonical redirect.
-- **James-authored code separation audit** (M): before go-live, confirm QC internal code is 100% separated from public release code per PIPELINE_QC.md design rules + deletion procedure. Mixed files to verify: `src/services/netService.ts` (~38% public / 62% QC), `src/controllers/netController.ts`, `src/views/net/` (target: split to `src/views/internal-qc/net/`), `src/db/db.ts` QC-only prepared-statement groups (`netReview`, `netCandidates`, `netCurated`, `netCuratedBrowse`, `netRecoverySignals`, `netRecoveryCandidates`, `netReviewSummary`, `netTeamCorrectionApproval`, `personsQc`), `database/schema.sql` QC-only tables (`net_raw_fragment`, `net_candidate_match`, `net_curated_match`, `net_recovery_alias_candidate`, `net_review_queue`). 100% QC files: `personsService.ts`, `personsQcChecks.ts`, `personsController.ts`, `src/views/persons/`. Sweep public templates for pipeline-curation columns (confidence, notes, date_precision, source_reference) — prior findings 11.1 and 11.2 flagged two sites in freestyle.
-- **Approval-fatigue review v2** (S): decide whether to add `Bash(find:* -exec*)` + `Bash(find:* -execdir*)` to `permissions.deny` as mechanical backstop on top of the behavioral ban. Also cover read-only `for`/`while` loops, `xargs`, command substitution, subshells, pipelines, `if [[ -f x ]]` tests. Per class: decide hook regex vs `permissions.allow` prefix vs behavioral-only rule. Reference: repo-root `approval_fatigue.md`.
-- **Preserve clubs-map anchor hooks** (XS): on country page (`/clubs/:countrySlug`), keep `id="region-{regionSlug}"` on region sections and `data-club-id="{clubId}"` on club entries. Intentional anchor-jump targets for the future interactive map.
 
 ---
 
@@ -237,28 +191,25 @@ Each has an explicit unblock condition. Long-term docs preserve target design; c
 
 ### Feature deviations
 
-1. **Auth DB-backed but not hardened.** HMAC-signed cookie + DB-backed argon2. No CSRF, no password-version/session-invalidation, no JWT. Unblock: 4-A' (next sprint).
-2. **Member profiles have conditional public visibility.** `/members/:memberKey` public for HoF/BAP; auth-required otherwise.
-3. **Member search is authenticated only.** `/members` covers members + historical persons with dedup. No public directory.
-4. **Worker has no real jobs.** `worker.ts` exits cleanly; scaffolded only. Unblock: 4-D (next sprint).
-5. **Claim email shown on-screen in non-production.** Email outbox deferred. Unblock: 4-D.
-6. **Avatar pipeline is local-only.** No server-side processing; raw uploads stored as-is. Stable path + `?v={media_id}` cache-bust. Unblock: S3/media pipeline.
-7. **Cache-Control at app layer, not CloudFront cache policy.** DD §6.7 target is the AWS managed `CachingDisabled` policy; current is Express middleware for authenticated responses. Functionally equivalent.
-8. **`/legal` `admin@footbag.org` greyed as "mailbox not yet active".** `.contact-pending` span replaces `mailto:` across Privacy, Terms, Copyright contact lines. Unblock: 4-D.
-9. **Vimeo click-to-load facade not implemented.** Privacy section on `/legal` states Vimeo uses the click-to-load facade; only YouTube is covered today (`youtube-facade.js`). Unblock: media pipeline (Phase 3+).
+1. **Member profiles have conditional public visibility.** `/members/:memberKey` public for HoF/BAP; auth-required otherwise.
+2. **Member search is authenticated only.** `/members` covers members + historical persons with dedup. No public directory.
+3. **Avatar pipeline is local-only.** No server-side processing; raw uploads stored as-is. Stable path + `?v={media_id}` cache-bust. Unblock: S3/media pipeline.
+4. **Cache-Control at app layer, not CloudFront cache policy.** DD §6.7 target is the AWS managed `CachingDisabled` policy; current is Express middleware for authenticated responses. Functionally equivalent.
+5. **`/legal` `admin@footbag.org` greyed as "mailbox not yet active".** `.contact-pending` span replaces `mailto:` across Privacy, Terms, Copyright contact lines. Unblock: IFPA domain acquisition + SES identity provisioning.
+6. **Vimeo click-to-load facade not implemented.** Privacy section on `/legal` states Vimeo uses the click-to-load facade; only YouTube is covered today (`youtube-facade.js`). Unblock: media pipeline (Phase 3+).
 
 ### Infrastructure deviations
 
-10. **No closed backup/restore workflow.** S3 bucket scaffolded; no producer; no restore drill. Unblock: Tier 2 next sprint.
-11. **Maintenance mode not production-grade.** CloudFront active; maintenance-origin/error behavior not implemented. Unblock: 1-F.
-12. **CloudFront hardening incomplete.** X-Origin-Verify absent in Nginx; OAC/ordered-cache controls deferred; direct-origin bypass unprotected. Unblock: 1-F.
-13. **CI/CD partial.** App CI active; deploy scripts: `deploy-code.sh`, `deploy-rebuild.sh`, `deploy-migrate.sh` (stub). Remaining: 1-F, 1-G.
-14. **Monitoring partial and gated.** CloudWatch log groups + alarms Terraformed; agent install TODO. Unblock: 1-G.
-15. **Terraform trust-policy stub for runtime role.** `terraform/staging/iam.tf:16-85` declares `aws_iam_role.app_runtime`'s trust policy as `ec2.amazonaws.com` (bootstrap stub from the unreachable-on-Lightsail instance-profile scaffold). Path H §8.9 step 4c Console-amended the trust policy to trust the source-profile IAM user; HCL reconciliation deferred. Source-profile + AssumeRole chain per DD §7.2 is otherwise active: long-lived keys at `/root/.aws/credentials` (root-owned, 0600), app uses `AWS_PROFILE=footbag-staging-runtime`. Unblock: post-sprint infrastructure tidy-up.
-16. **Bootstrap security shortcuts remain.** Operator IAM + SSH use bootstrap posture. Unblock: pre-launch security pass.
-17. **Browser validation manual-only.** Route/integration tests are first verification path.
-18. **`image` container absent.** Docker Compose has `nginx`, `web`, `worker`. Unblock: Phase 3+ media pipeline.
-19. **`/health/ready` is DB-probe only.** DD §8.4 adds memory-pressure gating + broader dependency checks. Unblock: 1-G + backup activation.
+7. **No closed backup/restore workflow.** S3 bucket scaffolded; no producer; no restore drill. Unblock: Tier 2 next sprint.
+8. **Maintenance mode not production-grade.** CloudFront active; maintenance-origin/error behavior not implemented. Unblock: 1-F.
+9. **CloudFront hardening incomplete.** X-Origin-Verify absent in Nginx; OAC/ordered-cache controls deferred; direct-origin bypass unprotected. Unblock: 1-F.
+10. **CI/CD partial.** App CI active; deploy scripts: `deploy-code.sh`, `deploy-rebuild.sh`, `deploy-migrate.sh` (stub). Remaining: 1-F, 1-G.
+11. **Monitoring partial and gated.** CloudWatch log groups + alarms Terraformed; agent install TODO. Unblock: 1-G.
+12. **Terraform trust-policy stub for runtime role.** `terraform/staging/iam.tf:16-85` declares `aws_iam_role.app_runtime`'s trust policy as `ec2.amazonaws.com` (bootstrap stub from the unreachable-on-Lightsail instance-profile scaffold). Path H §8.9 step 4c Console-amended the trust policy to trust the source-profile IAM user; HCL reconciliation deferred. Source-profile + AssumeRole chain per DD §7.2 is otherwise active: long-lived keys at `/root/.aws/credentials` (root-owned, 0600), app uses `AWS_PROFILE=footbag-staging-runtime`. Unblock: post-sprint infrastructure tidy-up.
+13. **Bootstrap security shortcuts remain.** Operator IAM + SSH use bootstrap posture. Unblock: pre-launch security pass.
+14. **Browser validation manual-only.** Route/integration tests are first verification path.
+15. **`image` container absent.** Docker Compose has `nginx`, `web`, `worker`. Unblock: Phase 3+ media pipeline.
+16. **`/health/ready` is DB-probe only.** DD §8.4 adds memory-pressure gating + broader dependency checks. Unblock: 1-G + backup activation.
 
 ---
 
@@ -308,25 +259,18 @@ IFPA rules integration planning can continue, but implementation must wait for J
 
 ## Phase roadmap (active/next only)
 
-**Phase 0** — COMPLETE.
+**Phase 1 — Verification foundation + CI/CD.** Remaining: 1-F security hardening (M), 1-G CloudWatch agent (S).
 
-**Phase 1 — Verification foundation + CI/CD.** App CI green, deploy scripts exist, CloudFront active. Remaining: 1-F security hardening (M), 1-G CloudWatch agent (S).
-
-**Phase 4 — Auth hardening + email activation.** Details in "Next sprint" above.
+**Phase 4 — Auth hardening + email activation.** Remaining:
 
 | # | Task | Size | Dep |
 |---|------|------|-----|
-| 4-A' | Auth hardening: JWT cookie, per-request DB check, CSRF, password-version session invalidation | L | -- |
-| 4-D | Email outbox worker: activate `worker.ts` for outbox_emails via SES | L | SES configured |
-| 4-E | Email verification: registration sends verification email, link activates | M | 4-D |
 | 4-F' | Legacy claim production rewrite: email-verified flow, name reconciliation, rate limiting | M | -- |
-| 4-G | Password reset via email | M | 4-D |
 
 Rules:
 - JWT sessions alone are not sufficient authority; DB state must be checked per request.
 - Password changes must invalidate sessions via password-version.
 - State-changing routes must follow documented CSRF patterns.
-- Do not begin organizer write flows or admin work queue until 4-A' is solid and tested.
 
 Later phases (unsequenced): organizer write flows; admin work queue; membership tiers/Stripe; voting/elections; media galleries; IFPA rules integration; HoF; mailing lists; richer readiness checks.
 
@@ -334,6 +278,5 @@ Later phases (unsequenced): organizer write flows; admin work queue; membership 
 
 ## Open risks
 
-- Password reset depends on 4-D.
 - IFPA rules integration depends on Julie's published wording (external).
 - Schema is `database/schema.sql` (unversioned); seed pipeline runs via `scripts/reset-local-db.sh`.
