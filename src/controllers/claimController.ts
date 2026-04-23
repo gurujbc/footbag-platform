@@ -1,7 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { identityAccessService } from '../services/identityAccessService';
+import { findAutoLinkCandidates } from '../services/nameVariantsService';
+import { legacyClaim } from '../db/db';
 import { ValidationError } from '../services/serviceErrors';
 import { logger } from '../config/logger';
+
+interface ClaimingMemberRow {
+  id: string;
+  slug: string;
+  real_name: string;
+  legacy_member_id: string | null;
+  historical_person_id: string | null;
+}
 
 const FORM_VM = {
   seo:  { title: 'Link Legacy Account' },
@@ -19,9 +29,48 @@ const AUTO_LINK_FORM_VM = {
 };
 
 export const claimController = {
-  /** GET /history/claim, render the legacy claim lookup form. */
-  getClaim(_req: Request, res: Response): void {
-    res.render('history/claim-form', { ...FORM_VM, content: {} });
+  /**
+   * GET /history/claim, render the legacy claim lookup form.
+   *
+   * Prefills the identifier input with the member's real_name (best-effort
+   * context only; the lookup remains identifier-based) and, when the
+   * verify-time classifier reported tier3, shows a soft notice plus any HP
+   * candidates the name-match helper returned. Candidate links go to the
+   * existing `/history/:personId/claim` page — no new route, no
+   * claim-flow changes, no new matching heuristic.
+   */
+  getClaim(req: Request, res: Response): void {
+    const userId = req.user?.userId;
+    const member = userId
+      ? (legacyClaim.findClaimingMember.get(userId) as ClaimingMemberRow | undefined)
+      : undefined;
+    const realName = member?.real_name?.trim() ?? '';
+
+    let autoLinkNotice: string | undefined;
+    const candidates: Array<{ personId: string; personName: string }> = [];
+
+    if (userId && realName) {
+      const classification = identityAccessService.getAutoLinkClassificationForMember(userId);
+      if (classification.tier === 'tier3') {
+        for (const c of findAutoLinkCandidates(realName)) {
+          candidates.push({ personId: c.personId, personName: c.personName });
+        }
+        if (candidates.length > 0) {
+          autoLinkNotice =
+            "We couldn't confidently match your profile automatically. " +
+            'Please select your profile below or enter a legacy identifier.';
+        }
+      }
+    }
+
+    res.render('history/claim-form', {
+      ...FORM_VM,
+      content: {
+        identifier: realName,
+        autoLinkNotice,
+        candidates,
+      },
+    });
   },
 
   /**

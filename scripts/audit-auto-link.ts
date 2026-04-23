@@ -259,6 +259,44 @@ function main(): number {
   }
   formatRow('none (no action / already linked / no email anchor)', est_none);
   hrule();
+
+  // ── Activation forecast ──────────────────────────────────────────────────
+  // Per-HP / per-variant pool sizes that describe how many registrants COULD
+  // flow each tier once the legacy-site data dump populates
+  // legacy_members.legacy_email. Independent of the current members table.
+
+  let pool_tier1_unique = 0;
+  let pool_tier1_collision = 0;
+  for (const hp of historicalPersons) {
+    if (!hp.legacy_member_id) continue;
+    const key = normalizeForMatch(hp.person_name);
+    if (!key) continue;
+    const group = hpByNormalizedName.get(key) ?? [];
+    if (group.length === 1) pool_tier1_unique++;
+    else pool_tier1_collision++;
+  }
+
+  let pool_tier2_unique = 0;
+  let pool_tier2_collision = 0;
+  for (const nv of nameVariants) {
+    const hps = hpByNormalizedName.get(nv.canonical_normalized) ?? [];
+    const provenanceHps = hps.filter((hp) => hp.legacy_member_id !== null);
+    if (provenanceHps.length === 1) pool_tier2_unique++;
+    else if (provenanceHps.length > 1) pool_tier2_collision++;
+  }
+
+  const hp_coverage_pct = n_hp_total > 0
+    ? Math.round((n_legacy_with_hp / n_hp_total) * 1000) / 10
+    : 0;
+
+  console.log('  Activation forecast (pools primed to flow on email attach)');
+  hrule();
+  formatRow('potential tier1 pool (unique normalized HP, provenance set)', pool_tier1_unique);
+  formatRow('HPs with provenance lost to collision (tier3/multi)', pool_tier1_collision);
+  formatRow('potential tier2 pool (variant → unique provenance HP)', pool_tier2_unique);
+  formatRow('variant pairs lost to collision', pool_tier2_collision);
+  formatRow('HP provenance coverage (HPs with legacy_member_id / total)', `${hp_coverage_pct}%`);
+  hrule();
   console.log();
 
   db.close();
