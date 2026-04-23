@@ -156,7 +156,7 @@ def write_artifact(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
             w.writerow({k: r.get(k, "") for k in fieldnames})
 
 
-def apply_to_db(db_path: Path, production: list[dict]) -> tuple[int, int]:
+def apply_to_db(db_path: Path, production: list[dict], created_at: str) -> tuple[int, int]:
     """Insert production rows. Returns (inserted, skipped_existing)."""
     if not db_path.exists():
         raise SystemExit(f"ERROR: DB does not exist: {db_path}")
@@ -166,7 +166,6 @@ def apply_to_db(db_path: Path, production: list[dict]) -> tuple[int, int]:
         cur = conn.cursor()
         inserted = 0
         skipped  = 0
-        now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         for r in production:
             before = conn.total_changes
             cur.execute(
@@ -175,7 +174,7 @@ def apply_to_db(db_path: Path, production: list[dict]) -> tuple[int, int]:
                     (canonical_normalized, variant_normalized, source, created_at)
                 VALUES (?, ?, ?, ?)
                 """,
-                (r["canonical_normalized"], r["variant_normalized"], DB_SOURCE_TAG, now),
+                (r["canonical_normalized"], r["variant_normalized"], DB_SOURCE_TAG, created_at),
             )
             if conn.total_changes > before:
                 inserted += 1
@@ -196,7 +195,12 @@ def main() -> int:
                     help="Path to footbag.db (only required with --apply).")
     ap.add_argument("--apply", action="store_true",
                     help="Actually insert HIGH rows into the DB. Default is dry-run.")
+    ap.add_argument("--created-at", default=None,
+                    help="Timestamp (ISO-8601 or 'YYYY-MM-DD HH:MM:SS') for the "
+                         "created_at column. Default: current UTC time. Supply a "
+                         "fixed value for byte-deterministic seed loads.")
     args = ap.parse_args()
+    created_at = args.created_at or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
     rows = read_csv(args.input)
     production, deferred, rejected = classify_rows(rows)
@@ -232,7 +236,7 @@ def main() -> int:
         print("ERROR: --apply requires --db", file=sys.stderr)
         return 2
 
-    inserted, skipped = apply_to_db(args.db, production)
+    inserted, skipped = apply_to_db(args.db, production, created_at)
     print(f"\nApplied to {args.db}:", file=sys.stderr)
     print(f"  inserted: {inserted}", file=sys.stderr)
     print(f"  skipped:  {skipped}  (already present)", file=sys.stderr)

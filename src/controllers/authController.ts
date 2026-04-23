@@ -178,6 +178,11 @@ async function getVerify(req: Request, res: Response, next: NextFunction): Promi
     const role = result.isAdmin ? 'admin' : 'member';
     const cookieValue = await createSessionJwt(result.memberId, role, result.passwordVersion);
     issueSessionCookie(res, cookieValue, req);
+    const tier = result.autoLinkClassification.tier;
+    if (tier === 'tier1' || tier === 'tier2') {
+      res.redirect('/history/auto-link');
+      return;
+    }
     if (result.legacyMatch) {
       res.redirect('/history/claim');
       return;

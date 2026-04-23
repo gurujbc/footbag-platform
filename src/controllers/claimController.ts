@@ -13,10 +13,50 @@ const HP_FORM_VM = {
   page: { sectionKey: 'members', pageKey: 'claim_hp_verify', title: 'Claim Historical Record' },
 };
 
+const AUTO_LINK_FORM_VM = {
+  seo:  { title: 'We found a match' },
+  page: { sectionKey: 'members', pageKey: 'auto_link_confirm', title: 'We found a match' },
+};
+
 export const claimController = {
   /** GET /history/claim, render the legacy claim lookup form. */
   getClaim(_req: Request, res: Response): void {
     res.render('history/claim-form', { ...FORM_VM, content: {} });
+  },
+
+  /**
+   * GET /history/auto-link, the Phase 3B verification-time confirmation step
+   * for Tier 1 / Tier 2 auto-link candidates. Renders an HP summary with
+   * explicit "yes / no" actions; never performs the link itself. Falls
+   * through to /history/claim when the classifier no longer reports
+   * Tier 1 / Tier 2 for the authenticated member.
+   */
+  getAutoLinkConfirm(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const classification = identityAccessService.getAutoLinkClassificationForMember(
+        req.user!.userId,
+      );
+      if (classification.tier !== 'tier1' && classification.tier !== 'tier2') {
+        res.redirect('/history/claim');
+        return;
+      }
+      res.render('history/auto-link-confirm', {
+        ...AUTO_LINK_FORM_VM,
+        content: {
+          personId:                 classification.personId,
+          personName:               classification.personName,
+          tier:                     classification.tier,
+          matchedVariantNormalized: classification.tier === 'tier2'
+            ? classification.matchedVariantNormalized
+            : undefined,
+          confirmHref:              `/history/${encodeURIComponent(classification.personId)}/claim`,
+          declineHref:              `/members/${encodeURIComponent(req.user!.slug)}`,
+        },
+      });
+    } catch (err) {
+      logger.error('auto-link confirm error', { error: err instanceof Error ? err.message : String(err) });
+      next(err);
+    }
   },
 
   /**

@@ -8,6 +8,8 @@ import { hit as rateLimitHit } from './rateLimitService';
 import { readIntConfig } from './configReader';
 import { config } from '../config/env';
 import { RateLimitedError, ValidationError } from './serviceErrors';
+import { findAutoLinkCandidates } from './nameVariantsService';
+import { logger } from '../config/logger';
 
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_DISPLAY_NAME = 64;
@@ -225,12 +227,40 @@ async function registerMember(
   return { status: 'registered' };
 }
 
+/**
+ * Outcome of combining the email-anchor check with name-variant candidates
+ * per MIGRATION_PLAN §7. Read-only classification; never initiates a link.
+ *
+ * Tier 1/2 are only emitted when THREE anchors all agree:
+ *   1. The member's login_email matches a legacy_members row.
+ *   2. A historical_persons row provenances to that legacy account
+ *      (HP.legacy_member_id == legacy_members.legacy_member_id).
+ *   3. findAutoLinkCandidates(real_name) returns exactly one candidate,
+ *      and that candidate is the provenance HP.
+ *
+ * Anything short of that collapses to Tier 3 (review). `none` applies when
+ * there is no email anchor at all.
+ */
+export type AutoLinkClassification =
+  | { tier: 'none' }
+  | { tier: 'tier1'; personId: string; personName: string }
+  | { tier: 'tier2'; personId: string; personName: string; matchedVariantNormalized: string }
+  | {
+      tier: 'tier3';
+      reason:
+        | 'no_hp_for_legacy_account'
+        | 'no_name_candidate'
+        | 'multiple_name_candidates'
+        | 'hp_mismatch';
+    };
+
 export interface VerifyEmailResult {
   memberId: string;
   slug: string;
   passwordVersion: number;
   isAdmin: number;
   legacyMatch: LegacyAccountLookupResult | null;
+  autoLinkClassification: AutoLinkClassification;
 }
 
 async function issueAndEnqueueVerifyEmail(memberId: string, recipientEmail: string): Promise<void> {
@@ -268,7 +298,7 @@ async function verifyEmailByToken(rawToken: string): Promise<VerifyEmailResult |
   // since the token itself is single-use, we proceed with login in any case.
 
   const row = auth.findMemberForSessionAfterVerify.get(consumed.memberId) as
-    | { id: string; slug: string | null; login_email: string | null; password_version: number; is_admin: number }
+    | { id: string; slug: string | null; login_email: string | null; real_name: string | null; password_version: number; is_admin: number }
     | undefined;
   if (!row) return null;
 
@@ -286,12 +316,116 @@ async function verifyEmailByToken(rawToken: string): Promise<VerifyEmailResult |
     }
   }
 
+  const autoLinkClassification = classifyAutoLink(row.real_name, legacyMatch);
+  logger.info('verify.autolink.classification', {
+    memberId: row.id,
+    tier: autoLinkClassification.tier,
+    ...(autoLinkClassification.tier === 'tier3'
+      ? { reason: autoLinkClassification.reason }
+      : {}),
+    ...(autoLinkClassification.tier === 'tier1' || autoLinkClassification.tier === 'tier2'
+      ? { personId: autoLinkClassification.personId }
+      : {}),
+  });
+
   return {
     memberId: row.id,
     slug: row.slug ?? row.id,
     passwordVersion: row.password_version,
     isAdmin: row.is_admin,
     legacyMatch,
+    autoLinkClassification,
+  };
+}
+
+/**
+ * Re-run the verify-time auto-link classification for an authenticated member.
+ * Read-only. Used by the post-verify confirmation page (GET /history/auto-link)
+ * to re-derive the classification server-side rather than trust a request
+ * parameter. Returns `{ tier: 'none' }` if the member is not found.
+ */
+function getAutoLinkClassificationForMember(memberId: string): AutoLinkClassification {
+  const member = legacyClaim.findClaimingMember.get(memberId) as
+    | { id: string; real_name: string; legacy_member_id: string | null; historical_person_id: string | null }
+    | undefined;
+  if (!member) return { tier: 'none' };
+
+  // If the member is already linked (legacy or HP), the auto-link UI should
+  // fall through — don't re-offer a link they already have.
+  if (member.legacy_member_id || member.historical_person_id) {
+    return { tier: 'none' };
+  }
+
+  const loginEmail = (auth.findMemberForSessionAfterVerify.get(memberId) as
+    | { login_email: string | null }
+    | undefined)?.login_email;
+  if (!loginEmail) return { tier: 'none' };
+
+  let legacyMatch: LegacyAccountLookupResult | null = null;
+  try {
+    legacyMatch = lookupLegacyAccount(memberId, loginEmail);
+  } catch {
+    legacyMatch = null;
+  }
+  return classifyAutoLink(member.real_name, legacyMatch);
+}
+
+/**
+ * Classify the post-verify auto-link situation per MIGRATION_PLAN §7.
+ *
+ * Pure function against inputs + DB reads. No writes, no throws, no state.
+ * Tier 1/2 require email + HP-provenance + unique name match; anything else
+ * that has an email anchor collapses to Tier 3. Callers use the output to
+ * decide UI; no auto-link is committed here.
+ */
+function classifyAutoLink(
+  realName: string | null,
+  legacyMatch: LegacyAccountLookupResult | null,
+): AutoLinkClassification {
+  if (!legacyMatch) return { tier: 'none' };
+
+  const hpProvenance = legacyClaim.findHistoricalPersonByLegacyId.get(
+    legacyMatch.legacyMemberId,
+  ) as HistoricalPersonClaimRow | undefined;
+  if (!hpProvenance) {
+    return { tier: 'tier3', reason: 'no_hp_for_legacy_account' };
+  }
+
+  const candidates = findAutoLinkCandidates(realName ?? '');
+  if (candidates.length === 0) {
+    return { tier: 'tier3', reason: 'no_name_candidate' };
+  }
+  if (candidates.length > 1) {
+    return { tier: 'tier3', reason: 'multiple_name_candidates' };
+  }
+
+  const candidate = candidates[0];
+  if (candidate.personId !== hpProvenance.person_id) {
+    return { tier: 'tier3', reason: 'hp_mismatch' };
+  }
+
+  // Align with lookupHistoricalPersonForClaim's surname block. A legitimate
+  // name_variants pair (e.g. curated display-name rows like
+  // "Boris Belouin Ollivier" -> "Boris Belouin") can link two identities
+  // whose surnames legitimately differ. The existing claim flow would
+  // refuse such a claim at 422; downgrade the classification here so the
+  // UX never sends such a user to an endpoint that will reject them.
+  if (!normalizedSurnamesMatch(realName, candidate.personName)) {
+    return { tier: 'tier3', reason: 'hp_mismatch' };
+  }
+
+  if (candidate.matchKind === 'exact') {
+    return {
+      tier: 'tier1',
+      personId: candidate.personId,
+      personName: candidate.personName,
+    };
+  }
+  return {
+    tier: 'tier2',
+    personId: candidate.personId,
+    personName: candidate.personName,
+    matchedVariantNormalized: candidate.matchedVariantNormalized ?? '',
   };
 }
 
@@ -783,4 +917,4 @@ async function completePasswordReset(
   };
 }
 
-export const identityAccessService = { verifyMemberCredentials, attemptLogin, registerMember, lookupLegacyAccount, claimLegacyAccount, lookupHistoricalPersonForClaim, claimHistoricalPerson, changePassword, verifyEmailByToken, resendVerifyEmail, requestPasswordReset, completePasswordReset };
+export const identityAccessService = { verifyMemberCredentials, attemptLogin, registerMember, lookupLegacyAccount, claimLegacyAccount, lookupHistoricalPersonForClaim, claimHistoricalPerson, changePassword, verifyEmailByToken, resendVerifyEmail, requestPasswordReset, completePasswordReset, getAutoLinkClassificationForMember };

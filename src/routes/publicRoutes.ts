@@ -56,6 +56,7 @@ publicRouter.get('/events/:eventKey',    eventController.event);
 publicRouter.get('/history', (_req, res) => { res.redirect(301, '/members'); });
 // IMPORTANT: /history/claim routes MUST be registered before /history/:personId.
 // Without this ordering, "claim" would be captured as the :personId param.
+publicRouter.get('/history/auto-link',            requireAuth, claimController.getAutoLinkConfirm);
 publicRouter.get('/history/claim',                requireAuth, claimController.getClaim);
 publicRouter.post('/history/claim',               requireAuth, claimController.postClaim);
 publicRouter.post('/history/claim/confirm',       requireAuth, claimController.postClaimConfirm);

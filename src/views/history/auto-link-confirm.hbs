@@ -1,0 +1,29 @@
+{{! Verification-time auto-link confirmation (Phase 3B). }}
+{{! Renders the Tier 1 / Tier 2 candidate HP with explicit yes/no actions. }}
+{{! The "yes" form links to the existing HP-claim page; the commit happens }}
+{{! there, in the same transaction path as manual historical-person claims. }}
+
+<div class="hero hero-sm">
+  <div>
+    <h1>{{page.title}}</h1>
+    <p>Based on the email and name on your account, we believe this historical player record refers to you. Confirm to carry Hall of Fame status, country, and career results onto your profile.</p>
+  </div>
+</div>
+
+<div class="wrapper">
+  <section>
+    <div class="card" style="margin-bottom:24px;">
+      <p style="margin:0; font-weight:500;">Historical record: {{content.personName}}</p>
+    </div>
+
+    <p>This is a confirmation step. No link has been created yet. If you click the button below, you will be taken to the standard claim confirmation page where you can finalise the link or cancel.</p>
+
+    <form method="GET" action="{{content.confirmHref}}">
+      <button type="submit" class="btn btn-primary">Yes, this is me — continue</button>
+    </form>
+
+    <p style="margin-top:16px">
+      <a href="{{content.declineHref}}">No, not me — take me to my dashboard</a>
+    </p>
+  </section>
+</div>

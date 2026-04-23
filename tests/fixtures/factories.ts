@@ -1036,3 +1036,27 @@ export function insertNetRecoveryAliasCandidate(
   );
   return id;
 }
+
+// ── Name variant ──────────────────────────────────────────────────────────────
+
+export interface NameVariantOverrides {
+  canonical_normalized: string;
+  variant_normalized: string;
+  source?: 'mirror_mined' | 'admin_added' | 'member_submitted';
+  created_at?: string;
+}
+
+export function insertNameVariant(
+  db: BetterSqlite3.Database,
+  o: NameVariantOverrides,
+): void {
+  db.prepare(`
+    INSERT INTO name_variants (canonical_normalized, variant_normalized, source, created_at)
+    VALUES (?, ?, ?, ?)
+  `).run(
+    o.canonical_normalized,
+    o.variant_normalized,
+    o.source     ?? 'mirror_mined',
+    o.created_at ?? TS,
+  );
+}

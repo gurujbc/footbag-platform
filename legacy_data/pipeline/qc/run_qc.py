@@ -71,6 +71,19 @@ OPTIONAL_CHECKS = [
         "severity": "warn",
         "needs_workbook": False,
     },
+    # Name-variants seed validator (Phase 2 report-only wiring). Validates
+    # structure of inputs/name_variants.csv: required columns, confidence
+    # domain, source domain, duplicates, DB-CHECK compatibility. Severity=info:
+    # the file is not yet consumed by any downstream stage (loader is drafted
+    # but not wired), so failures are reported for visibility only. Promote
+    # to warn when the loader wires in, and to hard once production uses the
+    # table.
+    {
+        "name": "name_variants",
+        "path": "pipeline/qc/check_name_variants.py",
+        "severity": "info",
+        "needs_workbook": False,
+    },
     # Community workbook matters, but qc_spreadsheet_gate.py expects a different workbook shape.
     {
         "name": "workbook_qc",

@@ -3236,7 +3236,7 @@ export const auth = {
   `),
 
   findMemberForSessionAfterVerify: db.prepare(`
-    SELECT id, slug, login_email, password_version, is_admin
+    SELECT id, slug, login_email, real_name, password_version, is_admin
     FROM members_active
     WHERE id = ?
   `),
@@ -3728,6 +3728,26 @@ export const personsQc = {
            event_count, placement_count
     FROM historical_persons
     ORDER BY person_name COLLATE NOCASE
+  `),
+} as const;
+
+// Read-only auto-link candidate lookup. Rows in `name_variants` are loaded
+// pre-normalized (NFKC+lower+trim+collapse), by contract of the loader.
+// Symmetric table: a lookup must check both columns and return the opposite.
+// `person_name` is stored unnormalized; the SQL uses `lower(trim(...))` as a
+// safe approximation for current canonical data (NFC-composed, single-spaced).
+export const nameVariants = {
+  findByEitherColumn: db.prepare(`
+    SELECT canonical_normalized, variant_normalized
+    FROM name_variants
+    WHERE canonical_normalized = ? OR variant_normalized = ?
+  `),
+
+  findHistoricalPersonsByNormalizedName: db.prepare(`
+    SELECT person_id, person_name
+    FROM historical_persons
+    WHERE lower(trim(person_name)) = ?
+    ORDER BY person_id
   `),
 } as const;
 
