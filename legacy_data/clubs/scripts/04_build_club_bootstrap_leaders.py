@@ -12,6 +12,13 @@ AFFILIATIONS_CSV = REPO_ROOT / "legacy_data" / "clubs" / "out" / "legacy_person_
 OUT_DIR = REPO_ROOT / "legacy_data" / "clubs" / "out"
 OUT_CSV = OUT_DIR / "club_bootstrap_leaders.csv"
 
+# MIGRATION_PLAN §3 / §10.1: only pre-populated clubs with at least one
+# leader candidate whose affiliation_confidence_score >= 0.70 receive
+# provisional bootstrap leader rows. Clubs that fail this floor stay
+# pre_populate but get no provisional leader (first affiliated member
+# to confirm at registration is offered co-leadership instead).
+LEADER_CONFIDENCE_THRESHOLD = 0.70
+
 
 def require_columns(df: pd.DataFrame, required: set[str], label: str) -> None:
     missing = required - set(df.columns)
@@ -69,6 +76,9 @@ def main() -> None:
         & (aff["match_status"] == "MATCHED")
         & (aff["linkable_for_clubs"] == 1)
         & aff["matched_person_id"].astype(str).str.strip().ne("")
+        # §3 / §10.1 confidence floor — leader candidates below the
+        # threshold are not promoted to provisional leader rows.
+        & (aff["affiliation_confidence_score"] >= LEADER_CONFIDENCE_THRESHOLD)
     ].copy()
 
     if aff.empty:
@@ -171,13 +181,20 @@ def main() -> None:
 
     out.to_csv(OUT_CSV, index=False)
 
+    eligible_without_leader = (
+        len(eligible_keys) - (out["club_key"].nunique() if not out.empty else 0)
+    )
+
     print(f"Wrote {len(out):,} rows to {OUT_CSV}")
     print()
     print("Summary:")
-    print(f"  clubs with leaders:      {out['club_key'].nunique():,}")
-    print(f"  leader rows:             {(out['role'] == 'leader').sum():,}")
-    print(f"  co_leader rows:          {(out['role'] == 'co_leader').sum():,}")
-    print(f"  provisional assignments: {(out['status'] == 'provisional').sum():,}")
+    print(f"  confidence floor:        >= {LEADER_CONFIDENCE_THRESHOLD:.2f}")
+    print(f"  bootstrap-eligible clubs:{len(eligible_keys):>4}")
+    print(f"  clubs with leaders:      {(out['club_key'].nunique() if not out.empty else 0):>4}")
+    print(f"  clubs without leaders:   {eligible_without_leader:>4}  (pre_populate, awaiting onboarding)")
+    print(f"  leader rows:             {((out['role'] == 'leader').sum() if not out.empty else 0):>4}")
+    print(f"  co_leader rows:          {((out['role'] == 'co_leader').sum() if not out.empty else 0):>4}")
+    print(f"  provisional assignments: {((out['status'] == 'provisional').sum() if not out.empty else 0):>4}")
 
 
 if __name__ == "__main__":
