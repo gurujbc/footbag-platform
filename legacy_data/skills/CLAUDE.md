@@ -3,8 +3,6 @@
 ## Scope
 This subtree prepares canonical data and integrates with the platform DB.
 Do not modify repo-root code, docs, or Claude skills from here.
-For repo-root/platform tasks, defer to repo-root `CLAUDE.md` and `IMPLEMENTATION_PLAN.md`.
-`legacy_data` work follows James's track; cross-track changes require explicit coordination.
 
 ## Source of Truth
 - Authoritative outputs: `out/canonical/*.csv`
@@ -55,4 +53,3 @@ For repo-root/platform tasks, defer to repo-root `CLAUDE.md` and `IMPLEMENTATION
 - Never fabricate results (unknown stays unknown)
 - All exclusions must be traceable in `overrides/`
 - Prefer one-command workflows defined in skills
-- Never run git commit/push/pull; stage-only changes allowed, human owns commits

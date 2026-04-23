@@ -1,5 +1,13 @@
 # Skill: historical-pipeline
+## Positioning
+This is a **specialist/debugging skill**.
 
+For normal operation, always use `complete-pipeline`.
+
+Use this skill only when:
+- isolating a stage
+- debugging QC failures
+- validating targeted changes
 ## When to Use
 Invoke this skill when:
 - Rebuilding canonical outputs after a parser fix, override change, or curated CSV addition
