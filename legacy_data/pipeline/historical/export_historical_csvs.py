@@ -1291,7 +1291,7 @@ def _is_person_like(name: str) -> bool:
 # over the AliasResolver result. Used only for deferred contradictory cases
 # where two canonical persons exist and the alias file's target is not yet
 # confirmed by domain review.
-_PIN_OVERRIDE_FIRST: set[str] = {"honza weber"}
+_PIN_OVERRIDE_FIRST: set[str] = set()
 
 _HONOR_OVERRIDES: dict[str, str] = {
     # Name in BAP/HoF source → canonical name in PT/persons
@@ -1299,7 +1299,6 @@ _HONOR_OVERRIDES: dict[str, str] = {
     "tina aberli":              "Tina Aeberli",
     "arek dzudzinski":          "Arkadiusz Dudzinski",
     "lon skyler smith":         "Skyler Lon Smith",
-    "honza weber":              "Jan Weber",
     # BAP members with name variants
     "dave holton":              "David Holton",
     "phillip morrison":         "Phil Morrison",
