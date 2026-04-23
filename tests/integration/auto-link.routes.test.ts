@@ -35,6 +35,20 @@ const LEGACY_ID_TIER3  = 'legmem-rt-tier3';
 const HP_TIER1 = 'hp-rt-tier1';
 const HP_TIER2 = 'hp-rt-tier2';
 
+// Dedicated fixtures for POST /history/auto-link/confirm. Kept separate
+// from the read-only verify-routing fixtures so the commit tests can
+// mutate members.historical_person_id without breaking other cases.
+const LEGACY_ID_PC_T1       = 'legmem-pc-tier1';
+const LEGACY_ID_PC_T2       = 'legmem-pc-tier2';
+const LEGACY_ID_PC_MISMATCH = 'legmem-pc-mismatch';
+const LEGACY_ID_PC_CLAIMED  = 'legmem-pc-claimed';
+
+const HP_PC_T1        = 'hp-pc-tier1';
+const HP_PC_T2        = 'hp-pc-tier2';
+const HP_PC_MISMATCH  = 'hp-pc-mismatch';
+const HP_PC_STRANGER  = 'hp-pc-stranger';   // not the tier1 candidate; used to POST a wrong personId
+const HP_PC_CLAIMED   = 'hp-pc-claimed';    // already owned by another member
+
 beforeAll(async () => {
   const db = createTestDb(dbPath);
 
@@ -88,6 +102,87 @@ beforeAll(async () => {
     slug: 'rt_none',
     login_email: 'rt-none@example.com',
     real_name: 'Solo Member',
+    email_verified_at: null,
+  });
+
+  // ── POST /history/auto-link/confirm fixtures ───────────────────────────
+  // Tier 1 commit happy path.
+  insertLegacyMember(db, { legacy_member_id: LEGACY_ID_PC_T1, legacy_email: 'pc-t1@example.com' });
+  insertHistoricalPerson(db, {
+    person_id:        HP_PC_T1,
+    person_name:      'Morgan Pcone',
+    legacy_member_id: LEGACY_ID_PC_T1,
+  });
+  insertMember(db, {
+    id: 'mem-pc-t1',
+    slug: 'pc_t1',
+    login_email: 'pc-t1@example.com',
+    real_name: 'Morgan Pcone',
+    email_verified_at: null,
+  });
+
+  // Tier 2 commit happy path (variant name match via name_variants).
+  insertLegacyMember(db, { legacy_member_id: LEGACY_ID_PC_T2, legacy_email: 'pc-t2@example.com' });
+  insertHistoricalPerson(db, {
+    person_id:        HP_PC_T2,
+    person_name:      'Chloé Pctwo',
+    legacy_member_id: LEGACY_ID_PC_T2,
+  });
+  insertNameVariant(db, {
+    canonical_normalized: 'chloé pctwo',
+    variant_normalized:   'chloe pctwo',
+  });
+  insertMember(db, {
+    id: 'mem-pc-t2',
+    slug: 'pc_t2',
+    login_email: 'pc-t2@example.com',
+    real_name: 'Chloe Pctwo',
+    email_verified_at: null,
+  });
+
+  // personId drift: member is tier1 → HP_PC_MISMATCH, but POSTs a stranger id.
+  insertLegacyMember(db, { legacy_member_id: LEGACY_ID_PC_MISMATCH, legacy_email: 'pc-mm@example.com' });
+  insertHistoricalPerson(db, {
+    person_id:        HP_PC_MISMATCH,
+    person_name:      'Riley Pcmismatch',
+    legacy_member_id: LEGACY_ID_PC_MISMATCH,
+  });
+  insertHistoricalPerson(db, {
+    person_id:        HP_PC_STRANGER,
+    person_name:      'Totally Unrelated Stranger',
+  });
+  insertMember(db, {
+    id: 'mem-pc-mismatch',
+    slug: 'pc_mismatch',
+    login_email: 'pc-mm@example.com',
+    real_name: 'Riley Pcmismatch',
+    email_verified_at: null,
+  });
+
+  // ValidationError path: HP is tier1 target for mem-pc-already, but the
+  // HP row is already claimed by mem-pc-other. Classifier returns tier1;
+  // claimHistoricalPerson throws on the already-claimed check.
+  insertLegacyMember(db, { legacy_member_id: LEGACY_ID_PC_CLAIMED, legacy_email: 'pc-claimed@example.com' });
+  insertHistoricalPerson(db, {
+    person_id:        HP_PC_CLAIMED,
+    person_name:      'Jamie Pcclaimed',
+    legacy_member_id: LEGACY_ID_PC_CLAIMED,
+  });
+  insertMember(db, {
+    id: 'mem-pc-other',
+    slug: 'pc_other',
+    login_email: 'pc-other@example.com',
+    real_name: 'Third Party',
+  });
+  // MemberOverrides has no historical_person_id field, so set it directly
+  // to simulate a pre-existing HP claim held by a different member.
+  db.prepare('UPDATE members SET historical_person_id = ? WHERE id = ?')
+    .run(HP_PC_CLAIMED, 'mem-pc-other');
+  insertMember(db, {
+    id: 'mem-pc-already',
+    slug: 'pc_already',
+    login_email: 'pc-claimed@example.com',
+    real_name: 'Jamie Pcclaimed',
     email_verified_at: null,
   });
 
@@ -163,15 +258,18 @@ describe('GET /history/auto-link', () => {
     expect(res.status).toBe(200);
     expect(res.text).toContain('Jordan Alpha');
     expect(res.text).toContain('We found a match');
-    // Confirm link points at the existing HP claim endpoint.
-    expect(res.text).toContain(`action="/history/${HP_TIER1}/claim"`);
+    // "Yes" form POSTs to the one-turn commit endpoint with the personId
+    // carried in a hidden input (no GET bounce through /history/:personId/claim).
+    expect(res.text).toContain('action="/history/auto-link/confirm"');
+    expect(res.text).toContain(`value="${HP_TIER1}"`);
   });
 
   it('Tier 2 renders the confirm UI naming the canonical HP (diacritic preserved)', async () => {
     const res = await verifyAndFollow('mem-rt-tier2');
     expect(res.status).toBe(200);
     expect(res.text).toContain('Alex Martínez');
-    expect(res.text).toContain(`action="/history/${HP_TIER2}/claim"`);
+    expect(res.text).toContain('action="/history/auto-link/confirm"');
+    expect(res.text).toContain(`value="${HP_TIER2}"`);
   });
 
   it('redirects to /login when unauthenticated', async () => {
@@ -212,5 +310,152 @@ describe('no writes before user confirmation', () => {
 
     const after = linkageCounts();
     expect(after).toEqual(before);
+  });
+});
+
+describe('POST /history/auto-link/confirm', () => {
+  async function verifiedAgent(memberId: string) {
+    const token = issueVerifyToken(memberId);
+    const agent = request.agent(createApp());
+    const v = await agent.get(`/verify/${token}`);
+    expect(v.status).toBe(302);
+    return agent;
+  }
+
+  function memberLink(memberId: string): { hp: string | null; lm: string | null } {
+    const db = new BetterSqlite3(dbPath, { readonly: true });
+    const row = db.prepare(
+      'SELECT historical_person_id AS hp, legacy_member_id AS lm FROM members WHERE id = ?',
+    ).get(memberId) as { hp: string | null; lm: string | null } | undefined;
+    db.close();
+    return row ?? { hp: null, lm: null };
+  }
+
+  it('Tier 1 + matching personId commits and redirects to /members/:slug', async () => {
+    const agent = await verifiedAgent('mem-pc-t1');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_T1 });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/members/pc_t1');
+    expect(memberLink('mem-pc-t1').hp).toBe(HP_PC_T1);
+  });
+
+  it('Tier 2 + matching personId commits and redirects to /members/:slug', async () => {
+    const agent = await verifiedAgent('mem-pc-t2');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_T2 });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/members/pc_t2');
+    expect(memberLink('mem-pc-t2').hp).toBe(HP_PC_T2);
+  });
+
+  it('classifier now tier3: 302 /history/claim?reason=classification_changed, no commit', async () => {
+    const before = memberLink('mem-rt-tier3');
+    const agent = await verifiedAgent('mem-rt-tier3');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: 'anything-random' });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/history/claim?reason=classification_changed');
+    expect(memberLink('mem-rt-tier3')).toEqual(before);
+  });
+
+  it("classifier now 'none': 302 /members/:slug, no commit", async () => {
+    const before = memberLink('mem-rt-none');
+    const agent = await verifiedAgent('mem-rt-none');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: 'anything-random' });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/members/rt_none');
+    expect(memberLink('mem-rt-none')).toEqual(before);
+  });
+
+  it('personId mismatch (classifier sees a different tier1 HP): 302 /history/claim?reason=classification_changed, no commit', async () => {
+    const before = memberLink('mem-pc-mismatch');
+    const agent = await verifiedAgent('mem-pc-mismatch');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_STRANGER });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/history/claim?reason=classification_changed');
+    expect(memberLink('mem-pc-mismatch')).toEqual(before);
+  });
+
+  it('follow the drift redirect: GET /history/claim?reason=classification_changed renders the explainer', async () => {
+    const agent = await verifiedAgent('mem-pc-mismatch');
+    const redirect = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_STRANGER });
+    expect(redirect.status).toBe(302);
+
+    const rendered = await agent.get(redirect.headers.location);
+    expect(rendered.status).toBe(200);
+    expect(rendered.text).toContain(
+      "We couldn&#x27;t automatically confirm your match. Please review and select your record manually.",
+    );
+    // Uses the existing form-notice pattern (role="status"), not a new one.
+    expect(rendered.text).toContain('class="form-notice"');
+  });
+
+  it('tier3 reason-aware message wins over the drift copy when both would apply', async () => {
+    // mem-rt-tier3 arrives at /history/claim?reason=classification_changed
+    // AND the classifier currently returns tier3/no_hp_for_legacy_account.
+    // The more specific tier3 message should render; the generic drift
+    // copy should NOT appear.
+    const agent = await verifiedAgent('mem-rt-tier3');
+    const res = await agent.get('/history/claim?reason=classification_changed');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('yet linked to a competition profile');
+    expect(res.text).not.toContain('automatically confirm your match');
+  });
+
+  it('drift copy does not render without the query param', async () => {
+    const agent = await verifiedAgent('mem-rt-none');
+    const res = await agent.get('/history/claim');
+    expect(res.status).toBe(200);
+    expect(res.text).not.toContain('automatically confirm your match');
+  });
+
+  it('ValidationError (HP already claimed by another member): 422 re-renders confirm with error', async () => {
+    const before = memberLink('mem-pc-already');
+    const agent = await verifiedAgent('mem-pc-already');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_CLAIMED });
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('already been claimed');
+    // Re-render shows the candidate + the error banner for the shared template.
+    expect(res.text).toContain('Jamie Pcclaimed');
+    expect(memberLink('mem-pc-already')).toEqual(before);
+  });
+
+  it('unauthenticated POST redirects to /login (matches existing auth-gate convention)', async () => {
+    const res = await request(createApp())
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({ personId: HP_PC_T1 });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toMatch(/^\/login(\?.*)?$/);
+  });
+
+  it('missing personId body: 422 re-render with "Invalid claim request" error', async () => {
+    const agent = await verifiedAgent('mem-pc-mismatch');
+    const res = await agent
+      .post('/history/auto-link/confirm')
+      .type('form')
+      .send({});  // no personId
+    expect(res.status).toBe(422);
+    expect(res.text).toContain('Invalid claim request');
+    expect(memberLink('mem-pc-mismatch').hp).toBeNull();
   });
 });

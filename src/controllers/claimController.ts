@@ -43,6 +43,12 @@ const TIER3_MESSAGES: Record<string, string> = {
     "Your account exists, but isn't yet linked to a competition profile. Please search to continue.",
 };
 
+// Shown when /history/claim is reached via the ?reason= query param from
+// postAutoLinkConfirm drift redirects. Only rendered when no tier3
+// reason-aware message is already in play (tier3 copy is more specific).
+const DRIFT_MESSAGE =
+  "We couldn't automatically confirm your match. Please review and select your record manually.";
+
 export const claimController = {
   /**
    * GET /history/claim, render the legacy claim lookup form.
@@ -87,6 +93,14 @@ export const claimController = {
       }
     }
 
+    // Drift explainer: shown when postAutoLinkConfirm redirects here with
+    // ?reason=classification_changed AND no tier3 reason-aware message
+    // has already taken the slot. The tier3 message, when present, is
+    // more specific than the generic drift copy and takes precedence.
+    if (!message && String(req.query.reason ?? '') === 'classification_changed') {
+      message = DRIFT_MESSAGE;
+    }
+
     res.render('history/claim-form', {
       ...FORM_VM,
       content: {
@@ -98,8 +112,8 @@ export const claimController = {
   },
 
   /**
-   * GET /history/auto-link, the Phase 3B verification-time confirmation step
-   * for Tier 1 / Tier 2 auto-link candidates. Renders an HP summary with
+   * GET /history/auto-link, the verification-time confirmation step for
+   * Tier 1 / Tier 2 auto-link candidates. Renders an HP summary with
    * explicit "yes / no" actions; never performs the link itself. Falls
    * through to /history/claim when the classifier no longer reports
    * Tier 1 / Tier 2 for the authenticated member.
@@ -122,12 +136,91 @@ export const claimController = {
           matchedVariantNormalized: classification.tier === 'tier2'
             ? classification.matchedVariantNormalized
             : undefined,
-          confirmHref:              `/history/${encodeURIComponent(classification.personId)}/claim`,
           declineHref:              `/members/${encodeURIComponent(req.user!.slug)}`,
         },
       });
     } catch (err) {
       logger.error('auto-link confirm error', { error: err instanceof Error ? err.message : String(err) });
+      next(err);
+    }
+  },
+
+  /**
+   * POST /history/auto-link/confirm — one-turn classifier-trusted commit
+   * path for the Tier 1 / Tier 2 auto-link "Yes" button. Re-validates the
+   * classification at commit time (defense in depth against stale GET
+   * state), then delegates to the existing transactional
+   * identityAccessService.claimHistoricalPerson.
+   *
+   * Does NOT re-run the surname-reconciliation / duplicate-claim checks
+   * itself — those live inside claimHistoricalPerson. The four-anchor
+   * classifier already guarantees them for Tier 1 / Tier 2, so there is
+   * no need for the two-click bounce through GET /history/:personId/claim
+   * that the manual HP-claim flow uses.
+   *
+   * Fallback contract matches GET /history/auto-link:
+   *   - classification no longer tier1/tier2   → 302 /history/claim
+   *   - classification 'none'                  → 302 /members/:slug
+   *   - submitted personId ≠ classifier's     → 302 /history/claim (drift)
+   *   - ValidationError from commit           → 422 re-render with error
+   */
+  postAutoLinkConfirm(req: Request, res: Response, next: NextFunction): void {
+    try {
+      const userId   = req.user!.userId;
+      const slug     = req.user!.slug;
+      const personId = String(req.body.personId ?? '').trim();
+
+      if (!personId) {
+        res.status(422).render('history/auto-link-confirm', {
+          ...AUTO_LINK_FORM_VM,
+          content: {
+            error:       'Invalid claim request.',
+            declineHref: `/members/${encodeURIComponent(slug)}`,
+          },
+        });
+        return;
+      }
+
+      const classification = identityAccessService.getAutoLinkClassificationForMember(userId);
+
+      if (classification.tier === 'tier3') {
+        // Classification drifted between GET render and POST commit.
+        // Surface via the manual claim route with an explanatory reason.
+        res.redirect('/history/claim?reason=classification_changed');
+        return;
+      }
+      if (classification.tier === 'none') {
+        res.redirect(`/members/${encodeURIComponent(slug)}`);
+        return;
+      }
+      // Drift: GET saw one candidate, POST sees another. Same reason
+      // query param so /history/claim can explain the state change.
+      if (classification.personId !== personId) {
+        res.redirect('/history/claim?reason=classification_changed');
+        return;
+      }
+
+      try {
+        identityAccessService.claimHistoricalPerson(userId, personId);
+        res.redirect(`/members/${encodeURIComponent(slug)}`);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          res.status(422).render('history/auto-link-confirm', {
+            ...AUTO_LINK_FORM_VM,
+            content: {
+              personId:    classification.personId,
+              personName:  classification.personName,
+              tier:        classification.tier,
+              error:       err.message,
+              declineHref: `/members/${encodeURIComponent(slug)}`,
+            },
+          });
+          return;
+        }
+        throw err;
+      }
+    } catch (err) {
+      logger.error('auto-link confirm commit error', { error: err instanceof Error ? err.message : String(err) });
       next(err);
     }
   },
