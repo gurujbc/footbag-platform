@@ -738,32 +738,35 @@ def main() -> None:
         if r.get("person_id", "").strip()
     }
 
-    # ── 11. Referential closure ───────────────────────────────────────────────
-    # Keep persons where:
-    #   (a) person_id is referenced by at least one participant row, OR
-    #   (b) person_id is guaranteed by the display-name mapping (PDN v1 —
-    #       identified player whose results are all sparse-filtered), OR
-    #   (c) person has a member_id after step 8b backfill
-    #       (PT v52 person with an IFPA profile link, worth retaining even with
-    #       no surviving participant rows), OR
-    #   (d) person is a BAP or HOF member.
+    # ── 11. VISIBLE_PERSON rule (IP H1 — platform/workbook parity) ─────────────
+    # Canonical definition enforced here; build_workbook_release.py reads
+    # the filtered output and does not apply a second filter.
     #
-    # PT v52 membership alone (without any of the above) is no longer sufficient
-    # to retain a person: anonymous PT v52 entries with no events and no profile
-    # link add no value to the platform.
+    #   VISIBLE_PERSON =
+    #       (a) referenced by at least one event_result_participants row, OR
+    #       (b) person_id guaranteed by the display-name map (PDN v1 —
+    #           curated identity whose results are all sparse-filtered), OR
+    #       (c) has member_id (IFPA profile link after step 8b backfill), OR
+    #       (d) BAP member, OR
+    #       (e) HOF member.
+    #
+    # PT v52 membership alone is not sufficient: anonymous PT v52 entries
+    # with no participant rows and no profile link add no value.
+    def is_visible_person(p: dict) -> bool:
+        return (
+            p["person_id"] in used_pids
+            or p["person_id"] in dn_map_ids
+            or p.get("member_id", "").strip() != ""
+            or p.get("bap_member", "").strip() in ("1", "True", "true")
+            or p.get("hof_member", "").strip() in ("1", "True", "true")
+        )
+
     n_before = len(persons)
-    persons = [
-        p for p in persons
-        if p["person_id"] in used_pids
-        or p["person_id"] in dn_map_ids
-        or p.get("member_id", "").strip()
-        or p.get("bap_member", "").strip() in ("1", "True", "true")
-        or p.get("hof_member", "").strip() in ("1", "True", "true")
-    ]
+    persons = [p for p in persons if is_visible_person(p)]
     n_closure_dropped = n_before - len(persons)
     if n_closure_dropped:
-        print(f"Referential closure: dropped {n_closure_dropped} PT51 persons with no "
-              f"participant rows, no member_id, no BAP/HOF")
+        print(f"VISIBLE_PERSON filter: dropped {n_closure_dropped} persons failing "
+              f"(referenced / in dn_map / member_id / BAP / HOF)")
 
     # ── 12. Duplicate dedup ───────────────────────────────────────────────────
     # For persons sharing the same person_name, keep the UUID with the most

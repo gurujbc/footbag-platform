@@ -34,7 +34,8 @@ For repo-root/platform tasks, defer to repo-root `CLAUDE.md` and `IMPLEMENTATION
 - No team names in person entities
 - Corrections carry provenance metadata
 - Honor overrides secondary to AliasResolver
-
+- Workbook person visibility follows platform filter
+- Federations (WFA/NHSA) may act as host clubs for early events
 ## DB Invariants
 - Soft delete via `deleted_at`; never hard delete
 - Audit logs append-only

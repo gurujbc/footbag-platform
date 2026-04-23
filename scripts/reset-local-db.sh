@@ -83,6 +83,13 @@ echo "  → Loading consecutive kicks records..."
 "${PYTHON}" legacy_data/event_results/scripts/11_load_consecutive_records_to_sqlite.py \
   --db "${DB_FILE}"
 
+# Seed name_variants (HIGH-confidence only; MEDIUM rows are deferred to a
+# review artifact). Required for verify-time auto-link tier1/tier2 matching.
+echo "  → Loading name_variants seed..."
+"${PYTHON}" legacy_data/scripts/load_name_variants_seed.py \
+  --db "${DB_FILE}" \
+  --apply
+
 # Phase NET: net enrichment layer (discipline groups, teams, appearances, review queue).
 # Reads canonical tables, writes net_* tables. Must run after script 08.
 echo "  → Building net discipline groups..."
