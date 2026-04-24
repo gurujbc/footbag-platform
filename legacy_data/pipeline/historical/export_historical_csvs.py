@@ -1298,7 +1298,6 @@ _HONOR_OVERRIDES: dict[str, str] = {
     "vaclav (vasek) klouda":    "Vaclav Klouda",
     "tina aberli":              "Tina Aeberli",
     "arek dzudzinski":          "Arkadiusz Dudzinski",
-    "lon skyler smith":         "Skyler Lon Smith",
     # BAP members with name variants
     "dave holton":              "David Holton",
     "phillip morrison":         "Phil Morrison",
@@ -1417,8 +1416,12 @@ if _fbhof_csv.exists():
             _raw   = _row.get("full_name", "").strip()
             _yr    = _row.get("induction_year", "").strip()
             _pid_direct = _row.get("person_id", "").strip()
-            # Prefer the explicit person_id column; fall back to name matching
-            _pid = _pid_direct or _match_honor(_raw)
+            # Alias-first: the alias file is the authoritative identity source.
+            # Fall back to the explicit person_id column only when no alias /
+            # PT-name match exists. Reversed from prior behavior on 2026-04-23
+            # after the pre-filled pid for "Chris Siebert" (c0408f85) was
+            # confirmed stale vs the alias target (bd1ac97c Chris Seibert).
+            _pid = _match_honor(_raw) or _pid_direct
             if _pid:
                 _fbhof_by_pid[_pid] = {
                     "fbhof_member": 1,
