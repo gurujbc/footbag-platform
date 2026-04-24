@@ -91,7 +91,7 @@ This document covers:
 - the implemented claim pages:
   - Legacy-account claim initiation (`GET /history/claim`, `POST /history/claim`)
   - Legacy-account claim confirmation (`POST /history/claim/confirm`)
-  - Historical-person direct claim (`GET /history/:personId/claim`, `POST /history/:personId/claim/confirm`) for registrants without an old-site user account (scenarios D and E per MIGRATION_PLAN §8)
+  - Historical-person direct claim (`GET /history/:personId/claim`, `POST /history/:personId/claim/confirm`) for registrants without an old-site user account (scenarios D and E per MIGRATION_PLAN §7)
 - the rules future pages must follow to join the catalog
 
 `docs/USER_STORIES.md` remains broader than this file. This catalog is authoritative for the views it includes; it does not attempt to catalog the full future product yet.

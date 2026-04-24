@@ -38,9 +38,11 @@ Pre-cutover revert / rotation / scrub checklist lives in `docs/MIGRATION_PLAN.md
 
 ### Open production-rewrite item (carried over)
 
-**Legacy account claim:** current code is the early-test shortcut (direct lookup + confirm + merge via `identityAccessService.lookupLegacyAccount` / `claimLegacyAccount`; routes `POST /history/claim` + `POST /history/claim/confirm`). Production rewrite moves to a dedicated `LegacyMigrationService` with email-verified token flow (`GET /history/claim/verify/:token` per `docs/SERVICE_CATALOG.md`), name reconciliation, per-account / per-target / per-IP rate limiting (DD §3.8), and anti-enumeration messaging (SC §1.1 invariant: identical UX for found vs not-found; current `claimController.ts:111-116` returns distinct "No matching legacy record was found..." vs confirmation page, which must collapse to a single identical response). Deferred to Phase 4.
+**Legacy account claim:** current code is the early-test shortcut (direct lookup + confirm + merge via `identityAccessService.lookupLegacyAccount` / `claimLegacyAccount`; routes `POST /history/claim` + `POST /history/claim/confirm`). Production rewrite moves to a dedicated `LegacyMigrationService` with email-verified token flow (`GET /history/claim/verify/:token` per `docs/SERVICE_CATALOG.md`), name reconciliation, per-account / per-target / per-IP rate limiting (DD §3.8), and anti-enumeration messaging (SC §1.1 invariant: identical UX for found vs not-found; current `claimController.ts:111-116` returns distinct "No matching legacy record was found..." vs confirmation page, which must collapse to a single identical response). `claimLegacyAccount` also does not write the `member_tier_grants` rows specified in MIGRATION_PLAN §2 / §8 (`reason_code='migration.legacy_import'` and `'migration.legacy_claim_reconcile'`); deferred alongside the `legacy_tier_state` / `legacy_tier_expires_at` / `legacy_tier_ever_paid_tier2` schema extension gated on legacy-dump arrival. Migration-claim `audit_entries` for the 11 event types in MIGRATION_PLAN §17 (`legacy_claim_requested`, `legacy_claim_email_sent`, etc.) are also not written by the current shortcut; wiring lands with the email-verified flow. Deferred to Phase 4.
 
-**Registration-time auto-link (MIGRATION_PLAN §7):** not yet implemented. Requires seeding the `name_variants` table (see `legacy_data/IMPLEMENTATION_PLAN.md`) and wiring the tier classifier into `verifyEmailByToken`. Deferred to Phase 4-F'.
+**Registration-time auto-link (MIGRATION_PLAN §6):** not yet implemented. Requires seeding the `name_variants` table (see `legacy_data/IMPLEMENTATION_PLAN.md`) and wiring the tier classifier into `verifyEmailByToken`. Deferred to Phase 4-F'.
+
+**Club onboarding flow (MIGRATION_PLAN §9.3 Stages 1-3):** not implemented. Schema present (`member_club_affiliations`, `legacy_person_club_affiliations`, `legacy_club_candidates`, `club_bootstrap_leaders`) but no controller, service wiring, or tests. Target: Stage 1 direct-match confirmation, Stage 2 regional suggestions, Stage 3 no-clubs-nearby flow, each with writes to `member_club_affiliations` and bootstrap-leader activation for pre-populated clubs. Deferred to Phase 4.
 
 **Routing invariants:** `/members` dashboard (auth) or welcome (public); `/members/:memberKey/*` profiles; `/history/:personId` historical detail; `/history` 301s to `/members`; `/register` registration; home Media Gallery is coming-soon (no `/media` route).
 
@@ -59,7 +61,7 @@ Pre-cutover revert / rotation / scrub checklist lives in `docs/MIGRATION_PLAN.md
 
 ### Out of scope this sprint
 
-S3 media pipeline, account deletion, data export, `M_Review_Legacy_Club_Data_During_Claim`, registration slug customization, public member directory, membership tiers/dues, legacy claim production rewrite (Phase 4-F').
+S3 media pipeline, account deletion, data export, `M_Review_Legacy_Club_Data_During_Claim`, registration slug customization, public member directory, membership tiers/dues, legacy claim production rewrite (Phase 4-F'), club onboarding flow (MIGRATION_PLAN §9.3 Stages 1-3, Phase 4).
 
 **Account-deletion implementation hook:** when PII purge lands (see M_Delete_Account in `docs/USER_STORIES.md` + DD §2.4 rule 5), the purge transaction must call `legacyClaim.clearClaim(legacy_member_id)` alongside setting `personal_data_purged_at`. Prepared statement already exists at `src/db/db.ts` `legacyClaim.clearClaim`.
 

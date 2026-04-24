@@ -128,6 +128,15 @@ def main() -> None:
     system_user = "seed_loader"
 
     conn = sqlite3.connect(db_path)
+    # TEMPORARY: foreign keys disabled for the bulk reseed path.
+    # Current state: FK enforcement off during DELETE+INSERT of event/result
+    # data so cross-table references can be rebuilt in any order without
+    # tripping on transient dangling rows.
+    # Target state: complete the FK investigation and either reorder the
+    # DELETE/INSERT sequence so FK-on is safe, or document the specific
+    # constraints that require FK-off here.
+    # Re-enabled explicitly before commit (PRAGMA foreign_keys = ON below).
+    # Tracked as a Next Sprint item in the legacy pipeline plan.
     conn.execute("PRAGMA foreign_keys = OFF;")
     conn.row_factory = sqlite3.Row
 
@@ -421,9 +430,14 @@ def main() -> None:
 
         # ------------------------------------------------------------------
         # Synthetic test fixtures
+        # TEMPORARY: must not reach production.
         # These are not historical records. They exist to preserve canonical
         # URLs that are bookmarked on the deployed staging site and to
         # provide a known-good event for local verification.
+        # Current state: fixture block runs unconditionally on every invocation.
+        # Target state: gate on an env flag (e.g. FOOTBAG_SEED_PREVIEW_FIXTURE=1)
+        # or delete this block for the production-cutover data pass.
+        # Tracked as a pre-cutover gate item in the migration plan.
         # ------------------------------------------------------------------
         print("Injecting synthetic test fixtures...")
 

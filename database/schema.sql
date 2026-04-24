@@ -2721,6 +2721,15 @@ CREATE UNIQUE INDEX ux_member_club_affiliations_one_current
 -- (sets claimed_by_member_id + claimed_at) but does not remove the row; PII
 -- purge of the claiming member clears both claim fields so the legacy account
 -- becomes claimable again. See DD §2.4.
+--
+-- DEFERRED EXTENSION (not yet in schema): three tier-state fields
+--   legacy_tier_state, legacy_tier_expires_at, legacy_tier_ever_paid_tier2
+-- are planned additions gated on test-load validation of tier semantics from
+-- Steve's export. Current state: fields absent; tier mapping at claim time
+-- falls back to honors-only (is_hof/is_bap) and cannot represent Tier 2 annual
+-- expiry. Target state: add the three columns once the test-load confirms
+-- source semantics match the planned mapping, then switch claim-time tier
+-- grant to read these fields.
 CREATE TABLE legacy_members (
   legacy_member_id TEXT PRIMARY KEY,
 
@@ -2778,6 +2787,17 @@ CREATE UNIQUE INDEX ux_legacy_members_legacy_user_id
 
 -- Migration-only staging table: normalized mirror-derived club identities.
 -- May be dropped once all bootstrap decisions are finalized and no staging review is pending.
+--
+-- SCHEMA GAP (pipeline↔DB): the upstream clubs pipeline produces a four-value
+-- category per row (pre_populate, onboarding_visible, dormant, junk). That
+-- column is dropped on load because there is no destination here;
+-- `bootstrap_eligible` captures only a boolean slice (true iff pre_populate).
+-- Current state: registration Stage 2 cannot distinguish pre_populate from
+-- onboarding_visible at runtime, and dormant is not separable from junk.
+-- Target state: add a `classification TEXT` column with a four-value CHECK
+-- and backfill from the pipeline CSV; the fix requires a loader-script edit
+-- in the clubs-pipeline subtree plus factory and test updates on the platform
+-- side, so it is deferred pending cross-track coordination.
 CREATE TABLE legacy_club_candidates (
   id         TEXT PRIMARY KEY,
   created_at TEXT NOT NULL,

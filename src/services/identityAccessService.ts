@@ -228,8 +228,8 @@ async function registerMember(
 }
 
 /**
- * Outcome of combining the email-anchor check with name-variant candidates
- * per MIGRATION_PLAN §7. Read-only classification; never initiates a link.
+ * Outcome of combining the email-anchor check with name-variant candidates.
+ * Read-only classification; never initiates a link.
  *
  * Tier 1/2 are only emitted when THREE anchors all agree:
  *   1. The member's login_email matches a legacy_members row.
@@ -382,7 +382,7 @@ function getAutoLinkClassificationForMember(memberId: string): AutoLinkClassific
 }
 
 /**
- * Classify the post-verify auto-link situation per MIGRATION_PLAN §7.
+ * Classify the post-verify auto-link situation.
  *
  * Pure function against inputs + DB reads. No writes, no throws, no state.
  * Tier 1/2 require email + HP-provenance + unique name match; anything else

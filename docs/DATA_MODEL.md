@@ -603,7 +603,7 @@ Two FK-style columns carry person-identity / legacy-account linkage:
 - `historical_person_id` (`TEXT`, nullable, `REFERENCES historical_persons(person_id) ON DELETE NO ACTION`): direct FK to the archival historical-person identity this member claims. NULL = no HP claim. Set at claim time — either as a side effect of M_Claim_Legacy_Account (when the claimed legacy account has a matching HP) or as a direct HP claim (competitor with no legacy account claims their historical record). Partial UNIQUE index `ux_members_historical_person_id` enforces at most one live, non-purged member per HP.
 - `legacy_member_id` (`TEXT`, nullable, `REFERENCES legacy_members(legacy_member_id) ON DELETE NO ACTION`): pointer into the old footbag.org user-account namespace — also the PK of `legacy_members` (§4.14b). Set at M_Claim_Legacy_Account time. Partial UNIQUE index `ux_members_legacy_id` enforces at most one member per legacy account.
 
-`legacy_user_id` and `legacy_email` also remain as TEXT columns for backward compatibility with fields migrated into `members` at claim time; the canonical source for these is `legacy_members`. Post-claim, the member's row holds its own editable copy per MIGRATION_PLAN §9 merge rules; the `legacy_members` row is preserved unchanged as the permanent archival record.
+`legacy_user_id` and `legacy_email` also remain as TEXT columns for backward compatibility with fields migrated into `members` at claim time; the canonical source for these is `legacy_members`. Post-claim, the member's row holds its own editable copy per MIGRATION_PLAN §8 merge rules; the `legacy_members` row is preserved unchanged as the permanent archival record.
 
 - `legacy_is_admin` — flag indicating the account held admin status on the legacy site. Retained for admin review and audit context only; never grants live admin privilege.
 - `ifpa_join_date`, `birth_date`, `street_address`, `postal_code` — profile fields copied from `legacy_members` at claim time (COALESCE / fill-if-empty). The active member can subsequently edit them; the `legacy_members` copy remains immutable.
@@ -643,15 +643,15 @@ Permanent archival table: one row per imported legacy account from the old footb
 
 - Rows are **never deleted**. A `legacy_members` row is the permanent archival record of a legacy account's fields at import time.
 - Rows are **never mutated post-import** for the legacy fields (real_name, display_name, bio, country, honor flags, etc.). Import sets these; nothing else writes them.
-- **Claim marks, does not remove.** When a current member completes M_Claim_Legacy_Account, the application sets `claimed_by_member_id` (FK to `members(id)`) and `claimed_at`. The `legacy_members` row persists. MIGRATION_PLAN §9 merge rules still govern what fields copy from `legacy_members` to `members` at claim time (COALESCE / OR-merge / fill-if-empty); the member then edits their own copy.
+- **Claim marks, does not remove.** When a current member completes M_Claim_Legacy_Account, the application sets `claimed_by_member_id` (FK to `members(id)`) and `claimed_at`. The `legacy_members` row persists. MIGRATION_PLAN §8 merge rules still govern what fields copy from `legacy_members` to `members` at claim time (COALESCE / OR-merge / fill-if-empty); the member then edits their own copy.
 - **Unclaim on PII purge** (DD §2.4 rule 5): when a claiming member is purged, `claimed_by_member_id` and `claimed_at` are cleared (both NULL). The legacy account becomes claimable again.
 
 #### Columns
 
 - `legacy_member_id` (`TEXT`, PK): the old-site user-account id.
-- `legacy_user_id`, `legacy_email`: migration metadata from the mirror/dump. `legacy_email` is used to deliver the one-time claim link (MIGRATION_PLAN §8); never a login credential.
+- `legacy_user_id`, `legacy_email`: migration metadata from the mirror/dump. `legacy_email` is used to deliver the one-time claim link (MIGRATION_PLAN §7); never a login credential.
 - Profile snapshot — `real_name`, `display_name`, `display_name_normalized`, `city`, `region`, `country`, `bio`, `birth_date`, `street_address`, `postal_code`, `ifpa_join_date`, `first_competition_year`.
-- Honor flags — `is_hof`, `is_bap` (legacy-source honors; copied to members at claim per §9 OR-merge rule).
+- Honor flags — `is_hof`, `is_bap` (legacy-source honors; copied to members at claim per §8 OR-merge rule).
 - `legacy_is_admin` — old-site admin flag. Retained for audit; never grants live admin privilege.
 - Import audit — `import_source` ('mirror' | 'legacy_site_data' | NULL pre-integration), `imported_at`, `version`.
 - Claim state — `claimed_by_member_id` (nullable FK to `members(id)` with `ON DELETE NO ACTION`), `claimed_at`. A CHECK constraint enforces the two-column invariant: both NULL (unclaimed) or both set (claimed).
@@ -958,7 +958,7 @@ Leaders for bootstrapped clubs. These are real leaders; they can manage the club
 
 #### `name_variants` — permanent, not migration-only
 
-Name-equivalence pairs that support auto-link matching across `legacy_members`, `historical_persons`, and `members` (see `MIGRATION_PLAN.md` §7 auto-link and §8 self-serve claim flow). Seeded at State 1 from mirror-mined pairs (~290); remains live post-cutover so admins and members may record further equivalences as new name collisions surface.
+Name-equivalence pairs that support auto-link matching across `legacy_members`, `historical_persons`, and `members` (see `MIGRATION_PLAN.md` §6 auto-link and §7 self-serve claim flow). Seeded at State 1 from mirror-mined pairs (~290); remains live post-cutover so admins and members may record further equivalences as new name collisions surface.
 
 - **Columns**: `canonical_normalized` TEXT, `variant_normalized` TEXT, `source` TEXT with CHECK in (`mirror_mined`, `admin_added`, `member_submitted`), `created_at` TEXT default `datetime('now')`. Composite primary key on (`canonical_normalized`, `variant_normalized`).
 - **Symmetric lookup**: storing `('robert', 'bob')` is equivalent to storing `('bob', 'robert')`. Lookups must check both columns. Never insert both directions; the self-pair CHECK and the PRIMARY KEY enforce uniqueness.

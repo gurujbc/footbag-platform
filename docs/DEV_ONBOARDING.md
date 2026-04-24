@@ -381,6 +381,15 @@ Do not commit `.env` (make sure it is in your .gitignore)
 
 ### 1.7 Reset the local database
 
+> **Minimal first-boot check (optional).** To confirm that `npm install` and `.env` are healthy before running the full seed pipeline, apply the schema only:
+>
+> ```bash
+> rm -f ./database/footbag.db ./database/footbag.db-wal ./database/footbag.db-shm
+> sqlite3 ./database/footbag.db < ./database/schema.sql
+> ```
+>
+> With only the schema applied, `npm run dev` (§1.9) boots and the following render: `http://localhost:3000/`, `http://localhost:3000/health/live`, `http://localhost:3000/health/ready`. Every other public route needs the full seed below. Run the full reset before browser verification in §1.10.
+
 Bootstrap the local database from schema plus seed data:
 
 ```bash
@@ -3492,7 +3501,7 @@ Production only. The work falls into two groups:
 | `footbag-staging-source-profile-assume-role` | `footbag-production-source-profile-assume-role` |
 | SDK profile name `footbag-staging-runtime` | `footbag-production-runtime` |
 
-Out of scope: code changes (the app already selects KMS signing and live SES adapters via env vars; no compilation difference between staging and production); migration cutover itself (see `docs/MIGRATION_PLAN.md` §17 State 4).
+Out of scope: code changes (the app already selects KMS signing and live SES adapters via env vars; no compilation difference between staging and production); migration cutover itself (see `docs/MIGRATION_PLAN.md` §23 State 4).
 
 ### 9.3 Preconditions
 

@@ -43,7 +43,7 @@ Sneak Preview: [https://doye1nvv64qep.cloudfront.net/events/event_2025_beaver_op
 - [docs/DEVOPS_GUIDE.md](docs/DEVOPS_GUIDE.md) — deployment and operations.
 - [docs/DIAGRAMS.md](docs/DIAGRAMS.md) — architecture diagrams.
 - [docs/GLOSSARY.md](docs/GLOSSARY.md) — terminology and jargon.
-- [docs/MIGRATION_PLAN.md](docs/MIGRATION_PLAN.md) — go-live readiness: legacy data migration, operational-readiness gates, phasing, and validation gates.
+- [docs/MIGRATION_PLAN.md](docs/MIGRATION_PLAN.md) — go-live readiness steps: data migration, and validation gates.
 - [docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md) — project overview.
 - [docs/SERVICE_CATALOG.md](docs/SERVICE_CATALOG.md) — back-end code service contracts.
 - [docs/USER_STORIES.md](docs/USER_STORIES.md) — intended functional behaviors and success criteria.

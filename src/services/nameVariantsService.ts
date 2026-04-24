@@ -9,7 +9,7 @@
  *
  * The service does NOT auto-link. It does not create, modify, or persist
  * any relationship. The caller composes this with the email-anchor check
- * (MIGRATION_PLAN §7 tier classifier) to decide what, if anything, to do.
+ * and tier classifier to decide what, if anything, to do.
  *
  * HIGH-only enforcement lives at load time (see
  * `legacy_data/scripts/load_name_variants_seed.py`). Rows present in the
@@ -60,7 +60,7 @@ interface HistoricalPersonRow {
  *     once with `matchKind='exact'` (exact wins).
  *   - Multiple HPs reachable through the same canonical form are all
  *     returned; the caller decides how to present (Tier 3 admin review
- *     per MIGRATION_PLAN §7 when ambiguity remains at the email step).
+ *     when ambiguity remains at the email step).
  *   - Results are sorted by `personId` for stable ordering.
  */
 export function findAutoLinkCandidates(realName: string): AutoLinkCandidate[] {
