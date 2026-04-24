@@ -7,15 +7,11 @@ Scaffolding only (not wired up yet). Today two copies of this logic live in:
   - event_results/scripts/07_build_mvfp_seed_full.py::_is_person_like
   - pipeline/platform/export_canonical_platform.py::_is_person_like (step 5b)
 
-A third variant with different semantics (analytics/display gate, with an
-explicit allowlist) lives in:
-
-  - pipeline/04_build_analytics.py::is_presentable_person_canon
-
-The three diverged over time, which hides regressions. The plan is to
-consolidate the two strict copies onto this module in a follow-up PR;
-is_presentable_person_canon stays separate because its contract is
-different (display-facing, not storage-gating).
+The two have diverged over time, which hides regressions. The plan is to
+consolidate both strict copies onto this module in a follow-up PR. The
+release workbook flow (canonical CSVs → export_canonical_platform.py →
+event_results/canonical_input/*.csv → build_workbook_release.py →
+out/Footbag_Results_Release.xlsx) reuses the export-stage gate.
 
 Public API:
     is_person_like(name) -> bool

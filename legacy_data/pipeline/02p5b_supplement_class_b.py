@@ -41,9 +41,12 @@ Run
   cd ~/projects/footbag-platform/legacy_data
   .venv/bin/python pipeline/02p5b_supplement_class_b.py
 
-Then re-run stages 03 and 04:
-  .venv/bin/python pipeline/03_build_excel.py
-  .venv/bin/python pipeline/04_build_analytics.py
+Downstream: the release workbook flow is
+  canonical CSVs
+    → pipeline/platform/export_canonical_platform.py
+    → event_results/canonical_input/*.csv
+    → pipeline/build_workbook_release.py
+    → out/Footbag_Results_Release.xlsx
 """
 
 from __future__ import annotations
@@ -261,9 +264,8 @@ def main() -> None:
     print(f"\n[02p5b] Done.")
     print(f"  New rows injected:             {len(new_rows):,}")
     print(f"  Placements_Flat total rows:    {total:,}  (was {len(existing_rows):,})")
-    print(f"\nNext steps:")
-    print(f"  .venv/bin/python pipeline/03_build_excel.py")
-    print(f"  .venv/bin/python pipeline/04_build_analytics.py")
+    print(f"\nDownstream: release workbook via pipeline/build_workbook_release.py"
+          f" (reads event_results/canonical_input/*.csv → out/Footbag_Results_Release.xlsx).")
 
 
 if __name__ == "__main__":
