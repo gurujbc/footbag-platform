@@ -17,7 +17,7 @@ This catalog is the target-design reference for the platform's service layer: me
   - [4.2 `EventService`](#42-eventservice)
   - [4.3 `CompetitionParticipationService`](#43-competitionparticipationservice)
   - [4.4 `FreestyleService`](#44-freestyleservice)
-  - [4.5 `ConsecutiveService`](#45-consecutiveservice)
+  - [4.5 `RecordsService`](#45-recordsservice)
   - [4.6 `NetService`](#46-netservice)
 - [5. Payments & Membership](#5-payments--membership)
   - [5.1 `PaymentService`](#51-paymentservice)
@@ -164,10 +164,10 @@ Routing note: This project is page-oriented, not REST-API-oriented. Public route
 - **Does NOT own:** Event lifecycle, canonical result ingestion, or net/consecutive domain reads
 - **Primary tables:** `freestyle_records` (read-only)
 
-**`ConsecutiveService`**
-- **Owns:** Public consecutive kicks records page read
-- **Does NOT own:** Event lifecycle, freestyle, or net domain reads
-- **Primary tables:** `consecutive_kicks_records` (read-only)
+**`RecordsService`**
+- **Owns:** Public cross-sport records page read for `GET /records`; aggregates consecutive kicks + freestyle passback records into one view-model
+- **Does NOT own:** Event lifecycle; per-sport detail pages (those belong to section services)
+- **Primary tables:** `consecutive_kicks_records` (read-only), `freestyle_records` (read-only)
 
 **`NetService`**
 - **Owns:** Public net doubles team list and team detail page reads; discipline label resolution (conflict-flag-aware); evidence disclaimer rendering; statistics firewall enforcement (`canonical_only` data only)
@@ -562,19 +562,20 @@ For the current public routes, `EventService` is responsible for:
 
 ---
 
-### 4.5 `ConsecutiveService`
+### 4.5 `RecordsService`
 
-**Purpose/Boundary:** Owns the public consecutive kicks records page read for `GET /consecutive`. Shapes the single-page view-model from canonical consecutive records data. Does not own event lifecycle or any other sport domain.
+**Purpose/Boundary:** Owns the public cross-sport records page read for `GET /records`. Aggregates records across multiple sport domains (consecutive kicks, freestyle passback) into a single page view-model. The route is intentionally route-plural and aggregating; per-sport detail pages live under their own section services (e.g. `FreestyleService` for `/freestyle*` reads). Does not own event lifecycle or per-sport detail pages.
 
-**Consumers:** Public consecutive controller
+**Consumers:** Public records controller
 
 **Key Methods:**
-- `getRecordsPage() -> ConsecutiveRecordsViewModel` — full records page, grouped by division
+- `getRecordsPage() -> PageViewModel<RecordsContent>` — cross-sport records page; shapes consecutive-kicks world records, highest scores, progression, milestones, and freestyle passback records into one view-model
 
-**Persistence Touchpoints:** `consecutive_kicks_records` (read-only)
+**Persistence Touchpoints:** `consecutive_kicks_records` (read-only), `freestyle_records` (read-only)
 
 **Key Rules:**
 - `[APP]` All reads are read-only against canonical tables; no writes
+- `[APP]` Cross-sport read contract: future record sources (e.g. net records) added here become additional fields on `RecordsContent` and additional persistence touchpoints; per-sport detail pages still belong on their section services
 
 ---
 
