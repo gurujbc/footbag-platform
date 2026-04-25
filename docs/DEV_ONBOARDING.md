@@ -1,7 +1,5 @@
 # Footbag Website Modernization Project --  Developer Onboarding Guide
 
-**Last updated:** March 29, 2026
-
 ## Local Quickstart, Architecture Orientation, and AWS Staging Deployment
 
 This guide helps contributors do different things: understand how the initial public slice is structured and how it was originally assembled, get that slice to run locally (view a working page in your browser), deploy the slice to AWS in a bootstrap scenario, and then close the bootstrap shortcuts.
@@ -2214,13 +2212,13 @@ Should still return 200. Direct access is not blocked until 1-F (X-Origin-Verify
 
 #### Phase E: Update local records
 
-Update `AWS_PROJECT_SPECIFICS.md` (local only, gitignored):
+Update local operator notes to reflect the new state:
 
-- Section 5: update tfvars values (`enable_cloudfront = true`, `lightsail_origin_dns`)
-- Section 6: add `aws_cloudfront_distribution.main` to resources in state
-- Section 6 outputs table: fill in `cloudfront_domain` and `cloudfront_distribution_id`
-- Section 8: update status from "NOT YET CREATED" to "ACTIVE" with the domain
-- Section 13: move CloudFront pass 2 from "Still outstanding" to "Complete"
+- Updated tfvars values (`enable_cloudfront = true`, `lightsail_origin_dns`)
+- `aws_cloudfront_distribution.main` now in Terraform state
+- Outputs `cloudfront_domain` and `cloudfront_distribution_id` populated
+- Staging CloudFront status is ACTIVE with the published domain
+- Deployment checklist: CloudFront pass 2 is complete
 
 #### Rollback
 
@@ -3440,6 +3438,8 @@ sudo sqlite3 /srv/footbag/db/footbag.db \
 The latest row should show `status=sent` and a non-null `sent_at`. If it shows `failed` or `pending`, check the logs for the SES error; common causes are the IAM policy not attached yet and the recipient not verified in sandbox.
 
 Finally, confirm the verified test recipient received the reset email.
+
+For routine post-change verification of the staging runtime identity wiring (after IAM, KMS, SES, or trust-policy changes; after access-key rotation; after a host rebuild), the operator-workstation path via `npm run test:smoke` is the canonical runbook. See `docs/DEVOPS_GUIDE.md` §13.8.
 
 ### 8.12 Where rotation lives
 

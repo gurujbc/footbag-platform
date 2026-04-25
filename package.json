@@ -15,7 +15,7 @@
     "test:watch": "vitest --exclude 'tests/smoke/**'",
     "test:unit": "vitest run tests/unit/",
     "test:integration": "vitest run tests/integration/",
-    "test:smoke": "RUN_STAGING_SMOKE=1 vitest run tests/smoke/",
+    "test:smoke": "scripts/test-smoke.sh",
     "test:coverage": "vitest run --exclude 'tests/smoke/**' --coverage"
   },
   "dependencies": {

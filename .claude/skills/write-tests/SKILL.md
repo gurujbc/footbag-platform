@@ -36,6 +36,8 @@ Non-exported pure functions are tested indirectly through integration tests. Do 
 - Validation negative paths (invalid input, boundary values)
 - Business rules exercised through routes
 
+**Smoke tests** (`tests/smoke/`) for real-AWS wiring contracts only. Opt-in via `npm run test:smoke` (which uses `scripts/test-smoke.sh` to read TF outputs and gate behind `RUN_STAGING_SMOKE=1`). Excluded from default `npm test` and CI. See "Smoke tests" below for scope rules.
+
 ## Step 3 — Understand what needs testing
 
 Read:
@@ -132,6 +134,38 @@ npm run build         # type-check
 ```
 
 Report: which tests were added, what each asserts, whether all tests pass, and whether type-check is clean. Flag any failures with the full error output.
+
+## Smoke tests
+
+Run via `npm run test:smoke` against real staging AWS. Gated behind `RUN_STAGING_SMOKE=1` (set by `scripts/test-smoke.sh`). Excluded from default test runs and CI. The canonical example is `tests/smoke/staging-readiness.test.ts`.
+
+**Scope: wiring only.** Smoke verifies that the running infrastructure can reach AWS with the correct identity, the right resources exist with the right metadata, and adapter calls succeed end-to-end. Smoke is not for application logic or library behavior.
+
+In scope for smoke:
+- Identity resolution (assumed-role ARN matches the expected role)
+- AWS resource metadata (key spec, key usage, signing algorithms)
+- Adapter round-trip via real AWS (KMS sign+verify, SES send to mailbox simulator)
+- Alias and ARN addressing variants the production code uses
+- Adapter codepaths whose AWS-side behavior differs (e.g., `msg.from` override changes the SES `Source` field)
+
+Out of scope for smoke (use unit tests against the adapter):
+- Token tampering, expired-token, `alg=none` rejection
+- Adapter input validation, encoding, error-class shaping
+- Default-vs-override branches whose AWS-side behavior is identical
+
+Out of scope for smoke (use integration tests):
+- End-to-end flows (password reset, outbox drain)
+- Bounce / complaint webhook handling
+- Suppression list, rate-limit, retry behavior
+
+**Bar for adding a smoke assertion:**
+- Must require real AWS to verify (not coverable by a stub)
+- Must catch a specific, named misconfiguration not already detected
+- Must be deterministic (no clock-dependence, no rate-limit-dependence)
+
+Update the test file's header docblock with the new failure-mode entry whenever a smoke assertion lands.
+
+**Adapter parity (long-term).** Per `.claude/rules/testing.md` "Dev↔staging adapter parity," every adapter has three layers: boot-time config (`tests/unit/env-config.test.ts`), interface parity with an injected fake AWS client (`tests/integration/adapter-parity.test.ts`), and the staging smoke. Smoke is the only layer that needs real AWS; do not duplicate parity-test assertions into smoke.
 
 ## Mutation tests (DB writes)
 

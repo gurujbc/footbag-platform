@@ -34,14 +34,19 @@ resource "aws_lightsail_static_ip_attachment" "web" {
 resource "aws_lightsail_instance_public_ports" "web" {
   instance_name = aws_lightsail_instance.web.name
 
-  # SSH — restricted to declared operator IP ranges.
-  # Set operator_cidrs in terraform.tfvars before first apply.
-  # Example: operator_cidrs = ["1.2.3.4/32"]
+  # SSH — restricted to declared operator IP ranges plus the lightsail-connect
+  # alias for AWS-managed browser-SSH source IPs. The browser-SSH path is a
+  # permanent break-glass: it lets the operator regain shell access via the
+  # Lightsail Console (still requires Console auth + the host's authorized
+  # keys) when the operator workstation IP changes faster than terraform.tfvars
+  # can be updated. operator_cidrs in terraform.tfvars holds the routine SSH
+  # CIDR allow-list and may carry multiple /32s for network flexibility.
   port_info {
-    protocol  = "tcp"
-    from_port = 22
-    to_port   = 22
-    cidrs     = var.operator_cidrs
+    protocol          = "tcp"
+    from_port         = 22
+    to_port           = 22
+    cidrs             = var.operator_cidrs
+    cidr_list_aliases = ["lightsail-connect"]
   }
 
   # HTTP — CloudFront connects on 80; nginx proxies to app container

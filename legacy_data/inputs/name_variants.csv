@@ -2,7 +2,6 @@ variant_name,canonical_name,confidence,source
 Adam Kulhanek,Adam Kulhánek,high,manual
 Agata Gorska,Agata Górska,high,manual
 Airam Diaz,Airam Díaz,high,manual
-Aitor Armino,Aitor Armińo,high,manual
 A. J. Shultz,AJ Shultz,medium,alias
 Aki Pentikainen,Aki Pentikäinen,high,manual
 Ales Pelko,Ale Pelko,high,display_name
@@ -14,15 +13,13 @@ Alex Martinez,Alex Martínez,high,manual
 Alexander Martinez,Alexander Martínez,high,manual
 Alexandre Belanger,Alexandre Bélanger,high,manual
 Alexandre Kegle,Alexandre Kègle,high,manual
-Alexis Canas,Alexis Cańas,high,manual
+Al Petersen,Allan Petersen,high,display_name
 Allen Petersen,Allan Petersen,high,display_name
 Álvaro Alfinger,Alvaro Manzanero Alfinger,medium,alias
 Amelie Beck,Amélie Beck,high,manual
 Ander Lopez,Ander López,high,manual
-Andre Pena,Andre Peńa,high,manual
 Andreas Kafer,Andreas Käfer,high,manual
 Andreas Grandi Peier,Andreas Peier,medium,alias
-Andreina Pena,Andreina Peña,high,manual
 Jamiro Egorov,Andrey Jamiro Egorov,medium,alias
 Andre Calado Coroado,André Calado Coroado,high,manual
 André Coroado,André Calado Coroado,medium,alias
@@ -31,7 +28,6 @@ Andre Volksdorf,André Volksdorf,high,manual
 Andres Osorio,Andrés Osorio,high,manual
 Andres Zapata,Andrés Zapata,high,manual
 Andres Zapata Pelaez,Andrés Zapata,medium,alias
-Andy Gotze,Andy Götze,high,manual
 Anthony Raymond Intemann,Anthony Intemann,medium,alias
 Anthony Ritz,Anthony Tony Ritz,medium,alias
 Antoine Desrochers-Godin,Antoine Desrochers Godin,high,alias
@@ -64,7 +60,6 @@ Chris Low,Chris Löw,high,manual
 Chris Gator Routh,Chris Routh,medium,alias
 Chris ÏGatorÓ Routh,Chris Routh,medium,alias
 Christian Low,Christian Löw,high,manual
-Christian Lowe,Christian Löwe,high,manual
 Chris Siebert,Christopher Michael Siebert,high,display_name
 Christopher Siebert,Christopher Michael Siebert,high,display_name
 Cory D. Current,Cory Current,medium,alias
@@ -72,7 +67,6 @@ Cristian Garcia,Cristian García,high,manual
 Dan Schlapfer,Dan Schläpfer,high,manual
 Dani Waldispuhl,Dani Waldispühl,high,manual
 Daniel Ernesto Gonzalez,Daniel Ernesto González,high,manual
-Daniel Kuzniec,Daniel Kuźniec,high,manual
 Daniel Schlapfer,Daniel Schläpfer,high,manual
 Daryl Genzu Genz,Daryl Genz,medium,alias
 David Castillo Tibocha,David Castillo,medium,alias
@@ -118,7 +112,6 @@ Francois Stierli,François Stierli,high,manual
 Frederic Touzelet,Frédéric Touzelet,high,manual
 Felix-Antoine Guerard,Félix-Antoine Guérard,high,manual
 Gabriel Bohorquez,Gabriel Bohórquez,high,manual
-Gadzinski Marcin,Gadziński Marcin,high,manual
 Garry G. Griggs,Garry Griggs,medium,alias
 Genevieve Bousquet,Geneviève Bousquet,high,display_name
 Genevive Bousquet,Geneviève Bousquet,high,display_name
@@ -131,27 +124,23 @@ Greg Neumann,Greg Nice Neumann,medium,alias
 Grzesiek Łatuszynski,Grzesiek Łatuszyński,high,manual
 Gabor Ivanicsko,Gábor Ivanicskó,high,manual
 Gabor Jelenfi,Gábor Jelenfi,high,manual
-Gosi lurko Gyorgy,Gősi lurko György,high,manual
 Haka Kusnjerova,Haka Kusnjerová,high,manual
 Hakan Hellberg Magnus Hellberg,Hakan Hellberg,medium,alias
 Hanka Kusnjerova,Hanka Kusnjerová,high,manual
-Hannee Tiger,Hanneé Tiger,high,manual
 Hanna Mickiewicz,Hannia Mickiewicz,high,display_name
 Hannes Daniel,Hannés Daniel,high,manual
 Heike Koller,Heike Köller,high,manual
 Hernan Moreno,Hernán Moreno,high,manual
-Homola + Halasz,Homola + Halász,high,manual
 Hugo Hajek,Hugo Hájek,high,manual
 Hugues Veillette,Hugues Oli Veillette,medium,alias
 Ivan Acosta,Iván Acosta,high,manual
 Ivan Funes,Iván Funes,high,manual
-Inigo Galdakao,Ińigo Galdakao,high,manual
-J-F Belanger,J-F Bélanger,high,manual
 Jake Jo Dodd,Jake Dodd,medium,alias
 Jakob Brullmann,Jakob Brüllmann,high,manual
 Jakub Mościszewski,Jakub Mosciszewski,high,bap
 Jakub Scisinski,Jakub Ścisiński,high,manual
 Jamie H. Lepley,Jamie Lepley,medium,alias
+Jan Dexter Struz,Jan Struz,medium,alias
 Jan Honza Weber,Jan Weber,medium,alias
 Jana Cacakova,Jana Čačáková,high,manual
 Jani Markkanen,Jani Sakari Markkanen,medium,alias
@@ -160,7 +149,6 @@ Javier Andres Osorio Morales,Javier Andrés Osorio Morales,high,manual
 Jairo Lagos,Jaíro Lagos,high,manual
 Jean Francois Belanger,Jean François Bélanger,high,manual
 Jean Phillipe Labbe,Jean Phillipe Labbé,high,manual
-Jean-Francois Veillette,Jean-François Veillette,high,manual
 Jeff Animal Johnson,Jeff Johnson,medium,alias
 Jenni Seppanen,Jenni Seppänen,high,manual
 Jesse Ruotsalainen,Jesse Ruotsolainen,high,display_name
@@ -168,7 +156,6 @@ Jessica Cedeno,Jessica Cedeño,high,manual
 Jesus Jimenez,Jesus Jiménez,high,manual
 Jesus Bolivar,Jesús Bolívar,high,manual
 Jesus Gomez,Jesús Gomez,high,manual
-JF Belanger,JF Bélanger,high,manual
 J-F Lemieux,JF Lemieux,medium,alias
 Jimmy Caveney,Jim Caveney,high,display_name
 Jimmy Caveny,Jim Caveney,high,display_name
@@ -179,19 +166,16 @@ J.J. Jones,JJ Jones,medium,alias
 Jocelyn Sandoval Dallas,Jocelyn Sandoval,medium,alias
 Jody Welch,Jody Badger Welch,medium,alias
 Joe Hollywood Lepley,Joe Lepley,medium,alias
-Jon Proano,Jon Proańo,high,manual
 Jonathan Ethier,Jonathan Éthier,high,manual
 Jonay Diaz,Jonay Díaz,high,manual
 Jorge Ramirez,Jorge Ramírez,high,manual
 Joseba Fernandez,Joseba Fernández,high,manual
-Joso Palencar,Joso Palencár,high,manual
 Josue Vivas,Josué Vivas,high,manual
 Jose Bolivar,José Bolívar,high,manual
 Jose Cocolan,José Cocolan,high,manual
 Jose Goncalves,José Goncalves,high,manual
 Jose Palacios,José Palacios,high,manual
 Jose Vargas Centeno,José Vargas Centeno,high,manual
-Jose Angel,José Ángel,high,manual
 Jouni Niemela,Jouni Niemelä,high,manual
 Joel Murray,Joël Murray,high,manual
 Juan Palacios Lemos,Juan Bernardo Palacios Lemos,medium,alias
@@ -200,21 +184,16 @@ Julia Bohm,Julia Böhm,high,manual
 Julien Guil Romiti,Julien Romiti,medium,alias
 Jerome Charette-Pepin,Jérôme Charette-Pépin,high,manual
 Jerome Cinquante,Jérôme Cinquante,high,manual
-Jedrzej Jurek,Jędrzej Jurek,high,manual
 Kacper Predkiewicz,Kacper Prędkiewicz,high,manual
 Kamil Burzynski,Kamil Burzyński,high,manual
-Karel Hudecek,Karel Hudeček,high,manual
 Kelly A. Kelley,Kelly Kelley,medium,alias
 Khalil Doring,Khalil Döring,high,manual
-Kinga Gwzdz,Kinga Gwźdź,high,manual
-Kiss + Gyani,Kiss + Gyáni,high,manual
 Klemenz Langauer,Klemenz Längauer,high,manual
 Krzysztof Sobotka,Krzysztof Sobótka,high,manual
 Krol Tomasz,Król Tomasz,high,manual
 Laura Choueri,Laura Chouèri,high,manual
 Lee Sickle,Lee Van Sickle,medium,alias
 Lisa Ubele,Lisa Übele,high,manual
-Luka W.-Lavallee,Luka W.-Lavallée,high,manual
 Luka Weyler-Lavalle,Luka Weyler,high,display_name
 Luka Weyler-Lavallée,Luka Weyler,high,display_name
 Luka-Jean Francois Belanger,Luka-Jean François Bélanger,high,manual
@@ -226,12 +205,11 @@ Luis Sarmiento,Luís Sarmiento,high,manual
 Laszlo Czako,László Czakó,high,manual
 Lea Lesperance,Léa Lespérance,high,manual
 Léa L'Espérance,Léa Lespérance,high,display_name
-Magorzata Oledzka,Magorzata Olędzka,high,manual
 Magyar Balint,Magyar Bálint,high,manual
 Marc-Andre Sabourin,Marc-André Sabourin,high,manual
 Marc-Andre Veillette,Marc-André Veillette,high,manual
+Marcin Gadzinski,Marcin Gadziński,high,manual
 Marco Dobeli,Marco Döbeli,high,manual
-Marek Sandrik,Marek Šandrik,high,manual
 Martin Côté Martin Graton,Martin Graton,medium,alias
 Martin Novy,Martin Nový,high,manual
 Martin Prochazka,Martin Procházka,high,manual
@@ -265,7 +243,6 @@ Oldøich Platenik,Oldøich Pláteník,high,manual
 Olivier B.-Berge,Olivier B.-Bergé,high,manual
 Olivier Zitoun Baillon,Olivier Baillon,medium,alias
 Olli Karki,Olli Kärki,high,manual
-Oledzka Gosia,Olędzka Gosia,high,manual
 Oskari Forsten,Oskari Forstén,high,manual
 P. T. Lovern,P.T. Lovern,high,alias
 Paul Lovern,P.T. Lovern,high,display_name
@@ -276,7 +253,6 @@ Patrick Barre,Patrick Barré,high,manual
 Patrik Herczik,Patrik Herczík,high,manual
 Patrik Smerda,Patrik Šmerda,high,manual
 Paul Kronjager,Paul Kronjäger,high,manual
-Paula Brzezinska,Paula Brzezińska,high,manual
 Pavel Eerveny,Pavel Èervený,high,manual
 Paweł Koson,Paweł Kosoń,high,manual
 Paweł Ptaszynski,Paweł Ptaszyński,high,manual
@@ -291,7 +267,6 @@ Piia Tantarimaki,Piia Tantarimäki,high,manual
 Piotr Kościelny,Piotr Koscielny,high,display_name
 Priit Joe,Priit Jõe,high,manual
 Radek Łatka,Radek Łątka,high,manual
-Rado Carnaj,Rado Čarnaj,high,manual
 Rafał Piorkowski,Rafał Piórkowski,high,manual
 Ramon Zambrano,Ramón Zambrano,high,manual
 Reinaldo Perez,Reinaldo Pérez,high,manual
@@ -302,30 +277,26 @@ Rippin Rick Reese,Rick Reese,medium,alias
 Rico Bohme,Rico Böhme,high,manual
 Robert Szymanski,Robert Szymański,high,manual
 Robin Pchel,Robin Puchel,high,display_name
+Robin Puechel,Robin Puchel,high,display_name
 Robin Püchel,Robin Puchel,high,display_name
 Ronald Anez,Ronald Ańez,high,manual
-Ronald Anez Mora,Ronald Ańez Mora,high,manual
 Rune Petersen,Rune Lau Petersen,medium,alias
 Remy Pouliot,Rémy Pouliot,high,manual
 Repasi Csaba,Répási Csaba,high,manual
-Rog Michał,Róg Michał,high,manual
 Sam Conlon,Samantha Conlon,high,display_name
 Scott Enlightener Davidson,Scott Davidson,medium,alias
 Sebastian Ceballos Columbia,Sebastian Ceballos,medium,alias
 Sébastien Duchesne,Sebastien Duchesne,high,display_name
 Silvan Lotscher,Silvan Lötscher,high,manual
-Simon-François Kolodenchuk,Simon Kolodenchuk,medium,alias
 Simeon Fontaine,Siméon Fontaine,high,manual
 Simon Blanco,Simón Blanco,high,manual
 Lon Skyler Smith,Skyler Lon Smith,high,alias
 Lon Smith,Skyler Lon Smith,medium,alias
 Stefan Muller,Stefan Müller,high,manual
-Stephane Roy,Stéphane Roy,high,manual
 Stephane Tailleur,Stéphane Tailleur,high,manual
 Sunil Tsunami Jani,Sunil Jani,medium,alias
 Sunny Freeman Genz,Sunny Freeman-Genz,high,alias
 Sunny Genz,Sunny Freeman-Genz,medium,alias
-Szolosi + Horvath,Szolosi + Horváth,high,manual
 Sebasteien Duchesne,Sébasteien Duchesne,high,manual
 Sebastien Desgens,Sébastien Desgens,high,manual
 Sebastien Lefay,Sébastien Lefay,high,manual
@@ -333,7 +304,6 @@ Sebastien Lessard,Sébastien Lessard,high,manual
 Sebastien Maillet,Sébastien Maillet,high,manual
 Sebastien Prahin,Sébastien Prahin,high,manual
 Serifo Desjardins,Sérifo Desjardins,high,manual
-Sławek Brzezinski,Sławek Brzeziński,high,manual
 TJ Boutorwick,T.J. Boutorwick,medium,alias
 Tamas Tilly,Tamás Tilly,high,manual
 Tarmo Korotko,Tarmo Korõtko,high,manual
@@ -341,12 +311,12 @@ Terka Drbohlavova,Terka Drbohlavová,high,manual
 T Fritsch,Theodore Fritsch,high,display_name
 Ted Fritsch,Theodore Fritsch,high,display_name
 Theodore J Fritsch,Theodore Fritsch,medium,alias
-Thomas Forster,Thomas Förster,high,manual
+Thomas Förster,Thomas Forster,high,display_name
+Thomas Forsterson,Thomas Försterson,high,manual
 Thomas tomtom Jouan,Thomas Jouan,medium,alias
 Thomas Koneeny,Thomas Koneèný,high,manual
 Thorsten Kunzel,Thorsten Künzel,high,manual
 Thorsten Schafer,Thorsten Schäfer,high,manual
-Thorsten Sulbeck,Thorsten Sülbeck,high,manual
 Theo Batiste,Théo Batiste,high,manual
 Tim Daniel Livson,Tim Livson,medium,alias
 Timothee Lerolle,Timothée Lerolle,high,manual
@@ -370,8 +340,9 @@ Viktor Kratochvil,Viktor Kratochvíl,high,manual
 V Bradley,Vincent Bradley,high,display_name
 Vince Bradley,Vincent Bradley,high,display_name
 Vojtich Kruta,Vojtìch Krùta,high,manual
-Vaska Kouda,Váška Kouda,high,manual
+Va ka Kouda,Vá ka Kouda,high,manual
 Wilder Gonzalez,Wilder González,high,manual
+Wojciech Chester Jamski,Wojciech Jamski,medium,alias
 Yneliz Garcia,Yneliz García,high,manual
 Abel Farkas,Ábel Farkas,high,manual
 Alvaro Garcia,Álvaro García,high,manual

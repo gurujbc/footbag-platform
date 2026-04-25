@@ -53,3 +53,13 @@ output "lightsail_instance_name" {
   description = "Name of the Lightsail web instance. Used to retrieve the public DNS hostname after first apply."
   value       = aws_lightsail_instance.web.name
 }
+
+output "jwt_signing_key_arn" {
+  description = "ARN of the KMS asymmetric signing key used for session JWT signing. Read by scripts/test-smoke.sh."
+  value       = aws_kms_key.jwt_signing.arn
+}
+
+output "ses_sender_identity" {
+  description = "SES verified sender identity used as the From: header for outbound mail. Read by scripts/test-smoke.sh."
+  value       = var.ses_sender_identity
+}

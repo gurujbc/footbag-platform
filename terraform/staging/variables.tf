@@ -67,7 +67,7 @@ variable "ssh_public_key" {
   description = <<-EOT
     SSH public key for operator access to the Lightsail instance.
     # TODO: Paste the contents of your operator's ~/.ssh/id_ed25519.pub (or similar).
-    Each operator needs a named account; see docs/DEVOPS_GUIDE.md for posture.
+    Each operator needs a named account.
   EOT
   type        = string
 }

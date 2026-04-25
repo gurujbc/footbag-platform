@@ -313,7 +313,7 @@ Host shell access is exceptional. It exists for deployment, restore, patching, d
 - Onboard a System Administrator by creating or enabling the named host account, installing the approved public key, verifying SSH login, verifying `sudo`, and recording the inventory entry.
 - Offboard a System Administrator by removing the public key or disabling the host account immediately, verifying loss of access, and reviewing `authorized_keys` / `sudoers` for stale access.
 - Every shell session must have a clear reason: deployment, incident, restore, patching, diagnostic verification, or drill.
-- Lightsail browser-based SSH is an acceptable recovery mechanism (e.g., to configure sshd to listen on port 2222 after an instance rebuild, or when key-based SSH is temporarily unavailable). Treat all browser SSH sessions as exceptional, confirm the reason, and exit promptly.
+- Lightsail Console browser SSH is a permanent supplement to CLI SSH, declared in HCL via the `lightsail-connect` source-IP alias on port 22. It provides stable shell access when the operator workstation IP changes faster than `operator_cidrs` can be updated (mobile networks, VPN, transient ISP DHCP). The browser path requires AWS Console MFA on the operator identity plus the host's authorized public key; it does not bypass per-operator account isolation, key custody rules, or sudo discipline. Use the CLI path for routine administration; switch to the browser path when the CLI path is unavailable from the current network.
 - Standard connection pattern: `ssh -i ~/.ssh/<keyfile> -p 2222 <operator-user>@<static-ip>`. Use port 22 only if your network does not block it.
 
 #### Operator checklist
@@ -1254,6 +1254,48 @@ When tuning memory or instance size:
 - rehearse in staging first
 - document the reason and expected effect
 - verify after deployment
+
+### 13.8 Operator-workstation staging readiness smoke test
+
+`tests/smoke/staging-readiness.test.ts` is the canonical end-to-end probe of the staging AWS runtime identity wiring. Four assertions, all against real AWS:
+
+1. `sts:GetCallerIdentity` resolves to an `assumed-role` ARN under the staging app-runtime role.
+2. `kms:GetPublicKey` on the JWT signing key returns RSA-2048 SIGN_VERIFY with RSASSA_PKCS1_V1_5_SHA_256 support.
+3. KmsJwtAdapter signs and verifies a short-lived JWT round-trip against real KMS.
+4. `ses:SendEmail` to `success@simulator.amazonses.com` succeeds end-to-end.
+
+Run after any change that could affect the runtime identity chain: IAM policy edits on the source-profile user or the runtime role, KMS key policy edits, SES identity changes, runtime trust-policy changes, source-profile access-key rotation, or a host rebuild that touches `/root/.aws/`.
+
+#### Workstation profile (one-time setup)
+
+Append to the operator's `~/.aws/config`:
+
+```ini
+[profile <env>-runtime]
+role_arn       = arn:aws:iam::<account-id>:role/footbag-<env>-app-runtime
+source_profile = footbag-operator
+region         = us-east-1
+```
+
+The operator-IAM-user keys are already in `~/.aws/credentials` for the operator profile; no new long-lived key material on the workstation. The chained AssumeRole into the staging runtime role inherits operator credentials at AWS-API call time. `mfa_serial` is intentionally omitted: the runtime role's permissions are a strict subset of the operator's `AdministratorAccess`, so MFA on this chained AssumeRole adds no defense beyond what the operator already carries. To require MFA prompts on this profile, add `mfa_serial = arn:aws:iam::<account-id>:mfa/<operator-mfa-device>`.
+
+#### Invocation
+
+```bash
+npm run test:smoke
+```
+
+The runner script reads the KMS signing-key ARN and SES sender identity from `terraform -chdir=terraform/staging output -raw` and hardcodes `AWS_PROFILE`, `AWS_REGION`, and the smoke gate. The operator's workstation must already have `terraform init` run in `terraform/staging/`.
+
+Expected: 4 passes, runtime under 15 seconds. The suite is excluded from the default `npm test` run via the `test:smoke` script's `tests/smoke/` glob, so dev and CI never accidentally reach AWS.
+
+#### Failure modes
+
+Each assertion has a distinct failure cause. The test file's header comment block (`tests/smoke/staging-readiness.test.ts`) carries the per-error mapping (e.g. `sts:GetCallerIdentity` returning the IAM user instead of an assumed-role ARN means the runtime role's trust principal does not include the workstation source). When a smoke run fails, read that legend before changing IAM, KMS, or SES.
+
+#### On-host alternative
+
+The same suite can run from the staging host using the host's existing `[profile footbag-staging-runtime]` chain configured at `/root/.aws/config`. The host path is operationally heavier (requires SSH plus a Node 22 runtime on the host, which this project does not install by default) and is rarely needed: the workstation path exercises the identical AWS API call paths.
 
 ---
 

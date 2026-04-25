@@ -2054,11 +2054,15 @@ Routine host administration uses named non-root Linux operator accounts with `su
 
 If the cloud image or Lightsail default login account is used during first bootstrap, that account is bootstrap-only and must not remain the long-term shared administration path once the named operator account model is established.
 
+Operator SSH has two routine paths. The first is direct CLI SSH from the declared operator IP CIDR list, which may carry multiple narrow `/32` entries or wider CIDRs to cover an operator who roams between networks. The second is Lightsail Console browser SSH, opened by declaring the `lightsail-connect` source-IP alias permanently on port 22 in the firewall HCL. Browser SSH is a permanent operator path, not a recovery-only fallback, and provides stable shell access when the operator workstation IP changes faster than the CIDR allow-list can be updated. Both paths still require the host's authorized public key; browser SSH additionally requires AWS Console MFA on the operator IAM identity. Routine administration uses the CLI path; the browser path serves operators on VPN, mobile networks, or other transient routings.
+
+The runtime role's trust policy may also list a non-host AWS principal (typically the operator's own IAM user) so the operator workstation can chain into the runtime role for read-only health probes such as the staging readiness smoke test. The chained AssumeRole derives short-lived credentials and inherits only the runtime role's narrowly scoped permissions. Where the runtime role's permissions are a strict subset of the operator's existing permissions, MFA on the chained AssumeRole is not load-bearing and may be omitted to permit unattended smoke runs; where the runtime role grants permissions the operator would not otherwise hold, MFA on the chain remains required.
+
 For workload AWS API access, the deployed application does not rely on an implicit EC2-style instance role attached to the Lightsail host. Instead, production uses one or more explicit runtime IAM roles assumed through the AWS shared config/shared credentials chain. A root-owned host AWS config/credentials setup provides the source profile needed to assume the runtime role, and the deployed services use the assumed role as the runtime principal via standard AWS SDK / CLI credential resolution (`role_arn`, `source_profile`, `AWS_PROFILE`, or equivalent SDK configuration).
 
 The authoritative production runtime principal is therefore the assumed runtime role, not the source profile, not the human operator identity, and not a host-attached instance role. Runtime permissions remain narrowly scoped to only the AWS APIs the application actually needs, such as S3, SES, Parameter Store, CloudWatch, and KMS, depending on the environment and service path.
 
-Terraform remains the authority for the steady-state IAM roles, policies, Lightsail firewall posture, logging resources, and related infrastructure configuration. The exact host-user creation and public-key installation path may begin as documented bootstrap work, but it must be reproducible, reviewable, and reflected in the runbooks.
+Terraform's role as the authority for IAM, firewall, and related infrastructure is established in §9.6. The host-user creation and public-key installation path may begin as documented bootstrap work but must be reproducible, reviewable, and reflected in the runbooks.
 
 Rationale:
 
@@ -2589,13 +2593,13 @@ Monitoring and alerts: Alert if memory usage remains above 80 percent for five c
 
 Decision:
 
-All steady-state AWS infrastructure is defined in Terraform configuration files version-controlled in the repository under `/terraform`. A one-time manual bootstrap identity is allowed only to provision the Terraform remote-state S3 bucket, account-baseline controls, and Terraform-managed IAM. After that handoff, manual console changes are prohibited except for emergency incident response, and any emergency change must be reconciled back into Terraform immediately.
+All steady-state AWS infrastructure is defined in Terraform configuration files version-controlled in the repository under `/terraform`. A one-time manual bootstrap is allowed only to provision the AWS account baseline, the operator IAM identity that subsequently runs Terraform, and the Terraform remote-state S3 bucket; all steady-state IAM (source-profile users, runtime roles, policies, instance profiles) is defined in Terraform. After that handoff, manual console changes are prohibited except for emergency incident response, and any emergency change must be reconciled back into Terraform before the next `terraform plan` or `apply`. Terraform remote state is held in an S3 bucket with S3 native locking (`use_lockfile = true`, Terraform >= 1.11); DynamoDB locking and Terraform Cloud are excluded.
 
 Rationale:
 
 - Reproducible environments: Dev, staging, production created identically from code (eliminates "works in staging but not production" issues).
 - Infrastructure changes reviewed via pull requests with visual diff of planned changes (terraform plan output).
-- Disaster recovery through code: Complete environment rebuild possible from Terraform state and configuration.
+- Disaster recovery through code: complete AWS-side rebuild possible from Terraform state. Host-side state recovers separately.
 - Eliminates tribal knowledge; infrastructure documented as executable code with comments explaining rationale.
 - Supports long-term volunteer maintainability (new admins can understand infrastructure by reading .tf files).
 - Enables infrastructure testing in isolated environments before production deployment.
@@ -2611,6 +2615,7 @@ Infrastructure Managed by Terraform:
 - KMS keys and key policies.
 - CloudWatch resources, including log groups and alerting resources used by operations and application/platform monitoring.
 - Route53 DNS records.
+- SES email identities (sender, plus future bounce and complaint webhook configuration).
 - Budget alerts and SNS topics.
 
 Secrets Management:
@@ -2621,13 +2626,16 @@ Trade-offs:
 
 - Initial setup cost: must define all infrastructure as code.
 - Learning curve: Contributors must understand basic Terraform syntax and workflow.
-- State file management requires coordination: Terraform remote state is stored in an S3 bucket with S3 native locking (`use_lockfile = true`, Terraform >= 1.11). No DynamoDB locking and no Terraform Cloud.
+- State file management requires multi-operator coordination on the shared S3 backend. Native locking serializes concurrent applies; operators still coordinate before invasive changes.
 - Requires discipline: Manual console changes create drift requiring reconciliation. Manual AWS console changes are prohibited except for emergency troubleshooting. Any permanent changes must be made via Terraform.
+- AWS provider major version is pinned (currently `~> 5.0`). Provider major upgrades require explicit review of the migration guide and a coordinated apply across all workspaces, not a casual `terraform init -upgrade`.
 
 Impact:
 
 - Terraform must remain the authority for IAM roles, policies, Parameter Store structure (per §3.6), KMS resources, CloudWatch resources, Lightsail instance configuration, Lightsail firewall rules, and any infrastructure-side inputs required by the SSH operator-access posture and the runtime-credential model in §7.2.
 - Deployment/bootstrap documentation must clearly separate one-time bootstrap actions from steady-state Terraform-managed infrastructure.
+- Workspace layout: `terraform/shared/` for one-time bootstrap (state bucket, account baseline); `terraform/staging/` and `terraform/production/` for per-environment resources, each with its own remote state.
+- Drift reconciliation procedure (`terraform import` flow, plan-clean verification, PR review) lives in DEVOPS_GUIDE §6.5. The design rule above is enforced by the requirement that `terraform plan` returns "No changes" before any further apply.
 
 
 ## 9.7 High Availability and Recovery
