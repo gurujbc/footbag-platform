@@ -117,8 +117,8 @@ VISIBLE_PERSON =
 Enforce this definition in both the workbook builder and the platform export script.
 Risk: workbook shows person A, platform does not → user confusion.
 
-**H2 — Event key normalization (1982–1986)**
-The 1982–1986 standardization is deferred but not trivial. Risk: duplicate logical
+**H2 — Event key normalization (1982–1984)**
+The 1982–1984 standardization is deferred but not trivial. Risk: duplicate logical
 events, broken joins, URL instability on the platform. Lock the rule now:
 
 ```
