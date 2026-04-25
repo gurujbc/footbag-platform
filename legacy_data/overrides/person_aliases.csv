@@ -1657,7 +1657,7 @@ Micha Rog,538eeaf9-7aee-59d0-9904-a20958e74a26,Micha Rog,verified,
 Micha? Biarda,23c0d2b5-bc9c-55f0-b40d-d4d408c7ef0f,Micha? Biarda,verified,
 Micha? Biarda ?,23c0d2b5-bc9c-55f0-b40d-d4d408c7ef0f,Micha? Biarda,verified,
 Micha? Klimczak,71b15435-b697-536a-8886-7d68c1369069,Micha Klimczak,verified,
-Micha? Ostrowski,2f7336f6-7201-5e28-93a9-33b2f5183f9e,Micha? Ostrowski,verified,
+Micha? Ostrowski,da3fbe76-ba2d-51ee-a019-97e7ba93089a,Michal Ostrowski,verified,Polish ł-mojibake variant; rebound after Micha Ostrowski → Michal Ostrowski merge
 Micha? Rog,538eeaf9-7aee-59d0-9904-a20958e74a26,Micha Rog,verified,
 Michael Lamberjohan,f73415ed-f8d8-5b37-a56c-87fb2f93422a,Michael Lamberjohann,verified,
 Michael Lamberjohann,f73415ed-f8d8-5b37-a56c-87fb2f93422a,Michael Lamberjohann,verified,
@@ -1908,7 +1908,7 @@ Pavel Motorov,9d12fe41-0154-57a6-b312-5f3b46f621b5,Pavel Motorov,verified,
 Pawe Ro ek,0b3ffb10-2257-510e-a69a-26ff2fc87508,Pawel Rozek,verified,encoding_corruption
 Pawe Rytelewski,3f2f6896-022b-57db-af84-ae4cc6139b32,Pawe Rytelewski,verified,
 Pawe? Cisek,112d09c8-3761-585b-904a-a4b51003400b,Pawe? Cisek,verified,
-Pawe? Nowak,e5a6f257-390d-5df7-8cb0-5832e2855573,Pawe? Nowak,verified,
+Pawe? Nowak,9fccb3a3-3408-518a-aacb-43d9678fcce4,Pawel Nowak,verified,Polish ł-mojibake variant; rebound after Pawe Nowak → Pawel Nowak merge
 Pawe? Rytelewski,3f2f6896-022b-57db-af84-ae4cc6139b32,Pawe Rytelewski,verified,
 Pawe? Ulewicz,0df0b7f6-27cd-52d0-b6cf-dc8298d71c27,Pawe? Ulewicz,verified,
 Pawel Cisek,603bbc2d-6488-5891-a942-b5c5c79e0018,Pawel Cisek,verified,
@@ -2761,3 +2761,6 @@ B Solonoski-prizes,e17d0227-d08b-5d5d-a7f0-0a2533dd7b9c,B Solonoski,verified,pri
 Dave Robinson,895b0608-34df-509a-853d-684ffa24e824,David Robinson,verified,nickname; consolidates 24 post-1984 placements; HOF cross-ref (David is HOF formal form)
 Jenny Davidson,3f48caf5-14c9-59f1-8255-1db7ef2fd049,Jenny Davison,verified,spelling variant; davidson form orphaned post merge; authoritative-results-1980-1985.txt consistent on davison
 Jodi Chandler,2224d6ba-5be4-56a5-90e1-aaa61a15bcb0,Jodi Sebastian,verified,name variant across sources; same person confirmed via 1984 Tricia George partnership (Women's Doubles Consec WR + Women's Team Freestyle p1)
+Pawe Nowak,9fccb3a3-3408-518a-aacb-43d9678fcce4,Pawel Nowak,verified,Polish ł-mojibake; Paweł stripped to Pawe by source encoding
+Micha Ostrowski,da3fbe76-ba2d-51ee-a019-97e7ba93089a,Michal Ostrowski,verified,Polish ł-mojibake; Michał stripped to Micha
+Jeremey Mirken,31bd4e75-1a44-56b4-94b3-071cdc8dee82,Jeremy Mirken,verified,typo (extra e); single 2009 entry merges into Jeremy's 2001-2019 career arc
