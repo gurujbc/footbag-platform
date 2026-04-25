@@ -85,6 +85,19 @@ OPTIONAL_CHECKS = [
         "severity": "warn",
         "needs_workbook": False,
     },
+    # Release workbook EVENT INDEX parity. Codifies the invariant:
+    # out/Footbag_Results_Release.xlsx EVENT INDEX row count ==
+    # event_results/canonical_input/events.csv row count. Self-skips when
+    # the release workbook is absent. Do NOT compare against
+    # out/canonical/events.csv — the export stage intentionally drops
+    # sparse-only events before canonical_input, so out/canonical
+    # legitimately contains more events than the workbook shows.
+    {
+        "name": "workbook_parity",
+        "path": "pipeline/qc/check_workbook_parity.py",
+        "severity": "warn",
+        "needs_workbook": False,
+    },
     {
         "name": "workbook_qc",
         "path": "qc_footbag_workbook.py",
