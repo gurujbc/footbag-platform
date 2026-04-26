@@ -303,9 +303,9 @@ def check_event_disciplines(event_disciplines: pd.DataFrame, events: pd.DataFram
         if orphan:
             collector.hard("orphan_event_reference", f"{orphan} rows reference unknown event_key", table=table)
 
-    bad_team_type = int((~event_disciplines["team_type"].astype(str).str.strip().isin(["singles", "doubles"])).sum())
+    bad_team_type = int((~event_disciplines["team_type"].astype(str).str.strip().isin(["singles", "doubles", "team"])).sum())
     if bad_team_type:
-        collector.warn("unexpected_team_type", f"{bad_team_type} rows have team_type outside singles/doubles", table=table)
+        collector.warn("unexpected_team_type", f"{bad_team_type} rows have team_type outside singles/doubles/team", table=table)
 
 
 def check_event_results(event_results: pd.DataFrame, event_disciplines: pd.DataFrame, collector: IssueCollector) -> None:
