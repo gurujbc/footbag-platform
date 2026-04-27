@@ -44,7 +44,49 @@ run_alias_registry_preflight() {
     fi
 }
 
-run_preflight() {
+# =============================================================================
+# PREFLIGHT (full mode)
+#
+# Verifies inputs the orchestrator cannot produce on its own. Identity-lock
+# files are intentionally NOT checked here; run_v0_backbone validates them
+# inline, and the pending IP item to drop identity-lock version suffixes
+# will rework that check. Avoid duplication.
+# =============================================================================
+run_full_mode_preflight() {
+    echo ""
+    echo "── full-mode preflight ────────────────────────────────────────────────"
+
+    local missing=()
+
+    # Mirror dir must contain HTML, not just manifest stubs.
+    if [[ ! -d mirror_footbag_org ]] || \
+       [[ -z $(find mirror_footbag_org -maxdepth 3 -name '*.html' -print -quit 2>/dev/null) ]]; then
+        missing+=("mirror_footbag_org/ (no HTML found; obtain from operator handoff or rerun the mirror crawl)")
+    fi
+
+    # Curated membership input (committed; expected present on a clean clone).
+    [[ -f "membership/inputs/membership_input_normalized.csv" ]] \
+        || missing+=("membership/inputs/membership_input_normalized.csv (curated input; expected to be tracked)")
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        echo "  ERROR: full-mode preflight failed; resolve before re-running ./run_pipeline.sh full" >&2
+        for f in "${missing[@]}"; do echo "    MISSING: $f" >&2; done
+        exit 1
+    fi
+
+    echo "  full-mode preflight passed"
+    echo "───────────────────────────────────────────────────────────────────────"
+    echo ""
+}
+
+# =============================================================================
+# PREFLIGHT (enrichment_only mode)
+#
+# Verifies that an earlier canonical_only run plus mirror extraction have
+# produced the seed and canonical_input artifacts the enrichment phases
+# consume. Not used by full mode.
+# =============================================================================
+run_preflight_enrichment_only() {
     echo ""
     echo "── Preflight checks ───────────────────────────────────────────────────"
 
@@ -455,11 +497,11 @@ run_alias_registry_preflight
 
 case "$MODE" in
     full)
+        run_full_mode_preflight
         run_phase_b_mirror_extract
         run_v0_backbone
         run_phase_clubs_seed_load
         run_phase_net
-        run_preflight
         run_phase_c
         run_phase_d
         run_phase_e
@@ -478,7 +520,7 @@ case "$MODE" in
         ;;
 
     enrichment_only)
-        run_preflight
+        run_preflight_enrichment_only
         run_phase_clubs_seed_load
         run_phase_c
         run_phase_d
