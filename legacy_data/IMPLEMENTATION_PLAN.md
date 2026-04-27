@@ -10,6 +10,8 @@ Prioritized.
 
 1. **Event key normalization (1982-1984).** Rule to lock: `event_key = YYYY_city_slug` with explicit overrides in `overrides/`. Source adjudication required for the 1982-1984 cluster (1980-1981 are clean). Risk if deferred past data release: duplicate logical events, broken joins, URL instability.
 
+2. **Loader regression CI gate.** Add a GitHub Actions job that runs `bash scripts/reset-local-db.sh` end-to-end against the committed canonical-input fixture and asserts post-load row counts > 0 for every loader's target table. Catches silent `INSERT OR IGNORE` skips when a writer is missed during a schema migration, enforcing the existing loader invariant in `legacy_data/CLAUDE.md` ("never rely on INSERT OR IGNORE alone"). Backstop: 2026-04-28 incident where commit `e500b11` added `legacy_club_candidates.classification NOT NULL` and updated `09_load_enrichment_to_sqlite.py` but missed `load_club_members_seed.py`; IGNORE silently dropped 311 candidate rows, then FK violation surfaced mid-Phase-G in operator deploy. Required before next schema-touching merge.
+
 ---
 
 ## Current substitute mechanisms

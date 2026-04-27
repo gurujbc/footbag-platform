@@ -38,12 +38,14 @@ fi
 MODE_CODE_ONLY=0
 MODE_WITH_DB=0
 MODE_INSTALL_CWAGENT=0   # placeholder; see TODO below.
+MODE_RESET_DB=0          # set when --db-only is requested (reset-local-db.sh wipes + reapplies schema).
 DB_REBUILD_INVOLVED=0
 for arg in "$@"; do
   case "$arg" in
     --code-only)         MODE_CODE_ONLY=1 ;;
     --with-db)           MODE_WITH_DB=1 ;;
-    --db-only|--from-mirror|--from-csv) DB_REBUILD_INVOLVED=1 ;;
+    --db-only)           DB_REBUILD_INVOLVED=1; MODE_RESET_DB=1 ;;
+    --from-mirror|--from-csv) DB_REBUILD_INVOLVED=1 ;;
     --skip-local-data)   : ;;  # --with-db without local rebuild; lock check still warranted
   esac
 done
@@ -111,6 +113,83 @@ if (( DB_REBUILD_INVOLVED == 1 )) && command -v lsof >/dev/null 2>&1; then
     echo "Recommendation: identify with 'lsof database/footbag.db', stop that process, and re-run." >&2
     exit 1
   fi
+fi
+
+# Schema-drift preflight: catch the case where database/schema.sql evolved
+# (column added, table added) since database/footbag.db was last rebuilt.
+# --from-csv / --from-mirror append to the existing DB without reapplying
+# schema.sql, so a schema-touching commit silently fails mid-pipeline (e.g.
+# "table legacy_club_candidates has no column named classification" in Phase G).
+# Skipped under --db-only because reset-local-db.sh wipes the DB anyway.
+#
+# We compare actual column-sets (not mtimes): a crashed pipeline run leaves
+# the live DB with a fresh mtime even though its schema is still stale, so
+# mtime-based checks pass silently after every failed attempt.
+if (( DB_REBUILD_INVOLVED == 1 )) && (( MODE_RESET_DB == 0 )) \
+    && [[ "${FOOTBAG_SKIP_SCHEMA_DRIFT_CHECK:-}" != "1" ]] \
+    && [[ -f database/footbag.db ]] && [[ -f database/schema.sql ]]; then
+  _drift_tmp_db=$(mktemp -t schema_check.XXXXXX.db)
+  # shellcheck disable=SC2064
+  trap "rm -f '${_drift_tmp_db}' '${_drift_tmp_db}-wal' '${_drift_tmp_db}-shm'" EXIT
+  if ! sqlite3 "${_drift_tmp_db}" < database/schema.sql >/dev/null 2>&1; then
+    echo "WARNING: schema-drift preflight could not apply database/schema.sql to a tmp DB; skipping drift check." >&2
+  else
+    _expected_tables=$(sqlite3 "${_drift_tmp_db}" "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;")
+    _live_tables=$(sqlite3 database/footbag.db "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;" 2>/dev/null || true)
+    _drift_lines=()
+    while IFS= read -r _t; do
+      [[ -z "$_t" ]] && continue
+      if ! printf '%s\n' "${_live_tables}" | grep -qx "$_t"; then
+        _drift_lines+=("  missing table: ${_t}")
+        continue
+      fi
+      _expected_cols=$(sqlite3 "${_drift_tmp_db}" "SELECT name FROM pragma_table_info('${_t}') ORDER BY name;")
+      _live_cols=$(sqlite3 database/footbag.db "SELECT name FROM pragma_table_info('${_t}') ORDER BY name;" 2>/dev/null || true)
+      _missing_cols=$(comm -23 <(printf '%s\n' "${_expected_cols}") <(printf '%s\n' "${_live_cols}"))
+      if [[ -n "${_missing_cols}" ]]; then
+        _cols_str=$(printf '%s\n' "${_missing_cols}" | paste -sd ',' - | sed 's/,/, /g')
+        _drift_lines+=("  ${_t}: missing column(s): ${_cols_str}")
+      fi
+    done <<< "${_expected_tables}"
+    if (( ${#_drift_lines[@]} > 0 )); then
+      echo "ERROR: database/footbag.db schema is out of sync with database/schema.sql." >&2
+      echo "       Drift detected (live DB is missing items declared in schema.sql):" >&2
+      for _line in "${_drift_lines[@]}"; do echo "$_line" >&2; done
+      echo "" >&2
+      echo "       --from-csv / --from-mirror append to the existing DB without" >&2
+      echo "       reapplying schema.sql, so the load will crash mid-pipeline against" >&2
+      echo "       the stale schema (typically inside Phase G enrichment)." >&2
+      echo "" >&2
+
+      # Offer to run the reset now and re-invoke this deploy with the original
+      # args. Honors FOOTBAG_AUTO_RESET_ON_DRIFT=1 for non-interactive auto-yes
+      # (CI / cron). Reads from /dev/tty so the credential-file stdin pipe at
+      # the end of this script is untouched.
+      _do_reset=0
+      if [[ "${FOOTBAG_AUTO_RESET_ON_DRIFT:-}" == "1" ]]; then
+        echo "  FOOTBAG_AUTO_RESET_ON_DRIFT=1 → auto-resetting." >&2
+        _do_reset=1
+      elif [[ -r /dev/tty ]]; then
+        printf "  Run 'bash scripts/reset-local-db.sh' now and re-deploy with current args? [y/N] " >&2
+        read -r _ans </dev/tty || _ans=""
+        [[ "${_ans:-}" =~ ^[Yy]$ ]] && _do_reset=1
+      fi
+      if (( _do_reset == 1 )); then
+        echo "  → Resetting local DB, then re-invoking deploy with same args..." >&2
+        rm -f "${_drift_tmp_db}" "${_drift_tmp_db}-wal" "${_drift_tmp_db}-shm"
+        trap - EXIT
+        bash scripts/reset-local-db.sh
+        exec bash "$0" "$@"
+      fi
+      echo "  Aborted. To fix:" >&2
+      echo "    bash scripts/reset-local-db.sh && bash deploy_to_aws.sh $*" >&2
+      echo "  Or set FOOTBAG_AUTO_RESET_ON_DRIFT=1 to auto-reset on drift." >&2
+      echo "  Or set FOOTBAG_SKIP_SCHEMA_DRIFT_CHECK=1 to bypass this check entirely." >&2
+      exit 1
+    fi
+  fi
+  rm -f "${_drift_tmp_db}" "${_drift_tmp_db}-wal" "${_drift_tmp_db}-shm"
+  trap - EXIT
 fi
 
 # Operator credential source. Path env-overridable for future production use.

@@ -317,10 +317,12 @@ describe('GET /freestyle — onboarding + portal landing', () => {
   it('embeds the four reference competition-format videos', async () => {
     const app = createApp();
     const res = await request(app).get('/freestyle');
-    expect(res.text).toContain('https://www.youtube.com/embed/Z-KkyOpoBhM');
-    expect(res.text).toContain('https://www.youtube.com/embed/aMr5e5wlgeE');
-    expect(res.text).toContain('https://www.youtube.com/embed/h6F0aPIpC1o');
-    expect(res.text).toContain('https://www.youtube.com/embed/wb75xzvAs68');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/Z-KkyOpoBhM');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/aMr5e5wlgeE');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/h6F0aPIpC1o');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/wb75xzvAs68');
+    // Iframe src must satisfy CSP frame-src (youtube-nocookie.com only).
+    expect(res.text).not.toMatch(/src="https:\/\/www\.youtube\.com\/embed\//);
   });
 
   it('shows portal cards including new History & ADD System card', async () => {

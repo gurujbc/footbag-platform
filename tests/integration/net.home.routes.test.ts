@@ -230,7 +230,9 @@ describe('GET /net — portal landing sections', () => {
   it('embeds YouTube videos in competition-format cards', async () => {
     const app = createApp();
     const res = await request(app).get('/net');
-    expect(res.text).toContain('youtube.com/embed/Rep-1rQbX-o');
-    expect(res.text).toContain('youtube.com/embed/lcDP3JGvkP0');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/Rep-1rQbX-o');
+    expect(res.text).toContain('https://www.youtube-nocookie.com/embed/lcDP3JGvkP0');
+    // Iframe src must satisfy CSP frame-src (youtube-nocookie.com only).
+    expect(res.text).not.toMatch(/src="https:\/\/www\.youtube\.com\/embed\//);
   });
 });

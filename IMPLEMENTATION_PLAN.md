@@ -23,8 +23,29 @@ Tracked in `legacy_data/IMPLEMENTATION_PLAN.md`. Load only when working in that 
 
 ---
 
-## Accepted temporary deviations
+## Dave's track: photo pipeline production wiring (DD §1.5 + §1.8)
 
-### Feature deviations
+Brings the avatar/photo pipeline to its DD-pinned production design (S3 storage, separate `image` Sharp container per DD §1.8, CloudFront serving from bucket per DD §1.5). Closes the prior "Avatar pipeline is local-only" deviation.
 
-1. **Avatar pipeline is local-only.** No server-side processing; raw uploads stored as-is (Busboy streaming, 5 MB limit); stable path + `?v={media_id}` cache-bust. `PhotoStorageAdapter` boot-time/parity/staging-smoke trio still to complete for S3 impl. CloudFront `/media/*` custom cache policy keys on query string for the cache-bust; retire to `Managed-CachingOptimized` once content-hash filenames replace `?v=`. Unblock: S3/media pipeline.
+**Per-phase detail (file paths, contracts, tests, verification, mirror patterns, do-NOTs, acceptance) lives in `PHOTO_PIPELINE_PLAN.md` at project root. Read that file before starting any phase.**
+
+Phases (each executed in a clean session; lowest-numbered open phase is current):
+
+1. App: `ImageProcessingAdapter` (HTTP-only) + `src/imageWorker.ts` entry
+2. Docker: `image` container + compose updates
+3. App: `createS3PhotoStorageAdapter` + `env.ts` fail-fast
+4. Terraform: S3 infra (versioning + replication + lifecycle + IAM, no CloudFront flip)
+5. Cutover (operator-led, scheduled): TF flip + env update + restart + smoke
+6. Smoke test + DEVOPS_GUIDE runbook + DD §1.5 doc-sync
+7. IP cleanup -- delete this section and `PHOTO_PIPELINE_PLAN.md`
+
+Out of scope: gallery upload routes; rate-limit enforcement; ACM/route53/custom-domain alias; content-hash filenames replacing `?v=`; customer-managed KMS on media bucket.
+
+Cross-phase invariants (NEVER violate):
+- Existing avatar test suite (12 cases in `tests/integration/avatar.routes.test.ts`) stays green at every phase boundary.
+- `npm run build` clean; coverage thresholds (95/76/93/95) hold or rise.
+- No edits to canonical docs (DD/USER_STORIES/SERVICE_CATALOG/DATA_MODEL/DEV_ONBOARDING/DEVOPS_GUIDE/GOVERNANCE) without explicit maintainer approval; show literal BEFORE/AFTER and wait.
+- `?v={media_id}` cache-bust query, stable per-member S3 keys, and synchronous USER_STORIES contract are preserved across every phase.
+- Adapter parity tests inject fake clients (`fetchImpl`, `s3Client`); never mock the AWS SDK package.
+
+Accepted shortcut: SSE-S3 (AES256) on the media bucket (per DD §3.1), not customer-managed KMS.

@@ -109,14 +109,14 @@ const NET_COMPETITION_FORMATS: NetCompetitionFormat[] = [
     slug:          'singles',
     title:         'Singles',
     paragraph:     'In singles, each player has one or two kicks to return the footbag over the net. Skilled players can often use the first kick to set up a spike with the second kick.',
-    videoEmbedUrl: 'https://www.youtube.com/embed/Rep-1rQbX-o',
+    videoEmbedUrl: 'https://www.youtube-nocookie.com/embed/Rep-1rQbX-o',
     videoTitle:    'IFPA World Footbag Championships 2019 — Open Singles Net Finals',
   },
   {
     slug:          'doubles',
     title:         'Doubles',
     paragraph:     'In doubles, teams have three kicks total to return the footbag, and teammates must alternate kicks. Doubles opens the door to set-and-spike plays, crossing blocks, and dramatic rallies.',
-    videoEmbedUrl: 'https://www.youtube.com/embed/lcDP3JGvkP0',
+    videoEmbedUrl: 'https://www.youtube-nocookie.com/embed/lcDP3JGvkP0',
     videoTitle:    'IFPA World Footbag Championships 2019 — Mixed Doubles Net Final',
   },
 ];

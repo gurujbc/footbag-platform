@@ -109,13 +109,23 @@ def main() -> None:
                 continue
 
             cand_id = stable_id("lcc", key)
+            # classification: 'dormant' is a placeholder for these temporary
+            # seed rows. In full deploys (--from-csv / --from-mirror) Phase G's
+            # 09_load_enrichment_to_sqlite.py DELETEs and reloads this table
+            # from clubs/out/legacy_club_candidates.csv with authoritative
+            # category values (pre_populate / onboarding_visible / dormant /
+            # junk). Required because the column is NOT NULL with a CHECK
+            # constraint; INSERT OR IGNORE silently skips on NOT NULL, which
+            # would then break the legacy_person_club_affiliations FK below.
             cur = con.execute(
                 """
                 INSERT OR IGNORE INTO legacy_club_candidates
                   (id, created_at, created_by, updated_at, updated_by, version,
                    legacy_club_key, display_name, city, region, country,
-                   confidence_score, mapped_club_id, bootstrap_eligible)
-                VALUES (?, ?, 'seed', ?, 'seed', 1, ?, ?, ?, ?, ?, 1.0, ?, 0)
+                   confidence_score, mapped_club_id, bootstrap_eligible,
+                   classification)
+                VALUES (?, ?, 'seed', ?, 'seed', 1, ?, ?, ?, ?, ?, 1.0, ?, 0,
+                        'dormant')
                 """,
                 (
                     cand_id, ts, ts,
