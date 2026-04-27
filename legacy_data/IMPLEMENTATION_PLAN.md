@@ -10,13 +10,11 @@ Prioritized.
 
 1. **Identity-lock filename refactor.** Drop version-number suffixes from `inputs/identity_lock/*.csv` (`Persons_Truth_Final_v62.csv` to `Persons_Truth_Final.csv`, `Placements_ByPerson_v103.csv` to `Placements_ByPerson.csv`, etc.). Today `run_pipeline.sh:209-210` pins `Persons_Truth_Final_v53.csv` + `Placements_ByPerson_v97.csv` while the latest tracked versions are v62 + v103, so canonical outputs derive from stale identity work. After rename the pin disappears and the latest is always consumed. Update every consumer in the same commit: `run_pipeline.sh`, `run_pipeline_reference.sh`, `02p5_player_token_cleanup.py`, `legacy_data/tools/patch_pt_v{N}_*.py`, `patch_placements_v{M}_*.py`, plus anything `grep` finds. Pre-refactor checks: (a) where does the patch toolchain put the version after rename (sidecar `.version` file, frontmatter row, git tag)? (b) what replaces the `legacy_data/CLAUDE.md` "lexicographic max version" glob? (c) any external consumer that hard-codes a versioned filename? Cutover preference: single atomic commit (consumer count is small).
 
-2. **Rebuild orchestration gap (`scripts/reset-local-db.sh`) + rebuild smoke test.** `event_results/scripts/20_link_footbag_org_sources.py` consumes `out/scraped_footbag_moves.csv`, produced by `18_scrape_footbag_org_moves.py`. `scripts/reset-local-db.sh` runs step 20 but never step 18; rebuild crashes mid-pipeline against a fresh `out/`. Surfaced 2026-04-27 on a staging deploy (`--with-db --db-only` failed at step 20 with `FileNotFoundError`; operator manually ran step 18 to unblock). The fail-fast / producer-before-consumer pattern that landed in `run_pipeline.sh` (early `run_full_mode_preflight` + marker-file mirror check) needs applying to `reset-local-db.sh`: insert step 18 before step 20, or add a preflight that names the missing path and the producer to run. Plus add a rebuild smoke test that starts from a clean `out/`, runs the full chain, and asserts every `out/*` consumer's producer ran earlier. Generalize: any step reading `out/*` either declares its producer or fails with a clear preflight error.
+2. **Legacy identity columns on canonical persons.** Add `legacy_user_id` and `legacy_email` to canonical `persons.csv` where mirror provides them. Required by the registration claim flow (three-key coverage). Mirror-derivable `legacy_user_id` can land first; `legacy_email` completeness blocked on the legacy-site dump (see external blockers).
 
-3. **Legacy identity columns on canonical persons.** Add `legacy_user_id` and `legacy_email` to canonical `persons.csv` where mirror provides them. Required by the registration claim flow (three-key coverage). Mirror-derivable `legacy_user_id` can land first; `legacy_email` completeness blocked on the legacy-site dump (see external blockers).
+3. **Event key normalization (1982-1984).** Rule to lock: `event_key = YYYY_city_slug` with explicit overrides in `overrides/`. Source adjudication required for the 1982-1984 cluster (1980-1981 are clean). Risk if deferred past data release: duplicate logical events, broken joins, URL instability.
 
-4. **Event key normalization (1982-1984).** Rule to lock: `event_key = YYYY_city_slug` with explicit overrides in `overrides/`. Source adjudication required for the 1982-1984 cluster (1980-1981 are clean). Risk if deferred past data release: duplicate logical events, broken joins, URL instability.
-
-5. **`legacy_club_candidates.classification` DB column.** Pipeline writes a four-value `category` per row (`pre_populate`, `onboarding_visible`, `dormant`, `junk`); DB load drops it because the schema has no destination column, so registration Stage 2 cannot separate `dormant` from `junk` at runtime. Fix: add `classification TEXT NOT NULL CHECK (classification IN ('pre_populate','onboarding_visible','dormant','junk'))` to `database/schema.sql`; extend the INSERT in `event_results/scripts/09_load_enrichment_to_sqlite.py`; extend `tests/fixtures/factories.ts::insertLegacyClubCandidate` with an optional override defaulting to `'junk'`; add schema round-trip and CHECK-constraint tests.
+4. **`legacy_club_candidates.classification` DB column.** Pipeline writes a four-value `category` per row (`pre_populate`, `onboarding_visible`, `dormant`, `junk`); DB load drops it because the schema has no destination column, so registration Stage 2 cannot separate `dormant` from `junk` at runtime. Fix: add `classification TEXT NOT NULL CHECK (classification IN ('pre_populate','onboarding_visible','dormant','junk'))` to `database/schema.sql`; extend the INSERT in `event_results/scripts/09_load_enrichment_to_sqlite.py`; extend `tests/fixtures/factories.ts::insertLegacyClubCandidate` with an optional override defaulting to `'junk'`; add schema round-trip and CHECK-constraint tests.
 
 ---
 
@@ -24,7 +22,7 @@ Prioritized.
 
 - **Identity-lock pin to v53/v97.** `run_pipeline.sh:209-210` consumes `Persons_Truth_Final_v53.csv` + `Placements_ByPerson_v97.csv` while latest tracked are v62 + v103. Canonical outputs derive from stale identity work. Unblock: item 1.
 - **`legacy_members` population.** Mirror-derived via `legacy_data/scripts/load_legacy_members_seed.py` (2,507 rows; columns limited to PK + `display_name` + `import_source='mirror'`). Unblock: legacy-site data dump received.
-- **`legacy_club_candidates.category` at DB load.** Dropped (no destination column). Unblock: item 5.
+- **`legacy_club_candidates.category` at DB load.** Dropped (no destination column). Unblock: item 4.
 
 ---
 
@@ -61,14 +59,16 @@ Prioritized.
 
 ## Unblocks
 
-- Auto-link coverage for club-only members: requires item 3 (`legacy_user_id` / `legacy_email` in canonical persons).
-- Legacy account claim at registration: requires three-key coverage (item 3 + legacy-site data dump).
+- Auto-link coverage for club-only members: requires item 2 (`legacy_user_id` / `legacy_email` in canonical persons).
+- Legacy account claim at registration: requires three-key coverage (item 2 + legacy-site data dump).
 
 ---
 
 ## Deferred / parked work (non-blocking)
 
 Kept for visibility only; not part of active work or release gating. No current substitute mechanism, no unblock dependency, no release-readiness impact. Promote to Active work only if scope or priority changes.
+
+- **Rebuild orchestration gap in `scripts/reset-local-db.sh` (owner approval required).** `event_results/scripts/20_link_footbag_org_sources.py` consumes `legacy_data/out/scraped_footbag_moves.csv`, produced by `legacy_data/event_results/scripts/18_scrape_footbag_org_moves.py`. `scripts/reset-local-db.sh` runs step 20 but never step 18; on a fresh `out/` the rebuild crashes with `FileNotFoundError` (observed 2026-04-27 on a staging deploy; operator manually ran step 18 to unblock). `legacy_data/out/` is gitignored, so the file is operator-supplied; a fresh-clone operator must run step 18 manually before `reset-local-db.sh` succeeds. Documented risk; not part of this track's active work. `scripts/reset-local-db.sh` is owned by David, and any change requires owner approval. The fail-fast / producer-before-consumer pattern that landed in `run_pipeline.sh` (early preflight + marker-file mirror check) is the obvious model if the work reopens; companion follow-up would be a rebuild smoke test that starts from a clean `out/` and asserts every `out/*` consumer's producer ran earlier.
 
 - **FK-off bulk reseed investigation.** `event_results/scripts/08_load_mvfp_seed_full_to_sqlite.py:131` disables FK enforcement with `PRAGMA foreign_keys = OFF` during bulk delete-and-reload (re-enabled at line 534); only migration script that does so. Determine whether load order can be reordered or cascade-delete applied to preserve FK-on; if operationally necessary, add an explanatory comment at the deviation site.
 - **`score_text` pass-through from legacy HTML.** Schema field exists (`event_result_entries.score_text`); pipeline drops it. Worth extracting: consecutives kick counts (e.g. `(826)`) and Sick 3 / routine trick descriptors. Skip generic point totals, judge scores, net rankings.
