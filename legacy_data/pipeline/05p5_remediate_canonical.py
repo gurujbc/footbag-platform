@@ -346,7 +346,7 @@ else:
 # National-championship variants keep their existing style but receive
 # event_type = "worlds" so they are filterable as worlds-family events.
 #
-# Duplicate-merge candidates (e.g. 1982_worlds vs 1982_nhsa_national) are
+# Duplicate-merge candidates (e.g. 1982_worlds_oregon_city vs 1982_nhsa_national) are
 # intentionally left as separate keys — merging requires result-row
 # deduplication and is flagged for future review.
 
@@ -354,14 +354,14 @@ _PRE_1985_WORLDS_NAMES: dict[str, str] = {
     # ── NHSA track (de-facto world championships 1980–1983) ───────────────────
     "1980_worlds":               "1980 World Footbag Championships (NHSA)",
     "1981_worlds":               "1981 World Footbag Championships (NHSA)",
-    "1982_worlds":               "1982 World Footbag Championships (NHSA)",
-    "1983_worlds":               "1983 World Footbag Championships (NHSA)",
+    "1982_worlds_oregon_city":               "1982 World Footbag Championships (NHSA)",
+    "1983_worlds_boulder_nhsa":               "1983 World Footbag Championships (NHSA)",
     # NHSA national championships (worlds-family; possible dup of above pair)
     "1982_nhsa_national":        "1982 NHSA National Championships",
     "1983_nhsa_national":        "1983 NHSA National Championships",
     # ── WFA track (NHSA successor, 1983–1984) ─────────────────────────────────
-    "1983_worlds_2":             "1983 World Footbag Championships (WFA)",
-    "1984_worlds":               "1984 World Footbag Championships (WFA)",
+    "1983_worlds_boulder_wfa":             "1983 World Footbag Championships (WFA)",
+    "1984_worlds_golden_wfa":               "1984 World Footbag Championships (WFA)",
     # WFA national championships (worlds-family; possible dup of above pair)
     "1983_national":             "1983 WFA National Championships",
     "1984_national":             "1984 WFA National Championships",
@@ -375,7 +375,7 @@ _PRE_1985_WORLDS_NAMES: dict[str, str] = {
     # ── FBW/Golden freestyle track ────────────────────────────────────────────
     "1982_worlds_golden":        "1982 World Footbag Championships (FBW)",
     "1983_worlds_golden":        "1983 World Footbag Championships (FBW)",
-    "1984_worlds_golden":        "1984 World Footbag Championships (FBW)",
+    "1984_worlds_golden_fbw":        "1984 World Footbag Championships (FBW)",
 }
 
 # country field holds an org tag instead of a real location for these events.
@@ -383,9 +383,9 @@ _PRE_1985_WORLDS_NAMES: dict[str, str] = {
 _PRE_1985_CLEAR_ORG_FROM_COUNTRY: set[str] = {
     "1980_worlds",
     "1981_worlds",
-    "1982_worlds",
-    "1983_worlds",
-    "1983_worlds_2",
+    "1982_worlds_oregon_city",
+    "1983_worlds_boulder_nhsa",
+    "1983_worlds_boulder_wfa",
 }
 
 # Explicit location corrections keyed by event_key.
@@ -396,19 +396,19 @@ _PRE_1985_LOCATION_FIXES: dict[str, dict[str, str]] = {
     # ── FBW Golden track ──────────────────────────────────────────────────────
     "1982_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
     "1983_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
-    "1984_worlds_golden": {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    "1984_worlds_golden_fbw": {"city": "Golden",  "region": "Colorado", "country": "United States"},
     # ── 1980–1982 NHSA events → Oregon City, OR (NHSA home base) ─────────────
     "1980_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
     "1981_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
-    "1982_worlds":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
+    "1982_worlds_oregon_city":        {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
     "1982_nhsa_national": {"city": "Oregon City", "region": "Oregon",    "country": "United States"},
     # ── 1983 NHSA/WFA events → Boulder, CO ────────────────────────────────────
-    "1983_worlds":        {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    "1983_worlds_boulder_nhsa":        {"city": "Boulder", "region": "Colorado", "country": "United States"},
     "1983_nhsa_national": {"city": "Boulder", "region": "Colorado", "country": "United States"},
-    "1983_worlds_2":      {"city": "Boulder", "region": "Colorado", "country": "United States"},
+    "1983_worlds_boulder_wfa":      {"city": "Boulder", "region": "Colorado", "country": "United States"},
     "1983_national":      {"city": "Boulder", "region": "Colorado", "country": "United States"},
     # ── 1984 WFA events → Golden, CO (not Boulder) ────────────────────────────
-    "1984_worlds":        {"city": "Golden",  "region": "Colorado", "country": "United States"},
+    "1984_worlds_golden_wfa":        {"city": "Golden",  "region": "Colorado", "country": "United States"},
     "1984_national":      {"city": "Golden",  "region": "Colorado", "country": "United States"},
 }
 
@@ -1901,7 +1901,7 @@ print(f"  S-19: 1985_western_national_chicago renamed: {_s19_count}")
 #   because the OLD_RESULTS parser only captured p1 for these divisions, or
 #   because the downstream parse failure (Part A) swallowed p2/p3 data.
 #   - "Mag Hughes" resolves to Scott Hughes (4cbf790d) per verified alias.
-#   - Karen Uppinghouse (1982_worlds womens_doubles_net p3) is PRE1997_ONLY
+#   - Karen Uppinghouse (1982_worlds_oregon_city womens_doubles_net p3) is PRE1997_ONLY
 #     and not in the canonical persons table; person_id is left empty
 #     (unresolved participant — not treated as orphan by QC gate).
 
@@ -1911,11 +1911,11 @@ print("\n[Pre-1997 enrichment] Parse failure repairs + authoritative additions..
 _PART_A = {
     # (event_key, discipline_key, placement, participant_order):
     #     (correct_display_name, correct_person_id)
-    ("1982_worlds",  "womens_doubles_net", "1", "2"):
+    ("1982_worlds_oregon_city",  "womens_doubles_net", "1", "2"):
         ("Carolyn Ramondie",   "cbf84862-04b1-5408-9e43-49b9818ed9aa"),
-    ("1983_worlds_2", "doubles_net",        "2", "2"):
+    ("1983_worlds_boulder_wfa", "doubles_net",        "2", "2"):
         ("Dave Hill",          "5cb79fb4-ab20-558f-b4a2-e7206c9f22df"),
-    ("1984_worlds",  "womens_freestyle",   "2", "2"):
+    ("1984_worlds_golden_wfa",  "womens_freestyle",   "2", "2"):
         ("Suzanne Beauchemin", "3c09d4cc-2da9-5e1f-8a4c-e44ca0542f82"),
 }
 
@@ -1933,77 +1933,77 @@ print(f"  Part A: corrupted participant rows fixed: {_pA_fixed}/3")
 # Each entry: (event_key, discipline_key, placement, [(display_name, person_id), ...])
 _NEW_PLACEMENTS = [
     # 1982 NHSA — Women's Doubles Net p2, p3
-    ("1982_worlds", "womens_doubles_net", "2", [
+    ("1982_worlds_oregon_city", "womens_doubles_net", "2", [
         ("Rita Buckley",       "2b77bf53-5fb8-57a3-a5c0-aa9b0b08434e"),
         ("Alex Frazier",       "1f2d14aa-31e7-5d1f-a338-9ae43af68af5"),
     ]),
-    ("1982_worlds", "womens_doubles_net", "3", [
+    ("1982_worlds_oregon_city", "womens_doubles_net", "3", [
         ("Cheryl Hughes",      "cfcef53f-670c-5721-b206-1ebe7d63987c"),
         ("Karen Uppinghouse",  ""),   # PRE1997_ONLY — not in canonical persons
     ]),
     # 1982 NHSA — Mixed Doubles Net p2, p3
-    ("1982_worlds", "mixed_doubles_net", "2", [
+    ("1982_worlds_oregon_city", "mixed_doubles_net", "2", [
         ("Cheryl Hughes",      "cfcef53f-670c-5721-b206-1ebe7d63987c"),
         ("Bill Hayne",         "92b0ee3b-efaa-545a-b07e-30ab6d8ebeb0"),
     ]),
-    ("1982_worlds", "mixed_doubles_net", "3", [
+    ("1982_worlds_oregon_city", "mixed_doubles_net", "3", [
         ("Rita Buckley",       "2b77bf53-5fb8-57a3-a5c0-aa9b0b08434e"),
         ("Greg Cortopassi",    "bf5ce187-5cac-52fc-be9b-ba22c5c6fc01"),
     ]),
     # 1982 NHSA — Women's Singles Net p3
-    ("1982_worlds", "womens_singles_net", "3", [
+    ("1982_worlds_oregon_city", "womens_singles_net", "3", [
         ("Karen Gunther",      "63327293-7bb9-5a45-a50a-e2a2167ba80e"),
     ]),
     # 1982 NHSA — Singles Consecutive Kicks p2, p3
-    ("1982_worlds", "singles_consecutive_kicks", "2", [
+    ("1982_worlds_oregon_city", "singles_consecutive_kicks", "2", [
         ("Andy Linder",        "64a7a989-aa2c-5a58-b141-e8378be4a962"),
     ]),
-    ("1982_worlds", "singles_consecutive_kicks", "3", [
+    ("1982_worlds_oregon_city", "singles_consecutive_kicks", "3", [
         ("Gary Lautt",         "66a5ee0b-abd2-5b24-9d53-5c4f6e3fee14"),
     ]),
     # 1983 NHSA — Women's Doubles Net p2, p3
-    ("1983_worlds", "womens_doubles_net", "2", [
+    ("1983_worlds_boulder_nhsa", "womens_doubles_net", "2", [
         ("Tricia George",      "26349aa8-a1ff-5e6a-bff5-f93a89d20c68"),
         ("Judy Grace",         "73728c19-e412-5006-aa48-1d2685a77f7e"),
     ]),
-    ("1983_worlds", "womens_doubles_net", "3", [
+    ("1983_worlds_boulder_nhsa", "womens_doubles_net", "3", [
         ("Nancy Reynolds",     "eccb075a-3997-5288-a805-774d358f5656"),
         ("Constance Constable","826201f8-2540-5663-9bbf-239e94ccee43"),
     ]),
     # 1983 NHSA — Mixed Doubles Net p2, p3 (Mag Hughes → Scott Hughes alias)
-    ("1983_worlds", "mixed_doubles_net", "2", [
+    ("1983_worlds_boulder_nhsa", "mixed_doubles_net", "2", [
         ("Cheryl Hughes",      "cfcef53f-670c-5721-b206-1ebe7d63987c"),
         ("Scott Hughes",       "4cbf790d-c542-5318-9337-ee3dfd539ff1"),
     ]),
-    ("1983_worlds", "mixed_doubles_net", "3", [
+    ("1983_worlds_boulder_nhsa", "mixed_doubles_net", "3", [
         ("Tricia George",      "26349aa8-a1ff-5e6a-bff5-f93a89d20c68"),
         ("David Robinson",     "895b0608-34df-509a-853d-684ffa24e824"),
     ]),
     # 1983 NHSA — Team Freestyle p2 (4-person), p3 (2-person)
-    ("1983_worlds", "team_freestyle", "2", [
+    ("1983_worlds_boulder_nhsa", "team_freestyle", "2", [
         ("David Robinson",     "895b0608-34df-509a-853d-684ffa24e824"),
         ("Kevin Courtney",     "eb40c6a6-7e80-5190-b77d-47a47735bc0b"),
         ("Reed Gray",          "b5d49246-d1b4-5540-a92d-72d26e6b1d0b"),
         ("Jim Fitzgerald",     "b54020bc-1a1a-5d23-89e1-34617b3514fa"),
     ]),
-    ("1983_worlds", "team_freestyle", "3", [
+    ("1983_worlds_boulder_nhsa", "team_freestyle", "3", [
         ("Jack Schoolcraft",   "b7c2a69b-7547-5ee6-936e-b675c748d131"),
         ("Will Squire",        "a6ba539d-a3b1-5685-ba8f-f537731bc96d"),
     ]),
     # 1983 NHSA — Singles Consecutive Kicks p2, p3
-    ("1983_worlds", "singles_consecutive_kicks", "2", [
+    ("1983_worlds_boulder_nhsa", "singles_consecutive_kicks", "2", [
         ("Jim Caveney",        "df329352-6f3b-5e98-b23b-1af6737d100b"),
     ]),
-    ("1983_worlds", "singles_consecutive_kicks", "3", [
+    ("1983_worlds_boulder_nhsa", "singles_consecutive_kicks", "3", [
         ("Gary Lautt",         "66a5ee0b-abd2-5b24-9d53-5c4f6e3fee14"),
     ]),
     # 1983 WFA — Doubles Net p3 (parse failure recovery; p2 partner fixed in Part A)
-    ("1983_worlds_2", "doubles_net", "3", [
+    ("1983_worlds_boulder_wfa", "doubles_net", "3", [
         ("Bob Swerdlick",      "4a680cee-eee2-5f29-9637-86075d66581c"),
         ("Mike Puderbaugh",    "38df5c50-08d9-5706-90e5-464508ea0962"),
     ]),
     # 1984 Worlds — Women's Freestyle p3 (parse failure recovery; p2 partner fixed above)
-    ("1984_worlds", "womens_freestyle", "3", [
+    ("1984_worlds_golden_wfa", "womens_freestyle", "3", [
         ("Ruth Osterman",      "a10fa54f-eadb-5842-8df1-fdca1920e7e7"),
         ("Vanessa Sabala",     "03ed9422-5152-5132-a181-7249637c824a"),
         ("Jenny Davison",      "3f48caf5-14c9-59f1-8255-1db7ef2fd049"),
@@ -2057,8 +2057,8 @@ print(f"  Part B: slots already present:  {_pB_skipped}")
 # "doubles" → "team" in event_disciplines so the QC 2-participant constraint
 # does not fire on legitimate multi-person team slots.
 _TEAM_RECLASSIFY = {
-    ("1983_worlds",  "team_freestyle"),   # p2 has 4-person team (auth: Cortopassi/Mag/Lautt/Caveney)
-    ("1984_worlds",  "womens_freestyle"),  # p3 has 3-person team (auth: Osterman/Sabala/Davison)
+    ("1983_worlds_boulder_nhsa",  "team_freestyle"),   # p2 has 4-person team (auth: Cortopassi/Mag/Lautt/Caveney)
+    ("1984_worlds_golden_wfa",  "womens_freestyle"),  # p3 has 3-person team (auth: Osterman/Sabala/Davison)
 }
 _pC_reclassified = 0
 for _d in disciplines:

@@ -14,3 +14,9 @@ event_id,new_event_id,reason
 1985_western_national_indoor,1985_western_national_chicago,H2 normalization YYYY_city_slug (1985-1986)
 1986_worlds,1986_worlds_golden,H2 normalization YYYY_city_slug (1985-1986)
 1986_eastregion,1986_eastregion_long_branch,H2 normalization YYYY_city_slug (1985-1986)
+
+1982_worlds,1982_worlds_oregon_city,YYYY_city_slug normalization (NHSA Oregon City; no org collision in 1982)
+1983_worlds,1983_worlds_boulder_nhsa,city + org disambiguation (Boulder same-city collision NHSA vs WFA)
+1983_worlds_2,1983_worlds_boulder_wfa,city + org disambiguation (Boulder same-city collision NHSA vs WFA)
+1984_worlds,1984_worlds_golden_wfa,city + org disambiguation (Golden same-city collision WFA vs FBW)
+1984_worlds_golden,1984_worlds_golden_fbw,city + org disambiguation (Golden same-city collision WFA vs FBW)

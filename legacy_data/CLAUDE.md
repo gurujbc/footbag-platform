@@ -73,6 +73,12 @@ DB mutation safety is enforced as a global rule (`.claude/rules/db-write-safety.
 - `build_workbook_release.py` reads only from `event_results/canonical_input/` + `inputs/review_quarantine_events.csv` + `inputs/identity_lock/` + `inputs/curated/`. EVENT INDEX must match `canonical_input/events.csv` row-for-row; if it ever diverges, the bug is in `build_event_index` or in what populates the `events` dict — not in the canonical input.
 - The 30-event delta between `out/canonical/events.csv` (pre-filter) and `event_results/canonical_input/events.csv` (post-filter) is intentional: `export_canonical_platform.py` drops sparse disciplines, then drops events with zero remaining disciplines. Never reintroduce the dropped events downstream.
 
+## Event-key naming convention
+
+- Default rule: `event_key = YYYY_city_slug` (e.g. `1985_worlds_golden`, `2003_eastregion_australia`).
+- Same-year same-city multi-org collisions take a city + org suffix: `1983_worlds_boulder_nhsa` / `1983_worlds_boulder_wfa`, `1984_worlds_golden_wfa` / `1984_worlds_golden_fbw`.
+- No-city exception class: events whose source has no specific host city retain non-`YYYY_city_slug` keys because the events are not single-city. Current exceptions: `1982_westregion` (regional championship), `1983_oregon_state` (state-level championship), `1983_secret_underground` (private jam). Renaming these to a synthetic city would misrepresent the source.
+
 ## Clubs + classification + bootstrap
 - Extraction: `scripts/extract_clubs.py` parses mirror HTML → `seed/clubs.csv`. Columns include `contact_member_id` (from `members/profile/{id}`) alongside `contact_email`.
 - Classification: `clubs/scripts/02_build_legacy_club_candidates.py` implements MIGRATION_PLAN §9.1 R1–R10. Emits `clubs/out/legacy_club_candidates.csv` with `category` ∈ {pre_populate, onboarding_visible, dormant, junk}. `bootstrap_eligible=1` iff `category='pre_populate'`.

@@ -11,10 +11,10 @@ Applies only to the four event-key merges declared in `event_equivalence.csv`
 under the 2026-04-25 pre-1985 Worlds block:
 
 ```
-1982_nhsa_national → 1982_worlds
-1983_nhsa_national → 1983_worlds
-1983_national      → 1983_worlds_2
-1984_national      → 1984_worlds
+1982_nhsa_national → 1982_worlds_oregon_city
+1983_nhsa_national → 1983_worlds_boulder_nhsa
+1983_national      → 1983_worlds_boulder_wfa
+1984_national      → 1984_worlds_golden_wfa
 ```
 
 Source documents in scope:

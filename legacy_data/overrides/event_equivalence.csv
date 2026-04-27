@@ -14,7 +14,7 @@ event_id,canonical_event_id,action,notes
 # independently document the same NHSA/WFA championships under separate event_keys.
 # Per-pair conflict report at: overrides/event_equivalence_pre1985_worlds_{summary,detail}.csv
 # Adjudication deferred — no canonical CSV mutation yet.
-1982_nhsa_national,1982_worlds,merge,worlds-gemini-82-84.txt source; conflicts on women's disciplines
-1983_nhsa_national,1983_worlds,merge,worlds-gemini-82-84.txt source; conflicts on open + women's net
-1983_national,1983_worlds_2,merge,worlds-gemini-82-84.txt source; complementary disciplines (no shared overlap)
-1984_national,1984_worlds,merge,worlds-gemini-82-84.txt source; mostly identical (7 of 11 shared placements)
+1982_nhsa_national,1982_worlds_oregon_city,merge,worlds-gemini-82-84.txt source; conflicts on women's disciplines
+1983_nhsa_national,1983_worlds_boulder_nhsa,merge,worlds-gemini-82-84.txt source; conflicts on open + women's net
+1983_national,1983_worlds_boulder_wfa,merge,worlds-gemini-82-84.txt source; complementary disciplines (no shared overlap)
+1984_national,1984_worlds_golden_wfa,merge,worlds-gemini-82-84.txt source; mostly identical (7 of 11 shared placements)

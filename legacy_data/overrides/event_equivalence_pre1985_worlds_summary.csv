@@ -1,5 +1,5 @@
 survivor,doomed,survivor_disc_count,doomed_disc_count,shared_disc_count,survivor_only_disc,doomed_only_disc,overlapping_placements,identical_placements,conflicting_placements
-1982_worlds,1982_nhsa_national,11,9,3,8,6,9,0,9
-1983_worlds,1983_nhsa_national,11,9,3,8,6,7,1,6
-1983_worlds_2,1983_national,9,2,0,9,2,0,0,0
-1984_worlds,1984_national,23,12,5,18,7,11,7,4
+1982_worlds_oregon_city,1982_nhsa_national,11,9,3,8,6,9,0,9
+1983_worlds_boulder_nhsa,1983_nhsa_national,11,9,3,8,6,7,1,6
+1983_worlds_boulder_wfa,1983_national,9,2,0,9,2,0,0,0
+1984_worlds_golden_wfa,1984_national,23,12,5,18,7,11,7,4

@@ -36,7 +36,7 @@ corrections:
       correct_name: Oak Park - Chicago Open
     - event: 1985_worlds_golden
       note: confirm WFA World Championships
-    - event: 1984_worlds
+    - event: 1984_worlds_golden_wfa
       action: remove duplicate
     - event: 1983_wfa
       note: Andy did not attend
