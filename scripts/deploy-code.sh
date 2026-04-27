@@ -154,13 +154,29 @@ WORKER_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.
 }
 
 # ── Step 4: Transfer images to host via docker save | docker load ────────────
-# Local docker save streams a tar of the just-built images. The leading printf
-# emits the sudo password on stdin's first line; sudo -S consumes it, then
-# `docker load` reads the tar bytes that follow.
-
-echo "==> Transferring images to host (docker save | docker load)..."
-{ printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker; } \
-  | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" docker load'
+# Pre-transfer optimization: if the host already has images with identical
+# RootFS DiffIDs, skip the docker save | docker load pipe entirely. The
+# pipe transfers ~250 MB even when no layers actually changed; on warm
+# cache the upstream `docker compose build` is already cheap, so this skip
+# is the dominant savings on routine code-change deploys. Cost when skipped:
+# zero. Cost when not skipped: identical to before. Operator's footbag user
+# is in the host's docker group, so no sudo needed for `docker image inspect`.
+echo "==> Comparing local image RootFS DiffIDs against host..."
+REMOTE_WEB_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
+  "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-web 2>/dev/null" \
+  </dev/null || true)
+REMOTE_WORKER_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
+  "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-worker 2>/dev/null" \
+  </dev/null || true)
+if [[ -n "$WEB_IMAGE_LAYERS" && -n "$WORKER_IMAGE_LAYERS" \
+   && "$WEB_IMAGE_LAYERS"    == "$REMOTE_WEB_LAYERS" \
+   && "$WORKER_IMAGE_LAYERS" == "$REMOTE_WORKER_LAYERS" ]]; then
+  echo "==> Image RootFS DiffIDs match host; skipping docker save | docker load."
+else
+  echo "==> Transferring images to host (docker save | docker load)..."
+  { printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker; } \
+    | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" docker load'
+fi
 
 # ── Step 5: Run the remote-as-root deploy via cat-pipe ───────────────────────
 # printf emits the password line; the EXPECTED_*_IMAGE_LAYERS assignments give
@@ -180,12 +196,29 @@ echo "==> Running remote-as-root deploy (promote, restart)..."
 } | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" bash'
 
 # ── Step 4: Smoke check ───────────────────────────────────────────────────────
+# Smoke runs against the public CloudFront URL by default, not the direct
+# Lightsail origin. The origin is fenced by X-Origin-Verify (returns 444 to
+# anything not coming through CloudFront), so direct-IP smoke would always
+# fail under the current production-like wiring. Operators can override
+# SMOKE_BASE_URL for special cases (testing a different distribution, etc.).
+case "$FOOTBAG_ENV" in
+  staging)    SMOKE_DEFAULT_URL="https://doye1nvv64qep.cloudfront.net" ;;
+  production) SMOKE_DEFAULT_URL="" ;;  # set when production CloudFront lands
+  *)          SMOKE_DEFAULT_URL="" ;;
+esac
+SMOKE_BASE_URL="${SMOKE_BASE_URL:-$SMOKE_DEFAULT_URL}"
 
 if [[ "$SKIP_SMOKE" == "yes" ]]; then
   echo "==> Skipping post-deploy smoke check (SKIP_SMOKE=yes)"
+elif [[ -z "$SMOKE_BASE_URL" ]]; then
+  echo "==> Skipping post-deploy smoke check (no SMOKE_BASE_URL configured for FOOTBAG_ENV=$FOOTBAG_ENV)"
 else
-  echo "==> Running smoke check against http://$HOST_IP ..."
-  BASE_URL="http://$HOST_IP" bash scripts/smoke-local.sh
+  echo "==> Running smoke check against $SMOKE_BASE_URL ..."
+  if ! BASE_URL="$SMOKE_BASE_URL" bash scripts/smoke-local.sh; then
+    echo "ERROR: post-deploy smoke check failed against $SMOKE_BASE_URL" >&2
+    echo "Recommendation: ssh $REMOTE 'sudo journalctl -u footbag -n 200 --no-pager' to inspect host logs." >&2
+    exit 1
+  fi
 fi
 
 echo ""

@@ -236,7 +236,15 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    load(Path(args.db), Path(args.scraped_csv))
+    scraped_path = Path(args.scraped_csv)
+    if not scraped_path.exists():
+        print(
+            f"  (skip: {scraped_path.name} not present; "
+            f"run legacy_data/run_pipeline.sh full to populate via script 18)"
+        )
+        return
+
+    load(Path(args.db), scraped_path)
 
 
 if __name__ == "__main__":

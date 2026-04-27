@@ -206,13 +206,24 @@ run_v0_backbone() {
     echo ""
 
     echo "── [1/7] REBUILD ──────────────────────────────────────"
+    local _id_persons="inputs/identity_lock/Persons_Truth_Final_v53.csv"
+    local _id_placements="inputs/identity_lock/Placements_ByPerson_v97.csv"
+    local _id_missing=()
+    [[ -f "${_id_persons}"    ]] || _id_missing+=("${_id_persons}")
+    [[ -f "${_id_placements}" ]] || _id_missing+=("${_id_placements}")
+    if [[ ${#_id_missing[@]} -gt 0 ]]; then
+        echo "ERROR: identity-lock CSV(s) not found:" >&2
+        for _f in "${_id_missing[@]}"; do echo "  MISSING: ${_f}" >&2; done
+        echo "Recommendation: see legacy_data/IMPLEMENTATION_PLAN.md (top of 'Still to do')." >&2
+        exit 1
+    fi
     python pipeline/adapters/mirror_results_adapter.py --mirror mirror_footbag_org
     python pipeline/adapters/curated_events_adapter.py
     python pipeline/01c_merge_stage1.py
     python pipeline/02_canonicalize_results.py
     python pipeline/02p5_player_token_cleanup.py \
-        --identity_lock_persons_csv inputs/identity_lock/Persons_Truth_Final_v53.csv \
-        --identity_lock_placements_csv inputs/identity_lock/Placements_ByPerson_v97.csv
+        --identity_lock_persons_csv "${_id_persons}" \
+        --identity_lock_placements_csv "${_id_placements}"
     python pipeline/02p6_structural_cleanup.py
     echo ""
 

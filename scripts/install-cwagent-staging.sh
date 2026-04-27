@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 # install-cwagent-staging.sh
 #
+# MODEL PATTERN — DO NOT FOLD INTO deploy_to_aws.sh.
+# This script is the canonical reference for any future production-environment
+# CloudWatch Agent installer (e.g. install-cwagent-production.sh). Future
+# operators should copy this layout and substitute production-specific values:
+# the IAM publisher username, the SSH alias, the SSM parameter scope, and the
+# remote-half body. The wire-level pattern (stdin-piped sudo password +
+# cat-piped remote-half + variable assignments emitted via printf) is
+# argv-leak-safe and should be preserved verbatim. See AWS_PROJECT_SPECIFICS.md
+# §22 for the design rationale.
+#
 # Installs and configures the Amazon CloudWatch Agent on the staging
 # Lightsail host. Idempotent: safe to re-run on an already-configured host.
 #

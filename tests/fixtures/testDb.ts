@@ -29,7 +29,13 @@ import path from 'path';
  * Returns the generated dbPath and sessionSecret for use in test helpers.
  */
 export function setTestEnv(port: string): { dbPath: string; sessionSecret: string } {
-  const dbPath = path.join(process.cwd(), `test-${port}-${Date.now()}.db`);
+  // Multiple test files reuse the same port number (audit found 7 duplicates).
+  // Vitest runs them in parallel workers; without pid + random the dbPath
+  // collides under millisecond clock granularity and one worker's schema
+  // load races the other's, surfacing as flaky "table X already exists" or
+  // "no such table: events" errors.
+  const uniq = `${process.pid}-${Math.random().toString(36).slice(2, 10)}`;
+  const dbPath = path.join(process.cwd(), `test-${port}-${Date.now()}-${uniq}.db`);
   const sessionSecret = `test-secret-${port}`;
 
   process.env.FOOTBAG_DB_PATH = dbPath;

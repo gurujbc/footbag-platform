@@ -25,8 +25,45 @@ DB_FILE="${FOOTBAG_DB_PATH:-./database/footbag.db}"
 SCHEMA="database/schema.sql"
 CANONICAL_INPUT_DIR="legacy_data/event_results/canonical_input"
 SEED_DIR="legacy_data/event_results/seed/mvfp_full"
+RECORDS_MASTER_CSV="legacy_data/inputs/curated/records/records_master.csv"
+MIRROR_DIR="legacy_data/mirror_footbag_org"
 VENV="scripts/.venv"
 REQUIREMENTS="scripts/requirements.txt"
+
+# Preflight: required local files. This script does NOT regenerate canonical
+# inputs or the mirror; it loads existing artifacts. On a fresh clone, run
+# `bash scripts/deploy-local-data.sh --from-mirror` (or --from-csv) first.
+_missing=()
+for _f in "${CANONICAL_INPUT_DIR}/events.csv" \
+          "${CANONICAL_INPUT_DIR}/event_disciplines.csv" \
+          "${CANONICAL_INPUT_DIR}/event_results.csv" \
+          "${CANONICAL_INPUT_DIR}/event_result_participants.csv" \
+          "${CANONICAL_INPUT_DIR}/persons.csv" \
+          "${RECORDS_MASTER_CSV}" \
+          "${SCHEMA}"; do
+  [[ -f "${_f}" ]] || _missing+=("${_f}")
+done
+[[ -d "${MIRROR_DIR}" ]] || _missing+=("${MIRROR_DIR}/  (legacy site mirror; needed for clubs / club_members extract)")
+if [[ ${#_missing[@]} -gt 0 ]]; then
+  echo "ERROR: required local file(s) not present:" >&2
+  for _f in "${_missing[@]}"; do echo "  MISSING: ${_f}" >&2; done
+  echo "" >&2
+  echo "Recommendation: bash scripts/deploy-local-data.sh --from-mirror   (or --from-csv if mirror is unavailable)." >&2
+  exit 1
+fi
+
+# Mirror staleness warning. Configurable via FOOTBAG_MIRROR_MAX_AGE_DAYS;
+# bypass via FOOTBAG_MIRROR_AGE_ACK=1 when intentional.
+_max_age="${FOOTBAG_MIRROR_MAX_AGE_DAYS:-90}"
+_sentinel="${MIRROR_DIR}/index.html"
+if [[ -f "${_sentinel}" && "${FOOTBAG_MIRROR_AGE_ACK:-}" != "1" ]]; then
+  _age_days=$(( ( $(date +%s) - $(stat -c %Y "${_sentinel}") ) / 86400 ))
+  if (( _age_days > _max_age )); then
+    echo "WARNING: legacy mirror is ${_age_days} days old (threshold: ${_max_age})." >&2
+    echo "Recommendation: refresh via 'cd legacy_data && ./create_mirror.sh', or set FOOTBAG_MIRROR_AGE_ACK=1 to proceed." >&2
+    exit 1
+  fi
+fi
 
 # Create venv if not present; always sync dependencies
 if [ ! -f "${VENV}/bin/python3" ]; then

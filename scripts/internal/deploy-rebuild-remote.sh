@@ -72,6 +72,16 @@ command -v sqlite3 >/dev/null || { echo "sqlite3 missing on host" >&2; exit 1; }
 command -v awk >/dev/null     || { echo "awk missing on host"     >&2; exit 1; }
 command -v rsync >/dev/null   || { echo "rsync missing on host"   >&2; exit 1; }
 
+# Disk-space preflight: rsync of release dir + DB replace + docker layer churn
+# can land 200-400 MB at peak. Refuse to start if /srv/footbag has under 500 MB
+# free; the partial-write failure mode is silent corruption of footbag.db.
+SRV_AVAIL_KB=$(df -k --output=avail /srv/footbag 2>/dev/null | tail -1 | tr -d ' ')
+if [[ -n "$SRV_AVAIL_KB" ]] && (( SRV_AVAIL_KB < 512000 )); then
+  echo "ERROR: /srv/footbag has only ${SRV_AVAIL_KB}K free; need >=500 MB." >&2
+  echo "Recommendation: ssh footbag-staging 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
+  exit 1
+fi
+
 require_path "release dir"        "$RELEASE_DIR"
 require_path "env file"           "$ENV_PATH"
 require_path "uploaded DB"        "$NEW_DB"

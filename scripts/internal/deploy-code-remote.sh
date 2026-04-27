@@ -20,6 +20,15 @@ read_env() {
   awk -F= -v k="$1" '$1==k {sub(/^[^=]*=/,""); print}' "$ENV_PATH" | tail -1
 }
 
+# Disk-space preflight: rsync of release dir + docker layer churn can land
+# 200 MB at peak. Refuse to start if /srv/footbag has under 500 MB free.
+SRV_AVAIL_KB=$(df -k --output=avail /srv/footbag 2>/dev/null | tail -1 | tr -d ' ')
+if [[ -n "$SRV_AVAIL_KB" ]] && (( SRV_AVAIL_KB < 512000 )); then
+  echo "ERROR: /srv/footbag has only ${SRV_AVAIL_KB}K free; need >=500 MB." >&2
+  echo "Recommendation: ssh footbag-staging 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
+  exit 1
+fi
+
 # Assert /srv/footbag/env is owned by root with mode 0600. Mirrors the check
 # in scripts/internal/deploy-rebuild-remote.sh; see that file for rationale.
 test -f "$ENV_PATH" || { echo "ERROR: $ENV_PATH missing" >&2; exit 1; }

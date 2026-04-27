@@ -29,89 +29,93 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
   cat <<'USAGE'
-Usage: bash deploy_to_aws.sh <mode flags> [options]    (top-level wrapper, recommended)
-   or: < <operator credential file> bash scripts/deploy-to-aws.sh <mode flags> [options]
+Usage: bash deploy_to_aws.sh [<flags>]                    (recommended)
+   or: < <operator credential file> bash scripts/deploy-to-aws.sh [<flags>]
 
-Reads sudo password from stdin (line 1).
+DEFAULT (no flags): equivalent to `--with-db --from-csv`. Full enrichment
+(phases C/D/E/F/G/H/V), mirror-free, uses only committed canonical_input/*
+and seed/* CSVs. DESTRUCTIVE to staging DB. The wrapper runs a preflight
+first (tools, SSH alias, disk space, DB lock, credential file).
 
-Mode flags (exactly one required):
 
-  --code-only                    Ship code + images; leave staging DB
-                                 untouched.
-                                 Delegates to scripts/deploy-code.sh.
+WHICH MODE TO USE
+─────────────────────────────────────────────────────────────────────
+  Just changed code, want staging DB intact?
+      bash deploy_to_aws.sh --code-only
 
-  --with-db --db-only            Ship code + images AND replace staging DB.
-                                 Rebuild local DB via
-                                 scripts/reset-local-db.sh (fast; skips
-                                 phase C/D/E/F/G enrichment).
-                                 Delegates to scripts/deploy-rebuild.sh.
+  Push fresh data + code (mirror-free, full enrichment)?
+      bash deploy_to_aws.sh                          # default
 
-  --with-db --from-mirror        Ship code + images AND replace staging DB.
-                                 Rebuild local DB via the full legacy
-                                 pipeline (mirror required).
-                                 Runs deploy-local-data.sh --from-mirror
-                                 then deploy-rebuild.sh with
-                                 SKIP_DB_REBUILD=yes.
+  Fast DB reset (skip enrichment phases C/D/E/F/G)?
+      bash deploy_to_aws.sh --with-db --db-only
 
-  --with-db --from-csv           Ship code + images AND replace staging DB.
-                                 Rebuild local DB from existing canonical
-                                 CSVs (mirror not required).
-                                 Runs deploy-local-data.sh --from-csv then
-                                 deploy-rebuild.sh with SKIP_DB_REBUILD=yes.
+  Re-derive canonical from the legacy mirror (mirror + identity-lock required)?
+      bash deploy_to_aws.sh --with-db --from-mirror
+      (note: identity-lock CSV not yet committed; see legacy_data IP)
 
-  --with-db --skip-local-data    Ship code + images AND replace staging DB
-                                 using database/footbag.db as-is (no local
-                                 rebuild).
-                                 Equivalent to SKIP_DB_REBUILD=yes bash
-                                 scripts/deploy-rebuild.sh <pass>.
+  Already have a known-good database/footbag.db locally, just push it?
+      bash deploy_to_aws.sh --with-db --skip-local-data
 
-Options:
-  --skip-tests                   Skip the local npm test preflight.
-  --dry-run                      Print what would be executed without
-                                 running anything.
-  --no-staleness-check           Skip the pre-deploy check that BLOCKS
-                                 when canonical CSVs are older than
-                                 pipeline code or curated inputs.
-                                 (Check is skipped automatically for
-                                 --code-only and --with-db --from-mirror.)
-  --help, -h                     Show this message.
+  Curious what would happen?
+      bash deploy_to_aws.sh --dry-run
 
-Env overrides:
-  DEPLOY_TARGET=footbag-staging  Override SSH config alias used by
-                                 the delegated deploy-code.sh /
-                                 deploy-rebuild.sh.
 
-Examples:
-  bash deploy_to_aws.sh --code-only
-  bash deploy_to_aws.sh --with-db --db-only
-  bash deploy_to_aws.sh --with-db --from-csv
-  bash deploy_to_aws.sh --with-db --from-mirror --skip-tests
-  bash deploy_to_aws.sh --with-db --skip-local-data --dry-run
+MODE FLAGS
+─────────────────────────────────────────────────────────────────────
+  --code-only                  Ship code + images; staging DB untouched.
+                               Use when only src/ changed.
+  --with-db --db-only          Rebuild local DB via reset-local-db.sh
+                               (fast, no enrichment); push code + DB.
+  --with-db --from-mirror      Full pipeline (run_pipeline.sh full);
+                               mirror + identity-lock required; push.
+  --with-db --from-csv         [DEFAULT]  Full enrichment from committed
+                               CSVs (run_pipeline.sh csv_only); push.
+  --with-db --skip-local-data  Push current ./database/footbag.db as-is.
 
-Safety: this orchestrator does not choose a default deploy mode. If you
-supply no mode flag it errors out. Destructive DB replacement requires
-explicit --with-db.
+OPTIONS
+─────────────────────────────────────────────────────────────────────
+  --skip-tests                 Skip local `npm test` preflight in
+                               deploy-rebuild.sh.
+  --dry-run                    Print what would run; do not run anything.
+  --no-staleness-check         Silence "canonical CSVs older than pipeline
+                               code" WARNING (gate is warn-only since
+                               2026-04-27; flag still useful for clean output).
+  --help, -h                   Show this message.
 
-First-time setup (do once per env after this branch lands):
-  Origin-verify secret is now Terraform-managed (random_id) and the deploy
-  pulls the value from SSM at run time. Workstation steps:
+ENV OVERRIDES
+─────────────────────────────────────────────────────────────────────
+  DEPLOY_TARGET=<alias>            SSH alias (default: footbag-staging).
+  AWS_OPERATOR_FILE=<path>         Override operator-credential file path
+                                   (default: ~/AWS/AWS_OPERATOR.txt).
+  SKIP_SMOKE=yes                   Skip post-deploy smoke check.
+  SMOKE_BASE_URL=<url>             Override smoke target (default: the
+                                   environment's public CloudFront URL).
+  SKIP_TESTS=yes                   Same as --skip-tests.
+  SKIP_DB_REBUILD=yes              Skip reset-local-db.sh inside
+                                   deploy-rebuild.sh (auto-set by the
+                                   orchestrator for --from-mirror /
+                                   --from-csv / --skip-local-data).
+  FOOTBAG_MIRROR_AGE_ACK=1         Acknowledge stale mirror, proceed with
+                                   reset-local-db.sh.
+  FOOTBAG_MIRROR_MAX_AGE_DAYS=N    Raise mirror staleness threshold from
+                                   the 90-day default.
 
-    cd terraform/staging                # or terraform/production
-    terraform init -upgrade             # picks up new random + http providers
-    terraform apply                     # writes random_id-generated secret
-                                        # to SSM; refreshes CloudFront origin
-                                        # custom_header; pins port 80 ingress
-                                        # to CloudFront prefix list
+EXAMPLES
+─────────────────────────────────────────────────────────────────────
+  Routine code update (DB intact):
+      bash deploy_to_aws.sh --code-only
 
-  Then run a deploy as usual. The remote-half automatically:
-    - asserts /srv/footbag/env is root:root 600,
-    - verifies docker-loaded image IDs match what was just built,
-    - reconciles FOOTBAG_ENV (auto-derived from DEPLOY_TARGET),
-    - fetches X_ORIGIN_VERIFY_SECRET from SSM and rewrites /srv/footbag/env.
+  Full deploy from current CSVs (the default):
+      bash deploy_to_aws.sh
 
-  No manual /srv/footbag/env edits, no manual `aws ssm put-parameter`, no
-  manual SSH known_hosts pre-pop. If a deploy fails with a "TODO-..." secret
-  message, terraform apply was not run since this branch landed.
+  Push without running tests:
+      bash deploy_to_aws.sh --code-only --skip-tests
+
+  Override the SSH alias:
+      DEPLOY_TARGET=footbag-staging-alt bash deploy_to_aws.sh --code-only
+
+  See the deploy plan without running:
+      bash deploy_to_aws.sh --dry-run
 USAGE
 }
 
@@ -254,24 +258,18 @@ check_canonical_freshness() {
 
   if awk -v a="$inputs_latest" -v b="$ci_oldest" 'BEGIN{exit !(a > b)}'; then
     echo "" >&2
-    echo "========================================================================" >&2
-    echo "ERROR: canonical CSVs look stale relative to pipeline inputs or code." >&2
+    echo "------------------------------------------------------------------------" >&2
+    echo "WARNING: canonical CSVs are older than pipeline inputs or code." >&2
     echo "" >&2
     echo "  Oldest canonical_input csv:    $(date -d @${ci_oldest%.*} '+%Y-%m-%d %H:%M:%S')" >&2
     echo "  Newest pipeline input or code: $(date -d @${inputs_latest%.*} '+%Y-%m-%d %H:%M:%S')" >&2
     echo "" >&2
-    echo "  Your local canonical CSVs predate the latest pipeline code or curated" >&2
-    echo "  inputs. Deploying would ship stale data to staging." >&2
+    echo "  The deploy will proceed with the committed canonical_input CSVs." >&2
+    echo "  Recommendation: if you want fresh canonical outputs, run" >&2
+    echo "    bash scripts/deploy-local-data.sh --from-mirror" >&2
+    echo "  before deploying. Suppress this warning with --no-staleness-check." >&2
+    echo "------------------------------------------------------------------------" >&2
     echo "" >&2
-    echo "  To fix: run" >&2
-    echo "      bash scripts/deploy-local-data.sh --from-mirror" >&2
-    echo "  and retry the deploy." >&2
-    echo "" >&2
-    echo "  To override (ship the stale data anyway):" >&2
-    echo "      re-run with --no-staleness-check" >&2
-    echo "========================================================================" >&2
-    echo "" >&2
-    exit 1
   fi
 }
 
