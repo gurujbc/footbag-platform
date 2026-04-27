@@ -1,4 +1,4 @@
-# Skill: rebuild-identity-pipeline
+# Runbook: rebuild-identity-pipeline
 
 ## When to Use
 Invoke when:

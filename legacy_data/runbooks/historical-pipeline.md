@@ -1,24 +1,24 @@
-# Skill: historical-pipeline
+# Runbook: historical-pipeline
 ## Positioning
-This is a **specialist/debugging skill**.
+This is a **specialist/debugging runbook**.
 
 For normal operation, always use `complete-pipeline`.
 
-Use this skill only when:
+Use this runbook only when:
 - isolating a stage
 - debugging QC failures
 - validating targeted changes
 ## When to Use
-Invoke this skill when:
+Use this runbook when:
 - Rebuilding canonical outputs after a parser fix, override change, or curated CSV addition
 - Validating that a change to pipeline code, overrides, or identity lock did not break QC
 - Preparing a release-ready canonical dataset
 - Running the full soup-to-nuts pipeline (use `./run_pipeline.sh full`)
 
-Do NOT invoke this skill for:
+Do NOT use this runbook for:
 - Adding a new pre-1997 source (use `promote-curated-source` instead)
 - Identity lock version upgrades (those have their own patch toolchain)
-- Workbook generation alone — use the `workbook-v22` skill; but note that
+- Workbook generation alone — use the `workbook-v22` runbook; but note that
   `./run_pipeline.sh full` builds the workbook as part of the full pipeline
 - Platform/DB export alone — scripts 07 and 08 run automatically inside
   `./run_pipeline.sh full`; see CLAUDE.md "Platform / DB Export" for manual invocation

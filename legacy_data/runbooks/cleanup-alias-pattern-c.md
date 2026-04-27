@@ -1,5 +1,5 @@
 
-# Skill: cleanup-alias-pattern-c
+# Runbook: cleanup-alias-pattern-c
 
 ## When to Use
 Invoke when:

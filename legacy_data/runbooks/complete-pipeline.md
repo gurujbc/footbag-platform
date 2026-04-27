@@ -1,14 +1,14 @@
-# Skill: complete-pipeline
+# Runbook: complete-pipeline
 
 ## When to Use
-Invoke this skill when:
+Use this runbook when:
 - Running the full pipeline from source data to SQLite DB (the normal production cycle)
 - Adding or modifying any source (new image, curated CSV, override, identity supplement)
 - Verifying the system end-to-end after any non-trivial change
 
-Do NOT invoke this skill for:
+Do NOT use this runbook for:
 - Quick targeted runs (use individual stage scripts as needed)
-- Workbook-only changes (use `workbook-v22` skill)
+- Workbook-only changes (use the `workbook-v22` runbook)
 - Identity lock upgrades (those have their own patch toolchain)
 
 ---
@@ -85,7 +85,7 @@ always invoke via `./run_pipeline.sh full`, not directly.
 5. Commit only if QC STATUS: PASS and counts are expected
 ```
 
-See `promote-curated-source` skill for full promotion checklist.
+See the `promote-curated-source` runbook for full promotion checklist.
 
 ---
 

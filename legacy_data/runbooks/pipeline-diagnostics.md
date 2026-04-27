@@ -1,4 +1,4 @@
-# Skill: pipeline-diagnostics
+# Runbook: pipeline-diagnostics
 
 ## When to Use
 - QC failure investigation

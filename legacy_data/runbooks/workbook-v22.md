@@ -1,12 +1,12 @@
-# Skill: workbook-v22
+# Runbook: workbook-v22
 
 ## When to Use
-Invoke this skill when:
+Use this runbook when:
 - Building or updating the v22-style release workbook (`out/Footbag_Results_Release.xlsx`)
 - Porting or modifying `pipeline/build_workbook_release.py`
 - Deciding what events, persons, or sheets belong in the primary workbook deliverable
 
-Do NOT invoke this skill for:
+Do NOT use this runbook for:
 - Canonical pipeline changes (use `historical-pipeline` instead)
 - Community format workbook (`build_workbook_community.py` — v13 lineage; separate builder)
 - Platform/DB export (see CLAUDE.md "Platform / DB Export" section)

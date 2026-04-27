@@ -1,12 +1,12 @@
-# Skill: promote-curated-source
+# Runbook: promote-curated-source
 
 ## When to Use
-Invoke this skill when:
+Use this runbook when:
 - Promoting a raw TXT, magazine scan, or legacy stub to a production-ready structured CSV
 - Retiring a `stage1_raw_events_magazine.csv` stub by replacing it with a structured CSV
 - Adding a newly digitized pre-1997 event to the canonical dataset
 
-Do NOT invoke this skill for:
+Do NOT use this runbook for:
 - Post-1997 mirror events (those go through `overrides/results_file_overrides.csv`)
 - Identity corrections (use `person_aliases.csv` or the patch toolchain)
 - Events already in canonical as structured CSVs
