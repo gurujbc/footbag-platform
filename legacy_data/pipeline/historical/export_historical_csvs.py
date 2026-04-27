@@ -311,6 +311,7 @@ token_to_person: dict[str, str] = {}   # player_token_uuid → effective_person_
 names_to_person: dict[str, str] = {}   # _norm_name(player_name_seen) → effective_person_id
 pt_rows: list[dict] = []
 _pt51_person_ids: set[str] = set()
+pt_legacyid_map: dict[str, str] = {}   # effective_person_id → legacyid (footbag.org member_id)
 with open(_pt_source, newline="", encoding="utf-8") as f:
     for row in csv.DictReader(f):
         pt_rows.append(row)
@@ -334,6 +335,15 @@ with open(_pt_source, newline="", encoding="utf-8") as f:
             alias = alias.strip()
             if alias and len(alias) > 3:
                 names_to_person.setdefault(_norm_name(alias), pid)
+        # Capture PT.legacyid (used as fallback member_id when the enrichment
+        # assignments file is unavailable). Normalises float-formatted ids
+        # ("12345.0" → "12345"). Empty / unparseable values are skipped.
+        _lid = row.get("legacyid", "").strip()
+        if _lid and pid.strip():
+            try:
+                pt_legacyid_map[pid.strip()] = str(int(float(_lid)))
+            except ValueError:
+                pass
 
 print(f"  {len(pt_rows):,} persons, {len(token_to_person):,} tokens, {len(names_to_person):,} names indexed (pre-aliases)")
 print(f"  PT lock loaded: {len(_pt51_person_ids):,} person_ids ({_pt_source.name})")
@@ -378,7 +388,9 @@ if _aliases_csv.exists():
 
 print("Loading member_id_assignments.csv...")
 _member_id_csv = ROOT / "out" / "member_id_enrichment" / "member_id_assignments.csv"
-member_id_map: dict[str, str] = {}   # effective_person_id → footbag.org member_id
+_legacy_user_id_csv = ROOT / "out" / "member_id_enrichment" / "legacy_user_id_map.csv"
+member_id_map: dict[str, str] = {}        # effective_person_id → footbag.org member_id
+legacy_user_id_map: dict[str, str] = {}   # footbag.org member_id → legacy_user_id (mirror username)
 if _member_id_csv.exists():
     with open(_member_id_csv, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
@@ -386,9 +398,33 @@ if _member_id_csv.exists():
             mid = row.get("member_id", "").strip()
             if pid and mid:
                 member_id_map[pid] = mid
-    print(f"  {len(member_id_map):,} persons with member_id")
+    print(f"  {len(member_id_map):,} persons with member_id (from assignments file)")
 else:
     print(f"  (member_id_assignments.csv not found — skipping)")
+
+# Fallback: fill member_id from PT.legacyid for any pid the assignments file
+# did not cover. The assignments file remains primary when present; PT.legacyid
+# only fills gaps. No name-based inference; the PT row drives the mapping.
+_filled_from_pt = 0
+for _pid, _lid in pt_legacyid_map.items():
+    if _pid not in member_id_map:
+        member_id_map[_pid] = _lid
+        _filled_from_pt += 1
+if _filled_from_pt:
+    print(f"  + {_filled_from_pt:,} persons via PT.legacyid fallback")
+print(f"  total member_id coverage: {len(member_id_map):,} persons")
+
+print("Loading legacy_user_id_map.csv...")
+if _legacy_user_id_csv.exists():
+    with open(_legacy_user_id_csv, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            mid = row.get("member_id", "").strip()
+            uid = row.get("legacy_user_id", "").strip()
+            if mid and uid:
+                legacy_user_id_map[mid] = uid
+    print(f"  {len(legacy_user_id_map):,} member_ids with legacy_user_id")
+else:
+    print(f"  (legacy_user_id_map.csv not found; skipping)")
 
 
 _TRAILING_PAREN = re.compile(r"\s*\([^)]+\)\s*$")
@@ -1464,10 +1500,13 @@ for row in sorted(pt_rows, key=lambda r: r["person_canon"]):
 
     top_tricks = [t.strip() for t in divrs.get("top_tricks", "").split("|") if t.strip()]
 
+    _mid_for_pid = member_id_map.get(pid, "")
     persons_out.append({
         "person_id":                  pid,
         "person_name":                row["person_canon"],
-        "member_id":                  member_id_map.get(pid, ""),
+        "member_id":                  _mid_for_pid,
+        "legacy_user_id":             legacy_user_id_map.get(_mid_for_pid, ""),
+        "legacy_email":               "",
         "player_ids":                 pt_player_ids.get(pid, ""),
         "country":                    top_country,
         "first_year":                 first_year,
@@ -1542,7 +1581,8 @@ write_csv(
 write_csv(
     CANONICAL / "persons.csv",
     [
-        "person_id", "person_name", "member_id", "player_ids",
+        "person_id", "person_name", "member_id", "legacy_user_id", "legacy_email",
+        "player_ids",
         "country", "first_year", "last_year", "event_count", "placement_count",
         "bap_member", "bap_nickname", "bap_induction_year",
         "fbhof_member", "fbhof_induction_year",
@@ -1552,6 +1592,18 @@ write_csv(
     ],
     persons_out,
 )
+
+# Validation: report population counts for the legacy identity columns.
+# legacy_email must remain blank pending the legacy-site dump; assert this
+# invariant to fail fast if a future change accidentally infers values.
+_pop_member_id      = sum(1 for _r in persons_out if _r.get("member_id", "").strip())
+_pop_legacy_user_id = sum(1 for _r in persons_out if _r.get("legacy_user_id", "").strip())
+_pop_legacy_email   = sum(1 for _r in persons_out if _r.get("legacy_email", "").strip())
+print(f"\nLegacy identity coverage on persons.csv:")
+print(f"  member_id populated      : {_pop_member_id:,} / {len(persons_out):,}")
+print(f"  legacy_user_id populated : {_pop_legacy_user_id:,} / {len(persons_out):,}")
+print(f"  legacy_email populated   : {_pop_legacy_email:,} / {len(persons_out):,}  (must stay 0 pending legacy-site dump)")
+assert _pop_legacy_email == 0, "legacy_email must remain blank; nothing should infer it"
 
 # ── Referential closure: backfill persons missing from persons.csv ─────────────
 # Persons can be absent from persons.csv when their player_ids are not present in
@@ -1584,7 +1636,8 @@ if _missing_pids:
                 _pt51_by_id[_eid] = _row
 
     _persons_csv_fields = [
-        "person_id", "person_name", "member_id", "player_ids",
+        "person_id", "person_name", "member_id", "legacy_user_id", "legacy_email",
+        "player_ids",
         "country", "first_year", "last_year", "event_count", "placement_count",
         "bap_member", "bap_nickname", "bap_induction_year",
         "fbhof_member", "fbhof_induction_year",

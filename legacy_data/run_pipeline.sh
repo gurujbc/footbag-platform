@@ -191,6 +191,7 @@ run_phase_b_mirror_extract() {
     echo "╚══════════════════════════════════════════════════════╝"
     python scripts/extract_clubs.py
     python scripts/extract_club_members.py
+    python scripts/extract_member_usernames.py
     echo ""
 }
 
