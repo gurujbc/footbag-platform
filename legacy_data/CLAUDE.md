@@ -2,7 +2,7 @@
 
 ## Scope
 This subtree prepares canonical data and integrates with the platform DB.
-Do not modify repo-root code, docs, or Claude skills from here.
+Do not modify repo-root code, docs, `.claude/skills/`, or `.claude/rules/` from here.
 For repo-root/platform tasks, defer to repo-root `CLAUDE.md` and `IMPLEMENTATION_PLAN.md`.
 `legacy_data` work follows James's track; cross-track changes require explicit coordination.
 
@@ -14,14 +14,16 @@ For repo-root/platform tasks, defer to repo-root `CLAUDE.md` and `IMPLEMENTATION
 - Structured curated CSVs = authoritative pre-1997 intake
 - Identity lock files are frozen (patch toolchain only)
 
-## Routing (use skills)
-- Full pipeline run → `complete-pipeline`
-- Rebuild / QC / canonical validation → `historical-pipeline`
-- Add pre-1997 source → `promote-curated-source`
-- Workbook work → `workbook-v22`
-- Identity rebuild → `rebuild-identity-pipeline`
-- Alias cleanup → `cleanup-alias-pattern-c`
-- DB mutation safety → `db-write-safety`
+## Routing (use runbooks)
+- Full pipeline run → `runbooks/complete-pipeline.md`
+- Rebuild / QC / canonical validation → `runbooks/historical-pipeline.md`
+- Add pre-1997 source → `runbooks/promote-curated-source.md`
+- Workbook work → `runbooks/workbook-v22.md`
+- Identity rebuild → `runbooks/rebuild-identity-pipeline.md`
+- Alias cleanup → `runbooks/cleanup-alias-pattern-c.md`
+- QC investigation → `runbooks/pipeline-diagnostics.md`
+
+DB mutation safety is enforced as a global rule (`.claude/rules/db-write-safety.md`), not a runbook.
 
 ## Pipeline Invariants
 - AliasResolver is sole identity authority
