@@ -108,7 +108,7 @@ function loadConfig(): AppConfig {
   const rawTrustProxy = process.env.TRUST_PROXY;
   let trustProxy: number | boolean | string;
   if (rawTrustProxy === undefined || rawTrustProxy === '') {
-    trustProxy = isProd ? 2 : 0;
+    trustProxy = isProd ? 'loopback, linklocal, uniquelocal' : 0;
   } else if (/^\d+$/.test(rawTrustProxy)) {
     trustProxy = parseInt(rawTrustProxy, 10);
   } else if (rawTrustProxy === 'true' || rawTrustProxy === 'false') {

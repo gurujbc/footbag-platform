@@ -18,12 +18,23 @@
 services:
 
   # ── nginx reverse proxy ───────────────────────────────────────────────────
+  # Uses the upstream nginx:1.25-alpine image directly (no custom build) so
+  # `docker compose build` does no work on the host for nginx — the staging
+  # Lightsail bundle (nano_3_0, 512 MB RAM) cannot afford an extra build
+  # target without OOM-killing sshd. The entrypoint script is bind-mounted
+  # into /docker-entrypoint.d/ instead of COPY'd into a custom image; the
+  # script uses `sed` (built into Alpine) instead of `envsubst` (which would
+  # require adding the gettext package and re-introducing a custom build).
   nginx:
     image: nginx:1.25-alpine
     ports:
       - "80:80"
+    environment:
+      X_ORIGIN_VERIFY_SECRET: "${X_ORIGIN_VERIFY_SECRET:-}"
+      PUBLIC_BASE_URL: "${PUBLIC_BASE_URL:-http://localhost}"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+      - ./nginx/40-render-nginx-conf.sh:/docker-entrypoint.d/40-render-nginx-conf.sh:ro
     depends_on:
       web:
         condition: service_healthy

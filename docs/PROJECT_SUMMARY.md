@@ -292,7 +292,7 @@ On the site, each meaningful URL corresponds to a real server-rendered page. The
 
 **Static Assets and CDN:**
 
-CSS, JavaScript bundles, images, and fonts are served as static assets via CloudFront CDN using versioned filenames. HTML pages are rendered at the origin; public cacheable pages may be cached briefly at CloudFront, while authenticated/personalized pages and API responses are not cached.
+CSS, JavaScript bundles, images, and fonts are served as static assets via CloudFront CDN using versioned filenames. HTML pages are rendered at the origin and not cached at CloudFront; the Express middleware sets `Cache-Control: private, no-store` on every authenticated response.
 
 Templates reference assets using versioned URLs so that new deployments do not break older pages that are still cached. Old content-hash asset versions are removed after a configurable retention window (default defined in User Stories); exact cleanup mechanism and lifecycle details are specified in the Design Decisions document.
 

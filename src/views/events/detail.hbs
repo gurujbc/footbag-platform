@@ -36,9 +36,9 @@
 
       {{! ── Disciplines ───────────────────────────────────────── }}
       {{#if content.disciplines.length}}
-        <div style="margin-bottom:32px">
+        <div class="mb-8">
           <h2>Disciplines</h2>
-          <ul class="disciplines-list" style="margin-top:12px">
+          <ul class="disciplines-list mt-3">
             {{#each content.disciplines}}
               <li class="discipline-tag">{{name}}{{#if teamTypeLabel}} ({{teamTypeLabel}}){{/if}}</li>
             {{/each}}
@@ -51,24 +51,24 @@
         <h2>Results</h2>
         {{#if content.hasResults}}
           {{#if content.isSparse}}
-            <div class="no-results-notice" style="margin-top:16px">
+            <div class="no-results-notice mt-4">
               We know the data from this event is incomplete but we're showing what we have anyway.
             </div>
           {{/if}}
-          <div style="margin-top:20px">
+          <div class="mt-5">
             {{#each content.resultSections}}
               {{> result-section}}
             {{/each}}
           </div>
         {{else}}
-          <div class="no-results-notice" style="margin-top:16px">
+          <div class="no-results-notice mt-4">
             Results are not yet available.
           </div>
         {{/if}}
       </div>
 
       {{#each navigation.contextLinks}}
-        <div style="margin-top: 40px;">
+        <div class="mt-10">
           <a href="{{href}}" class="btn btn-outline">{{label}}</a>
         </div>
       {{/each}}

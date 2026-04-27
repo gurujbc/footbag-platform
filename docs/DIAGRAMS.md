@@ -337,21 +337,20 @@ Visual aids for understanding the system design. Eight diagrams cover production
   PUBLIC REQUEST  (no session cookie — visitor browsing)
   ↓
 ┌─────────────────────────────────────────────────────────────────────┐
-│  CloudFront edge cache                                              │
-│  Cache hit (~95%) → cached HTML returned  (<100 ms, no origin)      │
-│  Cache miss (~5%) → forward to Lightsail origin                     │
+│  CloudFront default behavior: Managed-CachingDisabled               │
+│  HTML always forwarded to Lightsail origin (no edge caching)        │
 └─────────────────────────────────────────────────────────────────────┘
-  ↓  (cache miss only)
+  ↓
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Controller → EventService.getEvent(eventId, null)                  │
-│  Returns public view; sets Cache-Control: max-age=300               │
-│  (CloudFront caches response; served from edge on next request)     │
+│  Returns public view; emits Cache-Control: max-age=300              │
+│  (browser may cache; CloudFront does not)                           │
 └─────────────────────────────────────────────────────────────────────┘
 
   AUTHENTICATED REQUEST  (session cookie present — logged-in member)
   ↓
 ┌─────────────────────────────────────────────────────────────────────┐
-│  CloudFront forwards to origin  (authenticated = never cached)      │
+│  CloudFront forwards to origin (CachingDisabled applies to all HTML)│
 └─────────────────────────────────────────────────────────────────────┘
   ↓
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -414,10 +413,10 @@ Visual aids for understanding the system design. Eight diagrams cover production
 └─────────────────────────────────────────────────────────────────────┘
 
   Browser: 303 → GET /events/123  (fresh read, new version visible)
-  Other users see update after CDN TTL expires (~5 minutes)
+  Other users see update on next page load (HTML not edge-cached)
 ```
 
-**Caption:** The read path has two distinct cases with different caching semantics. Public requests (no session cookie) benefit from CloudFront edge caching with a 5-minute TTL — 95% of public traffic is served from the edge under 100ms without reaching the origin. Authenticated requests are never cached: they carry personalized view models and must return `Cache-Control: private, no-store` to prevent cross-user data exposure at the edge. The write path uses SQLite ACID transactions for write safety — all database work commits atomically. The 409 stale-form path is a UX reconciliation tool: if a form was loaded before another user changed the entity, the controller detects the version mismatch and shows a diff to reconcile, but this is separate from the database-level write safety that SQLite transactions provide.
+**Caption:** The read path has two distinct cases at the origin. CloudFront's default behavior uses `Managed-CachingDisabled`, so HTML is not cached at the edge regardless of auth state — the cache decision lives entirely at origin. Authenticated requests must return `Cache-Control: private, no-store` from origin to prevent any browser or downstream cache from storing personalized view models. The write path uses SQLite ACID transactions for write safety — all database work commits atomically. The 409 stale-form path is a UX reconciliation tool: if a form was loaded before another user changed the entity, the controller detects the version mismatch and shows a diff to reconcile, but this is separate from the database-level write safety that SQLite transactions provide.
 
 ---
 

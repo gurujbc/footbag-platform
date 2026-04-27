@@ -1,16 +1,5 @@
 {{! /internal/net/review — net enrichment QC / review tool }}
 
-<style>
-.review-edit-row td { padding: 0 0.5rem 0.5rem; background: #f8f8f8; }
-.review-edit-row details summary { cursor: pointer; font-size: 0.85em; color: #666; padding: 0.25rem 0; }
-.review-edit-forms { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 0; }
-.review-inline-form fieldset { border: 1px solid #ddd; border-radius: 4px; padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-end; }
-.review-inline-form legend { font-weight: 600; font-size: 0.85em; }
-.review-inline-form label { display: flex; flex-direction: column; font-size: 0.8em; gap: 0.15rem; }
-.review-inline-form select, .review-inline-form input[type="text"] { font-size: 0.85em; padding: 0.2rem 0.3rem; }
-.review-inline-form button { font-size: 0.8em; padding: 0.3rem 0.6rem; cursor: pointer; }
-</style>
-
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
@@ -198,7 +187,7 @@
     </div>
 
     {{#if content.items}}
-    <div class="records-table-wrap" style="overflow-x:auto">
+    <div class="records-table-wrap">
       <table class="records-table records-table-sm">
         <thead>
           <tr>

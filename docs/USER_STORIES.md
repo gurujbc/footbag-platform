@@ -469,6 +469,7 @@ Success Criteria:
 - After clicking link, user can log in and create profile.
 - Email must be unique across all members including accounts in their deletion grace period (reuse only after the grace period completes and PII is cleared).
 - Registration enforces email uniqueness. If a submitted email belongs to an account currently in its deletion grace period, the response is identical to a successful new registration. No indication is given that the email is reserved, preventing account-existence enumeration via the registration flow.
+- Registration submissions are gated by a Cloudflare Turnstile CAPTCHA verified server-side before any DB read; identical UX whether the email is new, in deletion grace, or already registered.
 - Display names are constrained to prevent homograph attacks (for example: no mixed scripts or confusable characters, and reasonable length limits).
 - New members automatically assigned Tier 0 (free lifetime) status.
 - **Legacy-link check:** After account creation, the system checks whether the registrant’s verified email matches an imported placeholder row’s `legacy_email` or a historical person’s legacy email. If a match is found, the member is prompted inline to confirm the link ("We found a history record, is this you?"). For high-confidence matches (Tier 1 exact name match, Tier 2 known variant match), the prompt defaults to yes (pre-checked). For low-confidence matches (Tier 3 email match but name mismatch), the prompt defaults to no (member must actively opt in). The member’s decision is audit-logged. No admin involvement at registration time; the member is the authority on their own identity.
@@ -503,6 +504,7 @@ Success Criteria:
 
 - Logging in is only allowed after email verification is complete.
 - Login attempts are rate-limited using a simple fixed-window limiter keyed by IP address and email/account identifier. Thresholds, windows, and cooldown durations are Administrator-configurable (safe defaults).
+- Login submissions are gated by a Cloudflare Turnstile CAPTCHA verified server-side before any DB read; identical UX whether credentials are valid, invalid, or unverified.
 - Member sees clear error message for failed login: "Invalid email or password. Please try again.".
 - Member sees success confirmation after login.
 - On successful login, the system issues the authenticated session (HttpOnly, Secure, SameSite=Lax session cookie).
@@ -523,6 +525,7 @@ Success Criteria:
 - Unverified members cannot log in. The login failure response is identical to the wrong-password response (enumeration-safe).
 - Unverified members do not appear in the authenticated member search.
 - Members can request a new verification email by submitting their email address to a resend form. The response is identical regardless of whether an unverified member exists for that address. Resends are rate-limited per normalized email address (safe default).
+- Resend submissions are gated by a Cloudflare Turnstile CAPTCHA verified server-side before any DB read; identical UX whether an unverified member exists for the address or not.
 - If an email is submitted to the registration form and an account already exists for that address, the response is identical to a successful new registration — no new verification email is sent, and no indication is given that the email is already registered.
 - Admins are not involved in verification; the flow is self-service.
 
@@ -538,6 +541,7 @@ Success Criteria:
 - Reset link implemented as a single-use, unguessable token that is invalidated after use or expiration.
 - Password reset responses do not reveal whether an email is registered (enumeration-safe message such as "If an account exists for this email, a password reset link has been sent.").
 - Password reset requests are rate-limited per email address to mitigate abuse (Administrator-configurable threshold and window; safe defaults).
+- Password reset submissions are gated by a Cloudflare Turnstile CAPTCHA verified server-side before any DB read; identical UX whether the email is registered or not.
 - Once used, old password invalidated.
 - Passwords are stored securely using one-way hashing; they are never stored or logged in plaintext.
 - passwordVersion field incremented for immediate token invalidation.
@@ -664,6 +668,7 @@ Success Criteria:
 - If an eligible imported row is found, the system emails a time-limited claim link to that row's legacy email address. The response never reveals whether the identifier matched zero rows, multiple rows, a blocked row, or a row without a usable email address. Recommended message: "If an eligible legacy record was found, a claim email will be sent."
 - The claim link is single-use, time-limited (Administrator-configurable, default 24 hours, keyed by `account_claim_expiry_hours`), and may only be consumed while logged into the same account that initiated the request.
 - Claim initiation and resend are rate-limited per requesting account, per target imported row, and per session/IP.
+- Claim-initiation submissions are gated by a Cloudflare Turnstile CAPTCHA verified server-side before any DB read; identical UX regardless of which match condition (zero rows, multiple rows, blocked row, no usable email) applies.
 - **Name reconciliation step:** Before merge, the system compares the active account's name with the imported row's name:
   - Last-name mismatch: **blocks the merge**. The member must update their display name to match or contact an admin for manual recovery.
   - First-name mismatch: **warns** but allows the member to proceed.

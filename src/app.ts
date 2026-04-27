@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { engine } from 'express-handlebars';
 import { logger } from './config/logger';
 import { config } from './config/env';
@@ -20,12 +21,49 @@ import { countryFlag } from './services/countryUtils';
 export function createApp(): express.Application {
   const app = express();
 
-  // Express trust-proxy setting, driven by TRUST_PROXY env via config.
-  // Production default is 2 (nginx container peer + CloudFront edge);
-  // dev/test default is 0. Operators can override with an integer,
-  // boolean, or subnet list without a code change. Revisit when
-  // CloudFront origin-bypass hardening (IP deviation #12 / 1-F) lands.
+  // Trust XFF only when the immediate peer is a private/loopback IP. Inside
+  // the docker bridge the only inbound path is nginx, which is itself behind
+  // CloudFront's X-Origin-Verify shared secret (terraform/.../cloudfront.tf
+  // + docker/nginx/nginx.conf.template). Prod default is the named-range
+  // string; dev/test defaults to 0.
   app.set('trust proxy', config.trustProxy);
+
+  // Host-header injection is closed at the nginx layer (proxy_set_header Host
+  // ${PUBLIC_HOST}, rendered from PUBLIC_BASE_URL). Express therefore always
+  // sees the canonical host on req.hostname, regardless of which domain the
+  // viewer used (CloudFront default *.cloudfront.net domain, custom CNAME,
+  // future aliases). No app-layer middleware needed.
+
+  // Strict Content-Security-Policy: 'self' for scripts and styles, no inline
+  // execution, no inline event handlers, no framing. Third-party origins are
+  // added only when a template references them — currently i.ytimg.com (YouTube
+  // thumbnail CDN, served as the <img> placeholder before the user clicks the
+  // facade) and www.youtube-nocookie.com (the privacy-friendly embed iframe
+  // loaded after the click). data: is allowed in img-src as a future allowance
+  // for small inline SVG icons (no current consumer). HSTS preload stays off
+  // until the custom domain lands.
+  app.use(helmet({
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc:     ["'self'"],
+        scriptSrc:      ["'self'"],
+        scriptSrcAttr:  ["'none'"],
+        styleSrc:       ["'self'"],
+        imgSrc:         ["'self'", 'data:', 'https://i.ytimg.com'],
+        fontSrc:        ["'self'"],
+        connectSrc:     ["'self'"],
+        frameSrc:       ['https://www.youtube-nocookie.com'],
+        objectSrc:      ["'none'"],
+        baseUri:        ["'self'"],
+        formAction:     ["'self'"],
+        frameAncestors: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    hsts: { maxAge: 15552000, includeSubDomains: true, preload: false },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  }));
 
   // ── Static assets ────────────────────────────────────────────────────────
   // Served from src/public/ so .hbs templates can reference /css/style.css etc.

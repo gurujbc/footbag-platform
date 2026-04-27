@@ -79,7 +79,7 @@ Correct sequencing when skills compose: `extend-service-contract` → `add-publi
 
 Promote durable rules to hooks or CLAUDE.md.
 
-**High bar for saving.** Do not save what can be re-derived: code patterns, file paths, naming conventions, task state, doc mirrors, pointers to docs CLAUDE.md already routes to, resolved deviations, or one-incident observations. When in doubt, do not save.
+**High bar for saving.** Do not save what can be re-derived: code patterns, file paths, naming conventions, task state, doc mirrors, pointers to docs CLAUDE.md already routes to, resolved deviations, or one-incident observations. **Search existing memories and project rules before saving; if the lesson is already covered, do not add a new entry.** When in doubt, do not save.
 
 ## Hooks
 

@@ -19,9 +19,9 @@
     {{/if}}
 
     {{#if content.candidates}}
-      <div class="card" style="margin-bottom:24px;">
-        <p style="margin:0 0 8px; font-weight:500;">Possible matches for your name:</p>
-        <ul style="margin:0; padding-left:20px;">
+      <div class="card mb-6">
+        <p class="m-0 mb-2 fw-500">Possible matches for your name:</p>
+        <ul class="m-0 pl-5">
           {{#each content.candidates}}
             <li><a href="/history/{{this.personId}}/claim">{{this.personName}}</a></li>
           {{/each}}
@@ -45,7 +45,7 @@
       <button type="submit" class="btn btn-primary">Look up legacy account</button>
     </form>
 
-    <p style="margin-top:24px"><a href="/members/{{user.slug}}">Back to profile</a></p>
+    <p class="mt-6"><a href="/members/{{user.slug}}">Back to profile</a></p>
   </section>
 
 </div>

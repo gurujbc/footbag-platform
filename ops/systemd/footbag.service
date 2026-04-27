@@ -30,15 +30,20 @@ WorkingDirectory=/srv/footbag
 # Created manually on the host during bootstrap (root-owned, 0600).
 EnvironmentFile=/srv/footbag/env
 
-# No registry yet — build images at deploy time with `docker compose build`.
-# No ExecStartPre pull step.
+# Images must already be present on the host before this unit starts (built
+# on the operator workstation by deploy-code.sh / deploy-rebuild.sh, then
+# transferred via docker save | docker load). The unit refuses to build at
+# start time (--no-build): a build at boot can OOM small instances and wedge
+# the host before sshd is responsive. If an image is missing, the unit fails
+# fast with a clear error rather than silently triggering a build.
 
-# Start the stack; --remove-orphans cleans up containers from old service defs
+# Start the stack; --remove-orphans cleans up containers from old service defs.
+# --no-build forbids boot-time image builds (see comment above).
 ExecStart=/usr/bin/docker compose \
     --env-file /srv/footbag/env \
     -f docker/docker-compose.yml \
     -f docker/docker-compose.prod.yml \
-    up --detach --remove-orphans
+    up --detach --remove-orphans --no-build
 
 # Graceful stop — waits up to 30s for in-flight requests to complete
 ExecStop=/usr/bin/docker compose \
@@ -47,12 +52,13 @@ ExecStop=/usr/bin/docker compose \
     -f docker/docker-compose.prod.yml \
     down --timeout 30
 
-# Reload without downtime (nginx reload + rolling restart for web)
+# Reload without downtime (nginx reload + rolling restart for web).
+# --no-build for the same reason as ExecStart.
 ExecReload=/usr/bin/docker compose \
     --env-file /srv/footbag/env \
     -f docker/docker-compose.yml \
     -f docker/docker-compose.prod.yml \
-    up --detach --remove-orphans
+    up --detach --remove-orphans --no-build
 
 Restart=on-failure
 RestartSec=10s

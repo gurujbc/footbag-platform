@@ -24,7 +24,7 @@
   <form method="GET" action="/internal/persons/qc" class="filter-bar">
     <label>
       Category
-      <select name="category" onchange="this.form.submit()">
+      <select name="category" data-auto-submit>
         {{#each content.filterOptions.categories}}
         <option value="{{value}}"{{#if (eq value ../content.activeFilters.category)}} selected{{/if}}>{{label}}</option>
         {{/each}}
@@ -32,7 +32,7 @@
     </label>
     <label>
       Source
-      <select name="source" onchange="this.form.submit()">
+      <select name="source" data-auto-submit>
         {{#each content.filterOptions.sources}}
         <option value="{{value}}"{{#if (eq value ../content.activeFilters.source)}} selected{{/if}}>{{label}}</option>
         {{/each}}
@@ -74,7 +74,7 @@
   <section class="content-section">
     <h2>Flagged Persons ({{content.itemCount}})</h2>
     {{#if content.items.length}}
-    <div class="records-table-wrap" style="overflow-x:auto">
+    <div class="records-table-wrap">
       <table class="records-table records-table-sm">
         <thead>
           <tr>
@@ -95,7 +95,7 @@
             <td><code>{{person_name}}</code></td>
             <td>{{country}}</td>
             <td>{{source}}</td>
-            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{aliases}}">{{aliases}}</td>
+            <td class="truncate-50" title="{{aliases}}">{{aliases}}</td>
             <td>{{detail}}</td>
           </tr>
           {{/each}}

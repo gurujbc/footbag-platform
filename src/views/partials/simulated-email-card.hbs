@@ -3,18 +3,6 @@
     messages), sandbox (one-line notice). Production renders nothing because
     the service returns null. }}
 
-<style>
-.sec-card { border: 1px solid #d0d7de; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; background: #f6f8fa; }
-.sec-card-dev { border-left: 4px solid #1f883d; }
-.sec-card-sandbox { border-left: 4px solid #bf8700; background: #fff8c5; }
-.sec-card h2 { margin-top: 0; font-size: 1.1rem; }
-.sec-card .sec-body { white-space: pre-wrap; max-height: 200px; overflow: auto; margin: 0; font-size: 0.85em; }
-.sec-card .sec-table td { vertical-align: top; }
-.sec-card .sec-msgid { font-size: 0.75em; color: #656d76; }
-.sec-card ul { margin: 0.25rem 0 0.5rem 1.25rem; }
-.sec-card code { background: rgba(0,0,0,0.05); padding: 0 0.25rem; border-radius: 3px; }
-</style>
-
 {{#if (eq mode "dev")}}
 <section class="sec-card sec-card-dev" aria-label="Simulated email (dev)">
   <h2>Simulated email (dev)</h2>
@@ -24,7 +12,7 @@
     Restarting the server clears the buffer.
   </p>
   {{#if messages.length}}
-    <div class="records-table-wrap" style="overflow-x:auto">
+    <div class="records-table-wrap">
       <table class="records-table records-table-sm sec-table">
         <thead>
           <tr>

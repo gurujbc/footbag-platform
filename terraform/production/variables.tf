@@ -62,3 +62,13 @@ variable "state_bucket_suffix" {
   type        = string
   # TODO: Must match the suffix used when provisioning terraform/shared
 }
+
+variable "operator_cidrs" {
+  description = "CIDR ranges permitted to SSH into the Lightsail instance. Set in tfvars; do not leave empty."
+  type        = list(string)
+}
+
+variable "lightsail_origin_dns" {
+  description = "Resolvable DNS hostname used as the CloudFront custom origin. Production must use a real A record (e.g. origin.footbag.org); CloudFront does not accept raw IPs."
+  type        = string
+}

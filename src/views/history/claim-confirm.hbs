@@ -10,26 +10,26 @@
 <div class="wrapper">
 
   <section>
-    <div class="card" style="margin-bottom:24px;">
-      <p style="margin:0; font-weight:500;">Legacy record: {{content.displayName}}</p>
+    <div class="card mb-6">
+      <p class="m-0 fw-500">Legacy record: {{content.displayName}}</p>
       {{#if content.legacyMemberId}}
-        <p style="margin:4px 0 0; color:#666;">Legacy member ID: {{content.legacyMemberId}}</p>
+        <p class="m-0 mt-1 text-muted">Legacy member ID: {{content.legacyMemberId}}</p>
       {{/if}}
       {{#if content.country}}
-        <p style="margin:4px 0 0; color:#666;">Country: {{content.country}}</p>
+        <p class="m-0 mt-1 text-muted">Country: {{content.country}}</p>
       {{/if}}
       {{#if content.isHof}}
-        <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">Hall of Fame member</p>
+        <p class="m-0 mt-1 fw-500 text-secondary">Hall of Fame member</p>
       {{/if}}
       {{#if content.isBap}}
-        <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">BAP member</p>
+        <p class="m-0 mt-1 fw-500 text-secondary">BAP member</p>
       {{/if}}
     </div>
 
     <p>This will link the legacy identity and honor status to your current account. Your current login credentials, display name, and any existing profile data will not be changed.</p>
 
-    <div class="card" style="margin:16px 0; border-left: 4px solid #2563eb; background: #eff6ff;">
-      <p style="margin:0; color:#1e40af;">Early access: This claim is processed immediately without email verification. A future update will require you to verify ownership via the legacy email address before the claim is finalized.</p>
+    <div class="notice-card notice-card--info-blue my-4">
+      <p class="m-0">Early access: This claim is processed immediately without email verification. A future update will require you to verify ownership via the legacy email address before the claim is finalized.</p>
     </div>
 
     <form method="POST" action="/history/claim/confirm">
@@ -37,7 +37,7 @@
       <button type="submit" class="btn btn-primary">Confirm and link legacy account</button>
     </form>
 
-    <p style="margin-top:16px"><a href="/history/claim">Cancel</a></p>
+    <p class="mt-4"><a href="/history/claim">Cancel</a></p>
   </section>
 
 </div>

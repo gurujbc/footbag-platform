@@ -26,6 +26,9 @@ services:
   nginx:
     restart: always
     logging: *log-rotation
+    environment:
+      X_ORIGIN_VERIFY_SECRET: ${X_ORIGIN_VERIFY_SECRET:?must be set in /srv/footbag/env}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?must be set in /srv/footbag/env}
     deploy:
       resources:
         limits:
@@ -48,6 +51,7 @@ services:
       - /root/.aws:/root/.aws:ro
     environment:
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      TRUST_PROXY: "loopback, linklocal, uniquelocal"
       SESSION_SECRET: ${SESSION_SECRET}
       AWS_PROFILE: ${AWS_PROFILE}
       AWS_REGION: ${AWS_REGION}

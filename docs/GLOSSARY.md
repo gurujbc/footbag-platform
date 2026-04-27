@@ -24,7 +24,7 @@
 
 **CLI (Command Line Interface)**: Text-based interface for interacting with software through typed commands. Developers and administrators use CLI tools to manage Footbag.org infrastructure, run deployments, and execute maintenance tasks.
 
-**CloudFront**: Amazon's content delivery network that serves Footbag.org content from 400+ edge locations worldwide, achieving 95% cache hit ratio with sub-100ms response times for cached content.
+**CloudFront**: Amazon's content delivery network that serves Footbag.org from 400+ edge locations worldwide. CloudFront edge-caches static assets (CSS, JS, images, fonts) and user-uploaded media; HTML responses are routed to the Lightsail origin for rendering and not cached at the edge.
 
 **CloudTrail**: AWS logging service that records all API calls to AWS services for security analysis and compliance. Footbag.org enables CloudTrail for Parameter Store access (tracking who retrieved voting encryption keys and when) and for backup/audit bucket operations.
 

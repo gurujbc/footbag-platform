@@ -73,7 +73,7 @@ This guide helps contributors do different things: understand how the initial pu
   - [7.4 Reliability and recovery](#74-reliability-and-recovery)
   - [7.5 Runtime configuration maturity](#75-runtime-configuration-maturity)
   - [7.6 Monitoring maturity](#76-monitoring-maturity)
-  - [7.7 Delivery maturity beyond on-host builds](#77-delivery-maturity-beyond-on-host-builds)
+  - [7.7 Delivery maturity — registry-backed images](#77-delivery-maturity--registry-backed-images)
 - [8. Path H — Runtime AWS identity and transactional email activation](#8-path-h--runtime-aws-identity-and-transactional-email-activation)
   - [8.1 Why this path exists](#81-why-this-path-exists)
   - [8.2 Scope](#82-scope)
@@ -700,7 +700,8 @@ The repository shape remains the right mental map:
 │  ├─ worker/
 │  │  └─ Dockerfile
 │  ├─ nginx/
-│  │  └─ nginx.conf
+│  │  ├─ nginx.conf.template
+│  │  └─ 40-render-nginx-conf.sh
 │  ├─ docker-compose.yml
 │  └─ docker-compose.prod.yml
 ├─ ops/
@@ -1689,11 +1690,11 @@ After first success, these simplifications are still in place:
 
 - no final custom domain or ACM certificate yet
 - the default CloudFront `*.cloudfront.net` URL is still in use
-- `/srv/footbag/env` is still managed manually
+- `/srv/footbag/env` is still mostly operator-managed; the deploy remote-half automatically reconciles `X_ORIGIN_VERIFY_SECRET` (from SSM) and `FOOTBAG_ENV` (from the deploy target alias) on every run
 - runtime AWS credentials have been added for the app-runtime IAM identity (see Path H)
 - some monitoring is intentionally deferred
 - automated DB backup/restore is not yet closed
-- images are still built on-host rather than pulled from a registry
+- images are built on the operator workstation and shipped to the host via `docker save | docker load` rather than pulled from a registry
 - maintenance-page behavior is not truly production-grade yet
 - CloudFront maintenance is not reliable until OAC, ordered cache behavior, and origin-bypass protection are added (accepted temporary deviation)
 
@@ -1722,8 +1723,8 @@ The current staging model still includes accepted temporary shortcuts.
 
 Examples:
 
-- `/srv/footbag/env` remains manually managed on the host
-- the host still builds Docker images locally rather than pulling from a registry
+- `/srv/footbag/env` remains mostly operator-managed (the deploy remote-half auto-syncs `X_ORIGIN_VERIFY_SECRET` and `FOOTBAG_ENV`)
+- workstation builds Docker images and ships them to the host via `docker save | docker load`; no image registry yet (target: ECR per §6.6)
 - staging data remains disposable for the destructive schema/dev deploy path
 - public-edge hardening, durable backup/restore, and mature monitoring are still not complete
 
@@ -1818,7 +1819,7 @@ Use `scripts/deploy-migrate.sh` for non-destructive schema or data changes again
 
 Do not teach manual `scp` + `ssh cp` database replacement as the normal workflow. The destructive staging/dev DB-replacement path is handled by `scripts/deploy-rebuild.sh`.
 
-Why both code-deploy and rebuild scripts still build on-host: the current runtime model still uses `docker compose build` on the Lightsail host. There is no image registry in use yet. The future registry-based path belongs in §6.6.
+Why both code-deploy and rebuild scripts build on the operator workstation, not on the host: the host (nano_3_0, 512 MB) cannot fit a parallel `docker compose build` (see AWS_PROJECT_SPECIFICS §22.5). Scripts build locally and transfer images via `docker save | docker load`. The future registry-based path (workstation → ECR → host pull) belongs in §6.6.
 
 #### What `scripts/deploy-code.sh` does, command by command, and why
 
@@ -1843,8 +1844,8 @@ Why both code-deploy and rebuild scripts still build on-host: the current runtim
 7. Reinstalls `ops/systemd/footbag.service` and runs `systemctl daemon-reload`.
    Why: keep the installed unit aligned with repo changes.
 
-8. Builds images on-host with `docker compose --env-file /srv/footbag/env -f docker/docker-compose.yml -f docker/docker-compose.prod.yml build`.
-   Why: there is still no registry-backed pull path.
+8. Builds images on the operator workstation with `docker compose -f docker/docker-compose.yml build`, then ships them via `docker save docker-web docker-worker | ssh REMOTE 'sudo -S -p "" docker load'`.
+   Why: the host (nano_3_0) cannot fit a parallel docker build (AWS_PROJECT_SPECIFICS §22.5). The systemd unit's `ExecStart` uses `--no-build`; restart loads the just-shipped images.
 
 9. Restarts `footbag` and checks service status.
    Why: the deploy is not complete until the runtime actually restarts.
@@ -1893,8 +1894,8 @@ Why both code-deploy and rebuild scripts still build on-host: the current runtim
 13. Verifies the copied DB again on the host with `sqlite3`.
     Why: confirm the exact host-mounted DB is valid before restart.
 
-14. Reinstalls the systemd unit, rebuilds images on-host, and restarts `footbag`.
-    Why: finish the deploy the same way the routine path does.
+14. Builds images on the operator workstation, ships them via `docker save | ssh sudo docker load`, reinstalls the systemd unit, and restarts `footbag` (whose `ExecStart` uses `--no-build` to load the just-shipped images).
+    Why: finish the deploy the same way the routine path does, without ever invoking `docker build` on the host.
 
 15. Dumps `systemctl`, `journalctl`, and compose diagnostics automatically if restart fails.
     Why: destructive deploy failures must surface actionable diagnostics immediately.
@@ -1933,7 +1934,7 @@ The deploy trigger remains a local manual step by design. GitHub-hosted runners 
 
 #### Before each deploy: check the env file
 
-The host env file `/srv/footbag/env` is never overwritten by any deploy script and remains the runtime source of truth. Review it before any deploy that introduces a new required environment variable or changes runtime behavior.
+The host env file `/srv/footbag/env` is the runtime source of truth. The deploy remote-half writes two keys at every deploy (`X_ORIGIN_VERIFY_SECRET`, mirrored from SSM; `FOOTBAG_ENV`, derived from the deploy target alias). Every other key is operator-managed and untouched by the deploy. Review the operator-managed keys before any deploy that introduces a new required environment variable or changes runtime behavior.
 
 At minimum, the host env file must define:
 
@@ -1965,7 +1966,7 @@ Optionally run Docker parity when the change touches runtime shape, static asset
 Use this when the host DB should remain untouched.
 
 ```bash
-bash scripts/deploy-code.sh <password>
+bash deploy_to_aws.sh --code-only
 ```
 
 This path preserves `/srv/footbag/env` and the live DB.
@@ -1975,7 +1976,7 @@ This path preserves `/srv/footbag/env` and the live DB.
 Use this when the change requires rebuilding and replacing the host DB from scratch and staging/dev data is still disposable.
 
 ```bash
-bash scripts/deploy-rebuild.sh <password>
+bash deploy_to_aws.sh --with-db --db-only
 ```
 
 This path preserves `/srv/footbag/env` but intentionally destroys and replaces the live host DB.
@@ -1985,8 +1986,8 @@ This path preserves `/srv/footbag/env` but intentionally destroys and replaces t
 Use this once the project reaches the point where host data must be preserved. Not yet implemented.
 
 ```bash
-bash scripts/deploy-migrate.sh <password>
-# exits with error until implemented — see Path G §7.4
+bash deploy_to_aws.sh --migrate
+# `--migrate` mode not yet wired into scripts/deploy-to-aws.sh; see Path G §7.4
 ```
 
 Do not document manual `scp` + `ssh sudo cp` DB-replacement procedures. Those manual destructive flows are superseded by `scripts/deploy-rebuild.sh`.
@@ -2044,7 +2045,7 @@ Check out the last known-good commit and re-run the deploy script:
 
 ```bash
 git checkout <known-good-ref>
-bash scripts/deploy-code.sh <password>
+bash deploy_to_aws.sh --code-only
 ```
 
 The database is not touched by `scripts/deploy-code.sh`.
@@ -2055,14 +2056,14 @@ Once the project reaches the point where host data must be preserved, replace th
 
 ### 6.6 Future: ECR registry and automated image builds
 
-When you are ready to move image builds out of the Lightsail host:
+When you are ready to move image builds off the operator workstation and into CI:
 
 1. Create ECR repositories for `footbag-web` and `footbag-worker`.
 2. Create a GitHub Actions IAM user `github-actions-ecr` scoped to ECR push only. Add access keys as GitHub repository secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `ECR_REGISTRY`).
 3. Add a `build-push` job to `ci.yml` that runs after tests pass on `main`: builds images and pushes to ECR with `${{ github.sha }}` and `latest` tags.
 4. Update `docker/docker-compose.prod.yml` to reference ECR image URIs instead of build directives.
 5. Create a host IAM user `staging-ecr-pull` scoped to ECR read on those repositories only. Add its credentials to `/srv/footbag/env`.
-6. Update `deploy-code.sh` and `deploy-rebuild.sh` to run `docker compose pull` instead of `docker compose build`.
+6. Update `deploy-code.sh` and `deploy-rebuild.sh` to run `docker compose pull` against ECR instead of the current `docker save | docker load` ship path (the workstation `docker compose build` step is also removed).
 
 After this, the deploy scripts become much faster. The remaining manual trigger (step 7 in §6.4) can only be eliminated by replacing Lightsail with EC2 and using SSM Session Manager (no IP restriction), or by running a self-hosted GitHub Actions runner on the same network as the host.
 
@@ -2088,10 +2089,10 @@ If CloudFront pass 2 is not already complete, finish it here rather than treatin
 
 #### Phase A: Deploy code to staging host first
 
-The nginx config must land before CloudFront is enabled. CloudFront strips `X-Forwarded-Proto` from origin requests but sends `CloudFront-Forwarded-Proto` instead. The `map` directive in `docker/nginx/nginx.conf` translates this to `X-Forwarded-Proto` so the app sets the session cookie `Secure` flag correctly. Without this, login cookies would lack the `Secure` flag when accessed through CloudFront. When accessed directly (no CloudFront header), the map falls back to `$scheme`.
+The nginx config must land before CloudFront is enabled. CloudFront strips `X-Forwarded-Proto` from origin requests but sends `CloudFront-Forwarded-Proto` instead. The `map` directive in `docker/nginx/nginx.conf.template` (rendered into `/etc/nginx/nginx.conf` at container startup by `40-render-nginx-conf.sh`) translates this to `X-Forwarded-Proto` so the app sets the session cookie `Secure` flag correctly. Without this, login cookies would lack the `Secure` flag when accessed through CloudFront. When accessed directly (no CloudFront header), the map falls back to `$scheme`.
 
 ```bash
-bash scripts/deploy-code.sh <password>
+bash deploy_to_aws.sh --code-only
 ```
 
 Verify the site still works via direct IP:
@@ -2320,73 +2321,36 @@ Rollback: comment the ACM and Route 53 resources back, restore `cloudfront_defau
 
 ##### Enforce origin-bypass protection (X-Origin-Verify)
 
-Until this step is complete, direct-to-origin traffic at `http://<lightsail-static-ip>/` bypasses CloudFront entirely. Origin-bypass protection places a shared secret header on every CloudFront → origin request and makes nginx reject requests that lack it.
+Origin-bypass protection injects a shared secret on every CloudFront-to-origin request and rejects (444, silent close) any origin request that lacks the matching header. Direct-to-Lightsail-IP probes are also rejected at the Lightsail firewall: port 80 ingress is pinned to the CloudFront origin-facing prefix list via `data.http.aws_ip_ranges` in `terraform/staging/lightsail.tf`.
 
-1. Generate the shared secret:
+Components: `random_id.origin_verify_secret` Terraform resource generates a 64-character hex value; `aws_ssm_parameter.origin_verify_secret` (SecureString) stores it (`terraform/staging/ssm.tf`); CloudFront `custom_header` reads it via a `data` block (`terraform/staging/cloudfront.tf`); nginx enforces it via the gate rendered into `/etc/nginx/nginx.conf` from `nginx.conf.template` by `40-render-nginx-conf.sh` at container startup (`docker/nginx/`); the deploy remote-half mirrors the SSM value into `/srv/footbag/env` so nginx and CloudFront always agree.
 
-   ```bash
-   openssl rand -hex 32
-   ```
+Initial activation: a single `terraform apply` plus one deploy. No two-apply ceremony, no manual `aws ssm put-parameter`, no manual env-file mirror.
 
-   Keep this value in the operator vault; it must match in CloudFront and on the host. Store an optional reference copy in SSM at `/footbag/staging/secrets/origin_verify_secret`.
+```bash
+cd terraform/staging
+terraform init -upgrade        # picks up the random + http providers
+terraform apply
+bash deploy_to_aws.sh --code-only
+```
 
-2. Declare the sensitive variable in `terraform/staging/variables.tf`:
+Validation:
 
-   ```hcl
-   variable "origin_verify_secret" {
-     description = "Shared secret between CloudFront and the origin's nginx; rejects direct-to-origin traffic."
-     type        = string
-     sensitive   = true
-   }
-   ```
+```bash
+STATIC_IP=$(cd terraform/staging && terraform output -raw lightsail_static_ip)
+CF_DOMAIN=$(cd terraform/staging && terraform output -raw cloudfront_domain)
 
-3. Provide the value via a non-committed source (gitignored tfvars file, or `TF_VAR_origin_verify_secret` exported in the shell before `terraform plan`). Do not commit it to `terraform.tfvars`.
+# Through CloudFront: expect HTTP/2 200.
+curl -I "https://${CF_DOMAIN}/health/ready"
 
-4. Add the header to the CloudFront origin in `terraform/staging/cloudfront.tf`. Inside the `origin` block for `lightsail-origin`, add a `custom_header` block:
+# Direct to the Lightsail static IP: expect TCP RST / curl exit 7
+# ("Failed to connect") at the firewall layer. If TCP completes, expect
+# curl exit 52 ("Empty reply from server") at the nginx layer (444 from
+# the X-Origin-Verify gate).
+curl -I "http://${STATIC_IP}/health/ready"
+```
 
-   ```hcl
-   custom_header {
-     name  = "X-Origin-Verify"
-     value = var.origin_verify_secret
-   }
-   ```
-
-5. Add the secret to the host's runtime env (the running app does not read it; nginx inside the web container does):
-
-   ```bash
-   ssh footbag-staging
-   sudo bash -c 'printf "\nX_ORIGIN_VERIFY_SECRET=<paste-the-secret>\n" >> /srv/footbag/env'
-   ```
-
-6. Enforce the header in `docker/nginx/nginx.conf`. In the server block that listens on port 80, before any `proxy_pass` to the app, add:
-
-   ```nginx
-   # Reject direct-to-origin bypass. CloudFront sets X-Origin-Verify; direct callers do not.
-   if ($http_x_origin_verify != "${X_ORIGIN_VERIFY_SECRET}") {
-     return 403;
-   }
-   ```
-
-   The `${X_ORIGIN_VERIFY_SECRET}` substitution requires nginx to see the variable at config-evaluation time. Use nginx's official `envsubst`-on-templates entrypoint (rename `nginx.conf` to `nginx.conf.template` and list `X_ORIGIN_VERIFY_SECRET` in `NGINX_ENVSUBST_TEMPLATE_SUFFIX`), or an equivalent templating step in the container build.
-
-7. Plan and apply the terraform change, then deploy the code and nginx update:
-
-   ```bash
-   cd terraform/staging && terraform plan -out=tfplan && terraform apply tfplan
-   bash scripts/deploy-code.sh <password>
-   ```
-
-8. Validate enforcement:
-
-   ```bash
-   # Through CloudFront: expect 200.
-   curl -I https://<domain>/health/ready
-
-   # Direct to the Lightsail static IP: expect 403.
-   curl -I http://<lightsail-static-ip>/health/ready
-   ```
-
-   The direct call must fail with 403. A 200 means nginx is not enforcing the header and the procedure is incomplete.
+Production cutover follows the same sequence in `terraform/production/`. Rotation procedure: see DEVOPS_GUIDE.md §5.9.
 
 ##### Provision the maintenance page (S3 + OAC)
 
@@ -2438,15 +2402,10 @@ The `maintenance` S3 bucket already exists (`aws_s3_bucket.maintenance` in `terr
      viewer_protocol_policy = "redirect-to-https"
      allowed_methods        = ["GET", "HEAD"]
      cached_methods         = ["GET", "HEAD"]
+     compress               = true
 
-     forwarded_values {
-       query_string = false
-       cookies { forward = "none" }
-     }
-
-     min_ttl     = 0
-     default_ttl = 60
-     max_ttl     = 300
+     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
    }
    ```
 
@@ -2588,7 +2547,7 @@ The operator IAM user initially holds `AdministratorAccess` for bootstrap. After
    - `terraform plan` and `terraform apply` on a no-op change.
    - `aws s3 ls` on each project bucket.
    - `aws cloudfront list-distributions`.
-   - `bash scripts/deploy-code.sh <password>`.
+   - `bash deploy_to_aws.sh --code-only`.
 
 5. When the above is green, detach `AdministratorAccess`:
 
@@ -3022,16 +2981,16 @@ CloudWatch alarms are only useful if the operator receives them. Confirm the pat
 
 Record the CloudWatch dashboard URL, the `/health/live` and `/health/ready` URLs through CloudFront, and the confirmed SNS subscription address in operator notes. These are the first-check locations when an alarm fires.
 
-### 7.7 Delivery maturity beyond on-host builds
+### 7.7 Delivery maturity — registry-backed images
 
-The current deploy scripts still rely on on-host image builds.
+The current deploy scripts build on the operator workstation and ship images via `docker save | docker load`. This works but couples deploys to the operator's machine.
 
 Remaining work:
 
-- move image builds into CI
+- move image builds into CI (GitHub Actions)
 - publish images to a registry such as ECR
-- change the host deploy path from `docker compose build` to `docker compose pull`
-- keep the deploy scripts aligned with that future registry-backed flow
+- change the deploy path from `docker save | docker load` to `docker compose pull` against ECR
+- keep the deploy scripts aligned with that registry-backed flow
 
 This is the natural handoff point from onboarding into the longer-lived operational guidance in `docs/DEVOPS_GUIDE.md`.
 
@@ -3738,7 +3697,7 @@ Path I is complete when all five validation steps pass. Production activation is
 - Docker parity skipped entirely before AWS work
 - nginx not fronting the web container correctly
 - DB mount path wrong
-- `docker compose pull` used instead of `docker compose build` — no registry yet; images are built locally (accepted temporary deviation)
+- `docker compose pull` used on host instead of the `docker save | docker load` ship path — no registry yet; images are built on the workstation and shipped (accepted temporary deviation, target: ECR per §6.6)
 
 #### AWS/bootstrap mistakes
 
@@ -3768,7 +3727,6 @@ Path I is complete when all five validation steps pass. Production activation is
   the instance); do not change these to match
 - skipping or mis-sequencing the two-pass CloudFront bootstrap
 - running `sudo dnf install -y docker-compose-plugin` without first adding the Docker CE repo — the package is not in Amazon Linux 2023 default repos
-- running `docker compose pull` instead of `docker compose build` when using locally built images
 - SSH to the Lightsail instance timing out despite correct `operator_cidrs` and a running instance — some ISPs block outbound port 22 to AWS EC2 IP ranges; use `-p 2222` and the Lightsail browser SSH console to configure sshd if needed (see §4.4 note and §4.7 step 1)
 - Claude Code hooks failing with a PreToolUse hook error on every Bash call — `jq` is required by the hook scripts; install with `sudo apt-get install -y jq`
 

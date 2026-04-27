@@ -1,6 +1,10 @@
 (function () {
   var container = document.getElementById('clubs-map');
-  var data = window.__CLUBS_MAP_DATA__;
+  var dataNode = document.getElementById('clubs-map-data');
+  var data = null;
+  if (dataNode) {
+    try { data = JSON.parse(dataNode.textContent); } catch (_e) { data = null; }
+  }
   if (!container || !data || !data.length) return;
 
   var tooltip = document.createElement('div');

@@ -29,10 +29,10 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
   cat <<'USAGE'
-Usage: bash scripts/deploy-to-aws.sh <password> <mode flags> [options]
+Usage: bash deploy_to_aws.sh <mode flags> [options]    (top-level wrapper, recommended)
+   or: < <operator credential file> bash scripts/deploy-to-aws.sh <mode flags> [options]
 
-Args:
-  <password>     Sudo password for the footbag account on the staging host.
+Reads sudo password from stdin (line 1).
 
 Mode flags (exactly one required):
 
@@ -82,15 +82,36 @@ Env overrides:
                                  deploy-rebuild.sh.
 
 Examples:
-  bash scripts/deploy-to-aws.sh <pass> --code-only
-  bash scripts/deploy-to-aws.sh <pass> --with-db --db-only
-  bash scripts/deploy-to-aws.sh <pass> --with-db --from-csv
-  bash scripts/deploy-to-aws.sh <pass> --with-db --from-mirror --skip-tests
-  bash scripts/deploy-to-aws.sh <pass> --with-db --skip-local-data --dry-run
+  bash deploy_to_aws.sh --code-only
+  bash deploy_to_aws.sh --with-db --db-only
+  bash deploy_to_aws.sh --with-db --from-csv
+  bash deploy_to_aws.sh --with-db --from-mirror --skip-tests
+  bash deploy_to_aws.sh --with-db --skip-local-data --dry-run
 
 Safety: this orchestrator does not choose a default deploy mode. If you
 supply no mode flag it errors out. Destructive DB replacement requires
 explicit --with-db.
+
+First-time setup (do once per env after this branch lands):
+  Origin-verify secret is now Terraform-managed (random_id) and the deploy
+  pulls the value from SSM at run time. Workstation steps:
+
+    cd terraform/staging                # or terraform/production
+    terraform init -upgrade             # picks up new random + http providers
+    terraform apply                     # writes random_id-generated secret
+                                        # to SSM; refreshes CloudFront origin
+                                        # custom_header; pins port 80 ingress
+                                        # to CloudFront prefix list
+
+  Then run a deploy as usual. The remote-half automatically:
+    - asserts /srv/footbag/env is root:root 600,
+    - verifies docker-loaded image IDs match what was just built,
+    - reconciles FOOTBAG_ENV (auto-derived from DEPLOY_TARGET),
+    - fetches X_ORIGIN_VERIFY_SECRET from SSM and rewrites /srv/footbag/env.
+
+  No manual /srv/footbag/env edits, no manual `aws ssm put-parameter`, no
+  manual SSH known_hosts pre-pop. If a deploy fails with a "TODO-..." secret
+  message, terraform apply was not run since this branch landed.
 USAGE
 }
 
@@ -99,7 +120,6 @@ if [[ $# -lt 1 ]]; then
   exit 1
 fi
 
-PASSWORD=""
 DEPLOY_MODE=""
 DB_SOURCE=""
 SKIP_TESTS_FLAG="no"
@@ -140,18 +160,27 @@ for arg in "$@"; do
       exit 1
       ;;
     *)
-      [[ -z "$PASSWORD" ]] || { echo "ERROR: unexpected positional argument '$arg'" >&2; exit 1; }
-      PASSWORD="$arg"
+      echo "ERROR: unexpected positional argument '$arg'" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
       ;;
   esac
 done
 
-if [[ -z "$PASSWORD" ]]; then
-  echo "ERROR: password required as first positional argument" >&2
+if [[ -t 0 ]]; then
+  echo "ERROR: must receive sudo password on stdin." >&2
+  echo "       Run via: bash deploy_to_aws.sh ..." >&2
   echo "" >&2
   usage >&2
   exit 1
 fi
+
+# NOTE: do NOT consume stdin here. exec_step inherits stdin and forwards it
+# to the leaf, which forwards through its own ssh stdin to the remote sudo -S.
+# Loading the password into a shell variable would expose it to memory
+# scraping by same-uid processes; piping through unchanged keeps the password
+# only in unnamed kernel pipes.
 
 if [[ -z "$DEPLOY_MODE" ]]; then
   echo "ERROR: no deploy mode specified (use --code-only or --with-db)" >&2
@@ -179,12 +208,14 @@ run_step() {
     echo "    DRY RUN: would run: $*"
     return 0
   fi
-  "$@"
+  # Local DB-prep steps must not consume the password from this orchestrator's
+  # stdin; redirect from /dev/null so the password remains for exec_step.
+  "$@" </dev/null
 }
 
 exec_step() {
   if [[ "$DRY_RUN" == "yes" ]]; then
-    echo "    DRY RUN: would exec: $*"
+    echo "    DRY RUN: would run: $*"
     if [[ -n "${SKIP_DB_REBUILD:-}" ]]; then
       echo "             with SKIP_DB_REBUILD=$SKIP_DB_REBUILD"
     fi
@@ -193,7 +224,11 @@ exec_step() {
     fi
     exit 0
   fi
-  exec "$@"
+  # Inherit this orchestrator's stdin (the password line) and pass it through
+  # to the leaf, which forwards via ssh to remote sudo -S. The password
+  # remains in unnamed kernel pipes only; never lands in argv or a shell var.
+  "$@"
+  exit $?
 }
 
 check_canonical_freshness() {
@@ -249,20 +284,20 @@ echo "==> deploy-to-aws: mode=$DEPLOY_MODE${DB_SOURCE:+ source=$DB_SOURCE}${DRY_
 if [[ "$DEPLOY_MODE" == "--code-only" ]]; then
   echo "    Step 1 (local DB prep): skipped"
   echo "    Step 2 (AWS push): scripts/deploy-code.sh"
-  exec_step bash "${SCRIPT_DIR}/deploy-code.sh" "$PASSWORD"
+  exec_step bash "${SCRIPT_DIR}/deploy-code.sh"
 fi
 
 case "$DB_SOURCE" in
   --db-only)
     echo "    Step 1 (local DB prep): handled inside deploy-rebuild.sh (reset-local-db.sh)"
     echo "    Step 2 (AWS push + DB replace): scripts/deploy-rebuild.sh"
-    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh" "$PASSWORD"
+    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh"
     ;;
   --skip-local-data)
     echo "    Step 1 (local DB prep): skipped (using current database/footbag.db)"
     echo "    Step 2 (AWS push + DB replace): scripts/deploy-rebuild.sh (SKIP_DB_REBUILD=yes)"
     export SKIP_DB_REBUILD="yes"
-    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh" "$PASSWORD"
+    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh"
     ;;
   --from-mirror)
     echo "    Step 1 (local DB prep): scripts/deploy-local-data.sh --from-mirror"
@@ -270,7 +305,7 @@ case "$DB_SOURCE" in
     echo ""
     echo "    Step 2 (AWS push + DB replace): scripts/deploy-rebuild.sh (SKIP_DB_REBUILD=yes)"
     export SKIP_DB_REBUILD="yes"
-    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh" "$PASSWORD"
+    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh"
     ;;
   --from-csv)
     echo "    Step 1 (local DB prep): scripts/deploy-local-data.sh --from-csv"
@@ -278,6 +313,6 @@ case "$DB_SOURCE" in
     echo ""
     echo "    Step 2 (AWS push + DB replace): scripts/deploy-rebuild.sh (SKIP_DB_REBUILD=yes)"
     export SKIP_DB_REBUILD="yes"
-    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh" "$PASSWORD"
+    exec_step bash "${SCRIPT_DIR}/deploy-rebuild.sh"
     ;;
 esac

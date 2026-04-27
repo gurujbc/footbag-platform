@@ -1,14 +1,5 @@
 {{! /internal/net/recovery-candidates — structured alias candidates with approval workflow }}
 
-<style>
-.rc-decision-form { display: inline-flex; gap: 0.3rem; align-items: center; }
-.rc-decision-form select, .rc-decision-form input[type="text"] { font-size: 0.85em; padding: 0.15rem 0.3rem; }
-.rc-decision-form button { font-size: 0.8em; padding: 0.2rem 0.5rem; cursor: pointer; }
-.rc-approved { background: #e8f5e9; }
-.rc-rejected { background: #fbe9e7; }
-.rc-deferred { background: #fff8e1; }
-</style>
-
 <div class="hero hero-sm">
   <div>
     <h1>{{page.title}}</h1>
@@ -40,7 +31,7 @@
       <span class="section-meta">Unambiguous abbreviation matches — same last name, matching first initial, exactly one known person</span>
     </div>
     {{#if content.aliasCandidates.length}}
-    <div class="records-table-wrap" style="overflow-x:auto">
+    <div class="records-table-wrap">
       <table class="records-table records-table-sm">
         <thead>
           <tr>

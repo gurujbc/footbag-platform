@@ -22,11 +22,11 @@
   <form method="GET" action="/internal/persons/browse" class="filter-bar">
     <label>
       Search
-      <input type="text" name="search" value="{{content.activeFilters.search}}" placeholder="Name..." style="width:200px" />
+      <input type="text" name="search" value="{{content.activeFilters.search}}" placeholder="Name..." class="w-50" />
     </label>
     <label>
       Source
-      <select name="source" onchange="this.form.submit()">
+      <select name="source" data-auto-submit>
         {{#each content.filterOptions.sources}}
         <option value="{{value}}"{{#if (eq value ../content.activeFilters.source)}} selected{{/if}}>{{label}}</option>
         {{/each}}
@@ -44,7 +44,7 @@
   <section class="content-section">
     <h2>Persons ({{content.itemCount}} on page {{content.currentPage}} of {{content.totalPages}})</h2>
     {{#if content.items.length}}
-    <div class="records-table-wrap" style="overflow-x:auto">
+    <div class="records-table-wrap">
       <table class="records-table records-table-sm">
         <thead>
           <tr>
@@ -58,13 +58,13 @@
         </thead>
         <tbody>
           {{#each content.items}}
-          <tr{{#if flagged}} style="background:#fff3e0"{{/if}}>
+          <tr{{#if flagged}} class="row-flagged"{{/if}}>
             <td>{{person_name}}</td>
             <td>{{country}}</td>
             <td>{{event_count}}</td>
             <td>{{placement_count}}</td>
             <td>{{source}}</td>
-            <td style="font-size:0.7rem;opacity:0.6">{{person_id}}</td>
+            <td class="fs-xxs op-60">{{person_id}}</td>
           </tr>
           {{/each}}
         </tbody>
@@ -72,7 +72,7 @@
     </div>
 
     {{! ── Pagination ────────────────────────────────────────────── }}
-    <div style="margin:1rem 0;display:flex;gap:1rem;align-items:center">
+    <div class="pagination-row">
       {{#if content.prevPage}}
       <a href="/internal/persons/browse?page={{content.prevPage}}{{#if content.activeFilters.search}}&search={{content.activeFilters.search}}{{/if}}{{#if content.activeFilters.source}}&source={{content.activeFilters.source}}{{/if}}">&larr; Previous</a>
       {{/if}}

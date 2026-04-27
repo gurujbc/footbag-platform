@@ -307,11 +307,11 @@ See `skills/rebuild-identity-pipeline.md`.
 
 ### AWS staging deploy
 ```
-bash scripts/deploy-to-aws.sh <pass> --code-only                   # code + images only
-bash scripts/deploy-to-aws.sh <pass> --with-db --db-only           # reset-local-db + push
-bash scripts/deploy-to-aws.sh <pass> --with-db --from-csv          # csv_only + push
-bash scripts/deploy-to-aws.sh <pass> --with-db --from-mirror       # full pipeline + push
-bash scripts/deploy-to-aws.sh <pass> --with-db --skip-local-data   # push current DB as-is
+bash deploy_to_aws.sh --code-only                   # code + images only
+bash deploy_to_aws.sh --with-db --db-only           # reset-local-db + push
+bash deploy_to_aws.sh --with-db --from-csv          # csv_only + push
+bash deploy_to_aws.sh --with-db --from-mirror       # full pipeline + push
+bash deploy_to_aws.sh --with-db --skip-local-data   # push current DB as-is
 ```
 Back-compat no-flag entry: `./deploy_to_aws.sh` (root-level convenience
 wrapper) forwards to `scripts/deploy-to-aws.sh`. With no flags it supplies

@@ -1,4 +1,49 @@
 # =============================================================================
+# Cache & origin-request policies
+# Managed policies (data sources) for HTML and static assets; one custom cache
+# policy for /media/* (query string in cache key, URL-versioned cache-bust).
+# =============================================================================
+
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer" {
+  name = "Managed-AllViewer"
+}
+
+data "aws_cloudfront_origin_request_policy" "cors_s3_origin" {
+  name = "Managed-CORS-S3Origin"
+}
+
+resource "aws_cloudfront_cache_policy" "media_assets" {
+  name        = "${local.prefix}-media-assets"
+  comment     = "Edge cache for /media/* with query string in cache key (URL-versioned cache-bust)"
+  min_ttl     = 0
+  default_ttl = 604800   # 7 days; matches express.static maxAge
+  max_ttl     = 31536000 # 1 year ceiling
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_gzip   = true
+    enable_accept_encoding_brotli = true
+
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+  }
+}
+
+# =============================================================================
 # CloudFront Distribution
 # Origin: Lightsail static IP (nginx on port 80)
 # TLS termination at edge using ACM certificate (us-east-1)
@@ -15,9 +60,12 @@ resource "aws_cloudfront_distribution" "main" {
   aliases = [var.domain_name, "www.${var.domain_name}"]
 
   # ── Origin: Lightsail nginx ───────────────────────────────────────────────
+  # CloudFront requires a resolvable DNS hostname; raw IPs are not supported.
+  # Operator points var.lightsail_origin_dns at a real A record (e.g.
+  # origin.footbag.org) that resolves to aws_lightsail_static_ip.web.ip_address.
   origin {
     origin_id   = "lightsail-origin"
-    domain_name = aws_lightsail_static_ip.web.ip_address
+    domain_name = var.lightsail_origin_dns
 
     custom_origin_config {
       http_port              = 80
@@ -27,9 +75,8 @@ resource "aws_cloudfront_distribution" "main" {
     }
 
     custom_header {
-      name = "X-Origin-Verify"
-      # TODO: Set to a random secret and verify it in nginx to block direct-to-origin requests
-      value = "TODO-set-shared-secret"
+      name  = "X-Origin-Verify"
+      value = data.aws_ssm_parameter.origin_verify_secret.value
     }
   }
 
@@ -45,6 +92,8 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   # ── Default cache behaviour ───────────────────────────────────────────────
+  # All HTML uses CachingDisabled; origin (Express middleware) sets
+  # Cache-Control on every authenticated response.
   default_cache_behavior {
     target_origin_id       = "lightsail-origin"
     viewer_protocol_policy = "redirect-to-https"
@@ -52,19 +101,8 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    forwarded_values {
-      query_string = true
-      headers      = ["CloudFront-Forwarded-Proto", "Host"]
-      cookies {
-        forward           = "whitelist"
-        whitelisted_names = ["footbag_session"]
-      }
-    }
-
-    # Short TTL — server-rendered HTML should not be cached aggressively
-    min_ttl     = 0
-    default_ttl = 60
-    max_ttl     = 300
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
   }
 
   # ── Static assets — longer cache ─────────────────────────────────────────
@@ -76,14 +114,8 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
-
-    min_ttl     = 0
-    default_ttl = 86400   # 1 day
-    max_ttl     = 2592000 # 30 days
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
   }
 
   # ── JavaScript — longer cache ──────────────────────────────────────────
@@ -95,14 +127,8 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
-
-    min_ttl     = 0
-    default_ttl = 86400   # 1 day
-    max_ttl     = 2592000 # 30 days
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
   }
 
   # ── Images — longer cache ────────────────────────────────────────────
@@ -114,14 +140,34 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
+  }
 
-    min_ttl     = 0
-    default_ttl = 86400   # 1 day
-    max_ttl     = 2592000 # 30 days
+  # ── Web fonts — longer cache ─────────────────────────────────────────────
+  ordered_cache_behavior {
+    path_pattern           = "/fonts/*"
+    target_origin_id       = "lightsail-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
+  }
+
+  # ── User-uploaded media — query-string in cache key (URL-versioned cache-bust) ─
+  ordered_cache_behavior {
+    path_pattern           = "/media/*"
+    target_origin_id       = "lightsail-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    cache_policy_id          = aws_cloudfront_cache_policy.media_assets.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
   }
 
   # ── Health probes — pass through uncached ────────────────────────────────
@@ -132,14 +178,8 @@ resource "aws_cloudfront_distribution" "main" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
-
-    min_ttl     = 0
-    default_ttl = 0
-    max_ttl     = 0
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
   }
 
   # ── Custom error: serve maintenance page on 5xx ──────────────────────────

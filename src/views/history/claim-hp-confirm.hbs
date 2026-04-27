@@ -12,24 +12,24 @@
   <section>
     {{#if content.error}}
       <p class="form-error" role="alert">{{content.error}}</p>
-      <p style="margin-top:24px"><a href="{{content.cancelHref}}">Back</a></p>
+      <p class="mt-6"><a href="{{content.cancelHref}}">Back</a></p>
     {{else}}
-      <div class="card" style="margin-bottom:24px;">
-        <p style="margin:0; font-weight:500;">Historical record: {{content.personName}}</p>
+      <div class="card mb-6">
+        <p class="m-0 fw-500">Historical record: {{content.personName}}</p>
         {{#if content.country}}
-          <p style="margin:4px 0 0; color:#666;">Country: {{content.country}}</p>
+          <p class="m-0 mt-1 text-muted">Country: {{content.country}}</p>
         {{/if}}
         {{#if content.isHof}}
-          <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">Hall of Fame member</p>
+          <p class="m-0 mt-1 fw-500 text-secondary">Hall of Fame member</p>
         {{/if}}
         {{#if content.isBap}}
-          <p style="margin:4px 0 0; color:#0b5e6b; font-weight:500;">BAP member</p>
+          <p class="m-0 mt-1 fw-500 text-secondary">BAP member</p>
         {{/if}}
       </div>
 
       {{#if content.firstNameWarning}}
-        <div class="card" style="margin:16px 0; border-left: 4px solid #b45309; background: #fffbeb;">
-          <p style="margin:0; color:#92400e;">First-name difference: the historical record's first name does not exactly match the first name on your account. This is allowed if you use a common variant (e.g. Dave vs David). Proceed only if this record is you.</p>
+        <div class="notice-card notice-card--warn-strong my-4">
+          <p class="m-0">First-name difference: the historical record's first name does not exactly match the first name on your account. This is allowed if you use a common variant (e.g. Dave vs David). Proceed only if this record is you.</p>
         </div>
       {{/if}}
 
@@ -39,7 +39,7 @@
         <button type="submit" class="btn btn-primary">Yes, this is me — link the record</button>
       </form>
 
-      <p style="margin-top:16px"><a href="{{content.cancelHref}}">Cancel</a></p>
+      <p class="mt-4"><a href="{{content.cancelHref}}">Cancel</a></p>
     {{/if}}
   </section>
 

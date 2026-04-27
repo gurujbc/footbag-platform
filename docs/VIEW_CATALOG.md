@@ -324,7 +324,12 @@ The CSS vocabulary is split into two tiers.
 - Notices: `.notice` (subtle informational text below hero or section heading)
 - Nav utilities: `.nav-logout`, `.nav-logout-btn`
 - Form utilities: `.form-hint` (helper text below form fields), `.profile-identity-block` (read-only identity section), `.avatar-edit-row` (inline avatar upload)
-- Spacing: `.mt-4`, `.mb-4`, `.mb-8`, `.text-muted`
+- Spacing utilities (Tailwind-style numbering: 1 unit = 4px): `.m-0`; margin-top `.mt-1` (4px), `.mt-2` (8px), `.mt-3` (12px), `.mt-4` (16px), `.mt-5` (20px), `.mt-6` (24px), `.mt-10` (40px); margin-bottom `.mb-2`, `.mb-3`, `.mb-4`, `.mb-6`, `.mb-8`; margin-y `.my-4`; padding-top `.pt-6`; padding-left `.pl-5` (1.25rem, for indented lists). Use these instead of inline `style="margin:..."`.
+- Width utilities (Tailwind-style: 1 unit = 4px): `.w-12` (48px), `.w-20` (80px), `.w-30` (120px), `.w-50` (200px). Use for table-column widths and short input sizing.
+- Type utilities: `.text-muted`, `.text-secondary` (HoF/BAP teal — uses `var(--secondary)`), `.text-center`, `.fs-sm` (0.9rem), `.fs-xs` (0.8rem), `.fs-xxs` (0.7rem), `.fs-mini` (0.625rem), `.fw-500`, `.fw-600`, `.op-60`, `.ws-pre-line`, `.truncate-50` (max-width 200px + ellipsis).
+- Notice cards: `.notice-card` (border-left + tinted background) with variants `.notice-card--info` (teal), `.notice-card--info-blue`, `.notice-card--warn` (amber), `.notice-card--warn-strong` (dark amber). Use for in-page advisories, eligibility reminders, claim-confirm warnings. Distinct from `.notice`, which is subtle inline text below a section heading.
+- Row-state utilities: `.row-flagged` (table-row tint for QC-flagged rows; internal QC pages only).
+- Layout: `.pagination-row` (flex row with gap and 1rem vertical margin, used for prev/next pagination controls)
 - Footer: `.footer-brand-block`, `.footer-logo`, `.footer-tagline`, `.footer-links`, `.footer-legal`, `.footer-legal-links`, `.footer-copy`
 
 **Legal page — required within `/legal` only:**
@@ -344,6 +349,7 @@ The CSS vocabulary is split into two tiers.
 - Avatar card: `.profile-avatar-card`, `.profile-avatar-img`, `.profile-avatar-placeholder`
 - Profile text: `.profile-name`, `.profile-location`, `.profile-honor-badge`
 - Profile sections: `.profile-section`, `.profile-section-heading`
+- Caption helpers: `.profile-bap-caption` (BAP nickname caption that tucks under the profile avatar with a negative margin; used on `/history/:personId`)
 - Account list: `.profile-account-list`
 - Links grid: `.profile-link-grid`, `.profile-link-card`, `.profile-link-icon`, `.profile-link-label`
 
@@ -363,6 +369,16 @@ The CSS vocabulary is split into two tiers.
 - Get-started tiles and format cards: `.card-tile`, `.format-card`
 - Embedded video wrapper (16:9 responsive iframe): `.video-embed`
 - Stats strip (standalone hero-stats outside the hero): `.stats-strip`
+
+**Internal QC tooling — required within `/internal/*` pages only:**
+
+- Decision forms (recovery candidates, team corrections): `.rc-decision-form`, `.rc-approved`, `.rc-rejected`, `.rc-deferred`
+- Net review item editor: `.review-edit-row`, `.review-edit-forms`, `.review-inline-form`
+
+**Simulated email card (dev/sandbox only — partial renders nothing in production):**
+
+- Container variants: `.sec-card`, `.sec-card-dev`, `.sec-card-sandbox`
+- Inner elements: `.sec-card .sec-body` (preformatted body), `.sec-card .sec-table` (message table), `.sec-card .sec-msgid` (small message-id label)
 
 ### 4.4 Implementation rules
 
@@ -412,6 +428,16 @@ Hard rules:
 - Every CSS class used in a template must have a corresponding rule in `src/public/css/style.css`. No undefined classes.
 - New classes must be documented in the CSS class vocabulary (section 4.3 above).
 - Content that appears in the hero (honors, location) must not be duplicated in the page body. Choose one canonical placement per data element.
+
+### Asset rules
+
+The application enforces a strict Content-Security-Policy (`script-src 'self'`, `style-src 'self'`, `script-src-attr 'none'`, `frame-ancestors 'none'`). Templates and partials must therefore satisfy:
+
+- No inline `style="..."` attributes. Use a class from the §4.3 vocabulary; if the styling does not yet have a class, add the class to `style.css` and document it in §4.3.
+- No inline `<script>...</script>` blocks. Client behavior lives in `src/public/js/*.js` files loaded via `<script src="..." defer>`. The single permitted exception is non-executable JSON data islands, declared as `<script type="application/json" id="...">{{{ jsonViewModel }}}</script>` and parsed by an external script.
+- No inline `<style>...</style>` blocks in templates or partials. All CSS lives in `src/public/css/style.css`. Internal-tooling pages (`/internal/*`) follow the same rule.
+- No inline event-handler attributes (`onclick`, `onchange`, `onsubmit`, etc.). Attach handlers from external JS using `addEventListener` on a class or `data-*` selector.
+- Externally-hosted assets (CDNs, fonts, images, iframes) must be added to the CSP directive list in `src/app.ts` at the same time the reference is added to the template.
 
 ### 4.5 Visual rules
 
