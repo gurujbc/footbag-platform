@@ -32,7 +32,19 @@ import request from 'supertest';
 import BetterSqlite3 from 'better-sqlite3';
 import sharp from 'sharp';
 
+import {
+  PutObjectCommand,
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  type S3Client,
+} from '@aws-sdk/client-s3';
+
 import { insertMember, createTestSessionJwt } from '../fixtures/factories';
+
+// imageProcessingAdapter imports config from env.ts, which freezes its
+// singleton on first import. Defer those module loads to beforeAll so that
+// the FOOTBAG_DB_PATH override above lands first.
+let resetImageProcessingAdapterForTests: () => void;
 
 const OWN_ID      = 'avatar-test-own-001';
 const OWN_SLUG    = 'avatar_owner';
@@ -64,9 +76,39 @@ beforeAll(async () => {
 
   const mod = await import('../../src/app');
   createApp = mod.createApp;
+
+  // Defer adapter module loads until after FOOTBAG_DB_PATH has been overridden
+  // (these modules import src/config/env which freezes config on first import).
+  const adapterMod = await import('../../src/adapters/imageProcessingAdapter');
+  const imgMod = await import('../../src/lib/imageProcessing');
+  resetImageProcessingAdapterForTests = adapterMod.resetImageProcessingAdapterForTests;
+
+  // Inject an image-processing adapter whose fake fetch invokes the real
+  // Sharp pipeline inline. The avatar route tests run in-process and have
+  // no real worker to talk to; the adapter code path under test is the
+  // production HTTP one. This matches the JwtSigningAdapter / SesAdapter
+  // pattern of injecting a fake client at the SDK boundary.
+  const fakeFetch: typeof fetch = async (_input, init) => {
+    const body = init?.body as Buffer | Uint8Array;
+    const buf = Buffer.isBuffer(body) ? body : Buffer.from(body);
+    const processed = await imgMod.processAvatar(buf);
+    return new Response(
+      JSON.stringify({
+        thumb: processed.thumb.toString('base64'),
+        display: processed.display.toString('base64'),
+        widthPx: processed.widthPx,
+        heightPx: processed.heightPx,
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } },
+    );
+  };
+  adapterMod.setImageProcessingAdapterForTests(
+    adapterMod.createHttpImageAdapter({ baseUrl: 'http://test-injected', fetchImpl: fakeFetch }),
+  );
 });
 
 afterAll(() => {
+  resetImageProcessingAdapterForTests();
   for (const ext of ['', '-wal', '-shm']) {
     try { fs.unlinkSync(TEST_DB_PATH + ext); } catch { /* ignore */ }
   }
@@ -314,5 +356,148 @@ describe('POST /members/:memberKey/avatar -- file upload', () => {
       .set('Cookie', [ownCookie(), flashValue].join('; '));
     expect(editRes.status).toBe(200);
     expect(editRes.text).toContain('Avatar updated: my-photo.jpg');
+  });
+});
+
+// ── POST /members/:memberKey/avatar via the S3 storage adapter ────────────────
+//
+// The same controller code path runs against `createS3PhotoStorageAdapter`
+// with an injected fake S3Client. This proves the controller contract
+// (?v= cache-bust, /media/{key} URL shape, two PutObjects per upload) is
+// preserved when the storage seam swaps from local fs to S3.
+
+describe('POST /members/:memberKey/avatar -- s3 adapter parity', () => {
+  let s3Puts: PutObjectCommand[];
+  let s3Store: Map<string, Buffer>;
+  let resetPhotoStorageAdapterForTests: () => void;
+
+  beforeAll(async () => {
+    s3Puts = [];
+    s3Store = new Map<string, Buffer>();
+    const fakeS3: S3Client = {
+      send: async (cmd: unknown): Promise<unknown> => {
+        if (cmd instanceof PutObjectCommand) {
+          s3Puts.push(cmd);
+          const body = cmd.input.Body as Buffer | Uint8Array;
+          s3Store.set(
+            `${cmd.input.Bucket}/${cmd.input.Key}`,
+            Buffer.isBuffer(body) ? body : Buffer.from(body),
+          );
+          return {};
+        }
+        if (cmd instanceof DeleteObjectCommand) {
+          s3Store.delete(`${cmd.input.Bucket}/${cmd.input.Key}`);
+          return {};
+        }
+        if (cmd instanceof HeadObjectCommand) {
+          if (s3Store.has(`${cmd.input.Bucket}/${cmd.input.Key}`)) return {};
+          const err = new Error('Not Found');
+          err.name = 'NotFound';
+          throw err;
+        }
+        throw new Error('unexpected S3 command');
+      },
+    } as unknown as S3Client;
+
+    const photoMod = await import('../../src/adapters/photoStorageAdapter');
+    resetPhotoStorageAdapterForTests = photoMod.resetPhotoStorageAdapterForTests;
+    photoMod.setPhotoStorageAdapterForTests(
+      photoMod.createS3PhotoStorageAdapter({
+        bucket: 'test-bucket',
+        s3Client: fakeS3,
+      }),
+    );
+  });
+
+  afterAll(() => {
+    resetPhotoStorageAdapterForTests();
+  });
+
+  it('valid JPEG upload sends two PutObjectCommands with immutable Cache-Control', async () => {
+    s3Puts.length = 0;
+    const app = createApp();
+    const validJpeg = await sharp({
+      create: { width: 10, height: 10, channels: 3, background: { r: 7, g: 7, b: 7 } },
+    }).jpeg().toBuffer();
+
+    const res = await request(app)
+      .post(`/members/${OWN_SLUG}/avatar`)
+      .set('Cookie', ownCookie())
+      .attach('avatar', validJpeg, 'test.jpg');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe(`/members/${OWN_SLUG}/edit`);
+
+    const keys = s3Puts.map((p) => p.input.Key);
+    expect(keys).toContain(`avatars/${OWN_ID}/thumb.jpg`);
+    expect(keys).toContain(`avatars/${OWN_ID}/display.jpg`);
+    for (const cmd of s3Puts) {
+      expect(cmd.input.Bucket).toBe('test-bucket');
+      expect(cmd.input.ContentType).toBe('image/jpeg');
+      expect(cmd.input.CacheControl).toBe('public, max-age=31536000, immutable');
+    }
+  });
+
+  it('rendered avatar URL shape (/media/{key}?v=) matches the local-adapter contract', async () => {
+    const app = createApp();
+    const validJpeg = await sharp({
+      create: { width: 10, height: 10, channels: 3, background: { r: 30, g: 60, b: 90 } },
+    }).jpeg().toBuffer();
+
+    const uploadRes = await request(app)
+      .post(`/members/${OWN_SLUG}/avatar`)
+      .set('Cookie', ownCookie())
+      .attach('avatar', validJpeg, 'shape.jpg');
+    expect(uploadRes.status).toBe(302);
+
+    const profileRes = await request(app)
+      .get(`/members/${OWN_SLUG}`)
+      .set('Cookie', ownCookie());
+    expect(profileRes.status).toBe(200);
+    expect(profileRes.text).toMatch(
+      /\/media\/avatars\/[^"]+\?v(?:=|&#x3D;)[^"]+/,
+    );
+  });
+
+  it('avatar URL version changes when a new avatar is uploaded (s3 path)', async () => {
+    const app = createApp();
+    const redJpeg = await sharp({
+      create: { width: 10, height: 10, channels: 3, background: { r: 200, g: 0, b: 0 } },
+    }).jpeg().toBuffer();
+    const blueJpeg = await sharp({
+      create: { width: 10, height: 10, channels: 3, background: { r: 0, g: 0, b: 200 } },
+    }).jpeg().toBuffer();
+
+    const extractVersion = (html: string): string | null => {
+      const m = html.match(/\/media\/avatars\/[^"]+\?v(?:=|&#x3D;)([^"&]+)/);
+      return m ? m[1] : null;
+    };
+
+    await request(app)
+      .post(`/members/${OWN_SLUG}/avatar`)
+      .set('Cookie', ownCookie())
+      .attach('avatar', redJpeg, 'red.jpg');
+    const v1 = extractVersion(
+      (
+        await request(app)
+          .get(`/members/${OWN_SLUG}`)
+          .set('Cookie', ownCookie())
+      ).text,
+    );
+
+    await request(app)
+      .post(`/members/${OWN_SLUG}/avatar`)
+      .set('Cookie', ownCookie())
+      .attach('avatar', blueJpeg, 'blue.jpg');
+    const v2 = extractVersion(
+      (
+        await request(app)
+          .get(`/members/${OWN_SLUG}`)
+          .set('Cookie', ownCookie())
+      ).text,
+    );
+
+    expect(v1).toBeTruthy();
+    expect(v2).toBeTruthy();
+    expect(v2).not.toBe(v1);
   });
 });

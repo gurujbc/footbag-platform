@@ -389,9 +389,10 @@ At minimum, the AWS layout needs the following logical storage surfaces:
 
 | Storage surface | Purpose |
 |---|---|
-| media bucket | processed photo objects and related media assets |
+| media bucket | processed photo objects and related media assets (primary region) |
+| media DR bucket | continuous cross-region replica of the media bucket (separate region) |
 | primary snapshot bucket | 5-minute SQLite snapshots with version history |
-| cross-region DR bucket | nightly replicated/synced copies and Object Lock retention |
+| snapshot DR bucket | nightly replicated SQLite snapshots with Object Lock retention (separate region) |
 | maintenance asset bucket or prefix | static maintenance page assets served by CloudFront |
 | static asset storage | versioned application assets if separated from the instance |
 
@@ -1102,11 +1103,62 @@ Required behavior:
 
 Required stance:
 
-- the media bucket is WORM (no versioning, no lifecycle expiry); media keys are stable, with cache invalidation handled by query-string cache-bust
-- use S3 replication or the chosen S3-native cross-region backup path
-- verify that replication/backup remains healthy
-- treat media restore as a storage operation, not a SQLite restore operation
-- document any manual promote/restore path needed for DR
+- the media bucket has versioning enabled and a 30-day `NoncurrentVersionExpiration` lifecycle. Avatar keys are stable per member, so replacement uploads overwrite-in-place; the lifecycle rule prevents indefinite accumulation of noncurrent bytes. Cache invalidation is URL-versioned via the `?v={media_id}` query string.
+- continuous S3 cross-region replication runs from the primary media bucket to a dedicated media DR bucket (ONEZONE_IA storage class). Delete markers replicate so account-erasure deletions propagate.
+- Object Lock is intentionally not applied to the media DR bucket: photo deletion must propagate to the DR side to honor member-account-erasure. Operator-recovery headroom comes from versioning plus the 30-day noncurrent expiration on both buckets.
+- verify replication health after any Terraform apply touching the photo path (use `aws s3api get-bucket-replication` and a marker round-trip into the DR bucket).
+- treat media restore as a storage operation, not a SQLite restore operation.
+- the recovery procedure: promote the DR bucket to primary by updating the CloudFront `/media/*` origin and the `PHOTO_STORAGE_S3_BUCKET` env var together in the same operator step (both must change atomically; if CloudFront points at the new bucket but the env var still names the old one, the app writes to a bucket CloudFront no longer serves; if the env var is updated first, the app writes to S3 keys that CloudFront does not yet serve). Alternatively, restore objects from the DR bucket to a new primary bucket. When updating the origin, confirm the `/media/*` cache behavior retains no origin request policy.
+- when a media key does not exist, S3 returns 403 AccessDenied (not 404) because the bucket policy grants only `s3:GetObject` to CloudFront, not `s3:ListBucket`. This is intentional: without ListBucket, S3 cannot confirm whether the key is absent or forbidden, so it returns 403 for both cases, preventing enumeration of bucket contents. A 403 on a `/media/*` URL is therefore not necessarily a permissions regression; first confirm the key exists in S3 before investigating IAM.
+
+#### Photo storage pipeline operations
+
+The avatar/photo pipeline runs on a four-container topology (nginx + web + worker + image), with photo bytes stored in S3 and served by CloudFront with OAC. Per-environment configuration lives in `/srv/footbag/env`, not Parameter Store (these are non-secret deploy-time values per §5.3). The `image` container runs Sharp internally on the docker network and is reachable only from web.
+
+##### Required `/srv/footbag/env` variables
+
+- `PHOTO_STORAGE_ADAPTER=s3` (production/staging) or `local` (operator parity check only)
+- `PHOTO_STORAGE_S3_BUCKET=<terraform output media_bucket_name>`
+- `IMAGE_PROCESSOR_URL=http://image:4000`
+- `IMAGE_MAX_CONCURRENT=2` (default; tune under observed load)
+
+##### Replication verification (after any TF apply touching s3.tf)
+
+1. `aws s3api get-bucket-replication --bucket <media>` -- expect `Status: Enabled`, destination `<dr_bucket_arn>`.
+2. Put a marker: `aws s3api put-object --bucket <media> --key replication-test/$(date +%s).txt --body /etc/hostname`.
+3. Wait 5 minutes.
+4. `aws s3api head-object --bucket <dr> --key <marker_key>` -- expect 200 with `ReplicationStatus: REPLICA`.
+5. Delete the marker from both buckets.
+
+##### OAC bucket-policy verification
+
+`aws s3api get-bucket-policy --bucket <media>` -- the `Principal` should be `cloudfront.amazonaws.com` and the `Condition.StringEquals."aws:SourceArn"` should match the CloudFront distribution ARN. Any other principal is a misconfiguration.
+
+Also confirm no origin request policy is attached to the `/media/*` cache behavior: `aws cloudfront get-distribution-config --id <dist-id>` and inspect the `/media/*` ordered cache behavior's `OriginRequestPolicyId` field, which must be empty or absent. A `Managed-AllViewer` policy (or any policy that forwards `Host`) re-introduces the virtual-host routing bug that causes S3 to return `<Code>NotFound</Code>` before evaluating the bucket policy.
+
+##### Smoke trigger
+
+After every `terraform apply` that touches `s3.tf`, `iam.tf`, or `cloudfront.tf` for the photo path, run `npm run test:smoke` from a workstation. The `tests/smoke/photo-storage.smoke.test.ts` cases must be green before declaring the change successful.
+
+##### Cutover sequence (one-time, when transitioning a fresh environment from local-fs to S3)
+
+1. Verify the photo-pipeline S3 infrastructure is in place: bucket versioning enabled, replication active, app_runtime has `app_s3_media` policy.
+2. `terraform plan` for cloudfront.tf + s3.tf bucket policy. Review.
+3. `terraform apply`. CloudFront propagation takes ~5-15 minutes; monitor via `aws cloudfront get-distribution --id <id>`.
+4. SSH to host. Edit `/srv/footbag/env` (root-owned, 0600). Add the four lines listed above.
+5. `systemctl restart footbag.service`. Wait for `docker compose ps` to show all four containers healthy.
+6. `npm run test:smoke` from a workstation. Must be green.
+7. Manual verification: log in as the preview-user; upload a JPEG avatar; refresh the profile-edit page; confirm display works and the URL has a `?v=` UUID; confirm `aws s3 ls s3://<media>/avatars/{member_id}/` shows two keys.
+
+##### Rollback
+
+If the cutover fails after step 4:
+
+- Revert `/srv/footbag/env`: remove the four lines added in step 4.
+- `systemctl restart footbag.service`.
+- `terraform apply` a revert of `cloudfront.tf` to point `/media/*` back to `lightsail-origin` (and remove OAC + S3 origin + bucket policy). Required because CloudFront still serves from S3 until the TF revert lands; with the env reverted but CloudFront still on S3, displays will 404.
+
+A clean rollback requires both an env revert AND a CloudFront TF revert.
 
 ### 10.5 Snapshot restore runbook
 

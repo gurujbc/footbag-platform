@@ -28,19 +28,31 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: bash deploy_to_aws.sh --with-db --db-only
-   or: < <operator credential file> bash scripts/deploy-rebuild.sh
+Usage: < <operator credential file> bash scripts/deploy-rebuild.sh [--keep-media]
 
 Reads sudo password from stdin (line 1).
 
 WARNING:
   This script DESTROYS the current host database and replaces it with a
   freshly rebuilt local database/footbag.db.
+  On staging it ALSO wipes the entire S3 media bucket by default (avatar
+  keys are stable per member ID; a fresh DB seed maps those IDs to
+  different people, so leaving old objects would serve the wrong person's
+  photo at the new identity).
+  Pass --keep-media to skip the S3 wipe. The script refuses to run on
+  non-staging environments unless --keep-media is passed; production
+  media wipes are an out-of-band operator procedure.
 
-Overrides:
+Flags:
+  --keep-media       Skip the S3 media bucket wipe (DB is still replaced).
+                     Required on non-staging environments.
+
+Env-var overrides:
   DEPLOY_TARGET=footbag-staging
   SKIP_TESTS=yes
   SKIP_DB_REBUILD=yes
+  SKIP_SMOKE=yes
+  KEEP_MEDIA=yes     (alternative to --keep-media flag)
 USAGE
 }
 
@@ -83,6 +95,30 @@ case "$REMOTE" in
     exit 1
     ;;
 esac
+
+# Parse --keep-media (env-var override also accepted for CI scripting).
+# Unset on staging = auto-wipe the S3 media bucket per Phase 8 design.
+# On non-staging the script refuses without this flag; operator must opt
+# out explicitly. Production media wipes are out-of-band (see DEVOPS_GUIDE).
+KEEP_MEDIA="${KEEP_MEDIA:-no}"
+for arg in "$@"; do
+  case "$arg" in
+    --keep-media) KEEP_MEDIA="yes" ;;
+    *)
+      echo "ERROR: unknown argument: $arg" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [[ "$FOOTBAG_ENV" != "staging" && "$KEEP_MEDIA" != "yes" ]]; then
+  echo "ERROR: refusing to auto-wipe S3 media on FOOTBAG_ENV=$FOOTBAG_ENV." >&2
+  echo "       This script auto-wipes media only on staging. Either:" >&2
+  echo "         pass --keep-media to rebuild the DB without touching S3, or" >&2
+  echo "         use a staging deploy target." >&2
+  exit 1
+fi
 
 [[ -r "$REMOTE_HALF" ]] || { echo "ERROR: missing remote-half: $REMOTE_HALF" >&2; exit 1; }
 command -v docker >/dev/null || { echo "ERROR: docker required locally for image build" >&2; exit 1; }
@@ -181,6 +217,10 @@ WORKER_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.
   echo "ERROR: docker image inspect failed for docker-worker" >&2
   exit 1
 }
+IMAGE_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null) || {
+  echo "ERROR: docker image inspect failed for docker-image" >&2
+  exit 1
+}
 
 # ── Transfer images to host via docker save | docker load ──────────────────
 # Pre-transfer optimization (mirrors deploy-code.sh): skip the pipe when the
@@ -193,13 +233,17 @@ REMOTE_WEB_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
 REMOTE_WORKER_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
   "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-worker 2>/dev/null" \
   </dev/null || true)
-if [[ -n "$WEB_IMAGE_LAYERS" && -n "$WORKER_IMAGE_LAYERS" \
+REMOTE_IMAGE_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
+  "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null" \
+  </dev/null || true)
+if [[ -n "$WEB_IMAGE_LAYERS" && -n "$WORKER_IMAGE_LAYERS" && -n "$IMAGE_IMAGE_LAYERS" \
    && "$WEB_IMAGE_LAYERS"    == "$REMOTE_WEB_LAYERS" \
-   && "$WORKER_IMAGE_LAYERS" == "$REMOTE_WORKER_LAYERS" ]]; then
+   && "$WORKER_IMAGE_LAYERS" == "$REMOTE_WORKER_LAYERS" \
+   && "$IMAGE_IMAGE_LAYERS"  == "$REMOTE_IMAGE_LAYERS" ]]; then
   echo "==> Image RootFS DiffIDs match host; skipping docker save | docker load."
 else
   echo "==> Transferring images to host (docker save | docker load)..."
-  { printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker; } \
+  { printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker docker-image; } \
     | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" docker load'
 fi
 
@@ -212,7 +256,10 @@ echo "==> Running remote-as-root rebuild deploy via cat-pipe..."
   printf '%s\n' "$SUDO_PASS"
   printf 'EXPECTED_WEB_IMAGE_LAYERS=%q\n'    "$WEB_IMAGE_LAYERS"
   printf 'EXPECTED_WORKER_IMAGE_LAYERS=%q\n' "$WORKER_IMAGE_LAYERS"
+  printf 'EXPECTED_IMAGE_IMAGE_LAYERS=%q\n'  "$IMAGE_IMAGE_LAYERS"
   printf 'FOOTBAG_ENV=%q\n'                  "$FOOTBAG_ENV"
+  printf 'KEEP_MEDIA=%q\n'                   "$KEEP_MEDIA"
+  printf 'DEPLOY_TARGET=%q\n'                "$REMOTE"
   cat "$REMOTE_HALF"
 } | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" bash'
 

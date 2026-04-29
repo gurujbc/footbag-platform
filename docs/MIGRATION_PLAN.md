@@ -55,7 +55,7 @@ This document is the source of truth for go-live readiness: legacy data migratio
 This plan covers everything required to reach production go-live for the new footbag.org platform. Three workstreams run in parallel:
 
 1. **Historical pipeline**: persons, events, results, honors (Hall of Fame, BAP), clubs, club affiliations, and club leadership. Person truth comes from human-curated CSV. Club data comes from mirror extraction scripts that are part of the same pipeline. The pipeline also creates historical person records for ~1,600 club-only members who never competed in events.
-2. **Legacy member accounts**: login-bearing accounts from the current live legacy site. Require a one-time legacy-account export from Steve Goldberg and a secure voluntary claim flow.
+2. **Legacy member accounts**: login-bearing accounts from the current live legacy site. Require a one-time legacy-account export from the legacy webmaster and a secure voluntary claim flow.
 3. **Operational readiness** (primary maintainer + AWS + GitHub): backup/restore, observability, edge security, IAM scope-down, email deliverability operations, scheduled maintenance jobs, secrets rotation, and the pre-cutover revert checklist. See §28.
 
 The two data sources share the same identity key (`legacy_member_id`) and converge at cutover when historical persons are auto-linked to imported members by email. Go-live completes when all data is reconciled, operational readiness gates are green, and the DNS switch has occurred.
@@ -139,7 +139,7 @@ Bootstrap-eligible clubs are created with:
 
 **What it covers:** All legacy registered member accounts from the live legacy site.
 
-**Source:** One-time export from Steve Goldberg, used twice: first as a test load, then as the final production import after write freeze.
+**Source:** One-time export from the legacy webmaster, used twice: first as a test load, then as the final production import after write freeze.
 
 #### Imported-row model
 
@@ -714,7 +714,7 @@ Location: `legacy_data/event_results/canonical_input/`
 - `event_result_participants.csv`: participant-to-result mappings
 - `event_disciplines.csv`: discipline breakdowns
 
-`persons.csv` is in git for now. Will be removed from git later.
+`persons.csv` is in git; future relocation to external storage is tracked in IMPLEMENTATION_PLAN.md.
 
 ### Extracted CSVs (from mirror, treated as source of truth)
 
@@ -1011,7 +1011,7 @@ Phase 4 activities:
 
 ### State 2: Phase 1 complete (test load)
 
-- Steve provides test export
+- Legacy webmaster provides test export
 - Imported member rows inserted into staging `members`
 - Tier grants written for all imported rows
 - `legacy_email` and `legacy_user_id` uniqueness verified
@@ -1024,33 +1024,33 @@ Phase 4 activities:
 
 ### State 3: Phase 2 complete (go-live preparation)
 
-- DNS TTL reduced (24 to 48 hours before go-live)
+- DNS TTL reduced (24 to 48 hours before go-live; see §28.12 for the full sequence)
 - All migration scripts finalized
 - Admin review of unresolved high-impact clubs complete
 - Final cutover checklist confirmed
-- Steve briefed on final export and freeze timing
+- Legacy webmaster briefed on final export and freeze timing
 - SES production-access ticket filed and approved (24-48h lead time; see Phase 4 prerequisites)
 - `noreply@footbag.org` sender identity verified in SES; `SES_FROM_IDENTITY` on the production host updated; runtime-role `OutboundEmail` IAM policy resource ARN set to the production sender identity
 - Email-delivery smoke passes end-to-end (§24 gate G10)
 
 ### State 4: Phase 3 (production cutover)
 
-1. Steve places legacy site in write freeze / maintenance mode
-2. Steve produces final production export
+1. Legacy webmaster places legacy site in write freeze / maintenance mode
+2. Legacy webmaster produces final production export
 3. New platform imports legacy member rows
 4. New platform writes tier grants
 5. New platform creates bootstrapped `clubs` rows for approved candidates
 6. New platform creates `club_bootstrap_leaders` rows
 7. New platform runs batch auto-link (Tier 1 and Tier 2)
 8. New platform runs validation checks
-9. DNS switch to new platform
+9. DNS switch to new platform (see §28.12)
 10. Admin verifies the new platform is operational (smoke checks, critical flows confirmed, including one real end-to-end outbox → SES send to a verified admin inbox)
 11. Admin triggers post-cutover notification batch
 
 ### State 5: Post-cutover
 
 - New platform live
-- Legacy database retained by Steve for reference and targeted recovery
+- Legacy database retained by the legacy webmaster for reference and targeted recovery
 - Members self-serve claim their legacy accounts over time
 - Admins handle manual recovery cases and remaining Tier 3 cases from migration
 - Leadership activations accumulate as members register and claim
@@ -1115,8 +1115,8 @@ Current analysis of `legacy_data/event_results/canonical_input/persons.csv`:
 ## 26. Rollback posture
 
 - Before DNS switch: abort, fix issues, retry
-- After DNS switch: manual DNS reversion to the legacy site is the rollback lever, available for up to 48 hours post-cutover. Beyond that window, the fix-forward path is authoritative; any return to the legacy site requires explicit joint sign-off from the primary maintainer and Steve Goldberg, because the legacy database will have diverged from the new platform's accepted writes and reverting loses those writes.
-- Steve retains the legacy database for 30 days for reference and targeted manual recovery
+- After DNS switch: manual DNS reversion to the legacy site is the rollback lever, available for up to 48 hours post-cutover. Beyond that window, the fix-forward path is authoritative; any return to the legacy site requires explicit joint sign-off from the primary maintainer and the legacy webmaster, because the legacy database will have diverged from the new platform's accepted writes and reverting loses those writes.
+- The legacy webmaster retains the legacy database for 30 days for reference and targeted manual recovery
 - No automated rollback is provided after the DNS switch
 
 ---
@@ -1188,6 +1188,48 @@ Gate: GitHub `main` branch protection enforced (PR required, status checks must 
 ### 28.11 Compliance
 
 Gate: privacy policy, Terms of Service, and cookie banner (if applicable) reviewed by the IFPA board and accessible from the production site footer. Prepared by IFPA, reviewed by the maintainer; not technical work.
+
+### 28.12 DNS changeover sequence
+
+The cutover from the legacy DNS host to the production CloudFront distribution requires coordinated TTL reduction, ACM validation, and the registrar update itself. The legacy webmaster owns the registrar update; the maintainer owns the production CloudFront target.
+
+Pre-cutover (T-7d to T-24h):
+
+1. Confirm the registrar of `footbag.org` and the current authoritative TTL on the apex and `www` records.
+2. Schedule TTL reduction with the legacy webmaster: at T-48h, lower TTL to 300 seconds on apex `footbag.org` and `www.footbag.org` records. The reduction must propagate fully (current TTL window) before the cutover act, or clients continue resolving the old IP for the prior TTL window.
+3. Issue ACM certificate for `footbag.org` and `www.footbag.org` in `us-east-1` via DNS validation (ACM-CloudFront colocation requirement). The legacy webmaster adds the validation CNAMEs at the legacy DNS host. Wait for `Status: ISSUED` before scheduling cutover; validation propagation typically completes within 30 minutes once CNAMEs are live but may take several hours.
+4. Attach the ACM certificate to the production CloudFront distribution (`aws_cloudfront_distribution.main.aliases = ["footbag.org", "www.footbag.org"]`, `viewer_certificate.acm_certificate_arn = ...`). CloudFront propagation 5-15 minutes.
+5. Maintainer and webmaster sync on a cutover-day window (low-traffic UTC slot, both reachable for ~4h).
+
+Cutover act (T0):
+
+1. Final write-freeze check: legacy site is in read-only mode and the final export has been imported into production.
+2. Maintainer confirms production health: production smoke test green; `aws cloudfront get-distribution --id <prod-id>` shows `Status: Deployed`; `/health/ready` returns 200; manual login flow verified.
+3. Webmaster updates `footbag.org` and `www.footbag.org` records to the production CloudFront distribution domain (CNAME for `www`; ALIAS-equivalent for the apex, depending on the legacy DNS host's apex support).
+4. Maintainer monitors propagation with `dig +short footbag.org` from multiple resolvers (1.1.1.1, 8.8.8.8, local) at 30-second intervals until consistent (typically 5-15 minutes given the pre-shrunk TTL).
+5. First-traffic verification: hit `https://footbag.org/health/ready` and a representative authenticated route; confirm 200 and expected content.
+6. Webmaster keeps the legacy site online but read-only for the 48h rollback window (per §26).
+
+Post-cutover (T+0 to T+48h):
+
+- Maintainer monitors CloudFront error rate (CWAgent dashboard) and SES sender reputation for the post-cutover notification batch (§22 Phase 4).
+- TTL stays at 300 seconds for 48h to enable fast rollback.
+- At T+48h: if no rollback was triggered, raise TTL back to a steady-state value (3600 or higher); the webmaster proceeds with legacy-site retirement per §14 minimum-30-day retention.
+
+Rollback (T+0 to T+48h, see §26):
+
+- Webmaster reverts the apex and `www` records to the legacy site's IP.
+- Propagation completes within 5 minutes given the lowered TTL.
+- Beyond T+48h, fix-forward only; reversal requires joint sign-off (per §26).
+
+Coordination contract (per §14, §18):
+
+- Lead-time: webmaster needs at least 7 days advance notice to schedule the TTL pre-shrink and the cutover-day window.
+- ACM validation CNAMEs are added by the webmaster (the records live at the legacy DNS host) but issued by the maintainer's AWS account.
+
+Sign-off on this sequence is a prerequisite for §23 State 3 → State 4 transition.
+
+Procedure: `docs/DEV_ONBOARDING.md` Path I (§9.4 ACM via DNS delegation); production cutover runbook in `docs/DEVOPS_GUIDE.md` to be written when the production CloudFront distribution exists.
 
 ---
 

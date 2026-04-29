@@ -78,7 +78,7 @@ command -v rsync >/dev/null   || { echo "rsync missing on host"   >&2; exit 1; }
 SRV_AVAIL_KB=$(df -k --output=avail /srv/footbag 2>/dev/null | tail -1 | tr -d ' ')
 if [[ -n "$SRV_AVAIL_KB" ]] && (( SRV_AVAIL_KB < 512000 )); then
   echo "ERROR: /srv/footbag has only ${SRV_AVAIL_KB}K free; need >=500 MB." >&2
-  echo "Recommendation: ssh footbag-staging 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
+  echo "Recommendation: ssh ${DEPLOY_TARGET:-<deploy host>} 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
   exit 1
 fi
 
@@ -117,8 +117,10 @@ fi
 # hash of the image config JSON that each daemon may re-serialize differently.
 : "${EXPECTED_WEB_IMAGE_LAYERS:?must be set by deploy-rebuild.sh via cat-pipe}"
 : "${EXPECTED_WORKER_IMAGE_LAYERS:?must be set by deploy-rebuild.sh via cat-pipe}"
+: "${EXPECTED_IMAGE_IMAGE_LAYERS:?must be set by deploy-rebuild.sh via cat-pipe}"
 ACTUAL_WEB_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-web 2>/dev/null || true)
 ACTUAL_WORKER_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-worker 2>/dev/null || true)
+ACTUAL_IMAGE_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null || true)
 if [[ "$ACTUAL_WEB_IMAGE_LAYERS" != "$EXPECTED_WEB_IMAGE_LAYERS" ]]; then
   echo "ERROR: docker-web layer mismatch after load" >&2
   echo "       expected: $EXPECTED_WEB_IMAGE_LAYERS" >&2
@@ -129,6 +131,12 @@ if [[ "$ACTUAL_WORKER_IMAGE_LAYERS" != "$EXPECTED_WORKER_IMAGE_LAYERS" ]]; then
   echo "ERROR: docker-worker layer mismatch after load" >&2
   echo "       expected: $EXPECTED_WORKER_IMAGE_LAYERS" >&2
   echo "       actual:   $ACTUAL_WORKER_IMAGE_LAYERS" >&2
+  exit 1
+fi
+if [[ "$ACTUAL_IMAGE_IMAGE_LAYERS" != "$EXPECTED_IMAGE_IMAGE_LAYERS" ]]; then
+  echo "ERROR: docker-image layer mismatch after load" >&2
+  echo "       expected: $EXPECTED_IMAGE_IMAGE_LAYERS" >&2
+  echo "       actual:   $ACTUAL_IMAGE_IMAGE_LAYERS" >&2
   exit 1
 fi
 
@@ -184,6 +192,18 @@ SES_SANDBOX_MODE_VAL=$(require_env SES_SANDBOX_MODE)
 AWS_REGION_VAL=$(require_env AWS_REGION)
 AWS_PROFILE_VAL=$(require_env AWS_PROFILE)
 FOOTBAG_ENV_VAL=$(require_env FOOTBAG_ENV)
+
+# Defense-in-depth refuse-check (workstation half also gates this). The
+# script auto-wipes the S3 media bucket on staging by default; on non-
+# staging environments the operator must pass --keep-media to opt out of
+# the wipe. Production media wipes are an out-of-band operator procedure.
+: "${KEEP_MEDIA:?must be set by deploy-rebuild.sh via cat-pipe}"
+if [[ "$FOOTBAG_ENV_VAL" != "staging" && "$KEEP_MEDIA" != "yes" ]]; then
+  echo "ERROR: refusing to auto-wipe S3 media on FOOTBAG_ENV=$FOOTBAG_ENV_VAL." >&2
+  echo "       Pass --keep-media to rebuild the DB without touching S3." >&2
+  echo "       Wiping non-staging media is out-of-band; see DEVOPS_GUIDE." >&2
+  exit 1
+fi
 
 # Sync X_ORIGIN_VERIFY_SECRET from SSM to /srv/footbag/env. Both the value
 # CloudFront injects (via data.aws_ssm_parameter.origin_verify_secret) and the
@@ -254,6 +274,26 @@ systemctl stop footbag || true
 
 echo "    Ensuring compose stack is fully down..."
 compose_cmd down --remove-orphans || true
+
+# S3 media wipe (staging default; opt-out via --keep-media). Avatar S3
+# keys are stable per member ID; on a fresh DB seed those IDs map to
+# different people, so leaving old objects in place would serve the wrong
+# person's photo at the new identity. Wipe the entire bucket so the
+# rebuild is a true clean slate. The DR bucket auto-receives the delete
+# markers via replication. CloudFront edge cache may continue serving
+# previously-cached objects for up to 7 days under the /media/* TTL,
+# which is acceptable on staging.
+if [[ "$KEEP_MEDIA" == "yes" ]]; then
+  echo "    --keep-media: skipping S3 media wipe."
+else
+  PHOTO_STORAGE_S3_BUCKET_VAL=$(require_env PHOTO_STORAGE_S3_BUCKET)
+  echo "    Wiping s3://${PHOTO_STORAGE_S3_BUCKET_VAL}/ (staging default; pass --keep-media to skip)..."
+  AWS_PROFILE="$AWS_PROFILE_VAL" aws s3 rm \
+    --region "$AWS_REGION_VAL" \
+    "s3://${PHOTO_STORAGE_S3_BUCKET_VAL}/" \
+    --recursive
+  echo "    S3 wipe complete; delete markers will replicate to DR bucket automatically."
+fi
 
 echo "    Promoting release into $LIVE_DIR ..."
 rsync -a --delete --exclude=/env --exclude=/db --exclude=/media "$RELEASE_DIR/" "$LIVE_DIR/"

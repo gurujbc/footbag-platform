@@ -25,7 +25,7 @@ read_env() {
 SRV_AVAIL_KB=$(df -k --output=avail /srv/footbag 2>/dev/null | tail -1 | tr -d ' ')
 if [[ -n "$SRV_AVAIL_KB" ]] && (( SRV_AVAIL_KB < 512000 )); then
   echo "ERROR: /srv/footbag has only ${SRV_AVAIL_KB}K free; need >=500 MB." >&2
-  echo "Recommendation: ssh footbag-staging 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
+  echo "Recommendation: ssh ${DEPLOY_TARGET:-<deploy host>} 'sudo journalctl --vacuum-time=7d; sudo docker system prune -af'" >&2
   exit 1
 fi
 
@@ -47,8 +47,10 @@ fi
 # hash of the image config JSON that each daemon may re-serialize differently.
 : "${EXPECTED_WEB_IMAGE_LAYERS:?must be set by deploy-code.sh via cat-pipe}"
 : "${EXPECTED_WORKER_IMAGE_LAYERS:?must be set by deploy-code.sh via cat-pipe}"
+: "${EXPECTED_IMAGE_IMAGE_LAYERS:?must be set by deploy-code.sh via cat-pipe}"
 ACTUAL_WEB_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-web 2>/dev/null || true)
 ACTUAL_WORKER_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-worker 2>/dev/null || true)
+ACTUAL_IMAGE_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null || true)
 if [[ "$ACTUAL_WEB_IMAGE_LAYERS" != "$EXPECTED_WEB_IMAGE_LAYERS" ]]; then
   echo "ERROR: docker-web layer mismatch after load" >&2
   echo "       expected: $EXPECTED_WEB_IMAGE_LAYERS" >&2
@@ -59,6 +61,12 @@ if [[ "$ACTUAL_WORKER_IMAGE_LAYERS" != "$EXPECTED_WORKER_IMAGE_LAYERS" ]]; then
   echo "ERROR: docker-worker layer mismatch after load" >&2
   echo "       expected: $EXPECTED_WORKER_IMAGE_LAYERS" >&2
   echo "       actual:   $ACTUAL_WORKER_IMAGE_LAYERS" >&2
+  exit 1
+fi
+if [[ "$ACTUAL_IMAGE_IMAGE_LAYERS" != "$EXPECTED_IMAGE_IMAGE_LAYERS" ]]; then
+  echo "ERROR: docker-image layer mismatch after load" >&2
+  echo "       expected: $EXPECTED_IMAGE_IMAGE_LAYERS" >&2
+  echo "       actual:   $ACTUAL_IMAGE_IMAGE_LAYERS" >&2
   exit 1
 fi
 

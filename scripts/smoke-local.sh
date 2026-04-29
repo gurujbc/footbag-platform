@@ -6,7 +6,8 @@
 #   # Against npm run dev (port 3000):
 #   ./scripts/smoke-local.sh
 #
-#   # Against Docker Compose stack (port 80):
+#   # Against Docker Compose stack (port 80). Bring the stack up in another
+#   # terminal first with `npm run compose:dev` (auto-teardown on Ctrl+C):
 #   BASE_URL=http://localhost ./scripts/smoke-local.sh
 #
 # Exits 0 if all checks pass, 1 if any fail.

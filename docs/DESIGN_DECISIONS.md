@@ -217,15 +217,23 @@ Separates structured metadata (benefits from SQL queries, transactions, referent
 
 Paths are stored as data, not calculated at runtime based on the member id and gallery name used at the time of upload.
 
-CloudFront distribution (media.footbag.org) serves from primary bucket with 30-day cache TTL. Photos are immutable due to unique paths in filenames, so aggressive caching is safe.
+CloudFront serves photos directly from the primary bucket via the `/media/*` cache behavior on the single site distribution. The cache-bust mechanism is URL-versioned via a `?v={media_id}` query string (a fresh UUID per upload), and the cache key includes the query string. S3 PUT sets `Cache-Control: public, max-age=31536000, immutable`. Photos are immutable from any cache's point of view because each emitted URL is unique to its upload; the URL is the cache identity, the S3 key is the storage location, decoupled.
 
 Local filesystem at /data/photos/ mounted as Docker volume mirrors production S3 directory structure exactly. PhotoStorageAdapter reads identical database paths and constructs local URLs. No AWS credentials required for basic photo operations.
 
 Backup and Replication:
 
-Photos are backed up separately from database via S3 cross-region replication. Primary bucket (us-east-1) replicates automatically to backup bucket (us-west-2) using One Zone-IA storage class. Replication is continuous with RPO less than 15 minutes. No backup job required; S3 native feature handles this automatically.
+Photos are backed up separately from database via S3 cross-region replication. The primary media bucket (us-east-1) replicates automatically to a dedicated media disaster-recovery bucket (us-west-2) using One Zone-IA storage class. Delete markers are replicated so account-erasure deletions propagate. Replication is continuous; per-object propagation typically completes within minutes. S3 Replication Time Control (RTC) is not enabled, so there is no formal RPO SLA. No backup job required; S3 native cross-region replication handles this automatically. Bucket names follow the `<env>-media` (primary) and `<env>-media-dr` (DR) Terraform convention; the SQLite-snapshot DR bucket is a separate `<env>-dr` resource.
 
 Deletion and Retention: No referential integrity concerns from photo deletion because photos are leaf nodes in the data model. When member deletes account: member's photos automatically hard-deleted.
+
+Access Control:
+
+The media bucket is private. Viewer reads flow exclusively through CloudFront with Origin Access Control (OAC); the bucket policy grants `s3:GetObject` to the `cloudfront.amazonaws.com` service principal with an `aws:SourceArn` condition matching the distribution ARN, and grants nothing else. `s3:ListBucket` is intentionally omitted: with only `GetObject`, S3 returns 403 AccessDenied for both existing-but-forbidden and missing keys when the requester lacks permission, which prevents enumeration of bucket contents.
+
+The application container's IAM grants `s3:PutObject`, `s3:DeleteObject`, `s3:GetObject` on objects, plus `s3:ListBucket` on the bucket. `GetObject` is granted because S3's HeadObject is authorized by `s3:GetObject` per IAM; the application uses HeadObject for existence checks only and never reads object bytes through the SDK. Viewer reads always flow CloudFront → OAC → bucket.
+
+CloudFront OAC is configured with `signing_behavior = always`, which overrides any viewer-supplied `Authorization` header. OAC does not override the `Host` header; for an S3 origin, the cache behavior must omit `origin_request_policy_id` (or use a policy that excludes `Host`) so CloudFront sets `Host` to the S3 origin domain itself. With the wrong `Host`, S3 cannot identify the bucket via virtual-host routing and returns generic `NotFound` before any bucket policy is evaluated. This applies to every cache behavior targeting an S3 origin, not only `/media/*`.
 
 Trade-offs:
 
@@ -239,11 +247,11 @@ Trade-offs:
 
 Impact:
 
-- PhotoStorageAdapter interface defined with methods: constructURL(path), exists(path), delete(path).
+- PhotoStorageAdapter interface defined with methods: put(key, data), delete(key), constructURL(key), exists(key).
 
 - Backup procedures updated to cover photos separately from database.
 
-- CloudFront configuration documented for media.footbag.org distribution.
+- CloudFront `/media/*` cache behavior uses OAC with no origin request policy. Operations in DEVOPS_GUIDE.
 
 Alternative Considered:
 
@@ -1790,7 +1798,7 @@ Impact:
 
 Decision:
 
-Single CloudFront distribution fronts all content with different cache behaviors. All HTML responses from the Lightsail origin (public, mixed-state, and authenticated) use the AWS managed `CachingDisabled` cache policy (TTL 0/0/0): server-rendered HTML in this app frequently shapes content by viewer state (auth, role, tier, ownership), and per-route classification of cacheability would be brittle as the route surface grows; routing all HTML to the origin keeps cache decisions out of CloudFront and lets the Express middleware at `src/app.ts` enforce `Cache-Control: private, no-store` on every authenticated response without coordination with edge config. Static assets (CSS, JS, images) use the AWS managed `CachingOptimized` policy with content-hash filenames for long-lived edge caching. Health probes use `CachingDisabled`. Archive content uses 1-year TTL with origin S3 archive bucket and members-only access controls.
+Single CloudFront distribution fronts all content with different cache behaviors. All HTML responses from the Lightsail origin (public, mixed-state, and authenticated) use the AWS managed `CachingDisabled` cache policy (TTL 0/0/0): server-rendered HTML in this app frequently shapes content by viewer state (auth, role, tier, ownership), and per-route classification of cacheability would be brittle as the route surface grows; routing all HTML to the origin keeps cache decisions out of CloudFront and lets the Express middleware at `src/app.ts` enforce `Cache-Control: private, no-store` on every authenticated response without coordination with edge config. Static assets (CSS, JS, images) use the AWS managed `CachingOptimized` policy with content-hash filenames for long-lived edge caching. Health probes use `CachingDisabled`. Archive content uses 1-year TTL with origin S3 archive bucket and members-only access controls. Cache behaviors targeting S3 origins must omit `origin_request_policy_id` (or use only a policy that excludes `Host`).
 
 Rationale:
 
@@ -1799,6 +1807,8 @@ Rationale:
 - Static assets use content-hash filenames enabling long-lived caching.
 
 - Archive is immutable so extremely long cache is safe.
+
+- For OAC-fronted S3 origins, omitting `origin_request_policy_id` is required because S3 uses the `Host` header for virtual-host bucket routing and OAC overrides only `Authorization`. Forwarding the viewer's `Host` (the CloudFront edge domain) to S3 makes S3 unable to identify the bucket and return generic `NotFound` before bucket policy evaluation.
 
 Trade-offs:
 
@@ -2685,9 +2695,9 @@ Alternative considered: The AWS free tier does not provide viable continuous dat
 
 Photo Backup (S3 replication):
 
-Photos are backed up separately from database due to data volume. Amazon S3 cross-region replication handles photo backup automatically and continuously. Primary bucket (footbag-media-prod in us-east-1) replicates all photo objects to backup bucket (footbag-media-backup in us-west-2) using S3 One Zone-IA storage class for 45% cost savings on backup storage. Replication is continuous with Recovery Point Objective (RPO) of less than 15 minutes. No backup job or cron process is required; S3's native cross-region replication feature handles this automatically. Photo backup is completely decoupled from database backup cycle. Backup bucket uses identical directory structure (hash-based sharding) as primary bucket for operational consistency during disaster recovery scenarios.
+Photos are backed up separately from database due to data volume. Amazon S3 cross-region replication handles photo backup automatically and continuously. The primary media bucket (`<env>-media`, us-east-1) replicates all photo objects to a dedicated DR bucket (`<env>-media-dr`, us-west-2) using S3 One Zone-IA storage class for cost savings on DR storage. Replication is continuous; per-object propagation typically completes within minutes. S3 Replication Time Control (RTC) is not enabled, so there is no formal RPO SLA. No backup job or cron process is required; S3's native cross-region replication feature handles this automatically. Photo backup is completely decoupled from database backup cycle. The DR bucket preserves the primary's S3 key structure exactly (replication preserves keys), so a recovery scenario can restore objects without remapping. Object Lock is intentionally not applied to the photo DR bucket: photo deletion must propagate to the DR side to honor member-account-erasure (§1.5 "When member deletes account: member's photos automatically hard-deleted"). Operator-recovery headroom is provided by S3 Versioning plus 30-day `NoncurrentVersionExpiration` on both buckets.
 
-Recovery procedure: Promote backup bucket to primary by updating CloudFront origin configuration and PhotoStorageAdapter bucket settings, or restore objects from backup bucket to new primary bucket.
+Recovery procedure: Promote the DR bucket to primary by updating the CloudFront `/media/*` origin and the `PHOTO_STORAGE_S3_BUCKET` env var, or restore objects from the DR bucket to a new primary bucket (replication-preserved keys make either path mechanical).
 
 ## 9.5 Failure Modes
 

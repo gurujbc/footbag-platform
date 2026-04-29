@@ -43,3 +43,17 @@ provider "aws" {
     }
   }
 }
+
+# us-west-2 alias for the media DR bucket (cross-region replication target)
+provider "aws" {
+  alias  = "us_west_2"
+  region = "us-west-2"
+
+  default_tags {
+    tags = {
+      Project     = "footbag-platform"
+      Environment = var.environment
+      ManagedBy   = "terraform"
+    }
+  }
+}

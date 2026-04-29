@@ -61,10 +61,18 @@ services:
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
       SES_SANDBOX_MODE: ${SES_SANDBOX_MODE}
       FOOTBAG_DB_PATH: /app/db/footbag.db
+      IMAGE_PROCESSOR_URL: ${IMAGE_PROCESSOR_URL:-http://image:4000}
+      PHOTO_STORAGE_ADAPTER: ${PHOTO_STORAGE_ADAPTER:-local}
+      PHOTO_STORAGE_S3_BUCKET: ${PHOTO_STORAGE_S3_BUCKET:-}
     deploy:
       resources:
         limits:
-          memory: 256M
+          # Scaled to 192M for single-image-at-a-time avatar testing on
+          # Lightsail nano_3_0 (512M host). Production target is 512M.
+          # Bump back to 512M after the host bundle is upgraded to a 2GB+
+          # instance. Web no longer runs Sharp inline (image worker handles
+          # it via HTTP), so this trim is safe at the current load.
+          memory: 192M
 
   worker:
     # Email-outbox polling loop (src/worker.ts). Restart on crash or host
@@ -92,7 +100,39 @@ services:
       SES_FROM_IDENTITY: ${SES_FROM_IDENTITY}
       SES_SANDBOX_MODE: ${SES_SANDBOX_MODE}
       FOOTBAG_DB_PATH: /app/db/footbag.db
+      IMAGE_PROCESSOR_URL: ${IMAGE_PROCESSOR_URL:-http://image:4000}
+      PHOTO_STORAGE_ADAPTER: ${PHOTO_STORAGE_ADAPTER:-local}
+      PHOTO_STORAGE_S3_BUCKET: ${PHOTO_STORAGE_S3_BUCKET:-}
     deploy:
       resources:
         limits:
-          memory: 128M
+          # Scaled to 96M for nano_3_0 (512M host). Production target is 384M;
+          # bump back to 384M after the host bundle upgrade. Worker is a
+          # minimal email-outbox polling loop and handles the trim fine.
+          memory: 96M
+
+  # Image processing worker. Scaled-down sizing for single-image-at-a-time
+  # avatar testing on Lightsail nano_3_0 (512M host); production target is
+  # `memory: 896M` with `IMAGE_MAX_CONCURRENT=2`. Bump both after the host
+  # bundle is upgraded to a 2GB+ instance.
+  #
+  # OOM kills are an expected condition under the scaled-down limit (high
+  # pixel-count inputs decoded by Sharp can exceed 256M of RGBA). Defenses:
+  #   - IMAGE_MAX_CONCURRENT=1 caps in-flight Sharp ops to one
+  #   - `restart: always` brings the container back automatically on OOM-kill
+  #   - healthcheck flips unhealthy on kill, back to healthy in ~30s
+  #   - in-flight web requests see ECONNRESET, mapped to ImageProcessingError
+  #     and a 5xx user-facing response by the HTTP adapter
+  image:
+    restart: always
+    logging: *log-rotation
+    environment:
+      NODE_ENV: production
+      IMAGE_PORT: "4000"
+      # Scaled to 1 for nano_3_0; production target is 2.
+      IMAGE_MAX_CONCURRENT: ${IMAGE_MAX_CONCURRENT:-1}
+    deploy:
+      resources:
+        limits:
+          # Scaled to 256M for nano_3_0; production target is 896M.
+          memory: 256M

@@ -91,6 +91,41 @@ resource "aws_iam_role_policy" "app_s3_snapshots" {
   })
 }
 
+# Media bucket access for the app: PutObject (avatar upload) + DeleteObject
+# (account erasure) + GetObject (required for HeadObject existence check, per
+# AWS docs — there is no separate s3:HeadObject action). ListBucket retained
+# so HEAD on missing keys returns 404 NoSuchKey rather than 403 AccessDenied
+# (better error semantics for callers). Despite the GetObject grant, the app
+# does NOT fetch object bytes — the only call site is adapter.exists() via
+# HeadObject. CloudFront-OAC remains the sole serving read path; code review
+# enforces this (no GetObjectCommand import in src/adapters/photoStorageAdapter.ts).
+resource "aws_iam_role_policy" "app_s3_media" {
+  name = "s3-media"
+  role = aws_iam_role.app_runtime.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ReadWriteMediaObjects"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:GetObject"
+        ]
+        Resource = "${aws_s3_bucket.media.arn}/*"
+      },
+      {
+        Sid      = "HeadMediaObjects"
+        Effect   = "Allow"
+        Action   = "s3:ListBucket"
+        Resource = aws_s3_bucket.media.arn
+      }
+    ]
+  })
+}
+
 # JwtSigning grants here are redundant with the role-direct grant in the JWT
 # key policy (aws_kms_key.jwt_signing). Kept for parity with the live IAM
 # policy attached during Path H bootstrap and to keep SES Send authorization
@@ -199,5 +234,65 @@ resource "aws_iam_user_policy" "cwagent_publisher_putmetric" {
         }
       }
     }]
+  })
+}
+
+# =============================================================================
+# S3 cross-region replication role for the media bucket.
+# Separate from app_runtime: the principal of trust is s3.amazonaws.com,
+# not the application. Combining would muddy each role's purpose.
+# =============================================================================
+
+resource "aws_iam_role" "s3_replication" {
+  name = "${local.prefix}-s3-replication"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "TrustS3"
+      Effect    = "Allow"
+      Principal = { Service = "s3.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "s3_replication" {
+  name = "media-replication"
+  role = aws_iam_role.s3_replication.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "SourceBucketRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket"
+        ]
+        Resource = aws_s3_bucket.media.arn
+      },
+      {
+        Sid    = "SourceObjectRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetObjectVersionForReplication",
+          "s3:GetObjectVersionAcl",
+          "s3:GetObjectVersionTagging"
+        ]
+        Resource = "${aws_s3_bucket.media.arn}/*"
+      },
+      {
+        Sid    = "DestinationObjectWrite"
+        Effect = "Allow"
+        Action = [
+          "s3:ReplicateObject",
+          "s3:ReplicateDelete",
+          "s3:ReplicateTags"
+        ]
+        Resource = "${aws_s3_bucket.media_dr.arn}/*"
+      }
+    ]
   })
 }

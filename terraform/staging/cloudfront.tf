@@ -12,8 +12,8 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 
-data "aws_cloudfront_origin_request_policy" "all_viewer" {
-  name = "Managed-AllViewer"
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
+  name = "Managed-AllViewerExceptHostHeader"
 }
 
 data "aws_cloudfront_origin_request_policy" "cors_s3_origin" {
@@ -41,6 +41,38 @@ resource "aws_cloudfront_cache_policy" "media_assets" {
       query_string_behavior = "all"
     }
   }
+}
+
+# =============================================================================
+# Origin Access Control for the media bucket
+# Lets the CloudFront distribution read S3 objects via SigV4 without making the
+# bucket public. Paired with aws_s3_bucket_policy.media in s3.tf.
+# =============================================================================
+
+resource "aws_cloudfront_origin_access_control" "media" {
+  count                             = var.enable_cloudfront ? 1 : 0
+  name                              = "${local.prefix}-media-oac"
+  description                       = "OAC for media bucket (URL-versioned cache-bust + immutable PUTs)"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# =============================================================================
+# CloudFront Function: strip /media/ prefix from viewer-request URI
+# DD §1.5 says local-fs and S3 layouts mirror exactly, so S3 keys do NOT have
+# a /media/ prefix. The /media/ on URLs is an Express-route convention. When
+# CloudFront forwards to S3, this function rewrites the URI so the origin sees
+# the actual S3 key. Without it, S3 looks up media/avatars/... and 404s.
+# =============================================================================
+
+resource "aws_cloudfront_function" "strip_media_prefix" {
+  count   = var.enable_cloudfront ? 1 : 0
+  name    = "${local.prefix}-strip-media-prefix"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  comment = "Strips /media/ from viewer-request URI before forwarding to S3 origin (DD §1.5)"
+  code    = file("${path.module}/cloudfront-functions/strip-media-prefix.js")
 }
 
 # =============================================================================
@@ -87,6 +119,16 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
+  # ── Origin: media bucket via OAC ──────────────────────────────────────────
+  # CloudFront reads processed photo objects directly from S3. App writes are
+  # handled by the app_runtime IAM policy (Put/Delete/Head only); reads flow
+  # exclusively through this origin via OAC, never via direct S3 GetObject.
+  origin {
+    origin_id                = "media-s3-origin"
+    domain_name              = aws_s3_bucket.media.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.media[0].id
+  }
+
   # Maintenance-page S3 origin intentionally omitted (deferred).
   # Re-add when OAC, ordered_cache_behavior for /maintenance.html, bucket policy,
   # and the maintenance.html object all exist and are tested. See Path E, section 5.3.
@@ -94,6 +136,11 @@ resource "aws_cloudfront_distribution" "main" {
   # ── Default cache behaviour ───────────────────────────────────────────────
   # All HTML uses CachingDisabled; origin (Express middleware) sets
   # Cache-Control on every authenticated response.
+  # Origin request policy is AllViewerExceptHostHeader: forwards everything
+  # EXCEPT Host. The canonical OAC-S3 pattern (DD §6.2) requires no Host
+  # forwarding to an S3 origin; the AWS-recommended policy for any custom
+  # HTTP origin (Lightsail nginx here) is the same. Avoiding AllViewer
+  # uniformly prevents the bug class that bit /media/* before the fix.
   default_cache_behavior {
     target_origin_id       = "lightsail-origin"
     viewer_protocol_policy = "redirect-to-https"
@@ -102,10 +149,17 @@ resource "aws_cloudfront_distribution" "main" {
     compress               = true
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
   }
 
   # ── Static assets — longer cache ─────────────────────────────────────────
+  # WART: cors_s3_origin is the AWS-managed policy for S3 CORS preflight; it
+  # forwards three CORS request headers to the origin. The four behaviors
+  # below (/css/*, /js/*, /img/*, /fonts/*) target Lightsail nginx, not S3,
+  # so the CORS forwarding is semantically misplaced but functionally
+  # harmless (nginx ignores those headers for static assets). Future work:
+  # switch to all_viewer_except_host_header or omit the origin request
+  # policy entirely.
   ordered_cache_behavior {
     path_pattern           = "/css/*"
     target_origin_id       = "lightsail-origin"
@@ -158,19 +212,31 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   # ── User-uploaded media — query-string in cache key (URL-versioned cache-bust) ─
+  # No origin_request_policy: OAC handles SigV4 signing, and forwarding the
+  # viewer Host header to an S3 origin breaks virtual-host bucket routing.
+  # AllViewer forwarded Host=<cloudfront-domain> to S3, so S3 could not map
+  # the Host to any bucket and returned generic NotFound before the bucket
+  # policy was even evaluated. With no origin request policy plus a cache
+  # policy that forwards no headers/cookies, CloudFront sets Host to the S3
+  # origin domain and the OAC signature matches.
   ordered_cache_behavior {
     path_pattern           = "/media/*"
-    target_origin_id       = "lightsail-origin"
+    target_origin_id       = "media-s3-origin"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    cache_policy_id          = aws_cloudfront_cache_policy.media_assets.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
+    cache_policy_id = aws_cloudfront_cache_policy.media_assets.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.strip_media_prefix[0].arn
+    }
   }
 
   # ── Health probes — pass through uncached ────────────────────────────────
+  # Origin request policy: AllViewerExceptHostHeader (see default_cache_behavior).
   ordered_cache_behavior {
     path_pattern           = "/health/*"
     target_origin_id       = "lightsail-origin"
@@ -179,7 +245,7 @@ resource "aws_cloudfront_distribution" "main" {
     cached_methods         = ["GET", "HEAD"]
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
   }
 
   # custom_error_response blocks for maintenance page intentionally omitted (deferred).

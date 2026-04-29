@@ -4,6 +4,7 @@ import { memberService, ProfileEditInput } from '../services/memberService';
 import { AVATAR_MAX_BYTES, createAvatarService } from '../services/avatarService';
 import { identityAccessService } from '../services/identityAccessService';
 import { getPhotoStorageAdapter } from '../adapters/photoStorageAdapter';
+import { getImageProcessingAdapter } from '../adapters/imageProcessingAdapter';
 import { createSessionJwt } from '../services/jwtService';
 import { issueSessionCookie } from '../lib/sessionCookie';
 import { RateLimitedError, ValidationError, NotFoundError } from '../services/serviceErrors';
@@ -230,7 +231,10 @@ export const memberController = {
       }
 
       const fileBuffer = Buffer.concat(chunks);
-      const avatarService = createAvatarService(getPhotoStorageAdapter());
+      const avatarService = createAvatarService({
+        storage: getPhotoStorageAdapter(),
+        imageProcessor: getImageProcessingAdapter(),
+      });
 
       avatarService.uploadAvatar(memberId, fileBuffer)
         .then(() => {

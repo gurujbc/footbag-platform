@@ -34,6 +34,16 @@ output "dr_bucket_name" {
   value       = aws_s3_bucket.dr.bucket
 }
 
+output "media_bucket_name" {
+  description = "S3 bucket for processed photo objects (CloudFront /media/* origin)"
+  value       = aws_s3_bucket.media.bucket
+}
+
+output "media_dr_bucket_name" {
+  description = "us-west-2 cross-region replication target for the media bucket"
+  value       = aws_s3_bucket.media_dr.bucket
+}
+
 output "maintenance_bucket_name" {
   description = "S3 bucket hosting the static maintenance page"
   value       = aws_s3_bucket.maintenance.bucket

@@ -5,14 +5,21 @@
 #   # First-time setup: build the local DB (requires sqlite3 CLI or use Node):
 #   ./scripts/reset-local-db.sh
 #
-#   # Start the stack:
-#   docker compose up --build
+#   # Bring the stack up. ONE command, foreground, with auto-teardown on
+#   # Ctrl+C / exit / crash. Runs scripts/compose-dev.sh which wires up the
+#   # project-root .env and traps cleanup so no manual `down` is needed:
+#   npm run compose:dev
 #
-#   # Smoke check (requires the stack to be running):
-#   ./scripts/smoke-local.sh
+#   # Smoke check from a second terminal (the stack holds the first):
+#   BASE_URL=http://localhost ./scripts/smoke-local.sh
 #
 # The SQLite database file is mounted from the host so you can inspect it
 # directly with the sqlite3 CLI or DB Browser for SQLite.
+#
+# This stack runs NODE_ENV=production for parity with the deployed
+# environment. Required env vars (JWT_SIGNER, SES_ADAPTER, etc.) have
+# `${VAR:-default}` passthroughs below that fall back to local-friendly
+# defaults (local crypto, stub email); override via project-root .env.
 # =============================================================================
 
 services:
@@ -48,12 +55,28 @@ services:
     expose:
       - "3000"
     environment:
+      # NODE_ENV=production keeps this stack a parity test of the deployed
+      # configuration. Prod-mode env.ts requires JWT_SIGNER, SES_ADAPTER,
+      # SES_SANDBOX_MODE, IMAGE_PROCESSOR_URL, and a non-placeholder
+      # SESSION_SECRET; the ${VAR:-default} passthroughs below let the
+      # parity stack come up with sensible local defaults (local crypto +
+      # stub email) while still letting an operator override per-var via
+      # the project-root .env file.
       NODE_ENV: production
       PORT: "3000"
       LOG_LEVEL: info
       FOOTBAG_DB_PATH: /app/db/footbag.db
       PUBLIC_BASE_URL: http://localhost
       SESSION_SECRET: ${SESSION_SECRET}
+      IMAGE_PROCESSOR_URL: http://image:4000
+      JWT_SIGNER: ${JWT_SIGNER:-local}
+      JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID:-}
+      SES_ADAPTER: ${SES_ADAPTER:-stub}
+      SES_FROM_IDENTITY: ${SES_FROM_IDENTITY:-}
+      SES_SANDBOX_MODE: ${SES_SANDBOX_MODE:-0}
+      AWS_REGION: ${AWS_REGION:-}
+      PHOTO_STORAGE_ADAPTER: ${PHOTO_STORAGE_ADAPTER:-local}
+      PHOTO_STORAGE_S3_BUCKET: ${PHOTO_STORAGE_S3_BUCKET:-}
     volumes:
       # Directory bind mount so SQLite WAL/SHM sidecars live on the host and
       # are shared between web and worker containers. A file bind mount would
@@ -61,9 +84,36 @@ services:
       - ../database:/app/db:rw
       # Local media uploads (avatars, photos).
       - ../data/media:/app/data/media:rw
+    depends_on:
+      image:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health/live"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  # ── Image processing worker ───────────────────────────────────────────────
+  # Standalone Sharp pipeline behind an HTTP boundary. Web POSTs raw bytes
+  # to /process/avatar and gets back base64-encoded thumb + display variants.
+  # Reachable only on the docker network (no host port binding); web finds
+  # it by service name (image:4000). Stateless: no DB, no media, no AWS.
+  image:
+    build:
+      context: ..
+      dockerfile: docker/image/Dockerfile
+    expose:
+      - "4000"
+    environment:
+      NODE_ENV: production
+      IMAGE_PORT: "4000"
+      IMAGE_MAX_CONCURRENT: "2"
+      LOG_LEVEL: info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
       interval: 10s
       timeout: 5s
       start_period: 15s
@@ -77,9 +127,27 @@ services:
       context: ..
       dockerfile: docker/worker/Dockerfile
     environment:
+      # Worker imports src/config/env.ts the same way web does, so it must
+      # supply the same prod-mode env.ts contract (PORT, PUBLIC_BASE_URL,
+      # SESSION_SECRET, IMAGE_PROCESSOR_URL, JWT_SIGNER, SES_ADAPTER, etc.)
+      # even though it does not bind a port or call the image worker.
+      # Defense-in-depth: every container exits fast on a misconfigured
+      # parity stack, not just web.
       NODE_ENV: production
+      PORT: "3000"
       LOG_LEVEL: info
       FOOTBAG_DB_PATH: /app/db/footbag.db
+      PUBLIC_BASE_URL: http://localhost
+      SESSION_SECRET: ${SESSION_SECRET}
+      IMAGE_PROCESSOR_URL: http://image:4000
+      JWT_SIGNER: ${JWT_SIGNER:-local}
+      JWT_KMS_KEY_ID: ${JWT_KMS_KEY_ID:-}
+      SES_ADAPTER: ${SES_ADAPTER:-stub}
+      SES_FROM_IDENTITY: ${SES_FROM_IDENTITY:-}
+      SES_SANDBOX_MODE: ${SES_SANDBOX_MODE:-0}
+      AWS_REGION: ${AWS_REGION:-}
+      PHOTO_STORAGE_ADAPTER: ${PHOTO_STORAGE_ADAPTER:-local}
+      PHOTO_STORAGE_S3_BUCKET: ${PHOTO_STORAGE_S3_BUCKET:-}
     volumes:
       # Directory bind mount — must match web so WAL/SHM sidecars are shared.
       - ../database:/app/db:rw

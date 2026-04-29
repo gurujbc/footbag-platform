@@ -71,7 +71,15 @@ export function createApp(): express.Application {
   app.use(express.static(path.join(process.cwd(), 'src', 'public')));
 
   // ── Media uploads (avatars, photos) ─────────────────────────────────────
-  app.use('/media', express.static(config.mediaDir, { maxAge: '7d' }));
+  // Cache header matches the production S3 PUT contract
+  // (Cache-Control: public, max-age=31536000, immutable). URL-versioning
+  // via `?v={media_id}` makes `immutable` semantically correct: each
+  // emitted URL is unique to its upload, replacement uploads emit a fresh
+  // `?v=` and become a distinct cache entry.
+  app.use(
+    '/media',
+    express.static(config.mediaDir, { maxAge: '1y', immutable: true }),
+  );
 
   // ── View engine ──────────────────────────────────────────────────────────
   app.engine(

@@ -23,29 +23,8 @@ Tracked in `legacy_data/IMPLEMENTATION_PLAN.md`. Load only when working in that 
 
 ---
 
-## Dave's track: photo pipeline production wiring (DD §1.5 + §1.8)
+## Accepted temporary deviations
 
-Brings the avatar/photo pipeline to its DD-pinned production design (S3 storage, separate `image` Sharp container per DD §1.8, CloudFront serving from bucket per DD §1.5). Closes the prior "Avatar pipeline is local-only" deviation.
+### Infrastructure deviations
 
-**Per-phase detail (file paths, contracts, tests, verification, mirror patterns, do-NOTs, acceptance) lives in `PHOTO_PIPELINE_PLAN.md` at project root. Read that file before starting any phase.**
-
-Phases (each executed in a clean session; lowest-numbered open phase is current):
-
-1. App: `ImageProcessingAdapter` (HTTP-only) + `src/imageWorker.ts` entry
-2. Docker: `image` container + compose updates
-3. App: `createS3PhotoStorageAdapter` + `env.ts` fail-fast
-4. Terraform: S3 infra (versioning + replication + lifecycle + IAM, no CloudFront flip)
-5. Cutover (operator-led, scheduled): TF flip + env update + restart + smoke
-6. Smoke test + DEVOPS_GUIDE runbook + DD §1.5 doc-sync
-7. IP cleanup -- delete this section and `PHOTO_PIPELINE_PLAN.md`
-
-Out of scope: gallery upload routes; rate-limit enforcement; ACM/route53/custom-domain alias; content-hash filenames replacing `?v=`; customer-managed KMS on media bucket.
-
-Cross-phase invariants (NEVER violate):
-- Existing avatar test suite (12 cases in `tests/integration/avatar.routes.test.ts`) stays green at every phase boundary.
-- `npm run build` clean; coverage thresholds (95/76/93/95) hold or rise.
-- No edits to canonical docs (DD/USER_STORIES/SERVICE_CATALOG/DATA_MODEL/DEV_ONBOARDING/DEVOPS_GUIDE/GOVERNANCE) without explicit maintainer approval; show literal BEFORE/AFTER and wait.
-- `?v={media_id}` cache-bust query, stable per-member S3 keys, and synchronous USER_STORIES contract are preserved across every phase.
-- Adapter parity tests inject fake clients (`fetchImpl`, `s3Client`); never mock the AWS SDK package.
-
-Accepted shortcut: SSE-S3 (AES256) on the media bucket (per DD §3.1), not customer-managed KMS.
+1. **`docker/docker-compose.prod.yml` memory limits sized for Lightsail nano_3_0 (512M host).** Current: nginx 64M, web 192M, worker 96M, image 256M with `IMAGE_MAX_CONCURRENT=1`. DD §1.8 production target: nginx 128 / web 512 / worker 384 / image 896 (1,920M total) with `IMAGE_MAX_CONCURRENT=2`, on a 2GB+ host. Image-container code comment at the deviation site captures the OOM-defense detail. Unblock: host bundle upgrade.

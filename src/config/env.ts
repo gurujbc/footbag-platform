@@ -27,6 +27,12 @@ export interface AppConfig {
   sesAdapter: 'live' | 'stub';
   sesSandboxMode: boolean;
   sesFromIdentity: string | undefined;
+  imageProcessorUrl: string;
+  imageMaxConcurrent: number;
+  imagePort: number;
+  imageProcessTimeoutMs: number;
+  photoStorageAdapter: 's3' | 'local';
+  photoStorageS3Bucket: string | undefined;
   // Value for Express's `trust proxy` setting. Number, boolean, or
   // comma-separated subnet/IP list — anything Express's setting accepts.
   // Default: 2 in production (CloudFront + nginx), 0 elsewhere.
@@ -101,9 +107,67 @@ function loadConfig(): AppConfig {
   }
 
   const awsRegion = process.env.AWS_REGION || undefined;
-  if ((jwtSigner === 'kms' || sesAdapter === 'live') && !awsRegion) {
-    throw new Error('AWS_REGION is required when JWT_SIGNER=kms or SES_ADAPTER=live');
+
+  const rawImageUrl = process.env.IMAGE_PROCESSOR_URL;
+  let imageProcessorUrl: string;
+  if (rawImageUrl) {
+    imageProcessorUrl = rawImageUrl;
+  } else if (isProd) {
+    throw new Error('IMAGE_PROCESSOR_URL must be set explicitly in production (no default)');
+  } else {
+    imageProcessorUrl = 'http://localhost:4001';
   }
+
+  const rawPhotoStorage = process.env.PHOTO_STORAGE_ADAPTER;
+  let photoStorageAdapter: 's3' | 'local';
+  if (rawPhotoStorage === 's3' || rawPhotoStorage === 'local') {
+    photoStorageAdapter = rawPhotoStorage;
+  } else if (rawPhotoStorage) {
+    throw new Error(
+      `PHOTO_STORAGE_ADAPTER must be 's3' or 'local', got: ${rawPhotoStorage}`,
+    );
+  } else if (isProd) {
+    throw new Error(
+      'PHOTO_STORAGE_ADAPTER must be set explicitly in production (no default)',
+    );
+  } else {
+    photoStorageAdapter = 'local';
+  }
+
+  const photoStorageS3Bucket = process.env.PHOTO_STORAGE_S3_BUCKET || undefined;
+  if (photoStorageAdapter === 's3' && !photoStorageS3Bucket) {
+    throw new Error(
+      'PHOTO_STORAGE_S3_BUCKET is required when PHOTO_STORAGE_ADAPTER=s3',
+    );
+  }
+
+  if (
+    (jwtSigner === 'kms' ||
+      sesAdapter === 'live' ||
+      photoStorageAdapter === 's3') &&
+    !awsRegion
+  ) {
+    throw new Error(
+      'AWS_REGION is required when JWT_SIGNER=kms, SES_ADAPTER=live, or PHOTO_STORAGE_ADAPTER=s3',
+    );
+  }
+
+  function parseIntEnv(name: string, fallback: number, min: number, max: number): number {
+    const raw = process.env[name];
+    if (raw === undefined || raw === '') return fallback;
+    if (!/^\d+$/.test(raw)) {
+      throw new Error(`${name} must be a positive integer, got: ${raw}`);
+    }
+    const n = parseInt(raw, 10);
+    if (n < min || n > max) {
+      throw new Error(`${name} must be between ${min} and ${max}, got: ${raw}`);
+    }
+    return n;
+  }
+
+  const imageMaxConcurrent = parseIntEnv('IMAGE_MAX_CONCURRENT', 2, 1, 16);
+  const imagePort = parseIntEnv('IMAGE_PORT', 4000, 1, 65535);
+  const imageProcessTimeoutMs = parseIntEnv('IMAGE_PROCESS_TIMEOUT_MS', 30000, 1, 600000);
 
   const rawTrustProxy = process.env.TRUST_PROXY;
   let trustProxy: number | boolean | string;
@@ -146,6 +210,12 @@ function loadConfig(): AppConfig {
     sesAdapter,
     sesSandboxMode,
     sesFromIdentity,
+    imageProcessorUrl,
+    imageMaxConcurrent,
+    imagePort,
+    imageProcessTimeoutMs,
+    photoStorageAdapter,
+    photoStorageS3Bucket,
     trustProxy,
   };
 }

@@ -152,6 +152,10 @@ WORKER_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.
   echo "ERROR: docker image inspect failed for docker-worker" >&2
   exit 1
 }
+IMAGE_IMAGE_LAYERS=$(docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null) || {
+  echo "ERROR: docker image inspect failed for docker-image" >&2
+  exit 1
+}
 
 # ── Step 4: Transfer images to host via docker save | docker load ────────────
 # Pre-transfer optimization: if the host already has images with identical
@@ -168,13 +172,17 @@ REMOTE_WEB_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
 REMOTE_WORKER_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
   "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-worker 2>/dev/null" \
   </dev/null || true)
-if [[ -n "$WEB_IMAGE_LAYERS" && -n "$WORKER_IMAGE_LAYERS" \
+REMOTE_IMAGE_LAYERS=$(ssh "${SSH_OPTS[@]}" "$REMOTE" \
+  "docker image inspect --format='{{range .RootFS.Layers}}{{.}} {{end}}' docker-image 2>/dev/null" \
+  </dev/null || true)
+if [[ -n "$WEB_IMAGE_LAYERS" && -n "$WORKER_IMAGE_LAYERS" && -n "$IMAGE_IMAGE_LAYERS" \
    && "$WEB_IMAGE_LAYERS"    == "$REMOTE_WEB_LAYERS" \
-   && "$WORKER_IMAGE_LAYERS" == "$REMOTE_WORKER_LAYERS" ]]; then
+   && "$WORKER_IMAGE_LAYERS" == "$REMOTE_WORKER_LAYERS" \
+   && "$IMAGE_IMAGE_LAYERS"  == "$REMOTE_IMAGE_LAYERS" ]]; then
   echo "==> Image RootFS DiffIDs match host; skipping docker save | docker load."
 else
   echo "==> Transferring images to host (docker save | docker load)..."
-  { printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker; } \
+  { printf '%s\n' "$SUDO_PASS"; docker save docker-web docker-worker docker-image; } \
     | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" docker load'
 fi
 
@@ -191,7 +199,9 @@ echo "==> Running remote-as-root deploy (promote, restart)..."
   printf '%s\n' "$SUDO_PASS"
   printf 'EXPECTED_WEB_IMAGE_LAYERS=%q\n'    "$WEB_IMAGE_LAYERS"
   printf 'EXPECTED_WORKER_IMAGE_LAYERS=%q\n' "$WORKER_IMAGE_LAYERS"
+  printf 'EXPECTED_IMAGE_IMAGE_LAYERS=%q\n'  "$IMAGE_IMAGE_LAYERS"
   printf 'FOOTBAG_ENV=%q\n'                  "$FOOTBAG_ENV"
+  printf 'DEPLOY_TARGET=%q\n'                "$REMOTE"
   cat "$REMOTE_HALF"
 } | ssh "${SSH_OPTS[@]}" "$REMOTE" 'sudo -S -p "" bash'
 
